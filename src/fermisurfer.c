@@ -29,7 +29,8 @@ THE SOFTWARE.
 /*
   Input variables
 */
-int ng[3];          /* BZ grids                                 */
+int ng[3];          //!<BZ grids
+                    /* BZ grids                                 */
 int lshift;         /* Switch for shifted Brillouin zone        */
 int nb;             /* # of Bands                               */
 GLfloat bvec[3][3]; /* Resiplocal lattice vector                */
@@ -1543,8 +1544,13 @@ void idle(void)
 {
   glutPostRedisplay();
 } /* idle */
-/*
-  Glut mouse function
+
+/*!
+ Glut mouse function
+ @param[in] button  xxxxx
+ @param[in] state   yyyyy
+ @param[in] x       zzzzz
+ @param[in] y       zzzzz
 */
 void mouse(int button, int state, int x, int y)
 {
