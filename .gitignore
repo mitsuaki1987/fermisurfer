@@ -1,1 +1,13 @@
 .DS_Store
+*.aux
+src/Release/
+*.dvi
+*.toc
+doc/manual_en.log
+doc/manual_ja.log
+src/fermisurfer
+src/fermisurfer.sdf
+src/fermisurfer.sln
+src/fermisurfer.v12.suo
+src/fermisurfer.vcxproj
+src/fermisurfer.vcxproj.filters
