@@ -21,7 +21,7 @@
 %
 \title{FermiSurfer マニュアル \\
 version 1.3 改訂版}
-\author{河村 光晶}
+\author{河村 光晶\footnote{mkawamura@issp.u-tokyo.ac.jp}}
 %\date{}
 \maketitle
 
@@ -30,20 +30,25 @@ version 1.3 改訂版}
 \section{はじめに}
 
 この文書ではFermi面描画ソフト「Fermi Surfer」についての解説を行っています. 
-Fermi Surferは東京大学の河村光晶が2012年頃から開発を行っていたもので, 
+Fermi Surferは東京大学の河村光晶
+が2012年頃から開発を行っていたもので, 
 2014年11月に公開されました. 
 Fermi面を描画しその上に各種物理量(超伝導ギャップ関数や軌道キャラクターなど)
 をカラープロットするソフトウェアです. 
 
-\section{インストール手順}
+\section{このパッケージに含まれているファイル}
+\begin{description}
+\item[\texttt{bin/fermisurfer.exe}] Windows用実行ファイル
+\item[\texttt{doc/manual\_en.pdf}] マニュアル(英語)
+\item[\texttt{doc/manual\_ja.pdf}] マニュアル(日本語)
+\item[\texttt{examples/mgb2\_vfz.frmsf}] サンプル入力ファイル
+\item[\texttt{src/fermisurfer.c}] ソースファイル
+\item[\texttt{src/mac.diff}] Mac OSX用　パッチ
+\item[\texttt{src/Makefile}] Linux用　Makefile
+\item[\texttt{src/Makefile-mac}] Mac OSX用　Makefile
+\end{description}
 
-要件
-\begin{itemize}
-\item Cコンパイラ(gcc, intel, PGI, 富士通コンパイラ等)
-\item GLUT環境(Linux では
-  \texttt{libfreeglut.a}, \texttt{libGL.a}, \texttt{libGLU.a},
- \texttt{freeglut.h}, Windowsでは\texttt{freeglut.dll} というファイルが必要)
-\end{itemize}
+\section{インストール手順}
 
 \subsection{Linuxの場合}
 
@@ -62,25 +67,42 @@ Fermi面を描画しその上に各種物理量(超伝導ギャップ関数や�
     \end{verbatim}
   \end{itemize}
 
-\item ソースコード\texttt{fermisurfer.c}をダウンロードする。
-
-\item コンパイル
-
-(例)gcc の場合
+\item メイク
 
 \begin{verbatim}
-  $ gcc fermisurfer.c -fopenmp -O3 -lglut -lGLU -lGL -lm -o fermisurfer
+  $ cd ./src
+  $ make fermisurfer
+  $ make install
 \end{verbatim}
 
 \end{enumerate}
 
-以上で実行可能ファイル \texttt{fermisurfer} が作られます. 
+以上で実行可能ファイル \texttt{fermisurfer} が作られ、\verb|/usr/local/bin/|にコピーされます.
+
+\subsection{Mac OSX の場合}
+
+\begin{enumerate}
+
+\item Xcodeをあらかじめインストールしておく
+\item ソースコードにパッチを当てる
+\begin{verbatim}
+  $ cd ./src
+  $ patch -p1 < mac.diff
+\end{verbatim}
+
+\item メイク
+\begin{verbatim}
+  $ make -f Makefile-mac fermisurfer
+  $ make -f Makefile-mac install
+\end{verbatim}
+
+\end{enumerate}
+
+以上で実行可能ファイル \texttt{fermisurfer} が作られ、\verb|/usr/local/bin/|にコピーされます.
 
 \subsection{Windowsの場合}
 
 \begin{enumerate}
-
-\item Windows用バイナリ\texttt{fermisurfer.exe}をダウンロードする.
 
 \item freeglutWindows Development Libraryのサイト
 \begin{verbatim}
@@ -91,7 +113,7 @@ http://www.transmissionzero.co.uk/software/freeglut-devel/
 ダウンロードし, 展開する.
 
 \item 展開したフォルダ内の\texttt{bin}というフォルダに入っている,
-\texttt{freeglut.dll}を\texttt{fermisurfer.exe}のあるフォルダにコピーする.
+\texttt{freeglut.dll}を\texttt{fermisurfer.exe}のあるフォルダ(\verb|bin|)にコピーする.
 
 (注) \verb|bin\x64\|にも\verb|freeglut.dll|があるが, そちらは使わない.
 
@@ -119,7 +141,7 @@ ${\rm \Gamma}$点から半グリッド分だけずらしたグリッドの二つ
 後者はプロットしたい物理量が${\rm \Gamma}$点で特異的になっている
 場合等に使われる事を想定しています. 
 
-上記データを次のとおりの書式で並べます(サンプルファイル \verb|mgb2_vfz.fs|の中身). 
+上記データを次のとおりの書式で並べます(サンプルファイル \verb|mgb2_vfz.frmsf|の中身). 
 
 \begin{verbatim}
           40          40          36         (1)
@@ -174,7 +196,7 @@ ${\rm \Gamma}$点から半グリッド分だけずらしたグリッドの二つ
 
   integer :: ik1, ik2, ik3, ibnd, fo
 
-  open(fo, file = “sample.fs”)
+  open(fo, file = “sample.frmsf”)
   write(fo,*) nk1, nk2, nk3
   write(fo,*) ishift
   write(fo,*) nbnd
@@ -215,7 +237,7 @@ ${\rm \Gamma}$点から半グリッド分だけずらしたグリッドの二つ
   FILE* fo;
   int ibnd, ik1, ik2, ik3;
 
-  fo = fopen(“sample.fs”, “w”);
+  fo = fopen(“sample.frmsf”, “w”);
   ierr = fprintf(fo, "%d %d %d", nk1, nk2, nk3);
   ierr = fprintf(fo, "%d, iswitch);
   ierr = fprintf(fo, "%d, nbnd);
@@ -248,14 +270,14 @@ ${\rm \Gamma}$点から半グリッド分だけずらしたグリッドの二つ
 \subsection{Linuxの場合}
 作成した実行可能ファイル\verb|fermisurfer|にパスが通っている状態で
 \begin{verbatim}
-$ fermisurfer mgb2_vfz.fs
+$ fermisurfer mgb2_vfz.frmsf
 \end{verbatim}
 とコマンド, スペース, 入力ファイル名とタイプします. 
 (サンプルファイルの中身はMgB$_2$のFermi速度の$z$方向成分です. )
 
 \subsection{Windowsの場合}
 
-入力ファイル(この場合は\verb|mgb2_vfz.fs|)を右クリックし,
+入力ファイル(この場合は\verb|mgb2_vfz.frmsf|)を右クリックし,
 メニューから「プログラムから開く」を選択し,
 実行ファイルを\verb|fermisurfer.exe|に設定してください.
 
@@ -341,6 +363,16 @@ Min. value : -22.283419 (5)
   \caption{\texttt{Band} メニューで3番目のバンドの表示/非表示を切り替える.}
   \label{fig_band}
 \end{figure}
+
+\subsection{Mouse Drag}
+
+マウスの左ボタンドラッグを行った時の動作を変更します.
+
+\begin{description}
+\item[Rotate(デフォルト)] ドラッグをした方向に図形を回転させます.
+\item[Scale] 上方にドラッグすると図形を拡大, 下方にドラッグすると図形を縮小します.
+\item[Translate] ドラッグした方向に図形を動かします.
+\end{description}
 
 \subsection{Shift Fermi energy}
 
@@ -467,5 +499,25 @@ IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与
   \caption{IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与.}
   \label{fig_iro2}
 \end{figure}
+
+\section{謝辞}
+
+東京大学物性研究所 小西優祐氏には, Mac OSXでの動作チェックおよびMakefile, 
+パッチの提供をしていただいたことに感謝する.
+
+\section{問い合わせ先}
+
+プログラムのバグや質問は以下のフォーラムへご投稿ください.
+\begin{verbatim}
+http://sourceforge.jp/projects/fermisurfer/forums/
+\end{verbatim}
+
+開発に参加したい方は以下の連絡先にて受け付けております. 
+
+東京大学物性研究所
+
+河村光晶
+
+\verb|mkawamura@issp.u-tokyo.ac.jp|
 
 \end{document}

@@ -21,7 +21,7 @@
 %
 \title{Manual for FermiSurfer\\
 version 1.3}
-\author{Mitsuaki KAWAMURA}
+\author{Mitsuaki KAWAMURA\footnote{mkawamura@issp.u-tokyo.ac.jp}}
 %\date{}
 \maketitle
 
@@ -37,15 +37,20 @@ It draws Fermi surfaces, and
 plot $k$-depend matrix elements such as the superconducting gap and
 orbital character with colors.
 
-\section{Install}
+\section{Files in this package}
 
-Requirement
-\begin{itemize}
-\item C compiler(gcc, intel, PGI, Fujitsu, etc.)
-\item GLUT(\texttt{libfreeglut.a}, \texttt{libGL.a}, \texttt{libGLU.a},
- and \texttt{freeglut.h} are required in Linux. 
- \texttt{freeglut.dll} is required in Windows)
-\end{itemize}
+\begin{description}
+\item[\texttt{bin/fermisurfer.exe}] Executable for Windows
+\item[\texttt{doc/manual\_en.pdf}] Manual (English)
+\item[\texttt{doc/manual\_ja.pdf}] Manual (Japanese)
+\item[\texttt{examples/mgb2\_vfz.frmsf}] Sample input file
+\item[\texttt{src/fermisurfer.c}] Source file
+\item[\texttt{src/mac.diff}] Patch for Mac OSX
+\item[\texttt{src/Makefile}] Makefile for Linux
+\item[\texttt{src/Makefile-mac}] Makefile for Mac OSX
+\end{description}
+
+\section{Install}
 
 \subsection{Installation in Linux}
 
@@ -64,24 +69,45 @@ Requirement
     \end{verbatim}
   \end{itemize}
 
-\item Download \verb|fermisurfer.c|
-
-\item Compile
-
-E.g.) gcc 
+\item Make
 
 \begin{verbatim}
-  $ gcc fermisurfer.c -fopenmp -O3 -lglut -lGLU -lGL -lm -o fermisurfer
+  $ cd ./src
+  $ make fermisurfer
+  $ make install
 \end{verbatim}
 
 \end{enumerate}
 
-Then a binary file \texttt{fermisurfer} is generated.
+Then a binary file \texttt{fermisurfer} is generated and put 
+in \verb|/usr/local/bin/|.
+
+\subsection{Mac OSX の場合}
+
+\begin{enumerate}
+
+\item Install Xcode.
+
+\item Patch the source code.
+\begin{verbatim}
+  $ cd ./src
+  $ patch -p1 < mac.diff
+\end{verbatim}
+
+\item Make.
+\begin{verbatim}
+  $ make -f Makefile-mac fermisurfer
+  $ make -f Makefile-mac install
+\end{verbatim}
+
+Then a binary file \texttt{fermisurfer} is generated and put 
+in \verb|/usr/local/bin/|.
+
+\end{enumerate}
 
 \subsection{Installation in Windows}
  
 \begin{enumerate}
-\item Download the binary \verb|fermisurfer.exe|
 
 \item Download the \verb|zip| file which contains \verb|freeglut.dll|
 from ``freeglut Windows Development Library'' site
@@ -92,7 +118,7 @@ http://www.transmissionzero.co.uk/software/freeglut-devel/
 Then, \verb|unzip| it.
 
 \item copy \verb|.\bin\freeglut.dll| to the folder which contains
- \verb|fermisurfer.exe|.
+ \verb|fermisurfer.exe| (\verb|bin|).
  (You should not use \verb|.\bin\x64\freeglut.dll|)
 
 \end{enumerate}
@@ -341,6 +367,16 @@ It makes each band enable/disable (Fig. \ref{fig_band}).
   \label{fig_band}
 \end{figure}
 
+\subsection{Mouse Drag}
+
+It turns the event of the mouse-left-drag.
+
+\begin{description}
+\item[Rotate(default)] Rotate the figure along the mause drag.
+\item[Scale] Expand/shrink the figure in upward/downward drag.
+\item[Translate] Translate the figure along the mouse drag.
+\end{description}
+
 \subsection{Shift Fermi energy}
 
 It shifts the Fermi energy (= 0 in default) to arbitrary value.
@@ -361,8 +397,6 @@ finally, the new Fermi surfaces are depicted (Fig. \ref{fig_shift}).
     with \texttt{Shift Fermi energy} menu}
   \label{fig_shift}
 \end{figure}
-
-\newpage
 
 \subsection{Background color}
 
@@ -418,8 +452,6 @@ You choose Brillouin-zone type as follows (Fig. \ref{fig_brillouinzone}):
     with \texttt{Brillouin zone} menu.}
   \label{fig_brillouinzone}
 \end{figure}
-
-\newpage
 
 \subsection{Node line}
 
@@ -478,5 +510,26 @@ in IrO$_2$
   \caption{Contributions of each Fermi surfaces to the Hall effect}
   \label{fig_iro2}
 \end{figure}
+
+\section{Acknoulagement}
+
+I thank Dr. Yusuke Konishi in ISSP;
+he performed a test in Mac OSX,
+and proposed Makefiles and a patch.
+
+\section{Contact}
+
+Please post bag reports and questions to the forum
+\begin{verbatim}
+http://sourceforge.jp/projects/fermisurfer/forums/
+\end{verbatim}
+
+When you want to join us, please contact me as follows.
+
+The Institute of Solid State Physics
+
+Mitsuaki Kawamura
+
+\verb|mkawamura@issp.u-tokyo.ac.jp|
 
 \end{document}

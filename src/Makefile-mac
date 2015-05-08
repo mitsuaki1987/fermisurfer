@@ -1,0 +1,12 @@
+fermisurfer:fermisurfer.c
+	cc fermisurfer.c -framework GLUT -framework OpenGL -lm -o fermisurfer
+
+install:
+	cp fermisurfer /usr/local/bin/fermisurfer
+
+uninstall:
+	rm /usr/local/bin/fermisurfer
+
+clean:
+	rm fermisurfer
+

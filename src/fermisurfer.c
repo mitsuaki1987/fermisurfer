@@ -30,51 +30,51 @@ THE SOFTWARE.
   Input variables
 */
 int ng[3];          //!<BZ grids
-                    /* BZ grids                                 */
-int lshift;         /* Switch for shifted Brillouin zone        */
-int nb;             /* # of Bands                               */
-GLfloat bvec[3][3]; /* Resiplocal lattice vector                */
-GLfloat ****eig;    /* Eigenvalues    [nb][ng[0]][ng[1]][ng[2]] */
-GLfloat ****mat;    /* Matrix element [nb][ng[0]][ng[1]][ng[2]] */
+int lshift;         //!<Switch for shifted Brillouin zone
+int nb;             //!<The number of Bands                               
+GLfloat bvec[3][3]; //!<Resiplocal lattice vector                
+GLfloat ****eig;    //!<Eigenvalues    [nb][ng[0]][ng[1]][ng[2]] 
+GLfloat ****mat;    //!<Matrix element [nb][ng[0]][ng[1]][ng[2]] 
 /*
   Switch for some modes
 */
-int blackback = 1; /* Switch for black background        */
-int fcscl = 1;     /* Switch for full color scale mode   */
-int fbz = 1;       /* Switch for 1st Brillouin zone mode */
-int nodeline = 0;  /* Switch for node lines              */
-int lcolorbar = 1; /* Switch for colorbar                */
-int lstereo = 1;   /* Switch for the stereogram          */
+int blackback = 1; //!<Switch for black background        
+int fcscl = 1;     //!<Switch for full color scale mode   
+int fbz = 1;       //!<Switch for 1st Brillouin zone mode 
+int nodeline = 0;  //!<Switch for node lines              
+int lcolorbar = 1; //!<Switch for colorbar                
+int lstereo = 1;   //!<Switch for the stereogram
+int lmouse = 1;    //!<Switch for the mouse function
 /*
   Variables for Brillouin zone boundaries
 */
-int nbzl;             /* # of Lines of 1st Brillouin zone */
-GLfloat ***bzl;       /* Lines of 1st BZ [nbzl][2][3]     */
-GLfloat bragg[26][3]; /* Bragg plane vectors              */
-GLfloat brnrm[26];    /* Norms of Bragg plane vectors     */
+int nbzl;             //!<The number of Lines of 1st Brillouin zone 
+GLfloat ***bzl;       //!<Lines of 1st BZ [nbzl][2][3]     
+GLfloat bragg[26][3]; //!<Bragg plane vectors              
+GLfloat brnrm[26];    //!<Norms of Bragg plane vectors     
 /*
   Variables for patchs
 */
-int *ntri;          /* # of triangle patch       [nb]             */
-int *draw_band;     /* Switch for drawn bands    [nb]             */
-GLfloat ***nmlp;    /* Normal vector of patchs   [nb][ntri][3]    */
-GLfloat ****kvp;    /* K-vectors of points       [nb][ntri][3][3] */
-GLfloat ***matp;    /* Matrix elements of points [nb][ntri][3]    */
-GLfloat ****clr;    /* Colors of points          [nb][ntri][3][4] */
+int *ntri;          //!<The number of triangle patch       [nb]             
+int *draw_band;     //!<Switch for drawn bands    [nb]             
+GLfloat ***nmlp;    //!<Normal vector of patchs   [nb][ntri][3]    
+GLfloat ****kvp;    //!<K-vectors of points       [nb][ntri][3][3] 
+GLfloat ***matp;    //!<Matrix elements of points [nb][ntri][3]    
+GLfloat ****clr;    //!<Colors of points          [nb][ntri][3][4] 
 int itet = 0;
 /*
   Variables for nodeline
 */
-int *nnl; /* # of nodeline */
-GLfloat ****kvnl; /* K-vector of nodeline [nb][nnl][2][3] */
+int *nnl; //!<The number of nodeline 
+GLfloat ****kvnl; //!<K-vector of nodeline [nb][nnl][2][3] 
 /*
-  Variables for mouce  & cursorkey
+  Variables for mouse  & cursorkey
 */
-GLfloat sx, sy;                        /* Scale of mouce movement */
-int cx, cy;                            /* Starting point of drug  */
-GLfloat scl = 1.0;                     /* Initial scale           */
-GLfloat trans[3] = {0.0, 0.0, 0.0};    /* Translation             */
-GLfloat rot[3][3] = {{1.0, 0.0, 0.0},  /* Rotation matrix         */
+GLfloat sx, sy;                        //!<Scale of mouse movement
+int cx, cy;                            //!<Starting point of drug  
+GLfloat scl = 1.0;                     //!<Initial scale           
+GLfloat trans[3] = {0.0, 0.0, 0.0};    //!<Translation             
+GLfloat rot[3][3] = {{1.0, 0.0, 0.0},  //!<Rotation matrix         
 		     {0.0, 1.0, 0.0},   
 		     {0.0, 0.0, 1.0}};
 /*
@@ -91,9 +91,9 @@ GLfloat    blue[] = {0.0, 0.0, 1.0, 1.0};
 /*
   Others
 */
-int query;             /* Query switch           */
-int corner[6][4];      /* Corners of tetrahedron */
-GLfloat def = 0.0;     /* Shift of Fermi energy */
+int query;             //!<Query switch           
+int corner[6][4];      //!<Corners of tetrahedron 
+GLfloat def = 0.0;     //!<Shift of Fermi energy 
 enum
   {
     MOUSE_LEFT_BUTTON   = 0,
@@ -105,7 +105,9 @@ enum
 /*
   Input from Fermi surface file
 */
-void read_file(char *fname)
+void read_file //! Read input file
+(char *fname //!<Input file name
+	       ) 
 {
   int ib, i, i1, i2, i3, ierr;
   FILE *fp;
@@ -1554,26 +1556,26 @@ void idle(void)
 */
 void mouse(int button, int state, int x, int y)
 {
-  switch (button) {
-    /*
+  switch (button)	 {
+    /*	
       Drag 
-     */
+     */	
   case GLUT_LEFT_BUTTON:
-    switch (state) {
-    case GLUT_DOWN:
-      /* Start of animation */
-      glutIdleFunc(idle);
-      /* Record drag start point */
-      cx = x;
-      cy = y;
-      break;
-    case GLUT_UP:
-      /* End of animation */
-      glutIdleFunc(0);
-      break;
-    default:
-      break;
-    }
+	  switch (state) {
+	  case GLUT_DOWN:
+		  /* Start of animation */
+		  glutIdleFunc(idle);
+		  /* Record drag start point */
+		  cx = x;
+		  cy = y;
+		  break;
+	  case GLUT_UP:
+		  /* End of animation */
+		  glutIdleFunc(0);
+		  break;
+	  default:
+		  break;
+	  }
     break;
     /*
       Zoom up
@@ -1630,34 +1632,44 @@ void motion(int x, int y)
   */
   a = sqrt(dx * dx + dy * dy);
   /**/
-  if (a != 0.0) {
-    /*
-      Compute rotational matrix from translation of mousepointer
-    */
-    ax = - dy;
-    ay =   dx;
-    /**/
-    a = a * 10.0;
-    /**/
-    rot0[0][0] = (ax * ax + ay * ay * cos(a)) / (ax * ax + ay * ay);
-    rot0[0][1] =   ax * ay * (cos(a) - 1.0)   / (ax * ax + ay * ay);
-    rot0[0][2] =             ay * sin(a) / sqrtf(ax * ax + ay * ay);
-    rot0[1][0] =   ax * ay * (cos(a) - 1.0)   / (ax * ax + ay * ay);
-    rot0[1][1] = (ax * ax * cos(a) + ay * ay) / (ax * ax + ay * ay);
-    rot0[1][2] =             ax * sin(a) / sqrtf(ax * ax + ay * ay);
-    rot0[2][0] =           - ay * sin(a) / sqrtf(ax * ax + ay * ay);
-    rot0[2][1] =           - ax * sin(a) / sqrtf(ax * ax + ay * ay);
-    rot0[2][2] =   cos(a);
-    /**/
-    for(i = 0; i < 3; i++) for(j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
-    /**/  
-    for(i = 0; i < 3; i++){
-      for(j = 0; j < 3; j++){
-	rot[i][j] = rot0[i][0] * rot1[0][j]
-	  +         rot0[i][1] * rot1[1][j]
-	  +         rot0[i][2] * rot1[2][j];
-      }
-    }
+  if (lmouse == 1){
+	  /**/
+	  if (a != 0.0) {
+		  /*
+			Compute rotational matrix from translation of mousepointer
+			*/
+		  ax = -dy;
+		  ay = dx;
+		  /**/
+		  a = a * 10.0;
+		  /**/
+		  rot0[0][0] = (ax * ax + ay * ay * cos(a)) / (ax * ax + ay * ay);
+		  rot0[0][1] = ax * ay * (cos(a) - 1.0) / (ax * ax + ay * ay);
+		  rot0[0][2] = ay * sin(a) / sqrtf(ax * ax + ay * ay);
+		  rot0[1][0] = ax * ay * (cos(a) - 1.0) / (ax * ax + ay * ay);
+		  rot0[1][1] = (ax * ax * cos(a) + ay * ay) / (ax * ax + ay * ay);
+		  rot0[1][2] = ax * sin(a) / sqrtf(ax * ax + ay * ay);
+		  rot0[2][0] = -ay * sin(a) / sqrtf(ax * ax + ay * ay);
+		  rot0[2][1] = -ax * sin(a) / sqrtf(ax * ax + ay * ay);
+		  rot0[2][2] = cos(a);
+		  /**/
+		  for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
+		  /**/
+		  for (i = 0; i < 3; i++){
+			  for (j = 0; j < 3; j++){
+				  rot[i][j] = rot0[i][0] * rot1[0][j]
+					  + rot0[i][1] * rot1[1][j]
+					  + rot0[i][2] * rot1[2][j];
+			  }
+		  }
+	  }
+  }
+  else if (lmouse == 2){
+	  scl = scl * exp(- dy);
+  }
+  else{
+	  trans[0] = trans[0] + dx;
+	  trans[1] = trans[1] - dy;
   }
   cx = x;
   cy = y;
@@ -1767,6 +1779,28 @@ void main_menu(int value){
     exit(0);
   }
 }
+/*
+On / Change mouse function
+*/
+void menu_mouse(int value){
+	/**/
+	if (value == 1 && lmouse != 1){
+		printf("Mouse drag : Rotate \n\n");
+		lmouse = 1;
+		glutPostRedisplay();
+	}
+	if (value == 2 && lmouse != 2){
+		printf("Mouse drag : Scale \n\n");
+		lmouse = 2;
+		glutPostRedisplay();
+	}
+	if (value == 3 && lmouse != 3){
+		printf("Mouse drag : Translate \n\n");
+		lmouse = 3;
+		glutPostRedisplay();
+	}
+	/**/
+} /* menu_band */
 /*
   On / Off band
 */
@@ -1955,7 +1989,7 @@ void init(void)
 {
   int ib;
   int ibandmenu, ibgmenu, icsmenu, ibzmenu, inlmenu, 
-    icbmenu, itetmenu, istereo;
+    icbmenu, itetmenu, istereomenu, imousemenu;
   char ibstr[20]={0};
   /**/
   glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -1965,6 +1999,11 @@ void init(void)
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
   glEnable(GL_NORMALIZE);
+  /* Stereogram */
+  imousemenu = glutCreateMenu(menu_mouse);
+  glutAddMenuEntry("Rotate", 1);
+  glutAddMenuEntry("Scale", 2);
+  glutAddMenuEntry("Translate", 3);
   /* Band menu */
   ibandmenu = glutCreateMenu(menu_band);
   for(ib =0;ib < nb; ib++){
@@ -1994,7 +2033,7 @@ void init(void)
   glutAddMenuEntry("On",1);
   glutAddMenuEntry("Off",2);
   /* Stereogram */
-  istereo = glutCreateMenu(menu_stereo);
+  istereomenu = glutCreateMenu(menu_stereo);
   glutAddMenuEntry("None",1);
   glutAddMenuEntry("Parallel",2);
   glutAddMenuEntry("Cross",3);
@@ -2009,13 +2048,14 @@ void init(void)
   */
   glutCreateMenu(main_menu);
   glutAddSubMenu("Band",ibandmenu);
-  glutAddMenuEntry("Shift Fermi energy",2);
+  glutAddSubMenu("Mouse Drag", imousemenu);
+  glutAddMenuEntry("Shift Fermi energy", 2);
   glutAddSubMenu("Background color",ibgmenu);
   glutAddSubMenu("Color scale mode",icsmenu);
   glutAddSubMenu("Brillouin zone",ibzmenu);
   glutAddSubMenu("Node lines",inlmenu);
   glutAddSubMenu("Color bar On/Off",icbmenu);
-  glutAddSubMenu("Stereogram",istereo);
+  glutAddSubMenu("Stereogram",istereomenu);
   glutAddSubMenu("Tetrahedron",itetmenu);
   glutAddMenuEntry("Exit",9);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
