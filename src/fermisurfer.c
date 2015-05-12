@@ -70,8 +70,10 @@ GLfloat ****kvnl; //!<K-vector of nodeline [nb][nnl][2][3]
 /*
   Variables for mouse  & cursorkey
 */
-GLfloat sx, sy;                        //!<Scale of mouse movement
-int cx, cy;                            //!<Starting point of drug  
+GLfloat sx;                            //!<Scale of mouse movement
+GLfloat sy;                            //!<Scale of mouse movement
+int cx;                                //!<Starting point of drug  
+int cy;                                //!<Starting point of drug  
 GLfloat scl = 1.0;                     //!<Initial scale           
 GLfloat trans[3] = {0.0, 0.0, 0.0};    //!<Translation             
 GLfloat rot[3][3] = {{1.0, 0.0, 0.0},  //!<Rotation matrix         
@@ -80,14 +82,14 @@ GLfloat rot[3][3] = {{1.0, 0.0, 0.0},  //!<Rotation matrix
 /*
   Colors
  */
-GLfloat   black[] = {0.0, 0.0, 0.0, 1.0};
-GLfloat   white[] = {1.0, 1.0, 1.0, 1.0};
-GLfloat    cyan[] = {0.0, 1.0, 1.0, 1.0};
-GLfloat magenta[] = {1.0, 0.0, 1.0, 1.0};
-GLfloat  yellow[] = {1.0, 1.0, 0.0, 1.0};
-GLfloat     red[] = {1.0, 0.0, 0.0, 1.0};
-GLfloat   green[] = {0.0, 1.0, 0.0, 1.0};
-GLfloat    blue[] = {0.0, 0.0, 1.0, 1.0};
+GLfloat   black[] = {0.0, 0.0, 0.0, 1.0}; //!< Black color code
+GLfloat   white[] = {1.0, 1.0, 1.0, 1.0}; //!< White color code
+GLfloat    cyan[] = {0.0, 1.0, 1.0, 1.0}; //!< Cyan color code
+GLfloat magenta[] = {1.0, 0.0, 1.0, 1.0}; //!< Magenta color code
+GLfloat  yellow[] = {1.0, 1.0, 0.0, 1.0}; //!< Yellow color code
+GLfloat     red[] = {1.0, 0.0, 0.0, 1.0}; //!< Red color code
+GLfloat   green[] = {0.0, 1.0, 0.0, 1.0}; //!< Green color code
+GLfloat    blue[] = {0.0, 0.0, 1.0, 1.0}; //!< Blue color code
 /*
   Others
 */
@@ -96,19 +98,14 @@ int corner[6][4];      //!<Corners of tetrahedron
 GLfloat def = 0.0;     //!<Shift of Fermi energy 
 enum
   {
-    MOUSE_LEFT_BUTTON   = 0,
-    MOUSE_MIDDLE_BUTTON = 1,
-    MOUSE_RIGHT_BUTTON  = 2,
-    MOUSE_SCROLL_UP     = 3,
-    MOUSE_SCROLL_DOWN   = 4
+    MOUSE_SCROLL_UP     = 3, //!<Mouse wheel up
+    MOUSE_SCROLL_DOWN   = 4  //!<Mouse wheel down
   };
-/*
+/*!
   Input from Fermi surface file
+ @param[in] fname  Input file name
 */
-void read_file //! Read input file
-(char *fname //!<Input file name
-	       ) 
-{
+void read_file(char *fname){
   int ib, i, i1, i2, i3, ierr;
   FILE *fp;
   /*
@@ -201,7 +198,7 @@ void read_file //! Read input file
   fclose(fp);
   /**/
 } /* read_file */
-/*
+/*!
   Initialize corners of tetrahedron
 */
 void init_corner(){
@@ -359,7 +356,7 @@ void init_corner(){
     }
   }
 }
-/*
+/*!
   Compute Bragg vetor
 */
 void bragg_vector(){  
@@ -388,8 +385,10 @@ void bragg_vector(){
     }
   }
 } /* bragg_vector */
-/*
+/*!
   Solve linear system
+  @param[in] a Matix
+  @param[inout] b Right hand side vector
 */
 GLfloat solve3(GLfloat a[3][3], GLfloat b[3]){
   int i;
@@ -415,8 +414,13 @@ GLfloat solve3(GLfloat a[3][3], GLfloat b[3]){
   return det;
   /**/
 }
-/*
-  Corner of Bragg plane
+/*!
+  Judge wheser this line is the edge of 1st BZ
+  @param[in] ibr Index of a Bragg plane
+  @param[in] jbr Index of a Bragg plane
+  @param[in] nbr
+  @param[in] vert start point of line
+  @param[in] vert2 end point of line
 */
 int bragg_vert(int ibr, int jbr, int nbr, GLfloat vert[3], GLfloat vert2[3]){
   int kbr, i, lbr, nbr0;
@@ -472,7 +476,7 @@ int bragg_vert(int ibr, int jbr, int nbr, GLfloat vert[3], GLfloat vert2[3]){
   return 0;
   /**/
 }/* bragg_vert */
-/*
+/*!
   Compute Brillouin zone boundariy lines
 */
 void bz_lines(){
@@ -519,7 +523,7 @@ void bz_lines(){
   }
   /**/
 } /* bz_lines */
-/*
+/*!
   Max and Minimum in Brillouine zone
 */
 void max_and_min_bz(){
@@ -547,8 +551,12 @@ void max_and_min_bz(){
   }
   /**/
 }/* max_and_min_bz */
-/*
+/*!
   Sort eigenvalues
+  @param[in] n the number of components
+  @param[inout] eig2 the orbital energy
+  @param[inout] mat2 the matrix element
+  @param[inout] kvec2 of corners
 */
 void eigsort(int n, GLfloat* eig2, GLfloat* mat2, GLfloat kvec2[][3]){  
   int i, j, k;
@@ -574,8 +582,12 @@ void eigsort(int n, GLfloat* eig2, GLfloat* mat2, GLfloat kvec2[][3]){
     }
   }
 } /* eigsort */
-/*
+/*!
   Calculate normal vector
+  @param[in] in1 Corner 1
+  @param[in] in2 Corner 2
+  @param[in] in3 Corner 3
+  @param[out] out The normal vector
 */
 void normal_vec(GLfloat in1[3], GLfloat in2[3], GLfloat in3[3], GLfloat out[3]){
   int i;
@@ -592,8 +604,12 @@ void normal_vec(GLfloat in1[3], GLfloat in2[3], GLfloat in3[3], GLfloat out[3]){
   norm = sqrtf(out[0]*out[0] + out[1]*out[1] + out[2]*out[2]);
   for(i=0;i<3;i++) out[i] = out[i] / norm;
 } /* normal_vec */
-/*
+/*!
   Store triangle patch
+  @param[in] ib The band index
+  @param[in] nbr Bragg plane
+  @param[in] mat1 The matrix element
+  @param[in] kvec1 k vector of corners
 */
 void triangle(int ib, int nbr, GLfloat mat1[3], GLfloat kvec1[3][3]){
   /**/  
@@ -672,8 +688,12 @@ void triangle(int ib, int nbr, GLfloat mat1[3], GLfloat kvec1[3][3]){
   }
   /**/
 }/* triangle */
-/*
+/*!
   Tetrahedrron method
+  @param[in] ib The band index
+  @param[in] eig1 orbital energies
+  @param[in] mat1 Matrix elements
+  @param[in] kvec1 k vectors
 */
 void tetrahedron(int ib, GLfloat eig1[8], GLfloat mat1[8], GLfloat kvec1[8][3]){
   /**/
@@ -743,7 +763,7 @@ void tetrahedron(int ib, GLfloat eig1[8], GLfloat mat1[8], GLfloat kvec1[8][3]){
     }
   }
 }/* tetrahedron */
-/*
+/*!
   Patches for FSs
 */
 void fermi_patch()
@@ -841,7 +861,7 @@ void fermi_patch()
       }
     }
   }
- } /** End of parallel region **/
+ } /* End of parallel region */
   /**/
   if(query == 1){
     printf("band   # of patchs \n");
@@ -876,7 +896,7 @@ void fermi_patch()
   }
   /**/
 } /* fermi_patch */
-/*
+/*!
   Max. & Min. of matrix elements.
 */
 void max_and_min(){
@@ -1011,7 +1031,7 @@ void max_and_min(){
   }
   /**/
 } /* max_and_min */
-/*
+/*!
   Node line
 */
 void calc_nodeline(){
@@ -1054,7 +1074,7 @@ void calc_nodeline(){
 	}
       }
     }
-  } /** End of parallel region **/
+  } /* End of parallel region */
   /**/
   printf("band   # of nodeline \n");
   for(ib =0; ib < nb; ib++){
@@ -1133,9 +1153,9 @@ void calc_nodeline(){
 	}
       }
     }
-  } /** End of parallel region **/
+  } /* End of parallel region */
 }
-/*
+/*!
   Draw Fermi surfaces
 */
 void draw_fermi(){
@@ -1173,7 +1193,7 @@ void draw_fermi(){
 	  }
 	}
 	glEnd();
-      } /** End of parallel region **/
+      } /* End of parallel region */
     }
     /**/
   }
@@ -1206,7 +1226,7 @@ void draw_fermi(){
   }
   /**/
 } /* draw_ferm */
-/*
+/*!
   Draw lines of BZ boundaries
 */
 void draw_bz_lines(){
@@ -1275,7 +1295,7 @@ void draw_bz_lines(){
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
   /**/
 } /* draw bz_lines */
-/*
+/*!
   Draw color scale
 */
 void draw_colorbar()
@@ -1378,7 +1398,7 @@ void draw_colorbar()
   else{
   }
 } /* draw_colorbar */
-/*
+/*!
 Draw points for the stereogram
 */
 void draw_circles(){
@@ -1414,7 +1434,7 @@ void draw_circles(){
   }
   glEnd();
 }
-/*
+/*!
   Glut Display function
 */
 void display()
@@ -1519,8 +1539,10 @@ void display()
   /**/
   glutSwapBuffers();
 } /* display */
-/*
-  Window resization
+/*!
+  Window resize
+  @param[in] w Window width
+  @param[in] h Window height
 */
 void resize(int w, int h)
 {
@@ -1539,20 +1561,19 @@ void resize(int w, int h)
   /**/
   glMatrixMode(GL_MODELVIEW);
 } /* end resize */
-/*
+/*!
   Idling
 */
 void idle(void)
 {
   glutPostRedisplay();
 } /* idle */
-
 /*!
  Glut mouse function
- @param[in] button  xxxxx
- @param[in] state   yyyyy
- @param[in] x       zzzzz
- @param[in] y       zzzzz
+ @param[in] button  pushed button
+ @param[in] state   down or upor ?
+ @param[in] x       position of mouse cursor
+ @param[in] y       position of mouse cursor
 */
 void mouse(int button, int state, int x, int y)
 {
@@ -1614,8 +1635,10 @@ void mouse(int button, int state, int x, int y)
     break;
   }
 } /* end mouse */
-/*
+/*!
   Glut motion function
+  @param[in] x position of cursor
+  @param[in] y position of cursor
 */
 void motion(int x, int y)
 {
@@ -1675,17 +1698,23 @@ void motion(int x, int y)
   cy = y;
   /**/    
 } /* motion */
-/*
+/*!
   Glut keyboard function
+  @param[in] key key Typed key
+  @param[in] x
+  @param[in] y
 */
 void keyboard(unsigned char key, int x, int y)
 {
   switch (key) {
   }
 } /* keyboard */
-/*
+/*!
   Glut special key function
- */
+  @param[in] key typed special key
+  @param[in] x
+  @param[in] y
+*/
 void special_key(int key, int x, int y)
 {
   switch (key) {
@@ -1711,8 +1740,9 @@ void special_key(int key, int x, int y)
     /**/
   }
 } /* special_key */
-/*
+/*!
   Main menu
+  @param[in] value Selected menu
 */
 void main_menu(int value){
   /**/
@@ -1779,8 +1809,9 @@ void main_menu(int value){
     exit(0);
   }
 }
-/*
-On / Change mouse function
+/*!
+ Change mouse function
+ @param[in] value Selected menu
 */
 void menu_mouse(int value){
 	/**/
@@ -1801,8 +1832,9 @@ void menu_mouse(int value){
 	}
 	/**/
 } /* menu_band */
-/*
+/*!
   On / Off band
+  @param[in] value Selected menu
 */
 void menu_band(int value){
   /**/
@@ -1817,8 +1849,9 @@ void menu_band(int value){
   glutPostRedisplay();
   /**/
 } /* menu_band */
-/*
+/*!
   Change background color
+  @param[in] value Selected menu
 */
 void menu_bgcolor(int value){
   if(value == 1 && blackback != 1){
@@ -1834,8 +1867,9 @@ void menu_bgcolor(int value){
   }
 /**/
 }/* bgcolor change*/
-/*
-   Change color scale mode
+/*!
+  Change color scale mode
+  @param[in] value Selected menu
 */
 void menu_colorscale(int value){
   /**/
@@ -1865,8 +1899,9 @@ void menu_colorscale(int value){
   }
   /**/
 } /* menu_colorscale */
-/*
-   Change Brillouin zone
+/*!
+  Change Brillouin zone
+  @param[in] value Selected menu
 */
 void menu_bzmode(int value){
   if(value == 1 && fbz != 1){
@@ -1908,8 +1943,9 @@ void menu_bzmode(int value){
     glutPostRedisplay();
   }
 } /* menu_bzmode */
-/*
-   On/Off Node line
+/*!
+  On/Off Node line
+  @param[in] value Selected menu
 */
 void menu_nodeline(int value){
   if(value == 1 && nodeline != 1){
@@ -1924,8 +1960,9 @@ void menu_nodeline(int value){
   }
   /**/
 } /* menu_nodeline */
-/*
-   Tern stereogram
+/*!
+  Tern stereogram
+  @param[in] value Selected menu
 */
 void menu_stereo(int value){
   if(value == 1 && lstereo != 1){
@@ -1944,8 +1981,9 @@ void menu_stereo(int value){
     glutPostRedisplay();
   }
 } /* menu_stereo */
-/*
-   On/Off Colorbar
+/*!
+  On/Off Colorbar
+  @param[in] value Selected menu
 */
 void menu_colorbar(int value){
   if(value == 1 && lcolorbar != 1){
@@ -1959,8 +1997,9 @@ void menu_colorbar(int value){
     glutPostRedisplay();
   }
 } /* menu_colorbar */
-/*
+/*!
   Change tetrahedron
+  @param[in] value Selected menu
 */
 void menu_tetra(int value){
   /**/
@@ -1982,7 +2021,7 @@ void menu_tetra(int value){
     glutPostRedisplay();
   }
 } /* menu_tetra */
-/*
+/*!
   Glut init function
 */
 void init(void)
@@ -2060,7 +2099,7 @@ void init(void)
   glutAddMenuEntry("Exit",9);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
 } /* init */
-/*
+/*!
   Main routine
 */
 int main(int argc, char *argv[])

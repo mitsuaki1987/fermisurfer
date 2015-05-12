@@ -11,3 +11,7 @@ src/fermisurfer.sln
 src/fermisurfer.v12.suo
 src/fermisurfer.vcxproj
 src/fermisurfer.vcxproj.filters
+doc/doxygen/
+doc/manual_en.pdf
+doc/manual_ja.pdf
+*.opensdf
