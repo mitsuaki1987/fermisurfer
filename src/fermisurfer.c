@@ -1,25 +1,25 @@
 /*
-The MIT License (MIT)
+  The MIT License (MIT)
 
-Copyright (c) 2014 Mitsuaki KAWAMURA
+  Copyright (c) 2014 Mitsuaki KAWAMURA
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+  The above copyright notice and this permission notice shall be included in
+  all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+  THE SOFTWARE.
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -77,11 +77,11 @@ int cy;                                //!<Starting point of drug
 GLfloat scl = 1.0;                     //!<Initial scale           
 GLfloat trans[3] = {0.0, 0.0, 0.0};    //!<Translation             
 GLfloat rot[3][3] = {{1.0, 0.0, 0.0},  //!<Rotation matrix         
-		     {0.0, 1.0, 0.0},   
-		     {0.0, 0.0, 1.0}};
+                     {0.0, 1.0, 0.0},   
+                     {0.0, 0.0, 1.0}};
 /*
   Colors
- */
+*/
 GLfloat   black[] = {0.0, 0.0, 0.0, 1.0}; //!< Black color code
 GLfloat   white[] = {1.0, 1.0, 1.0, 1.0}; //!< White color code
 GLfloat    cyan[] = {0.0, 1.0, 1.0, 1.0}; //!< Cyan color code
@@ -103,14 +103,14 @@ enum
   };
 /*!
   Input from Fermi surface file
- @param[in] fname  Input file name
+  @param[in] fname  Input file name
 */
 void read_file(char *fname){
   int ib, i, i1, i2, i3, ierr;
   FILE *fp;
   /*
     Open input file.
-   */
+  */
   if ((fp = fopen(fname, "r")) == NULL) {
     printf("file open error!!\n");
     exit(EXIT_FAILURE);
@@ -148,7 +148,7 @@ void read_file(char *fname){
   for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
   /*
     Reciplocal lattice vectors
-   */
+  */
   for (i = 0; i < 3; ++i) {
     ierr = fscanf(fp, "%e%e%e", &bvec[i][0], &bvec[i][1], &bvec[i][2]);
     if(ierr == 0) printf("error ! reading bvec");
@@ -165,9 +165,9 @@ void read_file(char *fname){
     for (i1 = 0; i1 < ng[0]; i1++){
       eig[ib][i1] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
       mat[ib][i1] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
-      for (i2 = 0; i2 < ng[1]; i2++){ 
-	eig[ib][i1][i2] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
-	mat[ib][i1][i2] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
+      for (i2 = 0; i2 < ng[1]; i2++){
+        eig[ib][i1][i2] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
+        mat[ib][i1][i2] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
       }
     }
   }
@@ -177,9 +177,9 @@ void read_file(char *fname){
   for (ib = 0; ib < nb; ++ib) {  
     for (i1 = 0; i1 < ng[0]; ++i1) {
       for (i2 = 0; i2 < ng[1]; ++i2) {
-	for (i3 = 0; i3 < ng[2]; ++i3) {
-	  ierr = fscanf(fp, "%e", &eig[ib][i1][i2][i3]);
-	}
+        for (i3 = 0; i3 < ng[2]; ++i3) {
+          ierr = fscanf(fp, "%e", &eig[ib][i1][i2][i3]);
+        }
       }
     }
   }
@@ -189,9 +189,9 @@ void read_file(char *fname){
   for (ib = 0; ib < nb; ++ib) {  
     for (i1 = 0; i1 < ng[0]; ++i1) {
       for (i2 = 0; i2 < ng[1]; ++i2) {
-	for (i3 = 0; i3 < ng[2]; ++i3) {
-	  ierr = fscanf(fp, "%e", &mat[ib][i1][i2][i3]);
-	}
+        for (i3 = 0; i3 < ng[2]; ++i3) {
+          ierr = fscanf(fp, "%e", &mat[ib][i1][i2][i3]);
+        }
       }
     }
   }
@@ -205,7 +205,7 @@ void init_corner(){
   int i, j;
   int corner1[16][6][4] = {
     /*  
-	[0] min = 0-7  
+        [0] min = 0-7  
     */
     {{0, 1, 3, 7}, 
      {0, 1, 5, 7},
@@ -215,7 +215,7 @@ void init_corner(){
      {0, 4, 6, 7}},
     /*
       [1] min = 1-6
-     */
+    */
     {{1, 0, 2, 6},
      {1, 0, 4, 6},
      {1, 3, 2, 6},
@@ -224,7 +224,7 @@ void init_corner(){
      {1, 5, 7, 6}},
     /*
       [2] min = 2-5
-     */
+    */
     {{2, 0, 1, 5},
      {2, 0, 4, 5},
      {2, 3, 1, 5},
@@ -233,7 +233,7 @@ void init_corner(){
      {2, 6, 7, 5}},
     /*
       [3] min = 3-4
-     */
+    */
     {{4, 0, 1, 3},
      {4, 0, 2, 3},
      {4, 5, 1, 3},
@@ -242,7 +242,7 @@ void init_corner(){
      {4, 6, 7, 3}},
     /*
       [4] min = 0-7, max = 3-4
-     */
+    */
     {{0, 4, 5, 6},
      {1, 2, 3, 7},
      {0, 7, 2, 6},
@@ -251,7 +251,7 @@ void init_corner(){
      {0, 7, 6, 5}},
     /*
       [5] min = 1-6, max = 3-4
-     */
+    */
     {{0, 4, 5, 6},
      {1, 2, 3, 7},
      {1, 6, 5, 7},
@@ -260,7 +260,7 @@ void init_corner(){
      {1, 6, 0, 5}},
     /*
       [6] min = 2-5, max = 3-4
-     */
+    */
     {{0, 4, 5, 6},
      {1, 2, 3, 7},
      {2, 5, 7, 6},
@@ -269,7 +269,7 @@ void init_corner(){
      {2, 5, 1, 7}},
     /*
       [7] min = 3-4, max = 0-7
-     */
+    */
     {{0, 1, 2, 4},
      {7, 3, 5, 6},
      {3, 4, 1, 5},
@@ -278,7 +278,7 @@ void init_corner(){
      {3, 4, 2, 1}},
     /*
       [8] min = 2-5, max = 0-7
-     */
+    */
     {{0, 1, 2, 4},
      {7, 3, 5, 6},
      {2, 5, 1, 3},
@@ -287,7 +287,7 @@ void init_corner(){
      {2, 5, 4, 1}},
     /*
       [9] min = 1-6, max = 0-7
-     */
+    */
     {{0, 1, 2, 4},
      {7, 3, 5, 6},
      {1, 6, 2, 3},
@@ -296,7 +296,7 @@ void init_corner(){
      {1, 6, 4, 2}},
     /*
       [10] min = 0-7, max = 1-6
-     */
+    */
     {{1, 0, 3, 5},
      {6, 2, 4, 7},
      {0, 7, 2, 3},
@@ -305,7 +305,7 @@ void init_corner(){
      {0, 7, 4, 2}},
     /*
       [11] min = 3-4, max = 1-6
-     */
+    */
     {{1, 0, 3, 5},
      {6, 2, 4, 7},
      {3, 4, 0, 2},
@@ -314,7 +314,7 @@ void init_corner(){
      {3, 4, 5, 0}},
     /*
       [12] min = 2-5, max = 1-6
-     */
+    */
     {{1, 0, 3, 5},
      {6, 2, 4, 7},
      {2, 5, 0, 3},
@@ -323,7 +323,7 @@ void init_corner(){
      {2, 5, 4, 0}},
     /*
       [13] min = 0-7, max = 2-5
-     */
+    */
     {{2, 0, 3, 6},
      {5, 1, 4, 7},
      {0, 7, 1, 3},
@@ -332,7 +332,7 @@ void init_corner(){
      {0, 7, 4, 1}},
     /*
       [14] min = 1-6, max = 2-5
-     */
+    */
     {{2, 0, 3, 6},
      {5, 1, 4, 7},
      {1, 6, 0, 3},
@@ -341,7 +341,7 @@ void init_corner(){
      {1, 6, 4, 0}},
     /*
       [15] min = 3-4, max = 2-5
-     */
+    */
     {{2, 0, 3, 6},
      {5, 1, 4, 7},
      {3, 4, 0, 1},
@@ -367,20 +367,20 @@ void bragg_vector(){
   for(i1 = -1; i1 <= 1; ++i1){
     for(i2 = -1; i2 <= 1; ++i2){
       for(i3 = -1; i3 <= 1; ++i3){
-	/**/	
-	if(i1 == 0 && i2 == 0 && i3 ==0){
-	}
-	else {
-	  for(i = 0; i < 3; ++i) bragg[ibr][i] = ((  GLfloat)i1 * bvec[0][i] 
-						  + (GLfloat)i2 * bvec[1][i] 
-						  + (GLfloat)i3 * bvec[2][i]) * 0.5;
-	  /**/
-	  brnrm[ibr] = bragg[ibr][0] * bragg[ibr][0]
-	    +          bragg[ibr][1] * bragg[ibr][1]
-	    +          bragg[ibr][2] * bragg[ibr][2];
-	  /**/
-	  ibr = ibr + 1;
-	}
+        /**/  
+        if(i1 == 0 && i2 == 0 && i3 ==0){
+        }
+        else {
+          for(i = 0; i < 3; ++i) bragg[ibr][i] = ((  GLfloat)i1 * bvec[0][i] 
+                                                  + (GLfloat)i2 * bvec[1][i] 
+                                                  + (GLfloat)i3 * bvec[2][i]) * 0.5;
+          /**/
+          brnrm[ibr] = bragg[ibr][0] * bragg[ibr][0]
+            +          bragg[ibr][1] * bragg[ibr][1]
+            +          bragg[ibr][2] * bragg[ibr][2];
+          /**/
+          ibr = ibr + 1;
+        }
       }
     }
   }
@@ -439,28 +439,28 @@ int bragg_vert(int ibr, int jbr, int nbr, GLfloat vert[3], GLfloat vert2[3]){
     rhs[2] = brnrm[kbr];
     /*
       if Bragg planes do not cross, roop next kbr
-     */
+    */
     det = solve3(bmat, rhs);
     if(fabsf(det) < thr) continue;
     /*
       if vert0 = vert1, roop next kbr
-     */
+    */
     prod = (vert2[0] - rhs[0]) * (vert2[0] - rhs[0])
       +    (vert2[1] - rhs[1]) * (vert2[1] - rhs[1])
       +    (vert2[2] - rhs[2]) * (vert2[2] - rhs[2]);
     if(prod < thr) continue;
     /*
       is corner really in 1st BZ ?
-     */
+    */
     i = 0;
     for(lbr = 0; lbr < 26; ++lbr){
       prod = bragg[lbr][0] * rhs[0]
-	+    bragg[lbr][1] * rhs[1]
-	+    bragg[lbr][2] * rhs[2];
+        +    bragg[lbr][1] * rhs[1]
+        +    bragg[lbr][2] * rhs[2];
       /**/
       if(prod > brnrm[lbr] + thr){
-	i = 1;
-	break;
+        i = 1;
+        break;
       }
     }
     if(i == 1) {
@@ -472,7 +472,7 @@ int bragg_vert(int ibr, int jbr, int nbr, GLfloat vert[3], GLfloat vert2[3]){
   }
   /*
     this line is not a BZ boundary
-   */
+  */
   return 0;
   /**/
 }/* bragg_vert */
@@ -499,11 +499,11 @@ void bz_lines(){
       if(lvert == 0) continue;
       /**/
       if(query == 1){
-	nbzl = nbzl + 1;
+        nbzl = nbzl + 1;
       }
       else{
-	for(i=0;i<2;++i) for(j=0;j<3;++j) bzl[ibzl][i][j] = vert[i][j];
-	ibzl = ibzl + 1;
+        for(i=0;i<2;++i) for(j=0;j<3;++j) bzl[ibzl][i][j] = vert[i][j];
+        ibzl = ibzl + 1;
       }
       /**/
     }
@@ -516,7 +516,7 @@ void bz_lines(){
     for(ibzl = 0; ibzl < nbzl; ++ibzl){
       bzl[ibzl] = (GLfloat**)malloc(2 * sizeof(GLfloat*));
       for(i = 0; i < 2; ++i){
-	bzl[ibzl][i] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        bzl[ibzl][i] = (GLfloat*)malloc(3 * sizeof(GLfloat));
       }
     }
     /**/
@@ -539,12 +539,12 @@ void max_and_min_bz(){
     matmin =   100000000.0000;
     for (i1 = 0; i1 < ng[0]; ++i1) {
       for (i2 = 0; i2 < ng[1]; ++i2) {
-	for (i3 = 0; i3 < ng[2]; ++i3) {
-	  if(eig[ib][i1][i2][i3] > eigmax) eigmax = eig[ib][i1][i2][i3];
-	  if(eig[ib][i1][i2][i3] < eigmin) eigmin = eig[ib][i1][i2][i3];
-	  if(mat[ib][i1][i2][i3] > matmax) matmax = mat[ib][i1][i2][i3];
-	  if(mat[ib][i1][i2][i3] < matmin) matmin = mat[ib][i1][i2][i3];
-	}
+        for (i3 = 0; i3 < ng[2]; ++i3) {
+          if(eig[ib][i1][i2][i3] > eigmax) eigmax = eig[ib][i1][i2][i3];
+          if(eig[ib][i1][i2][i3] < eigmin) eigmin = eig[ib][i1][i2][i3];
+          if(mat[ib][i1][i2][i3] > matmax) matmax = mat[ib][i1][i2][i3];
+          if(mat[ib][i1][i2][i3] < matmin) matmin = mat[ib][i1][i2][i3];
+        }
       }
     }
     printf("%d     %f     %f     %f     %f \n", ib + 1, eigmin, eigmax, matmin, matmax);
@@ -565,19 +565,19 @@ void eigsort(int n, GLfloat* eig2, GLfloat* mat2, GLfloat kvec2[][3]){
   for (i = 0; i < n - 1; ++i){
     for (j = i + 1; j < n; ++j){
       if(eig2[j] < eig2[i]) {
-	tmp = eig2[j];
-	eig2[j] = eig2[i];
-	eig2[i] = tmp;
-	/**/
-	tmp = mat2[j];
-	mat2[j] = mat2[i];
-	mat2[i] = tmp;
-	/**/
-	for (k = 0; k < 3; ++k){
-	  tmp = kvec2[j][k];
-	  kvec2[j][k] = kvec2[i][k];
-	  kvec2[i][k] = tmp;
-	}
+        tmp = eig2[j];
+        eig2[j] = eig2[i];
+        eig2[i] = tmp;
+        /**/
+        tmp = mat2[j];
+        mat2[j] = mat2[i];
+        mat2[i] = tmp;
+        /**/
+        for (k = 0; k < 3; ++k){
+          tmp = kvec2[j][k];
+          kvec2[j][k] = kvec2[i][k];
+          kvec2[i][k] = tmp;
+        }
       }
     }
   }
@@ -621,52 +621,52 @@ void triangle(int ib, int nbr, GLfloat mat1[3], GLfloat kvec1[3][3]){
     for(ibr = nbr; ibr < 26; ++ibr){
       /**/
       for(i = 0; i < 3; ++i){
-	prod[i] = bragg[ibr][0] * kvec1[i][0] 
-	  +       bragg[ibr][1] * kvec1[i][1] 
-	  +       bragg[ibr][2] * kvec1[i][2];
+        prod[i] = bragg[ibr][0] * kvec1[i][0] 
+          +       bragg[ibr][1] * kvec1[i][1] 
+          +       bragg[ibr][2] * kvec1[i][2];
       }
       eigsort(3, prod, mat1, kvec1);
       /**/    
       if(brnrm[ibr] + thr < prod[0]) {
-	return;
+        return;
       }
       else if(brnrm[ibr] + thr < prod[1]){
-	mat2[0] = mat1[0];
-	mat2[1] = mat1[0] * (brnrm[ibr] - prod[1]) / (prod[0] - prod[1])
-	  +       mat1[1] * (brnrm[ibr] - prod[0]) / (prod[1] - prod[0]);
-	mat2[2] = mat1[0] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
-	  +       mat1[2] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-	for(i=0;i<3;++i) kvec2[0][i] = kvec1[0][i];
-	for(i=0;i<3;++i) kvec2[1][i] = kvec1[0][i] * (brnrm[ibr] - prod[1]) / (prod[0] - prod[1])
-			   +           kvec1[1][i] * (brnrm[ibr] - prod[0]) / (prod[1] - prod[0]);
-	for(i=0;i<3;++i) kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
-			   +           kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-	triangle(ib, ibr + 1, mat2, kvec2);
-	return;
+        mat2[0] = mat1[0];
+        mat2[1] = mat1[0] * (brnrm[ibr] - prod[1]) / (prod[0] - prod[1])
+          +       mat1[1] * (brnrm[ibr] - prod[0]) / (prod[1] - prod[0]);
+        mat2[2] = mat1[0] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
+          +       mat1[2] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
+        for(i=0;i<3;++i) kvec2[0][i] = kvec1[0][i];
+        for(i=0;i<3;++i) kvec2[1][i] = kvec1[0][i] * (brnrm[ibr] - prod[1]) / (prod[0] - prod[1])
+                           +           kvec1[1][i] * (brnrm[ibr] - prod[0]) / (prod[1] - prod[0]);
+        for(i=0;i<3;++i) kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
+                           +           kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
+        triangle(ib, ibr + 1, mat2, kvec2);
+        return;
       }
       else if(brnrm[ibr] + thr < prod[2]){
-	mat2[0] = mat1[0];
-	mat2[1] = mat1[1];
-	mat2[2] = mat1[0] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
-	  +       mat1[2] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-	for(i=0;i<3;++i) kvec2[0][i] = kvec1[0][i];
-	for(i=0;i<3;++i) kvec2[1][i] = kvec1[1][i];
-	for(i=0;i<3;++i) kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
-			   +           kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-	triangle(ib, ibr + 1, mat2, kvec2);
-	/**/
-	mat2[0] = mat1[1] * (brnrm[ibr] - prod[2]) / (prod[1] - prod[2])
-	  +       mat1[2] * (brnrm[ibr] - prod[1]) / (prod[2] - prod[1]);
-	mat2[1] = mat1[1];
-	mat2[2] = mat1[0] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
-	  +       mat1[2] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-	for(i=0;i<3;++i) kvec2[0][i] = kvec1[1][i] * (brnrm[ibr] - prod[2]) / (prod[1] - prod[2])
-			   +           kvec1[2][i] * (brnrm[ibr] - prod[1]) / (prod[2] - prod[1]);
-	for(i=0;i<3;++i) kvec2[1][i] = kvec1[1][i];
-	for(i=0;i<3;++i) kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
-			   +           kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-	triangle(ib, ibr + 1, mat2, kvec2);
-	return;
+        mat2[0] = mat1[0];
+        mat2[1] = mat1[1];
+        mat2[2] = mat1[0] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
+          +       mat1[2] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
+        for(i=0;i<3;++i) kvec2[0][i] = kvec1[0][i];
+        for(i=0;i<3;++i) kvec2[1][i] = kvec1[1][i];
+        for(i=0;i<3;++i) kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
+                           +           kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
+        triangle(ib, ibr + 1, mat2, kvec2);
+        /**/
+        mat2[0] = mat1[1] * (brnrm[ibr] - prod[2]) / (prod[1] - prod[2])
+          +       mat1[2] * (brnrm[ibr] - prod[1]) / (prod[2] - prod[1]);
+        mat2[1] = mat1[1];
+        mat2[2] = mat1[0] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
+          +       mat1[2] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
+        for(i=0;i<3;++i) kvec2[0][i] = kvec1[1][i] * (brnrm[ibr] - prod[2]) / (prod[1] - prod[2])
+                           +           kvec1[2][i] * (brnrm[ibr] - prod[1]) / (prod[2] - prod[1]);
+        for(i=0;i<3;++i) kvec2[1][i] = kvec1[1][i];
+        for(i=0;i<3;++i) kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
+                           +           kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
+        triangle(ib, ibr + 1, mat2, kvec2);
+        return;
       }
       else{
       } /* brnrm[ibr] + thr < prod */
@@ -681,7 +681,7 @@ void triangle(int ib, int nbr, GLfloat mat1[3], GLfloat kvec1[3][3]){
     for(i = 0; i < 3; ++i){
       matp[ib][ntri[ib]][i] = mat1[i];
       for(j = 0; j < 3; ++j){
-	kvp[ib][ntri[ib]][i][j] = kvec1[i][j];
+        kvp[ib][ntri[ib]][i][j] = kvec1[i][j];
       }
     }
     ntri[ib] = ntri[ib] + 1;
@@ -703,27 +703,27 @@ void tetrahedron(int ib, GLfloat eig1[8], GLfloat mat1[8], GLfloat kvec1[8][3]){
   for (it = 0; it < 6; ++it) {
     /*
       Define corners of the tetrahedron
-     */
+    */
     for (i = 0; i < 4; ++i) { 
       eig2[ i] = eig1[corner[it][i]];
       mat2[ i] = mat1[corner[it][i]];
       /**/
       for(j = 0; j < 3; ++j) kvec2[i][j] = bvec[0][j] * kvec1[corner[it][i]][0]
-      				  +        bvec[1][j] * kvec1[corner[it][i]][1]
-      				  +        bvec[2][j] * kvec1[corner[it][i]][2];
+                               +        bvec[1][j] * kvec1[corner[it][i]][1]
+                               +        bvec[2][j] * kvec1[corner[it][i]][2];
     }
     /*
       Sort of eig1
-     */
+    */
     eigsort(4, eig2, mat2, kvec2);
     for (i = 0; i < 4; ++i){
       for (j = 0; j < 4; ++j){
-	a[i][j] = (0.00 - eig2[j]) / (eig2[i] - eig2[j]);
+        a[i][j] = (0.00 - eig2[j]) / (eig2[i] - eig2[j]);
       }
     }
     /*
       Draw triangle in each cases
-     */
+    */
     if(eig2[0] <= 0.00 && 0.00 < eig2[1]) {
       for(i = 0; i < 3; ++i) kvec3[0][i] = kvec2[0][i] * a[0][1] + kvec2[1][i] * a[1][0];
       for(i = 0; i < 3; ++i) kvec3[1][i] = kvec2[0][i] * a[0][2] + kvec2[2][i] * a[2][0];
@@ -778,90 +778,91 @@ void fermi_patch()
     for(i1 = 0; i1 < 3;++i1) start[i1] = 0;
   }
   /**/
-#pragma omp parallel default(none) \
-  shared(nb,ntri,start,ng,eig,mat,lshift) \
+#pragma omp parallel default(none)                              \
+  shared(nb,ntri,start,ng,eig,mat,lshift)                       \
   private(ib,j1,j2,j3,i1,i2,i3,ii1,ii2,ii3,kvec1,eig1,mat1,i,j)
   {
 #pragma omp for nowait
-  for (ib = 0; ib < nb; ++ib) {
-    ntri[ib] = 0; 
-    for (j1 = start[0]; j1 < ng[0]; ++j1) {
-      for (j2 = start[1]; j2 < ng[1]; ++j2) {
-	for (j3 = start[2]; j3 < ng[2]; ++j3) {
-	  /**/
-	  i1  = j1;
-	  i2  = j2;
-	  i3  = j3;
-	  ii1 = j1 + 1;
-	  ii2 = j2 + 1;
-	  ii3 = j3 + 1;
-	  /**/
-	  kvec1[0][0] = (GLfloat)i1  / (GLfloat)ng[0];
-	  kvec1[1][0] = (GLfloat)i1  / (GLfloat)ng[0];
-	  kvec1[2][0] = (GLfloat)i1  / (GLfloat)ng[0];
-	  kvec1[3][0] = (GLfloat)i1  / (GLfloat)ng[0];
-	  kvec1[4][0] = (GLfloat)ii1 / (GLfloat)ng[0];
-	  kvec1[5][0] = (GLfloat)ii1 / (GLfloat)ng[0];
-	  kvec1[6][0] = (GLfloat)ii1 / (GLfloat)ng[0];
-	  kvec1[7][0] = (GLfloat)ii1 / (GLfloat)ng[0];
-	  /**/	  
-	  kvec1[0][1] = (GLfloat)i2  / (GLfloat)ng[1];
-	  kvec1[1][1] = (GLfloat)i2  / (GLfloat)ng[1];
-	  kvec1[2][1] = (GLfloat)ii2 / (GLfloat)ng[1];
-	  kvec1[3][1] = (GLfloat)ii2 / (GLfloat)ng[1];
-	  kvec1[4][1] = (GLfloat)i2  / (GLfloat)ng[1];
-	  kvec1[5][1] = (GLfloat)i2  / (GLfloat)ng[1];
-	  kvec1[6][1] = (GLfloat)ii2 / (GLfloat)ng[1];
-	  kvec1[7][1] = (GLfloat)ii2 / (GLfloat)ng[1];
-	  /**/	  
-	  kvec1[0][2] = (GLfloat)i3  / (GLfloat)ng[2];
-	  kvec1[1][2] = (GLfloat)ii3 / (GLfloat)ng[2];
-	  kvec1[2][2] = (GLfloat)i3  / (GLfloat)ng[2];
-	  kvec1[3][2] = (GLfloat)ii3 / (GLfloat)ng[2];
-	  kvec1[4][2] = (GLfloat)i3  / (GLfloat)ng[2];
-	  kvec1[5][2] = (GLfloat)ii3 / (GLfloat)ng[2];
-	  kvec1[6][2] = (GLfloat)i3  / (GLfloat)ng[2];
-	  kvec1[7][2] = (GLfloat)ii3 / (GLfloat)ng[2];
-	  /**/
-	  if(lshift == 1){
-	    for(i=0;i<8;i++)for(j=0;j<3;j++) kvec1[i][j] = kvec1[i][j] + 0.50 / (GLfloat)ng[j];
-	  }
-	  /**/
-	  if(i1  < 0) i1  = i1  + ng[0];
-	  if(i2  < 0) i2  = i2  + ng[1];
-	  if(i3  < 0) i3  = i3  + ng[2];
-	  if(ii1 < 0) ii1 = ii1 + ng[0];
-	  if(ii2 < 0) ii2 = ii2 + ng[1];
-	  if(ii3 < 0) ii3 = ii3 + ng[2];
-	  /**/
-	  if(ii1 >= ng[0]) ii1 = 0;
-	  if(ii2 >= ng[1]) ii2 = 0;
-	  if(ii3 >= ng[2]) ii3 = 0;
-	  /**/	  
-	  eig1[0] = eig[ib][ i1][ i2][ i3];
-	  eig1[1] = eig[ib][ i1][ i2][ii3];
-	  eig1[2] = eig[ib][ i1][ii2][ i3];
-	  eig1[3] = eig[ib][ i1][ii2][ii3];
-	  eig1[4] = eig[ib][ii1][ i2][ i3];
-	  eig1[5] = eig[ib][ii1][ i2][ii3];
-	  eig1[6] = eig[ib][ii1][ii2][ i3];
-	  eig1[7] = eig[ib][ii1][ii2][ii3];
-	  /**/
-	  mat1[0] = mat[ib][ i1][ i2][ i3];
-	  mat1[1] = mat[ib][ i1][ i2][ii3];
-	  mat1[2] = mat[ib][ i1][ii2][ i3];
-	  mat1[3] = mat[ib][ i1][ii2][ii3];
-	  mat1[4] = mat[ib][ii1][ i2][ i3];
-	  mat1[5] = mat[ib][ii1][ i2][ii3];
-	  mat1[6] = mat[ib][ii1][ii2][ i3];
-	  mat1[7] = mat[ib][ii1][ii2][ii3];
-	  /**/	  
-	  tetrahedron(ib, eig1, mat1, kvec1);
-	}
+    for (ib = 0; ib < nb; ++ib) {
+      ntri[ib] = 0;
+      for (j1 = start[0]; j1 < ng[0]; ++j1) {
+        for (j2 = start[1]; j2 < ng[1]; ++j2) {
+          for (j3 = start[2]; j3 < ng[2]; ++j3) {
+            /**/
+            i1 = j1;
+            i2 = j2;
+            i3 = j3;
+            ii1 = j1 + 1;
+            ii2 = j2 + 1;
+            ii3 = j3 + 1;
+            /**/
+            kvec1[0][0] = (GLfloat)i1 / (GLfloat)ng[0];
+            kvec1[1][0] = (GLfloat)i1 / (GLfloat)ng[0];
+            kvec1[2][0] = (GLfloat)i1 / (GLfloat)ng[0];
+            kvec1[3][0] = (GLfloat)i1 / (GLfloat)ng[0];
+            kvec1[4][0] = (GLfloat)ii1 / (GLfloat)ng[0];
+            kvec1[5][0] = (GLfloat)ii1 / (GLfloat)ng[0];
+            kvec1[6][0] = (GLfloat)ii1 / (GLfloat)ng[0];
+            kvec1[7][0] = (GLfloat)ii1 / (GLfloat)ng[0];
+            /**/
+            kvec1[0][1] = (GLfloat)i2 / (GLfloat)ng[1];
+            kvec1[1][1] = (GLfloat)i2 / (GLfloat)ng[1];
+            kvec1[2][1] = (GLfloat)ii2 / (GLfloat)ng[1];
+            kvec1[3][1] = (GLfloat)ii2 / (GLfloat)ng[1];
+            kvec1[4][1] = (GLfloat)i2 / (GLfloat)ng[1];
+            kvec1[5][1] = (GLfloat)i2 / (GLfloat)ng[1];
+            kvec1[6][1] = (GLfloat)ii2 / (GLfloat)ng[1];
+            kvec1[7][1] = (GLfloat)ii2 / (GLfloat)ng[1];
+            /**/
+            kvec1[0][2] = (GLfloat)i3 / (GLfloat)ng[2];
+            kvec1[1][2] = (GLfloat)ii3 / (GLfloat)ng[2];
+            kvec1[2][2] = (GLfloat)i3 / (GLfloat)ng[2];
+            kvec1[3][2] = (GLfloat)ii3 / (GLfloat)ng[2];
+            kvec1[4][2] = (GLfloat)i3 / (GLfloat)ng[2];
+            kvec1[5][2] = (GLfloat)ii3 / (GLfloat)ng[2];
+            kvec1[6][2] = (GLfloat)i3 / (GLfloat)ng[2];
+            kvec1[7][2] = (GLfloat)ii3 / (GLfloat)ng[2];
+            /**/
+            if (lshift == 1){
+              for (i = 0; i < 8; i++)for (j = 0; j < 3; j++) 
+                                       kvec1[i][j] = kvec1[i][j] + 0.50 / (GLfloat)ng[j];
+            }
+            /**/
+            if (i1 < 0) i1 = i1 + ng[0];
+            if (i2 < 0) i2 = i2 + ng[1];
+            if (i3 < 0) i3 = i3 + ng[2];
+            if (ii1 < 0) ii1 = ii1 + ng[0];
+            if (ii2 < 0) ii2 = ii2 + ng[1];
+            if (ii3 < 0) ii3 = ii3 + ng[2];
+            /**/
+            if (ii1 >= ng[0]) ii1 = 0;
+            if (ii2 >= ng[1]) ii2 = 0;
+            if (ii3 >= ng[2]) ii3 = 0;
+            /**/
+            eig1[0] = eig[ib][i1][i2][i3];
+            eig1[1] = eig[ib][i1][i2][ii3];
+            eig1[2] = eig[ib][i1][ii2][i3];
+            eig1[3] = eig[ib][i1][ii2][ii3];
+            eig1[4] = eig[ib][ii1][i2][i3];
+            eig1[5] = eig[ib][ii1][i2][ii3];
+            eig1[6] = eig[ib][ii1][ii2][i3];
+            eig1[7] = eig[ib][ii1][ii2][ii3];
+            /**/
+            mat1[0] = mat[ib][i1][i2][i3];
+            mat1[1] = mat[ib][i1][i2][ii3];
+            mat1[2] = mat[ib][i1][ii2][i3];
+            mat1[3] = mat[ib][i1][ii2][ii3];
+            mat1[4] = mat[ib][ii1][i2][i3];
+            mat1[5] = mat[ib][ii1][i2][ii3];
+            mat1[6] = mat[ib][ii1][ii2][i3];
+            mat1[7] = mat[ib][ii1][ii2][ii3];
+            /**/
+            tetrahedron(ib, eig1, mat1, kvec1);
+          }
+        }
       }
     }
-  }
- } /* End of parallel region */
+  } /* End of parallel region */
   /**/
   if(query == 1){
     printf("band   # of patchs \n");
@@ -882,14 +883,14 @@ void fermi_patch()
       clr[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
       kvp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
       for (i1 = 0; i1 < ntri[ib]; ++i1){
-	nmlp[ib][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-	matp[ib][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-	clr[ib][i1] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
-	kvp[ib][i1] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
-	for (i2 = 0; i2 < 3; ++i2){
-	  kvp[ib][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-	  clr[ib][i1][i2] = (GLfloat*)malloc(4 * sizeof(GLfloat));
-	}
+        nmlp[ib][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        matp[ib][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        clr[ib][i1] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
+        kvp[ib][i1] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
+        for (i2 = 0; i2 < 3; ++i2){
+          kvp[ib][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+          clr[ib][i1][i2] = (GLfloat*)malloc(4 * sizeof(GLfloat));
+        }
       }
     }
     /**/
@@ -909,8 +910,8 @@ void max_and_min(){
   for(ib = 0; ib < nb; ib++){
     for(itri = 0; itri < ntri[ib]; ++itri){
       for(i = 0; i < 3; ++i){
-	if(matp[ib][itri][i] > matmax) matmax = matp[ib][itri][i];
-	if(matp[ib][itri][i] < matmin) matmin = matp[ib][itri][i];
+        if(matp[ib][itri][i] > matmax) matmax = matp[ib][itri][i];
+        if(matp[ib][itri][i] < matmin) matmin = matp[ib][itri][i];
       }
     }
   }
@@ -930,63 +931,63 @@ void max_and_min(){
   if(fcscl == 1 || fcscl == 2){
     for(ib = 0; ib < nb; ib++){
       for(itri = 0; itri < ntri[ib]; ++itri){
-	for (i = 0; i < 3; ++i){
-	  /**/
-	  mat2 = (matp[ib][itri][i] - matmin) / (matmax - matmin);
-	  mat2 = mat2 * 4.0;
-	  /**/
-	  if(mat2 <= 1.0) {
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0 - mat2);
-	  }
-	  else if(mat2 <= 2.0){
-	    mat2 = mat2 - 1.0;
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0 - mat2);
-	  }
-	  else if(mat2 <= 3.0){
-	    mat2 = mat2 - 2.0;
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0 - mat2);
-	  }
-	  else{
-	    mat2 = mat2 - 3.0;
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0 - mat2);
-	  }
-	}
+        for (i = 0; i < 3; ++i){
+          /**/
+          mat2 = (matp[ib][itri][i] - matmin) / (matmax - matmin);
+          mat2 = mat2 * 4.0;
+          /**/
+          if(mat2 <= 1.0) {
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0 - mat2);
+          }
+          else if(mat2 <= 2.0){
+            mat2 = mat2 - 1.0;
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0 - mat2);
+          }
+          else if(mat2 <= 3.0){
+            mat2 = mat2 - 2.0;
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0 - mat2);
+          }
+          else{
+            mat2 = mat2 - 3.0;
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0 - mat2);
+          }
+        }
       }
     }
   }
   else if(fcscl == 4){
     for(ib = 0; ib < nb; ib++){
       for(itri = 0; itri < ntri[ib]; ++itri){
-	for (i = 0; i < 3; ++i){
-	  /**/
-	  mat2 = matp[ib][itri][i] / 6.283185307;
-	  mat2 = mat2 - floorf(mat2);
-	  mat2 = mat2 * 6.0;
-	  /**/
-	  if(mat2 <= 1.0) {
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = yellow[j] * mat2 + red[j] * (1.0 - mat2);
-	  }
-	  else if(mat2 <= 2.0){
-	    mat2 = mat2 - 1.0;
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = green[j] * mat2 + yellow[j] * (1.0 - mat2);
-	  }
-	  else if(mat2 <= 3.0){
-	    mat2 = mat2 - 2.0;
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = cyan[j] * mat2 + green[j] * (1.0 - mat2);
-	  }
-	  else if(mat2 <= 4.0){
-	    mat2 = mat2 - 3.0;
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = blue[j] * mat2 + cyan[j] * (1.0 - mat2);
-	  }
-	  else if(mat2 <= 5.0){
-	    mat2 = mat2 - 4.0;
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = magenta[j] * mat2 + blue[j] * (1.0 - mat2);
-	  }
-	  else{
-	    mat2 = mat2 - 5.0;
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = red[j] * mat2 + magenta[j] * (1.0 - mat2);
-	  }
-	}
+        for (i = 0; i < 3; ++i){
+          /**/
+          mat2 = matp[ib][itri][i] / 6.283185307;
+          mat2 = mat2 - floorf(mat2);
+          mat2 = mat2 * 6.0;
+          /**/
+          if(mat2 <= 1.0) {
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = yellow[j] * mat2 + red[j] * (1.0 - mat2);
+          }
+          else if(mat2 <= 2.0){
+            mat2 = mat2 - 1.0;
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = green[j] * mat2 + yellow[j] * (1.0 - mat2);
+          }
+          else if(mat2 <= 3.0){
+            mat2 = mat2 - 2.0;
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = cyan[j] * mat2 + green[j] * (1.0 - mat2);
+          }
+          else if(mat2 <= 4.0){
+            mat2 = mat2 - 3.0;
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = blue[j] * mat2 + cyan[j] * (1.0 - mat2);
+          }
+          else if(mat2 <= 5.0){
+            mat2 = mat2 - 4.0;
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = magenta[j] * mat2 + blue[j] * (1.0 - mat2);
+          }
+          else{
+            mat2 = mat2 - 5.0;
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = red[j] * mat2 + magenta[j] * (1.0 - mat2);
+          }
+        }
       }
     }
   }
@@ -997,35 +998,35 @@ void max_and_min(){
       mat2 = mat2 * 4.0;
       /**/
       if(mat2 <= 1.0) {
-	for(itri = 0; itri < ntri[ib]; ++itri){
-	  for (i = 0; i < 3; ++i){
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0 - mat2);
-	  }
-	}
+        for(itri = 0; itri < ntri[ib]; ++itri){
+          for (i = 0; i < 3; ++i){
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0 - mat2);
+          }
+        }
       }
       else if(mat2 <= 2.0){
-	mat2 = mat2 - 1.0;
-	for(itri = 0; itri < ntri[ib]; ++itri){
-	  for (i = 0; i < 3; ++i){
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0 - mat2);
-	  }
-	}
+        mat2 = mat2 - 1.0;
+        for(itri = 0; itri < ntri[ib]; ++itri){
+          for (i = 0; i < 3; ++i){
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0 - mat2);
+          }
+        }
       }
       else if(mat2 <= 3.0){
-	mat2 = mat2 - 2.0;
-	for(itri = 0; itri < ntri[ib]; ++itri){
-	  for (i = 0; i < 3; ++i){
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0 - mat2);
-	  }
-	}
+        mat2 = mat2 - 2.0;
+        for(itri = 0; itri < ntri[ib]; ++itri){
+          for (i = 0; i < 3; ++i){
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0 - mat2);
+          }
+        }
       }
       else{
-	mat2 = mat2 - 3.0;
-	for(itri = 0; itri < ntri[ib]; ++itri){
-	  for (i = 0; i < 3; ++i){
-	    for(j=0;j<4;++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0 - mat2);
-	  }
-	}
+        mat2 = mat2 - 3.0;
+        for(itri = 0; itri < ntri[ib]; ++itri){
+          for (i = 0; i < 3; ++i){
+            for(j=0;j<4;++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0 - mat2);
+          }
+        }
       }
     }
   }
@@ -1039,39 +1040,39 @@ void calc_nodeline(){
   GLfloat mprod[2];
   /*
     Query
-   */
-#pragma omp parallel default(none)	 \
-  shared(nb,nnl,matp,ntri)			 \
+  */
+#pragma omp parallel default(none)              \
+  shared(nb,nnl,matp,ntri)                      \
   private(ib,itri,mprod)
   {
 #pragma omp for
     for(ib = 0; ib < nb; ib++){
       nnl[ib] = 0;
       for(itri = 0; itri < ntri[ib]; ++itri){
-	/**/
-	mprod[0] = matp[ib][itri][0] * matp[ib][itri][1];
-	mprod[1] = matp[ib][itri][1] * matp[ib][itri][2];
-	/**/
-	if(     fabsf(matp[ib][itri][0]) < 0.00001 &&  fabsf(matp[ib][itri][1]) < 0.00001){
-	  nnl[ib] = nnl[ib] + 1;
-	}
-	else if(fabsf(matp[ib][itri][0]) < 0.00001 &&  fabsf(matp[ib][itri][2]) < 0.00001){
-	  nnl[ib] = nnl[ib] + 1;
-	}
-	else if(fabsf(matp[ib][itri][1]) < 0.00001 &&  fabsf(matp[ib][itri][2]) < 0.00001){
-	  nnl[ib] = nnl[ib] + 1;
-	}
-	else if(mprod[0] < 0.0){
-	  if(mprod[1] < 0.0){
-	    nnl[ib] = nnl[ib] + 1;
-	  }
-	  else{
-	    nnl[ib] = nnl[ib] + 1;
-	  }
-	}
-	else if(mprod[1] < 0.0){
-	  nnl[ib] = nnl[ib] + 1;
-	}
+        /**/
+        mprod[0] = matp[ib][itri][0] * matp[ib][itri][1];
+        mprod[1] = matp[ib][itri][1] * matp[ib][itri][2];
+        /**/
+        if(     fabsf(matp[ib][itri][0]) < 0.00001 &&  fabsf(matp[ib][itri][1]) < 0.00001){
+          nnl[ib] = nnl[ib] + 1;
+        }
+        else if(fabsf(matp[ib][itri][0]) < 0.00001 &&  fabsf(matp[ib][itri][2]) < 0.00001){
+          nnl[ib] = nnl[ib] + 1;
+        }
+        else if(fabsf(matp[ib][itri][1]) < 0.00001 &&  fabsf(matp[ib][itri][2]) < 0.00001){
+          nnl[ib] = nnl[ib] + 1;
+        }
+        else if(mprod[0] < 0.0){
+          if(mprod[1] < 0.0){
+            nnl[ib] = nnl[ib] + 1;
+          }
+          else{
+            nnl[ib] = nnl[ib] + 1;
+          }
+        }
+        else if(mprod[1] < 0.0){
+          nnl[ib] = nnl[ib] + 1;
+        }
       }
     }
   } /* End of parallel region */
@@ -1090,67 +1091,67 @@ void calc_nodeline(){
     for (i = 0; i < nnl[ib]; ++i){
       kvnl[ib][i] = (GLfloat**)malloc(2 * sizeof(GLfloat*));
       for (j = 0; j < 2; ++j){
-	kvnl[ib][i][j] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        kvnl[ib][i][j] = (GLfloat*)malloc(3 * sizeof(GLfloat));
       }
     }
   }
   /**/
-#pragma omp parallel default(none)		\
-  shared(nb,nnl,matp,kvnl,kvp,ntri)			\
+#pragma omp parallel default(none)              \
+  shared(nb,nnl,matp,kvnl,kvp,ntri)             \
   private(ib,itri,mprod,i)
   {
 #pragma omp for
     for(ib = 0; ib < nb; ib++){
       nnl[ib] = 0;
       for(itri = 0; itri < ntri[ib]; ++itri){
-	/**/
-	mprod[0] = matp[ib][itri][0] * matp[ib][itri][1];
-	mprod[1] = matp[ib][itri][1] * matp[ib][itri][2];
-	/**/
-	if(     fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][1]) < 0.00001){
-	  for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = kvp[ib][itri][0][i];
-	  for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = kvp[ib][itri][1][i];
-	  nnl[ib] = nnl[ib] + 1;
-	}
-	else if(fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001){
-	  for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = kvp[ib][itri][0][i];
-	  for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = kvp[ib][itri][2][i];
-	  nnl[ib] = nnl[ib] + 1;
-	}
-	else if(fabsf(matp[ib][itri][1]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001){
-	  for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = kvp[ib][itri][1][i];
-	  for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = kvp[ib][itri][2][i];
-	  nnl[ib] = nnl[ib] + 1;
-	}
-	else if(mprod[0] < 0.0){
-	  if(mprod[1] < 0.0){
-	    for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = 1.0 / (matp[ib][itri][0] - matp[ib][itri][1])
-			      * ((  0.0 - matp[ib][itri][1]) * kvp[ib][itri][0][i]
-				 + (matp[ib][itri][0] - 0.0) * kvp[ib][itri][1][i]);
-	    for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = 1.0 / (matp[ib][itri][1] - matp[ib][itri][2])
-			      * ((  0.0 - matp[ib][itri][2]) * kvp[ib][itri][1][i]
-				 + (matp[ib][itri][1] - 0.0) * kvp[ib][itri][2][i]);
-	    nnl[ib] = nnl[ib] + 1;
-	  }
-	  else{
-	    for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = 1.0 / (matp[ib][itri][0] - matp[ib][itri][1])
-			      * ((  0.0 - matp[ib][itri][1]) * kvp[ib][itri][0][i]
-				 + (matp[ib][itri][0] - 0.0) * kvp[ib][itri][1][i]);
-	    for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = 1.0 / (matp[ib][itri][0] - matp[ib][itri][2])
-			      * ((  0.0 - matp[ib][itri][2]) * kvp[ib][itri][0][i]
-				 + (matp[ib][itri][0] - 0.0) * kvp[ib][itri][2][i]);
-	    nnl[ib] = nnl[ib] + 1;
-	  }
-	}
-	else if(mprod[1] < 0.0){
-	  for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = 1.0 / (matp[ib][itri][0] - matp[ib][itri][2])
-			    * ((  0.0 - matp[ib][itri][2]) * kvp[ib][itri][0][i]
-			       + (matp[ib][itri][0] - 0.0) * kvp[ib][itri][2][i]);
-	  for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = 1.0 / (matp[ib][itri][1] - matp[ib][itri][2])
-			    * ((  0.0 - matp[ib][itri][2]) * kvp[ib][itri][1][i]
-			       + (matp[ib][itri][1] - 0.0) * kvp[ib][itri][2][i]);
-	  nnl[ib] = nnl[ib] + 1;
-	}
+        /**/
+        mprod[0] = matp[ib][itri][0] * matp[ib][itri][1];
+        mprod[1] = matp[ib][itri][1] * matp[ib][itri][2];
+        /**/
+        if(     fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][1]) < 0.00001){
+          for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = kvp[ib][itri][0][i];
+          for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = kvp[ib][itri][1][i];
+          nnl[ib] = nnl[ib] + 1;
+        }
+        else if(fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001){
+          for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = kvp[ib][itri][0][i];
+          for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = kvp[ib][itri][2][i];
+          nnl[ib] = nnl[ib] + 1;
+        }
+        else if(fabsf(matp[ib][itri][1]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001){
+          for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = kvp[ib][itri][1][i];
+          for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = kvp[ib][itri][2][i];
+          nnl[ib] = nnl[ib] + 1;
+        }
+        else if(mprod[0] < 0.0){
+          if(mprod[1] < 0.0){
+            for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = 1.0 / (matp[ib][itri][0] - matp[ib][itri][1])
+                              * ((  0.0 - matp[ib][itri][1]) * kvp[ib][itri][0][i]
+                                 + (matp[ib][itri][0] - 0.0) * kvp[ib][itri][1][i]);
+            for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = 1.0 / (matp[ib][itri][1] - matp[ib][itri][2])
+                              * ((  0.0 - matp[ib][itri][2]) * kvp[ib][itri][1][i]
+                                 + (matp[ib][itri][1] - 0.0) * kvp[ib][itri][2][i]);
+            nnl[ib] = nnl[ib] + 1;
+          }
+          else{
+            for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = 1.0 / (matp[ib][itri][0] - matp[ib][itri][1])
+                              * ((  0.0 - matp[ib][itri][1]) * kvp[ib][itri][0][i]
+                                 + (matp[ib][itri][0] - 0.0) * kvp[ib][itri][1][i]);
+            for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = 1.0 / (matp[ib][itri][0] - matp[ib][itri][2])
+                              * ((  0.0 - matp[ib][itri][2]) * kvp[ib][itri][0][i]
+                                 + (matp[ib][itri][0] - 0.0) * kvp[ib][itri][2][i]);
+            nnl[ib] = nnl[ib] + 1;
+          }
+        }
+        else if(mprod[1] < 0.0){
+          for(i=0;i<3;++i)kvnl[ib][nnl[ib]][0][i] = 1.0 / (matp[ib][itri][0] - matp[ib][itri][2])
+                            * ((  0.0 - matp[ib][itri][2]) * kvp[ib][itri][0][i]
+                               + (matp[ib][itri][0] - 0.0) * kvp[ib][itri][2][i]);
+          for(i=0;i<3;++i)kvnl[ib][nnl[ib]][1][i] = 1.0 / (matp[ib][itri][1] - matp[ib][itri][2])
+                            * ((  0.0 - matp[ib][itri][2]) * kvp[ib][itri][1][i]
+                               + (matp[ib][itri][1] - 0.0) * kvp[ib][itri][2][i]);
+          nnl[ib] = nnl[ib] + 1;
+        }
       }
     }
   } /* End of parallel region */
@@ -1164,42 +1165,42 @@ void draw_fermi(){
   GLfloat vect[3];
   /*
     Triagle patchs
-   */
+  */
   for(ib = 0;ib < nb; ib++){
     /**/
     if(draw_band[ib] == 1){
-#pragma omp parallel default(none)	 \
-  shared(ib,ntri,rot,trans,nmlp,kvp,clr) \
+#pragma omp parallel default(none)              \
+  shared(ib,ntri,rot,trans,nmlp,kvp,clr)        \
   private(itri,i,j,vect)
       glBegin(GL_TRIANGLES);
       {
 #pragma omp for
-	for(itri = 0; itri < ntri[ib]; ++itri){
-	  /**/	
-	  for(j = 0; j < 3; ++j) vect[j] = rot[j][0] * nmlp[ib][itri][0]
-				   +       rot[j][1] * nmlp[ib][itri][1]
-				   +       rot[j][2] * nmlp[ib][itri][2];
-	  glNormal3fv(vect);
-	  /**/	
-	  for (i = 0; i < 3; ++i){
-	    /**/	  
-	    for(j = 0; j < 3; ++j) vect[j] = rot[j][0] * kvp[ib][itri][i][0]
-				     +       rot[j][1] * kvp[ib][itri][i][1]
-				     +       rot[j][2] * kvp[ib][itri][i][2]
-				     + trans[j];
-	    /**/	
-	    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, clr[ib][itri][i]);
-	    glVertex3fv(vect);
-	  }
-	}
-	glEnd();
+        for(itri = 0; itri < ntri[ib]; ++itri){
+          /**/  
+          for(j = 0; j < 3; ++j) vect[j] = rot[j][0] * nmlp[ib][itri][0]
+                                   +       rot[j][1] * nmlp[ib][itri][1]
+                                   +       rot[j][2] * nmlp[ib][itri][2];
+          glNormal3fv(vect);
+          /**/  
+          for (i = 0; i < 3; ++i){
+            /**/    
+            for(j = 0; j < 3; ++j) vect[j] = rot[j][0] * kvp[ib][itri][i][0]
+                                     +       rot[j][1] * kvp[ib][itri][i][1]
+                                     +       rot[j][2] * kvp[ib][itri][i][2]
+                                     + trans[j];
+            /**/  
+            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, clr[ib][itri][i]);
+            glVertex3fv(vect);
+          }
+        }
+        glEnd();
       } /* End of parallel region */
     }
     /**/
   }
   /*
     Nodeline
-   */
+  */
   if(nodeline == 1){
     glLineWidth(10.0);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
@@ -1208,17 +1209,17 @@ void draw_fermi(){
     for(ib = 0;ib < nb; ib++){
       /**/
       if(draw_band[ib] == 1){
-	for(itri = 0; itri < nnl[ib]; ++itri){
-	  for (i = 0; i < 2; ++i){
-	    /**/	  
-	    for(j = 0; j < 3; ++j) vect[j] = rot[j][0] * kvnl[ib][itri][i][0]
-				     +       rot[j][1] * kvnl[ib][itri][i][1]
-				     +       rot[j][2] * kvnl[ib][itri][i][2]
-				     + trans[j] + 0.001;
-	    /**/	
-	    glVertex3fv(vect);
-	  }
-	}
+        for(itri = 0; itri < nnl[ib]; ++itri){
+          for (i = 0; i < 2; ++i){
+            /**/    
+            for(j = 0; j < 3; ++j) vect[j] = rot[j][0] * kvnl[ib][itri][i][0]
+                                     +       rot[j][1] * kvnl[ib][itri][i][1]
+                                     +       rot[j][2] * kvnl[ib][itri][i][2]
+                                     + trans[j] + 0.001;
+            /**/  
+            glVertex3fv(vect);
+          }
+        }
       }
       /**/
     }
@@ -1250,11 +1251,11 @@ void draw_bz_lines(){
     glBegin(GL_LINES);
     for(ibzl = 0; ibzl < nbzl; ++ibzl){
       for(i = 0; i< 2; ++i){
-	for(j = 0; j < 3; ++j) bzl2[j] = rot[j][0] * bzl[ibzl][i][0]
-				 +       rot[j][1] * bzl[ibzl][i][1]
-				 +       rot[j][2] * bzl[ibzl][i][2]
-				 + trans[j];
-	glVertex3fv(bzl2);
+        for(j = 0; j < 3; ++j) bzl2[j] = rot[j][0] * bzl[ibzl][i][0]
+                                 +       rot[j][1] * bzl[ibzl][i][1]
+                                 +       rot[j][2] * bzl[ibzl][i][2]
+                                 + trans[j];
+        glVertex3fv(bzl2);
       }
     }
     glEnd();
@@ -1264,9 +1265,9 @@ void draw_bz_lines(){
     /**/    
     for(i = 0; i < 3; ++i){
       for(j = 0; j < 3; ++j){
-	bvec2[i][j] = rot[j][0] * bvec[i][0]
-	  +           rot[j][1] * bvec[i][1]
-	  +           rot[j][2] * bvec[i][2];
+        bvec2[i][j] = rot[j][0] * bvec[i][0]
+          +           rot[j][1] * bvec[i][1]
+          +           rot[j][2] * bvec[i][2];
       }
     }
     /**/
@@ -1354,52 +1355,52 @@ void draw_colorbar()
       mat2 = (GLfloat)i / 60.0 * 6.0;
       /**/
       if(mat2 <= 1.0) {
-	for(j=0;j<4;++j) barcolor[j] = yellow[j] * mat2 + red[j] * (1.0 - mat2);
+        for(j=0;j<4;++j) barcolor[j] = yellow[j] * mat2 + red[j] * (1.0 - mat2);
       }
       else if(mat2 <= 2.0){
-	mat2 = mat2 - 1.0;
-	for(j=0;j<4;++j) barcolor[j] = green[j] * mat2 + yellow[j] * (1.0 - mat2);
+        mat2 = mat2 - 1.0;
+        for(j=0;j<4;++j) barcolor[j] = green[j] * mat2 + yellow[j] * (1.0 - mat2);
       }
       else if(mat2 <= 3.0){
-	mat2 = mat2 - 2.0;
-	for(j=0;j<4;++j) barcolor[j] = cyan[j] * mat2 + green[j] * (1.0 - mat2);
+        mat2 = mat2 - 2.0;
+        for(j=0;j<4;++j) barcolor[j] = cyan[j] * mat2 + green[j] * (1.0 - mat2);
       }
       else if(mat2 <= 4.0){
-	mat2 = mat2 - 3.0;
-	for(j=0;j<4;++j) barcolor[j] = blue[j] * mat2 + cyan[j] * (1.0 - mat2);
+        mat2 = mat2 - 3.0;
+        for(j=0;j<4;++j) barcolor[j] = blue[j] * mat2 + cyan[j] * (1.0 - mat2);
       }
       else if(mat2 <= 5.0){
-	mat2 = mat2 - 4.0;
-	for(j=0;j<4;++j) barcolor[j] = magenta[j] * mat2 + blue[j] * (1.0 - mat2);
+        mat2 = mat2 - 4.0;
+        for(j=0;j<4;++j) barcolor[j] = magenta[j] * mat2 + blue[j] * (1.0 - mat2);
       }
       else{
-	mat2 = mat2 - 5.0;
-	for(j=0;j<4;++j) barcolor[j] = red[j] * mat2 + magenta[j] * (1.0 - mat2);
+        mat2 = mat2 - 5.0;
+        for(j=0;j<4;++j) barcolor[j] = red[j] * mat2 + magenta[j] * (1.0 - mat2);
       }
       /**/
-    glBegin(GL_TRIANGLES);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, barcolor);
-    glNormal3fv(colorbar[0]);
-    glVertex3f(0.15 * cos((GLfloat)(i+1) / 60.0 * 6.283185307),
-    	       0.15 * sin((GLfloat)(i+1) / 60.0 * 6.283185307) - 1.0, 0.0);
-    glVertex3f(0.15 * cos((GLfloat)i / 60.0 * 6.283185307),
-    	       0.15 * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
-    glVertex3f(0.2  * cos((GLfloat)i / 60.0 * 6.283185307),
-    	       0.2  * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
-    glVertex3f(0.2  * cos((GLfloat)i / 60.0 * 6.283185307),
-    	       0.2  * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
-    glVertex3f(0.2 * cos((GLfloat)(i+1) / 60.0 * 6.283185307),
-    	       0.2 * sin((GLfloat)(i+1) / 60.0 * 6.283185307) - 1.0, 0.0);
-    glVertex3f(0.15 * cos((GLfloat)(i+1) / 60.0 * 6.283185307),
-    	       0.15 * sin((GLfloat)(i+1) / 60.0 * 6.283185307) - 1.0, 0.0);
-    glEnd();
+      glBegin(GL_TRIANGLES);
+      glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, barcolor);
+      glNormal3fv(colorbar[0]);
+      glVertex3f(0.15 * cos((GLfloat)(i+1) / 60.0 * 6.283185307),
+                 0.15 * sin((GLfloat)(i+1) / 60.0 * 6.283185307) - 1.0, 0.0);
+      glVertex3f(0.15 * cos((GLfloat)i / 60.0 * 6.283185307),
+                 0.15 * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
+      glVertex3f(0.2  * cos((GLfloat)i / 60.0 * 6.283185307),
+                 0.2  * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
+      glVertex3f(0.2  * cos((GLfloat)i / 60.0 * 6.283185307),
+                 0.2  * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
+      glVertex3f(0.2 * cos((GLfloat)(i+1) / 60.0 * 6.283185307),
+                 0.2 * sin((GLfloat)(i+1) / 60.0 * 6.283185307) - 1.0, 0.0);
+      glVertex3f(0.15 * cos((GLfloat)(i+1) / 60.0 * 6.283185307),
+                 0.15 * sin((GLfloat)(i+1) / 60.0 * 6.283185307) - 1.0, 0.0);
+      glEnd();
     }
   }
   else{
   }
 } /* draw_colorbar */
 /*!
-Draw points for the stereogram
+  Draw points for the stereogram
 */
 void draw_circles(){
   int i;
@@ -1421,7 +1422,7 @@ void draw_circles(){
   glVertex3f(0.7, scl, 0.0);
   for(i = 0; i <= 20; i ++){
     glVertex3f(r * cos((GLfloat)i / 20.0 * 6.283185307) + 0.7, 
-	       r * sin((GLfloat)i / 20.0 * 6.283185307) + scl, 0.0);
+               r * sin((GLfloat)i / 20.0 * 6.283185307) + scl, 0.0);
   }
   glEnd();
   /**/
@@ -1430,7 +1431,7 @@ void draw_circles(){
   glVertex3f(-0.7, scl, 0.0);
   for(i = 0; i <= 20; i ++){
     glVertex3f(r * cos((GLfloat)i / 20.0 * 6.283185307) - 0.7, 
-	       r * sin((GLfloat)i / 20.0 * 6.283185307) + scl, 0.0);
+               r * sin((GLfloat)i / 20.0 * 6.283185307) + scl, 0.0);
   }
   glEnd();
 }
@@ -1481,7 +1482,7 @@ void display()
     dx = 0.0;
   }
   /*
-      Initialize
+    Initialize
   */
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
@@ -1520,7 +1521,7 @@ void display()
   draw_fermi();
   /*
     Draw the second
-   */
+  */
   if(lstereo != 1){
     glPushMatrix();
     glLoadIdentity();
@@ -1569,38 +1570,38 @@ void idle(void)
   glutPostRedisplay();
 } /* idle */
 /*!
- Glut mouse function
- @param[in] button  pushed button
- @param[in] state   down or upor ?
- @param[in] x       position of mouse cursor
- @param[in] y       position of mouse cursor
+  Glut mouse function
+  @param[in] button  pushed button
+  @param[in] state   down or upor ?
+  @param[in] x       position of mouse cursor
+  @param[in] y       position of mouse cursor
 */
 void mouse(int button, int state, int x, int y)
 {
-  switch (button)	 {
-    /*	
-      Drag 
-     */	
+  switch (button)   {
+    /*  
+        Drag 
+    */  
   case GLUT_LEFT_BUTTON:
-	  switch (state) {
-	  case GLUT_DOWN:
-		  /* Start of animation */
-		  glutIdleFunc(idle);
-		  /* Record drag start point */
-		  cx = x;
-		  cy = y;
-		  break;
-	  case GLUT_UP:
-		  /* End of animation */
-		  glutIdleFunc(0);
-		  break;
-	  default:
-		  break;
-	  }
+    switch (state) {
+    case GLUT_DOWN:
+      /* Start of animation */
+      glutIdleFunc(idle);
+      /* Record drag start point */
+      cx = x;
+      cy = y;
+      break;
+    case GLUT_UP:
+      /* End of animation */
+      glutIdleFunc(0);
+      break;
+    default:
+      break;
+    }
     break;
     /*
       Zoom up
-     */
+    */
   case MOUSE_SCROLL_UP:
     switch (state) {
     case GLUT_DOWN:
@@ -1615,7 +1616,7 @@ void mouse(int button, int state, int x, int y)
     break;
     /*
       Zoom down
-     */
+    */
   case MOUSE_SCROLL_DOWN:
     switch (state) {
     case GLUT_DOWN:
@@ -1630,7 +1631,7 @@ void mouse(int button, int state, int x, int y)
     break;
     /*
       No pushing
-     */
+    */
   default:
     break;
   }
@@ -1656,43 +1657,43 @@ void motion(int x, int y)
   a = sqrt(dx * dx + dy * dy);
   /**/
   if (lmouse == 1){
-	  /**/
-	  if (a != 0.0) {
-		  /*
-			Compute rotational matrix from translation of mousepointer
-			*/
-		  ax = -dy;
-		  ay = dx;
-		  /**/
-		  a = a * 10.0;
-		  /**/
-		  rot0[0][0] = (ax * ax + ay * ay * cos(a)) / (ax * ax + ay * ay);
-		  rot0[0][1] = ax * ay * (cos(a) - 1.0) / (ax * ax + ay * ay);
-		  rot0[0][2] = ay * sin(a) / sqrtf(ax * ax + ay * ay);
-		  rot0[1][0] = ax * ay * (cos(a) - 1.0) / (ax * ax + ay * ay);
-		  rot0[1][1] = (ax * ax * cos(a) + ay * ay) / (ax * ax + ay * ay);
-		  rot0[1][2] = ax * sin(a) / sqrtf(ax * ax + ay * ay);
-		  rot0[2][0] = -ay * sin(a) / sqrtf(ax * ax + ay * ay);
-		  rot0[2][1] = -ax * sin(a) / sqrtf(ax * ax + ay * ay);
-		  rot0[2][2] = cos(a);
-		  /**/
-		  for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
-		  /**/
-		  for (i = 0; i < 3; i++){
-			  for (j = 0; j < 3; j++){
-				  rot[i][j] = rot0[i][0] * rot1[0][j]
-					  + rot0[i][1] * rot1[1][j]
-					  + rot0[i][2] * rot1[2][j];
-			  }
-		  }
-	  }
+    /**/
+    if (a != 0.0) {
+      /*
+        Compute rotational matrix from translation of mousepointer
+      */
+      ax = -dy;
+      ay = dx;
+      /**/
+      a = a * 10.0;
+      /**/
+      rot0[0][0] = (ax * ax + ay * ay * cos(a)) / (ax * ax + ay * ay);
+      rot0[0][1] = ax * ay * (cos(a) - 1.0) / (ax * ax + ay * ay);
+      rot0[0][2] = ay * sin(a) / sqrtf(ax * ax + ay * ay);
+      rot0[1][0] = ax * ay * (cos(a) - 1.0) / (ax * ax + ay * ay);
+      rot0[1][1] = (ax * ax * cos(a) + ay * ay) / (ax * ax + ay * ay);
+      rot0[1][2] = ax * sin(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][0] = -ay * sin(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][1] = -ax * sin(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][2] = cos(a);
+      /**/
+      for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
+      /**/
+      for (i = 0; i < 3; i++){
+        for (j = 0; j < 3; j++){
+          rot[i][j] = rot0[i][0] * rot1[0][j]
+            +         rot0[i][1] * rot1[1][j]
+            +         rot0[i][2] * rot1[2][j];
+        }
+      }
+    }
   }
   else if (lmouse == 2){
-	  scl = scl * exp(- dy);
+    scl = scl * exp(- dy);
   }
   else{
-	  trans[0] = trans[0] + dx;
-	  trans[1] = trans[1] - dy;
+    trans[0] = trans[0] + dx;
+    trans[1] = trans[1] - dy;
   }
   cx = x;
   cy = y;
@@ -1757,13 +1758,13 @@ void main_menu(int value){
     emax = -100000.0;
     for (ib = 0; ib < nb; ++ib) {  
       for (i1 = 0; i1 < ng[0]; ++i1) {
-	for (i2 = 0; i2 < ng[1]; ++i2) {
-	  for (i3 = 0; i3 < ng[2]; ++i3) {
-	    eig[ib][i1][i2][i3] = eig[ib][i1][i2][i3] + def;
-	    if(emin > eig[ib][i1][i2][i3]) emin = eig[ib][i1][i2][i3];
-	    if(emax < eig[ib][i1][i2][i3]) emax = eig[ib][i1][i2][i3];
-	  }
-	}
+        for (i2 = 0; i2 < ng[1]; ++i2) {
+          for (i3 = 0; i3 < ng[2]; ++i3) {
+            eig[ib][i1][i2][i3] = eig[ib][i1][i2][i3] + def;
+            if(emin > eig[ib][i1][i2][i3]) emin = eig[ib][i1][i2][i3];
+            if(emax < eig[ib][i1][i2][i3]) emax = eig[ib][i1][i2][i3];
+          }
+        }
       }
     }
     printf("Min  Max  E_F \n");
@@ -1773,11 +1774,11 @@ void main_menu(int value){
     if(ierr == 0) printf("error ! reading ef");
     for (ib = 0; ib < nb; ++ib) {  
       for (i1 = 0; i1 < ng[0]; ++i1) {
-	for (i2 = 0; i2 < ng[1]; ++i2) {
-	  for (i3 = 0; i3 < ng[2]; ++i3) {
-	    eig[ib][i1][i2][i3] = eig[ib][i1][i2][i3] - def;
-	  }
-	}
+        for (i2 = 0; i2 < ng[1]; ++i2) {
+          for (i3 = 0; i3 < ng[2]; ++i3) {
+            eig[ib][i1][i2][i3] = eig[ib][i1][i2][i3] - def;
+          }
+        }
       }
     }
     query = 1;
@@ -1793,7 +1794,7 @@ void main_menu(int value){
   else if(value == 9){
     /*
       Exit
-     */
+    */
     printf("\nExit. \n\n");
     free(eig);
     free(mat);
@@ -1810,27 +1811,27 @@ void main_menu(int value){
   }
 }
 /*!
- Change mouse function
- @param[in] value Selected menu
+  Change mouse function
+  @param[in] value Selected menu
 */
 void menu_mouse(int value){
-	/**/
-	if (value == 1 && lmouse != 1){
-		printf("Mouse drag : Rotate \n\n");
-		lmouse = 1;
-		glutPostRedisplay();
-	}
-	if (value == 2 && lmouse != 2){
-		printf("Mouse drag : Scale \n\n");
-		lmouse = 2;
-		glutPostRedisplay();
-	}
-	if (value == 3 && lmouse != 3){
-		printf("Mouse drag : Translate \n\n");
-		lmouse = 3;
-		glutPostRedisplay();
-	}
-	/**/
+  /**/
+  if (value == 1 && lmouse != 1){
+    printf("Mouse drag : Rotate \n\n");
+    lmouse = 1;
+    glutPostRedisplay();
+  }
+  if (value == 2 && lmouse != 2){
+    printf("Mouse drag : Scale \n\n");
+    lmouse = 2;
+    glutPostRedisplay();
+  }
+  if (value == 3 && lmouse != 3){
+    printf("Mouse drag : Translate \n\n");
+    lmouse = 3;
+    glutPostRedisplay();
+  }
+  /**/
 } /* menu_band */
 /*!
   On / Off band
@@ -1861,11 +1862,11 @@ void menu_bgcolor(int value){
     glutPostRedisplay();
   }
   else if(value == 2 && blackback != 0){
-      printf("Background color becomes WHITE. \n");
-      glClearColor(1.0, 1.0, 1.0, 0.0);
-      blackback = 0;
+    printf("Background color becomes WHITE. \n");
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+    blackback = 0;
   }
-/**/
+  /**/
 }/* bgcolor change*/
 /*!
   Change color scale mode

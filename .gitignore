@@ -15,3 +15,4 @@ doc/doxygen/
 doc/manual_en.pdf
 doc/manual_ja.pdf
 *.opensdf
+src/fermisurfer.vcxproj.user
