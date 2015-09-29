@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="ja">
+  <head>
+    <meta name="Content-Language" content="ja">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <meta http-equiv="Content-Script-Type" content="text/javascript">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <title>Project Web of fermisurfer on OSDN Web space</title>
+  </head>
+
+  <body bgcolor="CCFFCC">
+    <div id="frame">
+      <div id="innerframe">
+        <p align="left">日本語 English</p>
+        <hr>
+        <h1><a href="http://osdn.jp/projects/fermisurfer/">FermiSurfer</a></h1>
+	<a href="http://osdn.jp/">OSDN</a>
+	<a href="http://osdn.jp/softwaremap/">プロジェクト</a>
+	<a href="http://osdn.jp/projects/fermisurfer/">FermiSurfer</a>
+	概要
+        
+        <p>
+          FermiSurferは固体物理学の各種数値計算結果を入力としてFermi面の描画し、
+          かつ何らかの物理量をFermi面上にカラーマップとして表示させる可視化ツールです。
+        </p>
+        
+        <table width="100%" valign="top">
+	  <tr>
+	    <td width="50%">
+	      <p><a href="http://osdn.jp/projects/fermisurfer/releases/">ダウンロード</a></p>
+	      <p><a href="./manual_ja.html">日本語マニュアル</a></p>
+	      <p><a href="./manual_en.html">Manual in English</a></p>
+	      <p><a href="http://osdn.jp/projects/fermisurfer/ticket/">バグ報告</a></p>
+	      <p><a href="http://osdn.jp/projects/fermisurfer/forums/">フォーラム</a></p>
+	      <p><a href="http://osdn.jp/projects/fermisurfer/lists/">メーリングリスト</a></p>
+            </td>
+	    <td width="50%">
+	      <div style="margin-left: auto; margin-right: auto;">
+                <script type="text/javascript"><!--
+                                                   google_ad_client = "ca-pub-9941151214016196";
+                                                   google_ad_slot = "5483180928";
+                                                   google_ad_width = 200;
+                                                   google_ad_height = 200;
+                                                   //-->
+                </script>
+                <script type="text/javascript"
+                        src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                </script>
+	      </div>
+	    </td>
+	  </tr>
+        </table>
+        
+
+        <script type="text/javascript">
+	  var sfjp_widget_width = null;
+	  var sfjp_widget_customcss = null;
+        </script>
+        <script src="http://osdn.jp/projects/fermisurfer/files/compact.js" type="text/javascript" charset="utf-8"></script>
+
+        <div>
+          fermisurferの最新のリリースなどのファイルをダウンロードするには、
+          fermisurferの<a href="http://osdn.jp/projects/fermisurfer/releases/">
+            ダウンロードファイル一覧</a>のページに移動し、ファイル名を選択することで、ダウンロードが始まります。
+        </div>
+
+        <br />
+
+        <table style="width: 100%;">
+	  <tr>
+	    <td style="width: 50%; vertical-align: top;">
+              <div style="float:right;">
+                <script type="text/javascript"><!--
+                                                   google_ad_client = "ca-pub-9941151214016196";
+                                                   google_ad_slot = "4581088621";
+                                                   google_ad_width = 300;
+                                                   google_ad_height = 250;
+                                                   //-->
+                </script>
+                <script type="text/javascript"
+                        src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                </script>
+              </div>
+	    </td>
+	    <td style="width: 50%;">
+	      <div style="float: left; font-size: 85%; border:2px solid #888; margin: .5em;">
+	        <div class="titlebar">OSDNの主なプロジェクト</div>
+	        <ul style="margin-right: 1em; margin-top: 0px;">
+	          <li><a href="http://osdn.jp/projects/clamwin/">ウイルス対策 <strong>ClamWin</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/sevenzip/">圧縮・展開（解凍） <strong>7-Zip</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/pdfcreator/">PDF作成 <strong>PDFCreator</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/opentween/">Twitterクライアント <strong>OpenTween</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/openoffice-docj/">
+                      <strong>OpenOffice.org ドキュメントプロジェクト</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/ttssh2/">
+                      ターミナルエミュレータ <strong>TeraTerm</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/winscp/">
+                      SCPクライアント <strong>WinSCP</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/tortoisesvn/">
+                      Subversionクライアント <strong>TortoiseSVN</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/crystaldiskinfo/">
+                      ディスク情報表示ツール <strong>CrystalDiskInfo</strong></a></li>
+	          <li><a href="http://osdn.jp/projects/crystaldiskmark/">
+                      ディスクベンチマーク <strong>CrystalDiskMark</strong></a></li>
+	        </ul>
+	        <div style="text-align: right;"><a href="http://osdn.jp/top/topdl.php?type=downloads_day">
+                    もっと見る&nbsp;&gt;&gt;</a></div>
+	      </div>
+	    </td>
+	  </tr>
+        </table>
+        <div style="border: 1px solid #9cf; padding: .5em;">
+
+	  <div>
+	    <a href="http://osdn.jp/">
+	      <img src="http://osdn.jp/sflogo.php?group_id=9671&type=3"
+		   width="210" height="63" border="0" alt="OSDN">
+	    </a>
+	  </div>
+
+	  <br style="clear: right;" />
+        </div>
+
+        <script type="text/javascript"><!--
+                                           google_ad_client = "ca-pub-9941151214016196";
+                                           google_ad_slot = "3654106219";
+                                           google_ad_width = 728;
+                                           google_ad_height = 90;
+                                           //-->
+        </script>
+        <script type="text/javascript"
+                src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+        </script>
+
+        <div style="text-align: center; background: #F0F0F0; border-top: 4px solid gray; color: gray; margin-top: 1em;">
+	  <div><a style="color: gray;" href="http://osdn.jp/">OSDN</a>関連サイト</div>
+	  <a style="color: gray;" href="http://srad.jp/">スラド</a> |
+	  <a style="color: gray;" href="http://osdn.co.jp/">OSDN株式会社</a>
+        </div>
+      </div>
+    </div>
+</div>
+
+</body>
+</html>
