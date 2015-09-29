@@ -1,0 +1,477 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" 
+          content="text/html; charset=utf-8">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]] } });
+    </script>
+    <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+    
+    <title>Manual for FermiSurfer</title>
+    
+    <meta name="description" content="Manual for FermiSurfer">
+    
+  </head>
+  <body bgcolor="CCFFCC">
+
+    <center><h1>Manual for FermiSurfer</h1></center>
+    <center><h2>Version 1.4</h2></center>
+    <center><h2>Mitsuaki Kawamura</h2></center>
+
+    <hr>
+
+    <h1>Contents</h1>
+    <p><a href="#introduction">1, Introduction</a></p>
+    <p><a href="#mit-license">2, MIT License</a></p>
+    <p><a href="#files-in-this-package">3, Files in this package</a></p>
+    <p><a href="#install">4, Install</a></p>
+    <p><a href="#input-file">5, Input file</a></p>
+    <p><a href="#control-fermisurfer">6, Control FermiSurfer</a></p>
+    <p><a href="#gallery">7, Gallery</a></p>
+    <p><a href="#acknowledgment">8, Acknowledgment</a></p>
+    <p><a href="#contact">9, Contact</a></p>
+
+    <hr>
+
+    <h1><a name="introduction">1, Introduction</a></h1>
+
+    <p>This document is a manual for the Fermi surface drawing program ``Fermi Surfer&quot;. 
+      Fermi Surfer have been developed since 2012 by Mitsuaki Kawamura 
+      (ISSP, The University of Tokyo); it is opened on web at November, 2014. 
+      It draws Fermi surfaces, and plot $k$-depend matrix elements such as 
+      the superconducting gap and orbital character with colors.</p>
+
+    <hr><h1><a name="mit-license">2, MIT License</a></h1>
+
+    <p>Copyright (c) 2014 Mitsuaki Kawamura</p>
+    <p>Permission is hereby granted, free of charge, 
+      to any person obtaining a copy of this software and associated documentation files 
+      (the “Software”), to deal in the Software without restriction, 
+      including without limitation the rights to use, copy, modify, merge, publish, 
+      distribute, sublicense, and/or sell copies of the Software, 
+      and to permit persons to whom the Software is furnished to do so, 
+      subject to the following conditions:</p>
+    <p>The above copyright notice and this permission notice shall be included 
+      in all copies or substantial portions of the Software.</p>
+    <p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, 
+      EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+      FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS 
+      OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
+      IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+      ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE 
+      OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+
+    <hr><h1><a name="files-in-this-package">3, Files in this package</a></h1>
+
+    <dl>
+      <p><code>bin/fermisurfer.exe</code> : Executable for Windows</p>
+      <p><code>doc/manual_en.pdf</code> : Manual (English)</p>
+      <p><code>doc/manual_ja.pdf</code> : Manual (Japanese)</p>
+      <p><code>examples/mgb2_vfz.frmsf</code> : Sample input file</p>
+      <p><code>src/fermisurfer.c</code> : Source file</p>
+      <p><code>src/mac.diff</code> : Patch for Mac OSX</p>
+      <p><code>src/Makefile</code> : Makefile for Linux</p>
+      <p><code>src/Makefile-mac</code> : Makefile for Mac OSX</p>
+    </dl>
+
+    <hr><h1><a name="install">4, Install</a></h1>
+
+    <hr><h2 id="installation-in-linux">4.1, Installation in Linux</h2>
+
+    <ol>
+      <li><p>Install the required package</p>
+        <ul>
+          <li><p>For Debian/Ubuntu</p>
+            <pre><code>    $ sudo aptitude install freeglut3-dev
+          </code></pre></li>
+          <li><p>For Red Hat Enterprise Linux/CentOS</p>
+            <pre><code>    $ sudo yum install freeglut-devel.x86_64
+          </code></pre></li>
+      </ul></li>
+      <li><p>Make</p>
+        <pre><code>
+$ cd ./src
+$ make fermisurfer
+$ make install
+        </code></pre>
+      </li>
+    </ol>
+    <p>Then a binary file <code>fermisurfer</code> is generated and put 
+      in <code>/usr/local/bin/</code>.</p>
+
+    <hr><h2 id="mac-osx-の場合">4.2, For Mac OSX</h2>
+
+    <ol>
+      <li><p>Install Xcode.</p></li>
+      <li><p>Patch the source code.</p>
+        <pre><code>
+$ cd ./src
+$ patch -p1 &lt; mac.diff
+        </code></pre>
+      </li>
+      <li><p>Make.</p>
+        <pre><code>
+$ make -f Makefile-mac fermisurfer
+$ make -f Makefile-mac install
+        </code></pre>
+        <p>Then a binary file <code>fermisurfer</code> is generated and put 
+          in <code>/usr/local/bin/</code>.</p></li>
+    </ol>
+
+    <hr><h2 id="installation-in-windows">4.3, Installation in Windows</h2>
+
+    <ol>
+      <li><p>Download the <code>zip</code> file which contains <code>freeglut.dll</code> 
+          from “freeglut Windows Development Library” site</p>
+        <pre><code>
+http://www.transmissionzero.co.uk/software/freeglut-devel/
+        </code></pre>
+        <p>(in “freeglut MSVC package” item). Then, <code>unzip</code> it.</p></li>
+      <li><p>copy <code>.\bin\freeglut.dll</code> to the folder 
+          which contains <code>fermisurfer.exe</code> (<code>bin</code>). 
+          (You should not use <code>.\bin\x64\freeglut.dll</code>)</p></li>
+    </ol>
+
+    <hr><h1><a name="input-file">5, Input file</a></h1>
+
+    <hr><h2 id="input-file-format">5.1, input-file format</h2>
+
+    <p>You have to prepare following data:</p>
+    <ul>
+      <li><p>The number of $k$ grid (three direction)</p></li>
+      <li><p>Reciprocal lattice vectors</p></li>
+      <li><p>The number of bands</p></li>
+      <li><p>The orbital energy at each band and $k$ (We call it “energy”) .</p></li>
+      <li><p>Variables that you want to plot with color (We call it “matrix elements”).</p></li>
+    </ul>
+    <p>This program supports two kind of uniform $k$ grid, 
+      a grid (${\rm \Gamma}$ centered) and grid with a half-grid shift. 
+      The latter is used when the matrix element becomes singular at ${\rm \Gamma}$.</p>
+    <p>The input file is as follows (<code>mgb2_vfz.fs</code>):</p>
+    <pre><code>
+40          40          36        (1)
+0                                 (2)
+3                                 (3)
+1.0000000      0.57735026      -0.0000000 (4)
+0.0000000       1.1547005       0.0000000 (5)
+0.0000000      -0.0000000      0.87206507 (6)
+2.91340202E-02                            (7)
+2.93242838E-02
+2.98905596E-02
+3.08193434E-02
+:
+:
+0.14393796
+0.12800488
+0.0000000                                 (8)
+0.36269817
+0.71675694
+1.0535113
+1.3644149
+:
+:
+-26.409407
+-19.318560
+-10.315671
+    </code></pre>
+    <ol>
+      <li><p>The $k$ point grid</p></li>
+      <li><p>0 for ${\rm \Gamma}$ centered grid. 1 for shifted grid.</p></li>
+      <li><p>The number of bands</p></li>
+      <li><p>Reciprocal lattice vector 1 (arbitrary unit)</p></li>
+      <li><p>Reciprocal lattice vector 2</p></li>
+      <li><p>Reciprocal lattice vector 3</p></li>
+      <li><p>Energy</p></li>
+      <li><p>Matrix elements</p></li>
+    </ol>
+
+    <hr><h2 id="how-to-produce-the-input-file-in-c-and-fortran-programs">
+      5.2, How to produce the input file in C and fortran programs</h2>
+
+    <p>fortran</p>
+    <pre><code>
+  real(4) :: bvec1(3), bvec2(3), bvec3(3) ! Resiplocal lattice vector
+  integer :: nk1, nk2, nk3 ! k-grid of each direction
+  integer :: ishift ! 1 for shifted grid, 0 for unshifted grid.
+  integer :: nbnd ! The number of bands
+  real(4) :: eig(nk3,nk2,nk1,nbnd) ! energy
+  real(4) :: x(nk3,nk2,nk1,nbnd) ! matrix element
+
+  integer :: ik1, ik2, ik3, ibnd, fo
+
+  open(fo, file = &quot;sample.fs&quot;)
+  write(fo,*) nk1, nk2, nk3
+  write(fo,*) ishift
+  write(fo,*) nbnd
+  write(fo,*) real(bvec1(1:3))
+  write(fo,*) real(bvec2(1:3))
+  write(fo,*) real(bvec3(1:3))
+  do ibnd = 1, nbnd
+     do ik1 = 1, nk1
+        do ik2 = 1, nk2
+           do ik3 = 1, nk3
+              write(fo,*) real(eig(ik3,ik2,ik1,ibnd)) 
+           end do
+        end do
+     end do
+  end do
+  do ibnd = 1, nbnd
+     do ik1 = 1, nk1
+        do ik2 = 1, nk2
+           do ik3 = 1, nk3
+              write(fo,*) real(x(ik3,ik2,ik1,ibnd)) 
+           end do
+        end do
+     end do
+  end do
+  close(fo)
+    </code></pre>
+    <p>C</p>
+    <pre><code>
+  float bvec1[3], bvec2[3], bvec3[3]; /*Resiplocal lattice vector*/
+  int nk1, nk2, nk3; /*k-grid of each direction*/
+  int ishift; /*1 for shifted grid, 0 for unshifted grid.*/
+  int nbnd; /*The number of bands*/
+  float eig[nbnd][nk1][nk2][nk3]; /*Energy*/
+  float x[nbnd][nk1][nk2][nk3]; /*Matrix element*/
+
+  FILE* fo;
+  int ibnd, ik1, ik2, ik3;
+
+  fo = fopen(&quot;sample.fs&quot;, &quot;w&quot;);
+  ierr = fprintf(fo, &quot;%d %d %d&quot;, nk1, nk2, nk3);
+  ierr = fprintf(fo, &quot;%d, iswitch);
+  ierr = fprintf(fo, &quot;%d, nbnd);
+  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec1[0], bvec1[1], bvec1[2]); 
+  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec2[0], bvec2[1], bvec2[2]);
+  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec3[0], bvec3[1], bvec3[2]);
+  for (ibnd = 0; ibnd &lt; nbnd; ++ibnd) {  
+     for (ik1 = 0; ik1 &lt; nk1; ++ik1) { 
+        for (ik2 = 0; ik2 &lt; nk2; ++ik2) { 
+           for (ik3 = 0; ik3 &lt; nk3; ++ik3) { 
+              ierr = fprintf(fo, &quot;%e&quot;, eig[ibnd][ik1][ik2][ik3]); 
+           } 
+        } 
+     } 
+  } 
+  for (ibnd = 0; ibnd &lt; nbnd; ++ibnd) {  
+     for (ik1 = 0; ik1 &lt; nk1; ++ik1) { 
+        for (ik2 = 0; ik2 &lt; nk2; ++ik2) { 
+           for (ik3 = 0; ik3 &lt; nk3; ++ik3) { 
+              ierr = fprintf(fo, &quot;%e&quot;, x[ibnd][ik1][ik2][ik3]); 
+           } 
+        } 
+     } 
+  } 
+  fclose(fo); 
+    </code></pre>
+
+    <hr><h1><a name="control-fermisurfer">6, Control FermiSurfer</a></h1>
+
+    <hr><h2 id="for-linux">6.1, For Linux</h2>
+
+    <p>You can launch generated executable as follows:</p>
+    <pre><code>
+$ ./fermisurfer mgb2_vfz.fs
+    </code></pre>
+    <p>You need a space between the command and input-file name. 
+      (The sample input file <code>mgb2_vfz.fs</code> contains $z$ element 
+      of the Fermi velocity in MgB$_2$.)</p>
+
+    <hr><h2 id="for-windows">6.2, For Windows</h2>
+
+    <p>Click mouse right button on the input file. 
+      Choose “Open With ...” menu, then choose <code>fermisurfer.exe</code>.</p>
+    <p>After that, <code>fermisurfer</code> runs as the same whether you use Linux or Windows.
+      The information from the input file is printed.</p>
+    <pre><code>
+#####  Brillouin zone informations  ##### 
+
+k point grid : 40 40 36 
+k point grid is not shifted 
+# of bands : 3 
+bvec 1 : 1.000000 0.577350 -0.000000 
+bvec 2 : 0.000000 1.154701 0.000000 
+bvec 3 : 0.000000 -0.000000 0.872065 
+
+# of lines for BZ : 84  (1)
+
+#####  Max. and Min. of each bands  ##### 
+
+Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max 
+1     -0.428153     0.056262     -24.048639     24.048639 (2)
+2     -0.289572     0.121181     -23.320309     23.320309 (2)
+3     -0.133566     0.497620     -43.651634     43.651634 (2)
+
+#####  First Brillouin zone mode  #####
+
+band   # of patchs
+1       8824  (3)
+2       29469 (3)
+3       28315 (3)
+
+band   # of nodeline 
+1       632   (4)
+2       1524  (4)
+3       2268  (4)
+
+#####  Full color scale  ##### 
+
+Max. value : 22.283419  (5)
+Min. value : -22.283419 (5)
+    </code></pre>
+    <ol>
+      <li><p>The number of lines on the edge of the Brillouin zone.</p></li>
+      <li><p>The maximum/minimum value of energies and matrix elements in each bands.</p></li>
+      <li><p>The number of patches (planes that makes Fermi surfaces) in each bands.</p></li>
+      <li><p>The number of node lines in each band.</p></li>
+      <li><p>The maximum and the minimum of matrix elements on Fermi surface.
+          These correspond to the red and the blue; in this case, 
+          the matrix element is -22.283419 in the blue region, and that is 22.283419 
+          in the red region. 
+          [(2) is Max./Min. in whole Brillouin zone.]</p></li>
+    </ol>
+    <p>Then, Operations are printed, and Fermi surfaces are drawn (Fig. 1).</p>
+    <p><img src="figs/start.jpg" align="middle" width="800" alt="" />
+      Fig. 1: Main view.</p>
+    <p>The following operations are available:</p>
+    <ul>
+      <li><p>Rotation of objects with mouse drag</p></li>
+      <li><p>Expand and shrink with mouse wheel</p></li>
+      <li><p>Window re-sizing</p></li>
+      <li><p>Moving objects with cursor keys</p></li>
+      <li><p>Opening the menu with mouse right button</p></li>
+    </ul>
+    <p>Here, I will explain all menus.</p>
+
+    <hr><h2 id="band">6.3, Band</h2>
+
+    <p>It makes each band enable/disable (Fig. 2).</p>
+    <p><img src="figs/band.jpg" align="middle" width="800" alt="" /> 
+      Fig. 2: You make each band enable/disable with <code>Band</code> menu.</p>
+
+    <hr><h2 id="mouse-drag">6.4, Mouse Drag</h2>
+
+    <p>It turns the event of the mouse-left-drag.</p>
+    <dl>
+      <p>Rotate(default) : Rotate the figure along the mouse drag.</p>
+      <p>Scale : Expand/shrink the figure in upward/downward drag.</p>
+      <p>Translate : Translate the figure along the mouse drag.</p>
+    </dl>
+
+    <hr><h2 id="shift-fermi-energy">6.5, Shift Fermi energy</h2>
+
+    <p>It shifts the Fermi energy (= 0 in default) to arbitrary value. 
+      When you use this menu, first, it displays minimum and maximum energy 
+      in the input file and the current Fermi energy;</p>
+    <pre><code>
+Min  Max  E_F 
+-0.428153 0.497620 0.000000 
+Fermi energy shift : 
+    </code></pre>
+    <p>Then, you should type the new Fermi energy; finally, 
+      the new Fermi surfaces are depicted (Fig. 3).</p>
+    <p><img src="figs/shift.jpg" align="middle" width="800" alt="" />
+      Fig. 3: The Fermi energy is set from 0 Ry to 0.1 Ry 
+      with <code>Shift Fermi energy</code> menu</p>
+
+    <hr><h2 id="background-color">6.6, Background color</h2>
+
+    <p>The background color is toggled between black and white; 
+      the edge of the Brillouin Zone is also toggled between white and black 
+      (Fig. 4).</p>
+    <p><img src="figs/background.jpg" align="middle" width="800" alt="" />
+      Fig. 4: The background color is toggled with <code>Background color</code> menu.</p>
+
+    <hr><h2 id="color-scale-mode">6.7, Color scale mode</h2>
+
+    <p>It turns color pattern on Fermi surfaces (Fig. 5).</p>
+    <dl>
+      <p>Auto(default) : It makes blue as the minimum on Fermi surfaces 
+        and red as the maximum on them.</p>
+      <p>Manual : You can set manually (from standard input) 
+        values corresponding to blue and red.</p>
+      <p>Uni-color : Fermi surfaces of each band are depicted 
+        with uni-color without relation to the matrix element.</p>
+      <p>Periodic : It makes periodic color plot enable. When the matrix element varies as 
+          $0$ $\rightarrow$ $\pi/ 3$ $\rightarrow$ $2\pi/ 3$ $\rightarrow$ $\pi$
+          $\rightarrow$ $4\pi/ 3$ $\rightarrow$ $5\pi/ 3$ $\rightarrow$ $2\pi$, 
+          the color varies as red $\rightarrow$ yellow $\rightarrow$ green 
+          $\rightarrow$ cyan $\rightarrow$ blue $\rightarrow$ magenta $\rightarrow$ red.</p>
+    </dl>
+    <p><img src="figs/colorscale.jpg" align="middle" width="800" alt="" />
+      Fig. 5: <code>Color scale mode</code> menu.</p>
+
+    <hr><h2 id="brillouin-zone">6.8, Brillouin zone</h2>
+
+    <p>You choose Brillouin-zone type as follows (Fig. 6):</p>
+    <dl>
+      <p>First Brillouin Zone : The region surrounded by Bragg’s planes 
+        the nearest to ${\rm \Gamma}$ point.</p>
+      <p>Primitive Brillouin Zone : A hexahedron whose corner is the reciprocal lattice point.</p>
+    </dl>
+    <p><img src="figs/brillouinzone.jpg" align="middle" width="800" alt="" />
+      Fig. 6: You can change the type of the Brillouin zone 
+      with <code>Brillouin zone</code> menu.</p>
+
+    <hr><h2 id="node-line">6.9, Node line</h2>
+
+    <p>The line on which the matrix element becomes 0 (we call it node line) 
+      becomes enable/disable (Fig. 7).</p>
+    <p><img src="figs/nodeline.jpg" align="middle" width="800" alt="" /> 
+      Fig. 7: Toggling the node line with <code>Node line</code> menu.</p>
+
+    <hr><h2 id="color-bar-onoff">6.10, Color bar On/Off</h2>
+
+    <p>The color bar becomes enable/disable (Fig. 8).</p>
+    <p><img src="figs/colorbar.jpg" align="middle" width="800" alt="" />
+      Fig. 8: Toggling the color bar with <code>Color bar On/Off</code> menu.</p>
+
+    <hr><h2 id="stereogram">6.11, Stereogram</h2>
+
+    <p>The stereogram (parallel eyes and cross eyes) becomes enabled/disabled 
+      (Fig. 9).</p>
+    <dl>
+      <p>None (Default)</p>
+      <p>Parallel : Parallel-eyes stereogram</p>
+      <p>Cross : Cross-eyes stereogram</p>
+    </dl>
+    <p><img src="figs/stereogram.jpg" align="middle" width="800" alt="" />
+      Fig. 9: The stereogram becomes enabled/disabled with <code>Stereogram</code> menu.</p>
+
+    <hr><h2 id="tetrahedron">6.12, Tetrahedron</h2>
+
+    <p>You change the scheme to divide into tetrahedra (<code>tetra # 1</code> as default). 
+      It is experimental.</p>
+
+    <hr><h2 id="exit">6.13, Exit</h2>
+
+    <p>This finishes <code>fermisurfer</code>.</p>
+
+    <hr><h1><a name="gallery">7, Gallery</a></h1>
+
+    <p>Contributions of each Fermi surfaces to the Hall effect in IrO$_2$ 
+      (Fig. 10. Provided by Mr. Wataru Sano in Arita group, RIKEN)</p>
+    <p><img src="figs/iro2.jpg" align="middle" width="800" alt="" />
+      Fig. 10: Contributions of each Fermi surfaces to the Hall effect</p>
+
+    <hr><h1><a name="acknowledgment">8, Acknowledgment</a></h1>
+
+    <p>I thank Dr. Yusuke Konishi in ISSP; he performed a test in Mac OSX, 
+      and proposed Makefiles and a patch.</p>
+
+    <hr><h1><a name="contact">9, Contact</a></h1>
+
+    <p>Please post bag reports and questions to the forum</p>
+    <pre><code>
+http://sourceforge.jp/projects/fermisurfer/forums/
+    </code></pre>
+    <p>When you want to join us, please contact me as follows.</p>
+    <p>The Institute of Solid State Physics</p>
+    <p>Mitsuaki Kawamura</p>
+    <p><code>mkawamura@issp.u-tokyo.ac.jp</code></p>
+  </body>
+</html>
