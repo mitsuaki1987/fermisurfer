@@ -13,14 +13,13 @@
   <body bgcolor="CCFFCC">
     <div id="frame">
       <div id="innerframe">
-        <p align="left">日本語 
-          <a href="index.html.en">English</a></p>
+        <p align="left">
+          <a href="index.html.ja">日本語</a> English</p>
         <hr>
         <h1><a href="http://osdn.jp/projects/fermisurfer/">FermiSurfer</a></h1>
 	<a href="http://osdn.jp/">OSDN</a>
-	<a href="http://osdn.jp/softwaremap/">プロジェクト</a>
+	<a href="http://osdn.jp/softwaremap/">project</a>
 	<a href="http://osdn.jp/projects/fermisurfer/">FermiSurfer</a>
-	概要
         
         <p>
           FermiSurferは固体物理学の各種数値計算結果を入力としてFermi面の描画し、
@@ -30,12 +29,12 @@
         <table width="100%" valign="top">
 	  <tr>
 	    <td width="50%">
-	      <p><a href="http://osdn.jp/projects/fermisurfer/releases/">ダウンロード</a></p>
+	      <p><a href="http://osdn.jp/projects/fermisurfer/releases/">Download</a></p>
 	      <p><a href="./manual_ja.html">日本語マニュアル</a></p>
 	      <p><a href="./manual_en.html">Manual in English</a></p>
-	      <p><a href="http://osdn.jp/projects/fermisurfer/ticket/">バグ報告</a></p>
-	      <p><a href="http://osdn.jp/projects/fermisurfer/forums/">フォーラム</a></p>
-	      <p><a href="http://osdn.jp/projects/fermisurfer/lists/">メーリングリスト</a></p>
+	      <p><a href="http://osdn.jp/projects/fermisurfer/ticket/">Report Bugs</a></p>
+	      <p><a href="http://osdn.jp/projects/fermisurfer/forums/">Forum</a></p>
+	      <p><a href="http://osdn.jp/projects/fermisurfer/lists/">Mailing list</a></p>
             </td>
 	    <td width="50%">
 	      <div style="margin-left: auto; margin-right: auto;">
