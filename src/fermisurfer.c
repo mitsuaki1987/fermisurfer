@@ -21,91 +21,104 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
+/**
+ * \mainpage My Personal Index Page
+ * @f$\Delta_{n k}@f$
+ * \section intro_sec Introduction
+ *
+ * This is the introduction.
+ *
+ * \section install_sec Installation
+ *
+ * \subsection step1 Step 1: Opening the box
+ *  
+ * etc...
+ */
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
 #include <GL/glut.h>
 #include <omp.h>
-/*
-  Input variables
-*/
-int ng[3];          //!<BZ grids
-int lshift;         //!<Switch for shifted Brillouin zone
-int nb;             //!<The number of Bands                               
-GLfloat bvec[3][3]; //!<Resiplocal lattice vector                
-GLfloat ****eig;    //!<Eigenvalues    [nb][ng[0]][ng[1]][ng[2]] 
-GLfloat ****mat;    //!<Matrix element [nb][ng[0]][ng[1]][ng[2]] 
-/*
-  Switch for some modes
-*/
-int blackback = 1; //!<Switch for black background        
-int fcscl = 1;     //!<Switch for full color scale mode   
-int fbz = 1;       //!<Switch for 1st Brillouin zone mode 
-int nodeline = 0;  //!<Switch for node lines              
-int lcolorbar = 1; //!<Switch for colorbar                
-int lstereo = 1;   //!<Switch for the stereogram
-int lmouse = 1;    //!<Switch for the mouse function
-/*
-  Variables for Brillouin zone boundaries
-*/
-int nbzl;             //!<The number of Lines of 1st Brillouin zone 
-GLfloat ***bzl;       //!<Lines of 1st BZ [nbzl][2][3]     
-GLfloat bragg[26][3]; //!<Bragg plane vectors              
-GLfloat brnrm[26];    //!<Norms of Bragg plane vectors     
-/*
-  Variables for patchs
-*/
-int *ntri;          //!<The number of triangle patch       [nb]             
-int *draw_band;     //!<Switch for drawn bands    [nb]             
-GLfloat ***nmlp;    //!<Normal vector of patchs   [nb][ntri][3]    
-GLfloat ****kvp;    //!<K-vectors of points       [nb][ntri][3][3] 
-GLfloat ***matp;    //!<Matrix elements of points [nb][ntri][3]    
-GLfloat ****clr;    //!<Colors of points          [nb][ntri][3][4] 
-int itet = 0;
-/*
-  Variables for nodeline
-*/
-int *nnl; //!<The number of nodeline 
-GLfloat ****kvnl; //!<K-vector of nodeline [nb][nnl][2][3] 
-/*
-  Variables for mouse  & cursorkey
-*/
-GLfloat sx;                            //!<Scale of mouse movement
-GLfloat sy;                            //!<Scale of mouse movement
-int cx;                                //!<Starting point of drug  
-int cy;                                //!<Starting point of drug  
-GLfloat scl = 1.0;                     //!<Initial scale           
-GLfloat trans[3] = {0.0, 0.0, 0.0};    //!<Translation             
-GLfloat rot[3][3] = {{1.0, 0.0, 0.0},  //!<Rotation matrix         
+/**
+ * Input variables
+ */
+int ng[3];          /**< BZ grids */
+int lshift;         /**< Switch for shifted Brillouin zone */
+int nb;             /**< The number of Bands                       */
+GLfloat bvec[3][3]; /**< Resiplocal lattice vector                 */
+GLfloat ****eig;    /**< Eigenvalues    [nb][ng[0]][ng[1]][ng[2]]  */
+GLfloat ****mat;    /**< Matrix element [nb][ng[0]][ng[1]][ng[2]]  */
+/**
+ * Switch for some modes
+ */
+int blackback = 1; /**< Switch for black background         */
+int fcscl = 1;     /**< Switch for full color scale mode    */
+int fbz = 1;       /**< Switch for 1st Brillouin zone mode  */
+int nodeline = 0;  /**< Switch for node lines               */
+int lcolorbar = 1; /**< Switch for colorbar                 */
+int lstereo = 1;   /**< Switch for the stereogram */
+int lmouse = 1;    /**< Switch for the mouse function */
+/**
+ * Variables for Brillouin zone boundaries
+ */
+int nbzl;             /**< The number of Lines of 1st Brillouin zone  */
+GLfloat ***bzl;       /**< Lines of 1st BZ [nbzl][2][3]      */
+GLfloat bragg[26][3]; /**< Bragg plane vectors               */
+GLfloat brnrm[26];    /**< Norms of Bragg plane vectors      */
+/**
+ * Variables for patchs
+ */
+int *ntri;          /**< The number of triangle patch       [nb]     */
+int *draw_band;     /**< Switch for drawn bands    [nb]              */
+GLfloat ***nmlp;    /**< Normal vector of patchs   [nb][ntri][3]     */
+GLfloat ****kvp;    /**< K-vectors of points       [nb][ntri][3][3]  */
+GLfloat ***matp;    /**< Matrix elements of points [nb][ntri][3]     */
+GLfloat ****clr;    /**< Colors of points          [nb][ntri][3][4]  */
+int itet = 0;       /**< Counter for tetrahedron */
+/**
+ * Variables for nodeline
+ */
+int *nnl; /**< The number of nodeline  */
+GLfloat ****kvnl; /**< K-vector of nodeline [nb][nnl][2][3]  */
+/**
+ * Variables for mouse  & cursorkey
+ */
+GLfloat sx;                            /**< Scale of mouse movement */
+GLfloat sy;                            /**< Scale of mouse movement */
+int cx;                                /**< Starting point of drug   */
+int cy;                                /**< Starting point of drug   */
+GLfloat scl = 1.0;                     /**< Initial scale            */
+GLfloat trans[3] = {0.0, 0.0, 0.0};    /**< Translation              */
+GLfloat rot[3][3] = {{1.0, 0.0, 0.0},  /**< Rotation matrix          */
                      {0.0, 1.0, 0.0},   
                      {0.0, 0.0, 1.0}};
-/*
-  Colors
-*/
-GLfloat   black[] = {0.0, 0.0, 0.0, 1.0}; //!< Black color code
-GLfloat   white[] = {1.0, 1.0, 1.0, 1.0}; //!< White color code
-GLfloat    cyan[] = {0.0, 1.0, 1.0, 1.0}; //!< Cyan color code
-GLfloat magenta[] = {1.0, 0.0, 1.0, 1.0}; //!< Magenta color code
-GLfloat  yellow[] = {1.0, 1.0, 0.0, 1.0}; //!< Yellow color code
-GLfloat     red[] = {1.0, 0.0, 0.0, 1.0}; //!< Red color code
-GLfloat   green[] = {0.0, 1.0, 0.0, 1.0}; //!< Green color code
-GLfloat    blue[] = {0.0, 0.0, 1.0, 1.0}; //!< Blue color code
+/**
+ * Colors
+ */
+GLfloat   black[] = {0.0, 0.0, 0.0, 1.0}; /**<  Black color code   */
+GLfloat   white[] = {1.0, 1.0, 1.0, 1.0}; /**<  White color code   */
+GLfloat    cyan[] = {0.0, 1.0, 1.0, 1.0}; /**<  Cyan color code    */
+GLfloat magenta[] = {1.0, 0.0, 1.0, 1.0}; /**<  Magenta color code */
+GLfloat  yellow[] = {1.0, 1.0, 0.0, 1.0}; /**<  Yellow color code */
+GLfloat     red[] = {1.0, 0.0, 0.0, 1.0}; /**<  Red color code    */
+GLfloat   green[] = {0.0, 1.0, 0.0, 1.0}; /**<  Green color code  */
+GLfloat    blue[] = {0.0, 0.0, 1.0, 1.0}; /**<  Blue color code   */
 /*
   Others
 */
-int query;             //!<Query switch           
-int corner[6][4];      //!<Corners of tetrahedron 
-GLfloat def = 0.0;     //!<Shift of Fermi energy 
+int query;             /**< Query switch            */
+int corner[6][4];      /**< Corners of tetrahedron  */
+GLfloat def = 0.0;     /**< Shift of Fermi energy  */
 enum
   {
-    MOUSE_SCROLL_UP     = 3, //!<Mouse wheel up
-    MOUSE_SCROLL_DOWN   = 4  //!<Mouse wheel down
+    MOUSE_SCROLL_UP     = 3, /**< Mouse wheel up */
+    MOUSE_SCROLL_DOWN   = 4  /**< Mouse wheel down */
   };
-/*!
-  Input from Fermi surface file
-  @param[in] fname  Input file name
-*/
-void read_file(char *fname){
+/**
+ * Input from Fermi surface file
+ */
+void read_file(char *fname/**<[in] fname  Input file name*/)
+{
   int ib, i, i1, i2, i3, ierr;
   FILE *fp;
   /*
@@ -198,9 +211,9 @@ void read_file(char *fname){
   fclose(fp);
   /**/
 } /* read_file */
-/*!
-  Initialize corners of tetrahedron
-*/
+/**
+ * Initialize corners of tetrahedron
+ */
 void init_corner(){
   int i, j;
   int corner1[16][6][4] = {
@@ -356,9 +369,9 @@ void init_corner(){
     }
   }
 }
-/*!
-  Compute Bragg vetor
-*/
+/**
+ * Compute Bragg vetor
+ */
 void bragg_vector(){  
   int i1, i2, i3, i, ibr;
   /**/
@@ -385,12 +398,13 @@ void bragg_vector(){
     }
   }
 } /* bragg_vector */
-/*!
-  Solve linear system
-  @param[in] a Matix
-  @param[inout] b Right hand side vector
-*/
-GLfloat solve3(GLfloat a[3][3], GLfloat b[3]){
+/**
+ * Solve linear system
+ */
+GLfloat solve3(
+  GLfloat a[3][3] /**< [in] Matix*/,
+  GLfloat b[3] /**< [inout] Right hand side vector*/)
+{
   int i;
   GLfloat det, c[3];
   /**/
@@ -414,15 +428,16 @@ GLfloat solve3(GLfloat a[3][3], GLfloat b[3]){
   return det;
   /**/
 }
-/*!
-  Judge wheser this line is the edge of 1st BZ
-  @param[in] ibr Index of a Bragg plane
-  @param[in] jbr Index of a Bragg plane
-  @param[in] nbr
-  @param[in] vert start point of line
-  @param[in] vert2 end point of line
-*/
-int bragg_vert(int ibr, int jbr, int nbr, GLfloat vert[3], GLfloat vert2[3]){
+/**
+ * Judge wheser this line is the edge of 1st BZ
+ */
+int bragg_vert(
+  int ibr /**< [in] Index of a Bragg plane*/, 
+  int jbr /**< [in] Index of a Bragg plane*/, 
+  int nbr /**< [in] */, 
+  GLfloat vert[3] /**< [in] start point of line*/,
+  GLfloat vert2[3] /**< [in] end point of line*/)
+{
   int kbr, i, lbr, nbr0;
   GLfloat bmat[3][3], rhs[3], prod, thr = 0.0001, det;
   /**/
@@ -476,9 +491,9 @@ int bragg_vert(int ibr, int jbr, int nbr, GLfloat vert[3], GLfloat vert2[3]){
   return 0;
   /**/
 }/* bragg_vert */
-/*!
-  Compute Brillouin zone boundariy lines
-*/
+/**
+ * Compute Brillouin zone boundariy lines
+ */
 void bz_lines(){
   /**/
   int ibr, jbr, nbr, ibzl, i, j, lvert;
@@ -523,9 +538,9 @@ void bz_lines(){
   }
   /**/
 } /* bz_lines */
-/*!
-  Max and Minimum in Brillouine zone
-*/
+/**
+ * Max and Minimum in Brillouine zone
+ */
 void max_and_min_bz(){
   int ib, i1, i2, i3;
   GLfloat eigmin, eigmax, matmin, matmax;
@@ -551,14 +566,15 @@ void max_and_min_bz(){
   }
   /**/
 }/* max_and_min_bz */
-/*!
-  Sort eigenvalues
-  @param[in] n the number of components
-  @param[inout] eig2 the orbital energy
-  @param[inout] mat2 the matrix element
-  @param[inout] kvec2 of corners
-*/
-void eigsort(int n, GLfloat* eig2, GLfloat* mat2, GLfloat kvec2[][3]){  
+/**
+ * Sort eigenvalues
+ */
+void eigsort(
+  int n /**< [in] the number of components*/, 
+  GLfloat* eig2 /**< [inout] the orbital energy*/,
+  GLfloat* mat2 /**< [inout] the matrix element*/,
+  GLfloat kvec2[][3] /**< [inout] k-vectors of corners*/)
+{  
   int i, j, k;
   GLfloat tmp;
   /**/
@@ -582,14 +598,15 @@ void eigsort(int n, GLfloat* eig2, GLfloat* mat2, GLfloat kvec2[][3]){
     }
   }
 } /* eigsort */
-/*!
-  Calculate normal vector
-  @param[in] in1 Corner 1
-  @param[in] in2 Corner 2
-  @param[in] in3 Corner 3
-  @param[out] out The normal vector
-*/
-void normal_vec(GLfloat in1[3], GLfloat in2[3], GLfloat in3[3], GLfloat out[3]){
+/**
+ * Calculate normal vector
+ */
+void normal_vec(
+  GLfloat in1[3] /**< [in] Corner 1*/, 
+  GLfloat in2[3] /**< [in] Corner 2*/,
+  GLfloat in3[3] /**< [in] Corner 3*/,
+  GLfloat out[3] /**< [out] The normal vector*/)
+{
   int i;
   GLfloat norm;
   out[0] = in1[1] * in2[2] - in1[2] * in2[1] 
@@ -604,14 +621,15 @@ void normal_vec(GLfloat in1[3], GLfloat in2[3], GLfloat in3[3], GLfloat out[3]){
   norm = sqrtf(out[0]*out[0] + out[1]*out[1] + out[2]*out[2]);
   for(i=0;i<3;i++) out[i] = out[i] / norm;
 } /* normal_vec */
-/*!
-  Store triangle patch
-  @param[in] ib The band index
-  @param[in] nbr Bragg plane
-  @param[in] mat1 The matrix element
-  @param[in] kvec1 k vector of corners
-*/
-void triangle(int ib, int nbr, GLfloat mat1[3], GLfloat kvec1[3][3]){
+/**
+ * Store triangle patch
+ */
+void triangle(
+  int ib /**<[in] The band index*/,
+  int nbr /**<[in] Bragg plane*/,
+  GLfloat mat1[3] /**<[in] The matrix element*/,
+  GLfloat kvec1[3][3] /**<[in] k-vector of corners*/)
+{
   /**/  
   int ibr, i, j;
   GLfloat prod[3], thr = 0.0000, mat2[3], kvec2[3][3];
@@ -688,14 +706,15 @@ void triangle(int ib, int nbr, GLfloat mat1[3], GLfloat kvec1[3][3]){
   }
   /**/
 }/* triangle */
-/*!
-  Tetrahedrron method
-  @param[in] ib The band index
-  @param[in] eig1 orbital energies
-  @param[in] mat1 Matrix elements
-  @param[in] kvec1 k vectors
-*/
-void tetrahedron(int ib, GLfloat eig1[8], GLfloat mat1[8], GLfloat kvec1[8][3]){
+/**
+ * Tetrahedrron method
+ */
+void tetrahedron(
+  int ib /**< [in] The band index*/, 
+  GLfloat eig1[8] /**< [in] Orbital energies*/,
+  GLfloat mat1[8] /**< [in] Matrix elements*/,
+  GLfloat kvec1[8][3] /**< [in] k vectors*/)
+{
   /**/
   int it, i, j;
   GLfloat eig2[4], mat2[4], kvec2[4][3], a[4][4], kvec3[3][3], mat3[3];
@@ -763,9 +782,9 @@ void tetrahedron(int ib, GLfloat eig1[8], GLfloat mat1[8], GLfloat kvec1[8][3]){
     }
   }
 }/* tetrahedron */
-/*!
-  Patches for FSs
-*/
+/**
+ * Patches for FSs
+ */
 void fermi_patch()
 {
   int ib, i1, i2, i3, ii1, ii2, ii3, j1, j2, j3, start[3], i, j;
@@ -897,9 +916,9 @@ void fermi_patch()
   }
   /**/
 } /* fermi_patch */
-/*!
-  Max. & Min. of matrix elements.
-*/
+/**
+ * Max. & Min. of matrix elements.
+ */
 void max_and_min(){
   int ib, itri, i, j, ierr;
   GLfloat matmax, matmin, mat2;
@@ -1032,9 +1051,9 @@ void max_and_min(){
   }
   /**/
 } /* max_and_min */
-/*!
-  Node line
-*/
+/**
+ * Node line
+ */
 void calc_nodeline(){
   int ib, itri, i, j;
   GLfloat mprod[2];
@@ -1156,9 +1175,9 @@ void calc_nodeline(){
     }
   } /* End of parallel region */
 }
-/*!
-  Draw Fermi surfaces
-*/
+/**
+ * Draw Fermi surfaces
+ */
 void draw_fermi(){
   /**/
   int i, j, ib, itri;
@@ -1227,9 +1246,9 @@ void draw_fermi(){
   }
   /**/
 } /* draw_ferm */
-/*!
-  Draw lines of BZ boundaries
-*/
+/**
+ * Draw lines of BZ boundaries
+ */
 void draw_bz_lines(){
   /**/
   int ibzl, i, j;
@@ -1296,9 +1315,9 @@ void draw_bz_lines(){
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
   /**/
 } /* draw bz_lines */
-/*!
-  Draw color scale
-*/
+/**
+ * Draw color scale
+ */
 void draw_colorbar()
 {
   int i, j;
@@ -1399,9 +1418,9 @@ void draw_colorbar()
   else{
   }
 } /* draw_colorbar */
-/*!
-  Draw points for the stereogram
-*/
+/**
+ * Draw points for the stereogram
+ */
 void draw_circles(){
   int i;
   GLfloat r;
@@ -1540,12 +1559,12 @@ void display()
   /**/
   glutSwapBuffers();
 } /* display */
-/*!
-  Window resize
-  @param[in] w Window width
-  @param[in] h Window height
-*/
-void resize(int w, int h)
+/**
+ * Window resize
+ */
+void resize(
+  int w /**<[in] Window width*/, 
+  int h /**<[in] Window height*/)
 {
   /*
     Scale of translation of mousepointer
@@ -1562,21 +1581,21 @@ void resize(int w, int h)
   /**/
   glMatrixMode(GL_MODELVIEW);
 } /* end resize */
-/*!
-  Idling
-*/
+/**
+ * Idling
+ */
 void idle(void)
 {
   glutPostRedisplay();
 } /* idle */
-/*!
-  Glut mouse function
-  @param[in] button  pushed button
-  @param[in] state   down or upor ?
-  @param[in] x       position of mouse cursor
-  @param[in] y       position of mouse cursor
-*/
-void mouse(int button, int state, int x, int y)
+/**
+ * Glut mouse function
+ */
+void mouse(
+  int button /**< [in] pushed button*/, 
+  int state /**< [in] down or up or ?*/, 
+  int x /**< [in] position of mouse cursor*/, 
+  int y /**< [in] position of mouse cursor*/)
 {
   switch (button)   {
     /*  
@@ -1636,12 +1655,12 @@ void mouse(int button, int state, int x, int y)
     break;
   }
 } /* end mouse */
-/*!
-  Glut motion function
-  @param[in] x position of cursor
-  @param[in] y position of cursor
-*/
-void motion(int x, int y)
+/**
+ * Glut motion function
+ */
+void motion(
+  int x /**< [in] position of cursor*/, 
+  int y /**< [in] position of cursor*/)
 {
   int i, j;
   GLfloat dx, dy, a, rot0[3][3], rot1[3][3], ax, ay;
@@ -1699,24 +1718,24 @@ void motion(int x, int y)
   cy = y;
   /**/    
 } /* motion */
-/*!
-  Glut keyboard function
-  @param[in] key key Typed key
-  @param[in] x
-  @param[in] y
-*/
-void keyboard(unsigned char key, int x, int y)
+/*
+ * Glut keyboard function
+ */
+void keyboard(
+  unsigned char key /**< [in] Typed key*/, 
+  int x /**< [in]*/, 
+  int y /**< [in]*/)
 {
   switch (key) {
   }
 } /* keyboard */
-/*!
-  Glut special key function
-  @param[in] key typed special key
-  @param[in] x
-  @param[in] y
-*/
-void special_key(int key, int x, int y)
+/**
+ * Glut special key function
+ */
+void special_key(
+  int key /**< [in] typed special key*/, 
+  int x /**< [in]*/, 
+  int y /**< [in]*/)
 {
   switch (key) {
   case GLUT_KEY_UP:
@@ -1741,11 +1760,10 @@ void special_key(int key, int x, int y)
     /**/
   }
 } /* special_key */
-/*!
-  Main menu
-  @param[in] value Selected menu
-*/
-void main_menu(int value){
+/**
+ * Main menu
+ */
+void main_menu(int value /**< [in] Selected menu*/){
   /**/
   int ib, i1, i2, i3, ierr;
   GLfloat emin, emax;
@@ -1810,11 +1828,10 @@ void main_menu(int value){
     exit(0);
   }
 }
-/*!
-  Change mouse function
-  @param[in] value Selected menu
-*/
-void menu_mouse(int value){
+/**
+ * Change mouse function
+ */
+void menu_mouse(int value /**< [in] Selected menu*/){
   /**/
   if (value == 1 && lmouse != 1){
     printf("Mouse drag : Rotate \n\n");
@@ -1833,11 +1850,10 @@ void menu_mouse(int value){
   }
   /**/
 } /* menu_band */
-/*!
-  On / Off band
-  @param[in] value Selected menu
-*/
-void menu_band(int value){
+/**
+ * On / Off band
+ */
+void menu_band(int value /**< [in] Selected menu*/){
   /**/
   if(draw_band[value] == 0){
     printf("band # %d : On \n", value + 1);
@@ -1850,11 +1866,10 @@ void menu_band(int value){
   glutPostRedisplay();
   /**/
 } /* menu_band */
-/*!
-  Change background color
-  @param[in] value Selected menu
+/**
+ * Change background color
 */
-void menu_bgcolor(int value){
+void menu_bgcolor(int value /**<[in] Selected menu*/){
   if(value == 1 && blackback != 1){
     printf("Background color becomes BLACK. \n");
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -1868,11 +1883,10 @@ void menu_bgcolor(int value){
   }
   /**/
 }/* bgcolor change*/
-/*!
-  Change color scale mode
-  @param[in] value Selected menu
-*/
-void menu_colorscale(int value){
+/**
+ * Change color scale mode
+ */
+void menu_colorscale(int value /**<[in] Selected menu*/){
   /**/
   if(value == 1 && fcscl != 1){
     fcscl = 1;
@@ -1900,11 +1914,10 @@ void menu_colorscale(int value){
   }
   /**/
 } /* menu_colorscale */
-/*!
-  Change Brillouin zone
-  @param[in] value Selected menu
-*/
-void menu_bzmode(int value){
+/**
+ * Change Brillouin zone
+ */
+void menu_bzmode(int value /**<[in] Selected menu*/){
   if(value == 1 && fbz != 1){
     fbz = 1;
     printf("#####  First Brillouin zone mode  ##### \n\n");
@@ -1944,11 +1957,10 @@ void menu_bzmode(int value){
     glutPostRedisplay();
   }
 } /* menu_bzmode */
-/*!
-  On/Off Node line
-  @param[in] value Selected menu
-*/
-void menu_nodeline(int value){
+/**
+ * On/Off Node line
+ */
+void menu_nodeline(int value /**<[in] Selected menu*/){
   if(value == 1 && nodeline != 1){
     printf("Nodeline : on \n\n");
     nodeline = 1;
@@ -1961,11 +1973,10 @@ void menu_nodeline(int value){
   }
   /**/
 } /* menu_nodeline */
-/*!
-  Tern stereogram
-  @param[in] value Selected menu
-*/
-void menu_stereo(int value){
+/**
+ * Tern stereogram
+ */
+void menu_stereo(int value /**<[in] Selected menu*/){
   if(value == 1 && lstereo != 1){
     printf("Stereo : Off. \n\n");
     lstereo = 1;
@@ -1982,11 +1993,10 @@ void menu_stereo(int value){
     glutPostRedisplay();
   }
 } /* menu_stereo */
-/*!
-  On/Off Colorbar
-  @param[in] value Selected menu
-*/
-void menu_colorbar(int value){
+/**
+ * On/Off Colorbar
+ */
+void menu_colorbar(int value /**<[in] Selected menu*/){
   if(value == 1 && lcolorbar != 1){
     printf("Color bar : on \n\n");
     lcolorbar = 1;
@@ -1998,11 +2008,10 @@ void menu_colorbar(int value){
     glutPostRedisplay();
   }
 } /* menu_colorbar */
-/*!
-  Change tetrahedron
-  @param[in] value Selected menu
-*/
-void menu_tetra(int value){
+/**
+ * Change tetrahedron
+ */
+void menu_tetra(int value) /**<[in] Selected menu*/{
   /**/
   if(value != itet){
     printf("Tetra patern %d \n", value + 1);
@@ -2022,9 +2031,9 @@ void menu_tetra(int value){
     glutPostRedisplay();
   }
 } /* menu_tetra */
-/*!
-  Glut init function
-*/
+/**
+ * Glut init function
+ */
 void init(void)
 {
   int ib;
@@ -2100,10 +2109,12 @@ void init(void)
   glutAddMenuEntry("Exit",9);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
 } /* init */
-/*!
-  Main routine
-*/
-int main(int argc, char *argv[])
+/**
+ * Main routine
+ */
+int main(
+  int argc /**< [in] */, 
+  char *argv[] /**< [in] */)
 {
   /**/
   read_file(argv[1]);

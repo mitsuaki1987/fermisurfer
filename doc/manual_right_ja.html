@@ -1,0 +1,504 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" 
+          content="text/html; charset=utf-8">
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({ tex2jax: { inlineMath: [['$','$'], ["\\(","\\)"]] } });
+    </script>
+    <script type="text/javascript"
+            src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <meta http-equiv="X-UA-Compatible" CONTENT="IE=EmulateIE7" />
+    
+    <title>FermiSurfer日本語マニュアル</title>
+    
+    <meta name="description" content="FermiSurfer日本語マニュアル">
+    
+  </head>
+  <body bgcolor="CCFFCC">
+
+    <center><h1>FermiSurferマニュアル</h1></center>
+    <center><h2>バージョン1.4</h2></center>
+    <center><h2>河村光晶</h2></center>
+
+    <hr><a name="hajimeni"><h1>1, はじめに</h1></a>
+
+    <p>この文書ではFermi面描画ソフト「Fermi Surfer」についての解説を行っています. 
+      Fermi Surferは東京大学の河村光晶 が2012年頃から開発を行っていたもので, 
+      2014年11月に公開されました. 
+      Fermi面を描画しその上に各種物理量(超伝導ギャップ関数や軌道キャラクターなど)
+      をカラープロットするソフトウェアです.</p>
+    
+    <hr>
+    <a name="mitlicense"><h1>2, MIT ライセンス</h1></a>
+
+    <p>Copyright (c) 2014 Mitsuaki Kawamura</p>
+    <p>以下に定める条件に従い,  本ソフトウェアおよび関連文書のファイル（以下「ソフトウェア」）
+      の複製を取得するすべての人に対し,  ソフトウェアを無制限に扱うことを無償で許可します.  
+      これには, ソフトウェアの複製を使用, 複写, 変更, 結合, 掲載, 頒布, サブライセンス,  
+      および/または販売する権利, 
+      およびソフトウェアを提供する相手に同じことを許可する権利も無制限に含まれます. </p>
+    <p>上記の著作権表示および本許諾表示を, 
+      ソフトウェアのすべての複製または重要な部分に記載するものとします. </p>
+    <p>ソフトウェアは「現状のまま」で, 明示であるか暗黙であるかを問わず, 
+      何らの保証もなく提供されます.  
+      ここでいう保証とは, 商品性, 特定の目的への適合性, 
+      および権利非侵害についての保証も含みますが,  それに限定されるものではありません.  
+      作者または著作権者は, 契約行為, 不法行為, またはそれ以外であろうと,  
+      ソフトウェアに起因または関連し, 
+      あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求, 損害,  
+      その他の義務について何らの責任も負わないものとします. </p>
+    
+    <hr>
+    <a name="filesinthispackage"><h1>3, このパッケージに含まれているファイル</h1></a>
+
+    <dl>
+      <p><code>bin/fermisurfer.exe</code> : Windows用実行ファイル</p>
+      <p><code>doc/manual_en.pdf</code> : マニュアル(英語)</p>
+      <p><code>doc/manual_ja.pdf</code> : マニュアル(日本語)</p>
+      <p><code>examples/mgb2_vfz.frmsf</code> : サンプル入力ファイル</p>
+      <p><code>src/fermisurfer.c</code> : ソースファイル</p>
+      <p><code>src/mac.diff</code> : Mac OSX用　パッチ</p>
+      <p><code>src/Makefile</code> : Linux用　Makefile</p>
+      <p><code>src/Makefile-mac</code> : Mac OSX用　Makefile</p>
+    </dl>
+    
+    <hr><a name="instlation"><h1>4, インストール手順</h1></a>
+    
+    <hr><h2>4.1, Linuxの場合</h2>
+
+    <ol>
+      <li><p>必要なパッケージをインストール(既にパッケージが入っている場合は何も起こりません. )</p>
+        <ul>
+          <li><p>Debian/Ubuntu 等</p>
+            <pre><code>
+$ sudo aptitude install freeglut3-dev
+            </code></pre>
+          </li>
+          <li><p>Red Hat Enterprise Linux/CentOS 等</p>
+            <pre><code>
+$ sudo yum install freeglut-devel.x86_64
+            </code></pre>
+          </li>
+      </ul></li>
+      <li><p>メイク</p>
+        <pre><code>  
+$ cd ./src
+$ make fermisurfer
+$ make install
+        </code></pre>
+      </li>
+    </ol>
+    <p>以上で実行可能ファイル <code>fermisurfer</code> が作られ, 
+      <code>/usr/local/bin/</code>にコピーされます.</p>
+    
+    <hr><h2>4.2, Mac OSX の場合</h2>
+
+    <ol>
+      <li><p>Xcodeをあらかじめインストールしておく</p></li>
+      <li><p>ソースコードにパッチを当てる</p>
+        <pre><code>
+$ cd ./src
+$ patch -p1 &lt; mac.diff
+        </code></pre>
+      </li>
+      <li><p>メイク</p>
+        <pre><code>
+$ make -f Makefile-mac fermisurfer
+$ make -f Makefile-mac install
+        </code></pre>
+      </li>
+    </ol>
+    <p>以上で実行可能ファイル <code>fermisurfer</code> が作られ, 
+      <code>/usr/local/bin/</code>にコピーされます.</p>
+    
+    <hr><h2>4.3, Windowsの場合</h2>
+
+    <ol>
+      <li><p>freeglutWindows Development Libraryのサイト</p>
+        <pre><code>
+http://www.transmissionzero.co.uk/software/freeglut-devel/
+        </code></pre>
+        <p>内の「freeglut MSVC package」という項目から <code>freeglut.dll</code>を含む
+          <code>zip</code>ファイルを ダウンロードし, 展開する.</p></li>
+      <li><p>展開したフォルダ内の<code>bin</code>というフォルダに入っている, 
+          <code>freeglut.dll</code>を<code>fermisurfer.exe</code>
+          のあるフォルダ(<code>bin</code>)にコピーする.</p>
+        <p>(注) <code>bin\x64\</code>にも<code>freeglut.dll</code>があるが, 
+          そちらは使わない.</p></li>
+      <li><p><code>fermisurfer.exe</code>と<code>freeglut.dll</code>は
+          常に同じフォルダにおいておくこと.</p></li>
+    </ol>
+    
+    <hr><a name="inputfile"><h1>5, Input file</h1></a>
+
+    
+    <hr><h2>5.1, input fileの書式</h2>
+
+    <p>用意するデータは,</p>
+    <ul>
+      <li><p>Brillouin領域分割数(3方向)</p></li>
+      <li><p>逆格子ベクトル</p></li>
+      <li><p>バンド本数</p></li>
+      <li><p>軌道固有値(以下エネルギーと呼びます)の各バンド, 
+          $k$グリッド点での値</p></li>
+      <li><p>カラープロットしたい物理量(以下物理量と呼びます)の各バンド, 
+          $k$グリッド点での値</p></li>
+    </ul>
+    <p>です.</p>
+    <p>※ $k$グリッドの取り方
+      $k$点の取り方として, 
+      ${\rm \Gamma}$点を含むグリッドと, 
+      ${\rm \Gamma}$点から半グリッド分だけずらしたグリッド
+      の二つに対応しています. 
+      後者はプロットしたい物理量が${\rm \Gamma}$点で特異的になっている
+      場合等に使われる事を想定しています.</p>
+    <p>上記データを次のとおりの書式で並べます(サンプルファイル
+      <code>mgb2_vfz.frmsf</code>の中身).</p>
+    <pre><code>
+40          40          36        (1)
+0                                 (2)
+3                                 (3)
+1.0000000      0.57735026      -0.0000000 (4)
+0.0000000       1.1547005       0.0000000 (5)
+0.0000000      -0.0000000      0.87206507 (6)
+2.91340202E-02                            (7)
+2.93242838E-02
+2.98905596E-02
+3.08193434E-02
+:
+:
+0.14393796
+0.12800488
+0.0000000                                 (8)
+0.36269817
+0.71675694
+1.0535113
+1.3644149
+:
+:
+-26.409407
+-19.318560
+-10.315671
+    </code></pre>
+    <ol>
+      <li><p>$k$グリッド数</p></li>
+      <li><p>${\rm \Gamma}$点を含むグリッド
+          (含まないグリッドでは1とする)</p></li>
+      <li><p>バンド本数</p></li>
+      <li><p>逆格子ベクトル1 (任意単位)</p></li>
+      <li><p>逆格子ベクトル2</p></li>
+      <li><p>逆格子ベクトル3</p></li>
+      <li><p>エネルギー (並び順は下記参照)</p></li>
+      <li><p>物理量 (並び順は下記参照)</p></li>
+    </ol>
+    
+    <hr><h2>5.2, C/fortranでの入力ファイルの書き出し方</h2>
+
+    <p>・fortran</p>
+    <pre><code>
+  real(4) :: bvec1(3), bvec2(3), bvec3(3) !逆格子ベクトル
+  integer :: nk1, nk2, nk3 !各逆格子ベクトルの方向の分割数
+  integer :: ishift !グリットをシフトさせるか(=1)否か(=0)
+  integer :: nbnd !バンド数
+  real(4) :: eig(nk3,nk2,nk1,nbnd) !エネルギー
+  real(4) :: x(nk3,nk2,nk1,nbnd) !物理量
+
+  integer :: ik1, ik2, ik3, ibnd, fo
+
+  open(fo, file = “sample.frmsf”)
+  write(fo,*) nk1, nk2, nk3
+  write(fo,*) ishift
+  write(fo,*) nbnd
+  write(fo,*) real(bvec1(1:3))
+  write(fo,*) real(bvec2(1:3))
+  write(fo,*) real(bvec3(1:3))
+  do ibnd = 1, nbnd
+     do ik1 = 1, nk1
+        do ik2 = 1, nk2
+           do ik3 = 1, nk3
+              write(fo,*) real(eig(ik3,ik2,ik1,ibnd)) 
+           end do
+        end do
+     end do
+  end do
+  do ibnd = 1, nbnd
+     do ik1 = 1, nk1
+        do ik2 = 1, nk2
+           do ik3 = 1, nk3
+              write(fo,*) real(x(ik3,ik2,ik1,ibnd)) 
+           end do
+        end do
+     end do
+  end do
+  close(fo)
+    </code></pre>
+    <p>・C言語</p>
+    <pre><code>
+  float bvec1[3], bvec2[3], bvec3[3]; /*逆格子ベクトル*/
+  int nk1, nk2, nk3; /*各逆格子ベクトルの方向の分割数*/
+  int ishift; /*グリットをシフトさせるか(=1)否か(=0)*/
+  int nbnd; /*バンド数*/
+  float eig[nbnd][nk1][nk2][nk3]; /*エネルギー*/
+  float x[nbnd][nk1][nk2][nk3];　/*物理量*/
+  
+  FILE* fo;
+  int ibnd, ik1, ik2, ik3;
+  
+  fo = fopen(“sample.frmsf”, “w”);
+  ierr = fprintf(fo, &quot;%d %d %d&quot;, nk1, nk2, nk3);
+  ierr = fprintf(fo, &quot;%d, iswitch);
+  ierr = fprintf(fo, &quot;%d, nbnd);
+  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec1[0], bvec1[1], bvec1[2]); 
+  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec2[0], bvec2[1], bvec2[2]);
+  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec3[0], bvec3[1], bvec3[2]);
+  for (ibnd = 0; ibnd &lt; nbnd; ++ibnd) {  
+     for (ik1 = 0; ik1 &lt; nk1; ++ik1) { 
+        for (ik2 = 0; ik2 &lt; nk2; ++ik2) { 
+           for (ik3 = 0; ik3 &lt; nk3; ++ik3) { 
+              ierr = fprintf(fo, &quot;%e&quot;, eig[ibnd][ik1][ik2][ik3]); 
+           } 
+        } 
+     } 
+  } 
+  for (ibnd = 0; ibnd &lt; nbnd; ++ibnd) {  
+     for (ik1 = 0; ik1 &lt; nk1; ++ik1) { 
+        for (ik2 = 0; ik2 &lt; nk2; ++ik2) { 
+           for (ik3 = 0; ik3 &lt; nk3; ++ik3) { 
+              ierr = fprintf(fo, &quot;%e&quot;, x[ibnd][ik1][ik2][ik3]); 
+           } 
+        } 
+     } 
+  } 
+  fclose(fo); 
+    </code></pre>
+    
+    <hr><a name="controlling"><h1>6, 操作方法</h1></a>
+    
+    <hr><h2>6.1, Linuxの場合</h2>
+
+    <p>作成した実行可能ファイル<code>fermisurfer</code>にパスが通っている状態で</p>
+    <pre><code>
+$ fermisurfer mgb2_vfz.frmsf
+    </code></pre>
+    <p>とコマンド, スペース, 入力ファイル名とタイプします. 
+      (サンプルファイルの中身はMgB$_2$
+      のFermi速度の$z$方向成分です. )</p>
+    
+    <hr><h2>6.2, Windowsの場合</h2>
+
+    <p>入力ファイル(この場合は<code>mgb2_vfz.frmsf</code>)を右クリックし, 
+      メニューから「プログラムから開く」を選択し, 
+      実行ファイルを<code>fermisurfer.exe</code>に設定してください.</p>
+    <p>このあとはLinux, Windows共通です. <code>fermisurfer</code>が起動すると, 
+      まずファイルから読み取った情報が出力されます.</p>
+    <pre><code>
+#####  Brillouin zone informations  ##### 
+
+k point grid : 40 40 36 
+k point grid is not shifted 
+# of bands : 3 
+bvec 1 : 1.000000 0.577350 -0.000000 
+bvec 2 : 0.000000 1.154701 0.000000 
+bvec 3 : 0.000000 -0.000000 0.872065 
+
+# of lines for BZ : 84  (1)
+
+#####  Max. and Min. of each bands  ##### 
+     
+Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max 
+1     -0.428153     0.056262     -24.048639     24.048639 (2)
+2     -0.289572     0.121181     -23.320309     23.320309 (2)
+3     -0.133566     0.497620     -43.651634     43.651634 (2)
+
+#####  First Brillouin zone mode  #####
+
+band   # of patchs
+1       8824  (3)
+2       29469 (3)
+3       28315 (3)
+
+band   # of nodeline 
+1       632   (4)
+2       1524  (4)
+3       2268  (4)
+
+#####  Full color scale  ##### 
+
+Max. value : 22.283419  (5)
+Min. value : -22.283419 (5) 
+    </code></pre>
+    <ol>
+      <li><p>Brillouin領域の境界を表示する線の数.</p></li>
+      <li><p>それぞれのバンドにおけるエネルギーと物理量の最小値・最大値.</p></li>
+      <li><p>それぞれのバンドにおけるパッチ(Fermi面を構成する平面)の数.</p></li>
+      <li><p>それぞれのバンドにおけるnode line (後述)の本数.</p></li>
+      <li><p>物理量のFermi面における最大値と最小値. この数字がカラーバーの最大・最小に対応します. 
+          下の例では一番青いところが-22.283419, 一番赤いところが22.283419となります. 
+          (2)で表示されているのはBrillouin領域全体のものです.</p></li>
+    </ol>
+    <p>次に操作方法が出力され, Fermi面が描画されます(図1).</p>
+    <p><img src="figs/start.jpg" align="middle" width="800" alt="初期画面"/>
+      図1: Fermisurferを起動した直後の画面.</p>
+    <ul>
+      <li><p>マウスのドラッグによる回転が出来ます.</p></li>
+      <li><p>マウスのホイールを使っての拡大・縮小が出来ます.</p></li>
+      <li><p>ウィンドウの大きさを変えることもできます.</p></li>
+      <li><p>カーソルキーを使ってウィンドウ内で上下左右に図を動かせます.</p></li>
+      <li><p>ウィンドウ内でマウスの右クリックをするとメニューが表示されます.</p></li>
+    </ul>
+    <p>次から右クリックで表示されるメニューを説明します.</p>
+    
+    <hr><h2>6.3, Band</h2>
+
+    <p>バンド毎の表示on/offを切り替えます(図2).</p>
+    <p><img src="figs/band.jpg" align="middle" width="800" alt="" /> 
+      図2: <code>Band</code>メニューで3番目のバンドの表示/非表示を切り替える.</p>
+    
+    <hr><h2>6.4, Mouse Drag</h2>
+
+    <p>マウスの左ボタンドラッグを行った時の動作を変更します.</p>
+    <dl>
+      <dt>Rotate(デフォルト)</dt>
+      <dd><p>ドラッグをした方向に図形を回転させます.</p>
+      </dd>
+      <dt>Scale</dt>
+      <dd><p>上方にドラッグすると図形を拡大, 下方にドラッグすると図形を縮小します.</p>
+      </dd>
+      <dt>Translate</dt>
+      <dd><p>ドラッグした方向に図形を動かします.</p>
+      </dd>
+    </dl>
+    
+    <hr><h2>6.5, Shift Fermi energy</h2>
+
+    <p>Fermiエネルギー(デフォルトでは0)を任意の値にずらします. 
+      このメニューを選択すると次のようにインプット中の最小のエネルギー, 
+      最大のエネルギー, 現在のFermiエネルギーが標準出力として表示されます.</p>
+    <pre><code>
+Min  Max  E_F 
+-0.428153 0.497620 0.000000 
+Fermi energy shift : 
+    </code></pre>
+    <p>次に新しいFermiエネルギーを入力すると, 
+      Fermi面が再描画されます (図3).</p>
+    <p><img src="figs/shift.jpg" align="middle" width="800" alt="" />
+      図3: <code>Shift Fermi energy</code>メニューで
+      Fermi エネルギーを0 Ryから0.1 Ryに変える.</p>
+    
+    <hr><h2>6.6, Background color</h2>
+
+    <p>背景色を黒または白に切り替えます. 
+      Brillouin Zoneの枠線も白/黒と切り替わります (図4).</p>
+    <p><img src="figs/background.jpg" align="middle" width="800" alt="" />
+      図4: <code>Background color</code>メニューで背景色を白/黒に切り替える.</p>
+    
+    <hr><h2>6.7, Color scale mode</h2>
+
+    <p>Fermi面の色表示のさせ方を変更します(図5).</p>
+    <dl>
+      <dt>Auto(デフォルト)</dt>
+      <dd><p>カラースケールの範囲をFermi面上での物理量の最小値から最大値までとします.</p>
+      </dd>
+      <dt>Manual</dt>
+      <dd><p>カラースケールの範囲を標準入力から設定します.</p>
+      </dd>
+      <dt>Unicolor</dt>
+      <dd><p>物理量に関係なく, 各バンド毎に単色でFermi面を塗ります.</p>
+      </dd>
+      <dt>Periodic</dt>
+      <dd><p>周期的な量のプロットに用います.  
+          物理量が 0 $\rightarrow$ 
+          $\pi/3$ $\rightarrow$ 
+          $2\pi/3$ $\rightarrow$ 
+          $\pi$ $\rightarrow$ 
+          $4\pi/3$ $\rightarrow$ 
+          $5\pi/3$ $\rightarrow$ 
+          $2\pi$ と変化するに連れて
+          色が赤$\rightarrow$黄$\rightarrow$
+          緑$\rightarrow$シアン$\rightarrow$
+          青$\rightarrow$ マゼンタ$\rightarrow$
+          赤と変わります.</p>
+      </dd>
+    </dl>
+    <p><img src="figs/colorscale.jpg" align="middle" width="800" alt="" />
+      図5: <code>Color scale mode</code>メニュー.</p>
+    
+    <hr><h2>6.8, Brillouin zone</h2>
+
+    <p>描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
+      切り替える事が出来ます (図6).</p>
+    <dl>
+      <dt>Fisrst Brillouin Zone</dt>
+      <dd><p><span class="math">${\rm \Gamma}$</span> 
+          点から一番近いBragg面で囲まれた領域</p>
+      </dd>
+      <dt>Primitive Brillouine Zone</dt>
+      <dd><p>逆格子ベクトルを辺とする平行6面体領域</p>
+      </dd>
+    </dl>
+    <p><img src="figs/brillouinzone.jpg" align="middle" width="800" alt="" />
+      図6: <code>Brillouin zone</code>メニューでBrillouin領域のとり方を変更する.</p>
+    
+    <hr><h2>6.9, Node line</h2>
+
+    <p>物理量が0となるところに引く線(node line)のOn/Offを切り替えます(図7).</p>
+    <p><img src="figs/nodeline.jpg" align="middle" width="800" alt="" /> 
+      図7: <code>Node line</code>メニューでnode lineの表示/非表示を切り替える.</p>
+    
+    <hr><h2>6.10, Color bar On/Off</h2>
+
+    <p>カラーバーの表示/非表示を切り替えます(図8).</p>
+    <p><img src="figs/colorbar.jpg" align="middle" width="800" alt="" />
+      図8: <code>Color bar On/Off</code>メニューでカラーバーの表示/非表示を切り替える.</p>
+    
+    <hr><h2>6.11, Stereogram</h2>
+
+    <p>裸眼立体視用の図の表示/非表示を切り替えます(図9).</p>
+    <dl>
+      <dt>None (デフォルト)</dt>
+      <dd><p>立体視を無効にします.</p>
+      </dd>
+      <dt>Parallel</dt>
+      <dd><p>平行法用の図を表示します.</p>
+      </dd>
+      <dt>Cross</dt>
+      <dd><p>交差法用の図を表示します.</p>
+      </dd>
+    </dl>
+    <p><img src="figs/stereogram.jpg" align="middle" width="800" alt="" />
+      図9: <code>Stereogram</code>メニューで立体視用画像を表示する.</p>
+    
+    <hr><h2>6.12, Tetrahedron</h2>
+
+    <p>四面体の切り方を変えます(デフォルトは<code>tetra # 1</code>). 
+      図が綺麗になる可能性がありますが, 
+      多くの場合は逆に図がギザギザして汚くなるようです.</p>
+    
+    <hr><h2>6.13, Exit</h2>
+
+    <p>Fermi Surferを終了します.</p>
+    
+    <hr><a name="garally"><h1>7, ギャラリー</h1></a>
+
+    <p>IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与 (図10). 
+      理化学研究所 有田グループ 佐野航氏提供).</p>
+    <p><img src="figs/iro2.jpg" align="middle" width="800" alt="" />
+      図10: IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与.</p>
+    
+    <hr><a name="acknoledge"><h1>8, 謝辞</h1></a>
+
+    <p>東京大学物性研究所 小西優祐氏には, 
+      Mac OSXでの動作チェックおよびMakefile, 
+      パッチの提供をしていただいたことに感謝する.</p>
+    
+    <hr><a name="contacts"><h1>9, 問い合わせ先</h1></a>
+
+    <p>プログラムのバグや質問は以下のフォーラムへご投稿ください.</p>
+    <pre><code>http://sourceforge.jp/projects/fermisurfer/forums/</code></pre>
+    <p>開発に参加したい方は以下の連絡先にて受け付けております.</p>
+    <p>東京大学物性研究所</p>
+    <p>河村光晶</p>
+    <p><code>mkawamura@issp.u-tokyo.ac.jp</code></p>
+  </body>
+</html>

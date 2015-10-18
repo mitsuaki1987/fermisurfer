@@ -22,8 +22,9 @@
 	<a href="http://osdn.jp/projects/fermisurfer/">FermiSurfer</a>
         
         <p>
-          FermiSurferは固体物理学の各種数値計算結果を入力としてFermi面の描画し、
-          かつ何らかの物理量をFermi面上にカラーマップとして表示させる可視化ツールです。
+          FermiSurfer is an visualization tool for Fermi surfaces. 
+          This application displays Fermi surfaces colored as a function of an arbitrary 
+          scalar quantities such as magnitude of Fermi velocities and superconducting gap. 
         </p>
         
         <table width="100%" valign="top">
