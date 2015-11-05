@@ -7,16 +7,16 @@
   #include <math.h>
 ! #include <GL/glut.h>
 ! #include <omp.h>
-  /*
-    Input variables
+  /**
+  * Input variables
   */
 --- 24,30 ----
   #include <stdlib.h>
   #include <stdio.h>
   #include <math.h>
 ! #include <GLUT/glut.h>
-  /*
-    Input variables
+  /**
+  * Input variables
   */
 ***************
 *** 2078,2084 ****
