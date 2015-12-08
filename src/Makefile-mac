@@ -1,5 +1,5 @@
 fermisurfer:fermisurfer.c
-	cc fermisurfer.c -framework GLUT -framework OpenGL -lm -o fermisurfer
+	cc fermisurfer.c -framework GLUT -framework OpenGL -lm -o fermisurfer -D MAC
 
 install:
 	cp fermisurfer /usr/local/bin/fermisurfer
