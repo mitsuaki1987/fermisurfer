@@ -16,3 +16,13 @@ doc/manual_en.pdf
 doc/manual_ja.pdf
 *.opensdf
 src/fermisurfer.vcxproj.user
+ConsoleApplication1/
+src/bxsf2frmsf
+*.ico
+*.suo
+*.opendb
+*.db
+*.aps
+*.rc
+*.dll
+src/resource.h
