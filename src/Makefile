@@ -1,5 +1,17 @@
+
+CC = gcc
+CFLAGS=-fopenmp -O3 -lglut -lGLU -lGL -lm -g
+
+# for mac
+#CFLAGS=-D mac -O3 -lglut -lGLU -lGL -lm
+
+all:fermisurfer bxsf2frmsf
+
 fermisurfer:fermisurfer.c
-	gcc fermisurfer.c -fopenmp -O3 -lglut -lGLU -lGL -lm -o fermisurfer
+	$(CC) $< $(CFLAGS) -o $@
+
+bxsf2frmsf:bxsf2frmsf.c
+	$(CC) $< $(CFLAGS) -o $@
 
 install:
 	sudo cp fermisurfer /usr/local/bin/fermisurfer
@@ -8,5 +20,5 @@ uninstall:
 	sudo rm /usr/local/bin/fermisurfer
 
 clean:
-	rm fermisurfer
+	rm -rf fermisurfer bxsf2frmsf
 

@@ -18,7 +18,7 @@
   <body bgcolor="CCFFCC">
 
     <center><h1>Manual for FermiSurfer</h1></center>
-    <center><h2>Version 1.4</h2></center>
+    <center><h2>Version 1.5</h2></center>
     <center><h2>Mitsuaki Kawamura</h2></center>
 
     <hr>
@@ -59,9 +59,7 @@
       <p><code>doc/manual_ja.pdf</code> : Manual (Japanese)</p>
       <p><code>examples/mgb2_vfz.frmsf</code> : Sample input file</p>
       <p><code>src/fermisurfer.c</code> : Source file</p>
-      <p><code>src/mac.diff</code> : Patch for Mac OSX</p>
-      <p><code>src/Makefile</code> : Makefile for Linux</p>
-      <p><code>src/Makefile-mac</code> : Makefile for Mac OSX</p>
+      <p><code>src/Makefile</code> : Makefile for Linux & Mac OSX</p>
     </dl>
 
     <hr><h1><a name="install">4, Install</a></h1>
@@ -93,16 +91,17 @@ $ make install
 
     <ol>
       <li><p>Install Xcode.</p></li>
-      <li><p>Patch the source code.</p>
+      <li><p>Open <code>Makefile</code> with an editor, and delete <code>#</code>
+          below <code>#mac</code>.</p>
         <pre><code>
 $ cd ./src
-$ patch -p1 &lt; mac.diff
+$ emacs Makefile
         </code></pre>
       </li>
       <li><p>Make.</p>
         <pre><code>
-$ make -f Makefile-mac fermisurfer
-$ make -f Makefile-mac install
+$ make fermisurfer
+$ make install
         </code></pre>
         <p>Then a binary file <code>fermisurfer</code> is generated and put 
           in <code>/usr/local/bin/</code>.</p></li>
@@ -110,17 +109,7 @@ $ make -f Makefile-mac install
 
     <hr><h2 id="installation-in-windows">4.3, Installation in Windows</h2>
 
-    <ol>
-      <li><p>Download the <code>zip</code> file which contains <code>freeglut.dll</code> 
-          from "freeglut Windows Development Library" site</p>
-        <pre><code>
-http://www.transmissionzero.co.uk/software/freeglut-devel/
-        </code></pre>
-        <p>(in "freeglut MSVC package" item). Then, <code>unzip</code> it.</p></li>
-      <li><p>copy <code>.\bin\freeglut.dll</code> to the folder 
-          which contains <code>fermisurfer.exe</code> (<code>bin</code>). 
-          (You should not use <code>.\bin\x64\freeglut.dll</code>)</p></li>
-    </ol>
+    <p>Use an executable <code>bin/fermisurfer.exe</code></p>
 
     <hr><h1><a name="input-file">5, Input file</a></h1>
 

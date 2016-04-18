@@ -48,6 +48,7 @@
  */
 int ng[3];          /**< BZ grids */
 int lshift;         /**< Switch for shifted Brillouin zone */
+int shiftk[3];
 int nb;             /**< The number of Bands                       */
 GLfloat bvec[3][3]; /**< Resiplocal lattice vector                 */
 GLfloat ****eig;    /**< Eigenvalues    [nb][ng[0]][ng[1]][ng[2]]  */
@@ -117,7 +118,7 @@ GLfloat    blue[] = {0.0, 0.0, 1.0, 1.0}; /**<  Blue color code   */
 */
 int query;             /**< Query switch            */
 int corner[6][4];      /**< Corners of tetrahedron  */
-GLfloat def = 0.0;     /**< Shift of Fermi energy  */
+GLfloat EF = 0.0;     /**< Fermi energy  */
 enum
   {
     MOUSE_SCROLL_UP     = 3, /**< Mouse wheel up */
@@ -128,13 +129,15 @@ enum
  */
 void read_file(char *fname/**<[in] fname  Input file name*/)
 {
-  int ib, i, i1, i2, i3, ierr;
+  int ib, i, i0, i1, i2, ii0, ii1, ii2, ierr;
   FILE *fp;
   /*
     Open input file.
   */
   if ((fp = fopen(fname, "r")) == NULL) {
     printf("file open error!!\n");
+    printf("  Press any key to exit.\n");
+    getchar();
     exit(EXIT_FAILURE);
   }
   printf("\n#####  Brillouin zone informations  ##### \n\n");
@@ -149,11 +152,18 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   */
   ierr = fscanf(fp, "%d", &lshift);
   if(ierr == 0) printf("error ! reading lshift");
-  if(lshift == 0){
-    printf("k point grid is not shifted \n");
+ 
+  if (lshift == 0) {
+    printf("k point grid is the Monkhorst-Pack grid. \n");
+    for (i = 0; i < 3; i++) shiftk[i] = (ng[i] + 1) % 2;
   }
   else if(lshift == 1){
-    printf("k point grid is shifted on 0.5, 0.5, 0.5 . \n");
+    printf("k point grid starts from Gamma. \n");
+    for (i = 0; i < 3; i++) shiftk[i] = 0;
+  }
+  else if(lshift == 2){
+    printf("k point grid starts from Gamma + a half grid. \n");
+    for (i = 0; i < 3; i++) shiftk[i] = 1;
   }
   else{
     exit(0);
@@ -184,12 +194,12 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   for (ib = 0; ib < nb; ib++){
     eig[ib] = (GLfloat***)malloc(ng[0] * sizeof(GLfloat**));
     mat[ib] = (GLfloat***)malloc(ng[0] * sizeof(GLfloat**));
-    for (i1 = 0; i1 < ng[0]; i1++){
-      eig[ib][i1] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
-      mat[ib][i1] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
-      for (i2 = 0; i2 < ng[1]; i2++){
-        eig[ib][i1][i2] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
-        mat[ib][i1][i2] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
+    for (i0 = 0; i0 < ng[0]; i0++){
+      eig[ib][i0] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
+      mat[ib][i0] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
+      for (i1 = 0; i1 < ng[1]; i1++){
+        eig[ib][i0][i1] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
+        mat[ib][i0][i1] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
       }
     }
   }
@@ -197,10 +207,25 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     Kohn-Sham energies
   */
   for (ib = 0; ib < nb; ++ib) {  
-    for (i1 = 0; i1 < ng[0]; ++i1) {
-      for (i2 = 0; i2 < ng[1]; ++i2) {
-        for (i3 = 0; i3 < ng[2]; ++i3) {
-          ierr = fscanf(fp, "%e", &eig[ib][i1][i2][i3]);
+    for (i0 = 0; i0 < ng[0]; ++i0) {
+      if (lshift != 0) ii0 = i0;
+      else {
+        ii0 = i0 + (ng[0] + 1) / 2;
+        if (ii0 >= ng[0]) ii0 -= ng[0];
+      }
+      for (i1 = 0; i1 < ng[1]; ++i1) {
+        if (lshift != 0) ii1 = i1;
+        else {
+          ii1 = i1 + (ng[1] + 1) / 2;
+          if (ii1 >= ng[1]) ii1 -= ng[1];
+        }
+        for (i2 = 0; i2 < ng[2]; ++i2) {
+          if (lshift != 0) ii2 = i2;
+          else {
+            ii2 = i2 + (ng[2] + 1) / 2;
+            if (ii2 >= ng[2]) ii2 -= ng[2];
+          }
+          ierr = fscanf(fp, "%e", &eig[ib][ii0][ii1][ii2]);
         }
       }
     }
@@ -209,10 +234,25 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     Matrix elements
   */
   for (ib = 0; ib < nb; ++ib) {  
-    for (i1 = 0; i1 < ng[0]; ++i1) {
-      for (i2 = 0; i2 < ng[1]; ++i2) {
-        for (i3 = 0; i3 < ng[2]; ++i3) {
-          ierr = fscanf(fp, "%e", &mat[ib][i1][i2][i3]);
+    for (i0 = 0; i0 < ng[0]; ++i0) {
+      if (lshift != 0) ii0 = i0;
+      else {
+        ii0 = i0 + (ng[0] + 1) / 2;
+        if (ii0 >= ng[0]) ii0 -= ng[0];
+      }
+      for (i1 = 0; i1 < ng[1]; ++i1) {
+        if (lshift != 0) ii1 = i1;
+        else {
+          ii1 = i1 + (ng[1] + 1) / 2;
+          if (ii1 >= ng[1]) ii1 -= ng[1];
+        }
+        for (i2 = 0; i2 < ng[2]; ++i2) {
+          if (lshift != 0) ii2 = i2;
+          else {
+            ii2 = i2 + (ng[2] + 1) / 2;
+            if (ii2 >= ng[2]) ii2 -= ng[2];
+          }
+          ierr = fscanf(fp, "%e", &mat[ib][ii0][ii1][ii2]);
         }
       }
     }
@@ -382,20 +422,20 @@ void init_corner(){
  * Compute Bragg vetor
  */
 void bragg_vector(){  
-  int i1, i2, i3, i, ibr;
+  int i0, i1, i2, i, ibr;
   /**/
   ibr = 0;
   /**/
-  for(i1 = -1; i1 <= 1; ++i1){
-    for(i2 = -1; i2 <= 1; ++i2){
-      for(i3 = -1; i3 <= 1; ++i3){
+  for(i0 = -1; i0 <= 1; ++i0){
+    for(i1 = -1; i1 <= 1; ++i1){
+      for(i2 = -1; i2 <= 1; ++i2){
         /**/  
-        if(i1 == 0 && i2 == 0 && i3 ==0){
+        if(i0 == 0 && i1 == 0 && i2 ==0){
         }
         else {
-          for(i = 0; i < 3; ++i) bragg[ibr][i] = ((  GLfloat)i1 * bvec[0][i] 
-                                                  + (GLfloat)i2 * bvec[1][i] 
-                                                  + (GLfloat)i3 * bvec[2][i]) * 0.5;
+          for(i = 0; i < 3; ++i) bragg[ibr][i] = ((  GLfloat)i0 * bvec[0][i] 
+                                                  + (GLfloat)i1 * bvec[1][i] 
+                                                  + (GLfloat)i2 * bvec[2][i]) * 0.5;
           /**/
           brnrm[ibr] = bragg[ibr][0] * bragg[ibr][0]
             +          bragg[ibr][1] * bragg[ibr][1]
@@ -551,7 +591,7 @@ void bz_lines(){
  * Max and Minimum in Brillouine zone
  */
 void max_and_min_bz(){
-  int ib, i1, i2, i3;
+  int ib, i0, i1, i2;
   GLfloat eigmin, eigmax, matmin, matmax;
   /**/
   printf("\n#####  Max. and Min. of each bands  ##### \n\n");
@@ -561,13 +601,13 @@ void max_and_min_bz(){
     eigmin =   100000000.0000;
     matmax = - 100000000.0000;
     matmin =   100000000.0000;
-    for (i1 = 0; i1 < ng[0]; ++i1) {
-      for (i2 = 0; i2 < ng[1]; ++i2) {
-        for (i3 = 0; i3 < ng[2]; ++i3) {
-          if(eig[ib][i1][i2][i3] > eigmax) eigmax = eig[ib][i1][i2][i3];
-          if(eig[ib][i1][i2][i3] < eigmin) eigmin = eig[ib][i1][i2][i3];
-          if(mat[ib][i1][i2][i3] > matmax) matmax = mat[ib][i1][i2][i3];
-          if(mat[ib][i1][i2][i3] < matmin) matmin = mat[ib][i1][i2][i3];
+    for (i0 = 0; i0 < ng[0]; ++i0) {
+      for (i1 = 0; i1 < ng[1]; ++i1) {
+        for (i2 = 0; i2 < ng[2]; ++i2) {
+          if(eig[ib][i0][i1][i2] > eigmax) eigmax = eig[ib][i0][i1][i2];
+          if(eig[ib][i0][i1][i2] < eigmin) eigmin = eig[ib][i0][i1][i2];
+          if(mat[ib][i0][i1][i2] > matmax) matmax = mat[ib][i0][i1][i2];
+          if(mat[ib][i0][i1][i2] < matmin) matmin = mat[ib][i0][i1][i2];
         }
       }
     }
@@ -796,94 +836,92 @@ void tetrahedron(
  */
 void fermi_patch()
 {
-  int ib, i1, i2, i3, ii1, ii2, ii3, j1, j2, j3, start[3], i, j;
+  int ib, i0, i1, i2, ii0, ii1, ii2, j0, j1, j2, start[3], i, j;
   GLfloat kvec1[8][3], eig1[8], mat1[8];
   /**/
   if(fbz == 1){
-    for(i1 = 0; i1 < 3;++i1) start[i1] = - ng[i1];
+    for(i0 = 0; i0 < 3;++i0) start[i0] = - ng[i0];
   }
   else{
-    for(i1 = 0; i1 < 3;++i1) start[i1] = 0;
+    for(i0 = 0; i0 < 3;++i0) start[i0] = 0;
   }
   /**/
 #pragma omp parallel default(none)                              \
-  shared(nb,ntri,start,ng,eig,mat,lshift)                       \
-  private(ib,j1,j2,j3,i1,i2,i3,ii1,ii2,ii3,kvec1,eig1,mat1,i,j)
+  shared(nb,ntri,start,ng,eig,EF,mat,shiftk)                       \
+  private(ib,j0,j1,j2,i0,i1,i2,ii0,ii1,ii2,kvec1,eig1,mat1,i,j)
   {
 #pragma omp for nowait
     for (ib = 0; ib < nb; ++ib) {
       ntri[ib] = 0;
-      for (j1 = start[0]; j1 < ng[0]; ++j1) {
-        for (j2 = start[1]; j2 < ng[1]; ++j2) {
-          for (j3 = start[2]; j3 < ng[2]; ++j3) {
+      for (j0 = start[0]; j0 < ng[0]; ++j0) {
+        for (j1 = start[1]; j1 < ng[1]; ++j1) {
+          for (j2 = start[2]; j2 < ng[2]; ++j2) {
             /**/
+            i0 = j0;
             i1 = j1;
             i2 = j2;
-            i3 = j3;
+            ii0 = j0 + 1;
             ii1 = j1 + 1;
             ii2 = j2 + 1;
-            ii3 = j3 + 1;
             /**/
-            kvec1[0][0] = (GLfloat)i1 / (GLfloat)ng[0];
-            kvec1[1][0] = (GLfloat)i1 / (GLfloat)ng[0];
-            kvec1[2][0] = (GLfloat)i1 / (GLfloat)ng[0];
-            kvec1[3][0] = (GLfloat)i1 / (GLfloat)ng[0];
-            kvec1[4][0] = (GLfloat)ii1 / (GLfloat)ng[0];
-            kvec1[5][0] = (GLfloat)ii1 / (GLfloat)ng[0];
-            kvec1[6][0] = (GLfloat)ii1 / (GLfloat)ng[0];
-            kvec1[7][0] = (GLfloat)ii1 / (GLfloat)ng[0];
+            kvec1[0][0] = (GLfloat)i0 / (GLfloat)ng[0];
+            kvec1[1][0] = (GLfloat)i0 / (GLfloat)ng[0];
+            kvec1[2][0] = (GLfloat)i0 / (GLfloat)ng[0];
+            kvec1[3][0] = (GLfloat)i0 / (GLfloat)ng[0];
+            kvec1[4][0] = (GLfloat)ii0 / (GLfloat)ng[0];
+            kvec1[5][0] = (GLfloat)ii0 / (GLfloat)ng[0];
+            kvec1[6][0] = (GLfloat)ii0 / (GLfloat)ng[0];
+            kvec1[7][0] = (GLfloat)ii0 / (GLfloat)ng[0];
             /**/
-            kvec1[0][1] = (GLfloat)i2 / (GLfloat)ng[1];
-            kvec1[1][1] = (GLfloat)i2 / (GLfloat)ng[1];
-            kvec1[2][1] = (GLfloat)ii2 / (GLfloat)ng[1];
-            kvec1[3][1] = (GLfloat)ii2 / (GLfloat)ng[1];
-            kvec1[4][1] = (GLfloat)i2 / (GLfloat)ng[1];
-            kvec1[5][1] = (GLfloat)i2 / (GLfloat)ng[1];
-            kvec1[6][1] = (GLfloat)ii2 / (GLfloat)ng[1];
-            kvec1[7][1] = (GLfloat)ii2 / (GLfloat)ng[1];
+            kvec1[0][1] = (GLfloat)i1 / (GLfloat)ng[1];
+            kvec1[1][1] = (GLfloat)i1 / (GLfloat)ng[1];
+            kvec1[2][1] = (GLfloat)ii1 / (GLfloat)ng[1];
+            kvec1[3][1] = (GLfloat)ii1 / (GLfloat)ng[1];
+            kvec1[4][1] = (GLfloat)i1 / (GLfloat)ng[1];
+            kvec1[5][1] = (GLfloat)i1 / (GLfloat)ng[1];
+            kvec1[6][1] = (GLfloat)ii1 / (GLfloat)ng[1];
+            kvec1[7][1] = (GLfloat)ii1 / (GLfloat)ng[1];
             /**/
-            kvec1[0][2] = (GLfloat)i3 / (GLfloat)ng[2];
-            kvec1[1][2] = (GLfloat)ii3 / (GLfloat)ng[2];
-            kvec1[2][2] = (GLfloat)i3 / (GLfloat)ng[2];
-            kvec1[3][2] = (GLfloat)ii3 / (GLfloat)ng[2];
-            kvec1[4][2] = (GLfloat)i3 / (GLfloat)ng[2];
-            kvec1[5][2] = (GLfloat)ii3 / (GLfloat)ng[2];
-            kvec1[6][2] = (GLfloat)i3 / (GLfloat)ng[2];
-            kvec1[7][2] = (GLfloat)ii3 / (GLfloat)ng[2];
+            kvec1[0][2] = (GLfloat)i2 / (GLfloat)ng[2];
+            kvec1[1][2] = (GLfloat)ii2 / (GLfloat)ng[2];
+            kvec1[2][2] = (GLfloat)i2 / (GLfloat)ng[2];
+            kvec1[3][2] = (GLfloat)ii2 / (GLfloat)ng[2];
+            kvec1[4][2] = (GLfloat)i2 / (GLfloat)ng[2];
+            kvec1[5][2] = (GLfloat)ii2 / (GLfloat)ng[2];
+            kvec1[6][2] = (GLfloat)i2 / (GLfloat)ng[2];
+            kvec1[7][2] = (GLfloat)ii2 / (GLfloat)ng[2];
             /**/
-            if (lshift == 1){
-              for (i = 0; i < 8; i++)for (j = 0; j < 3; j++) 
-                                       kvec1[i][j] = kvec1[i][j] + 0.50 / (GLfloat)ng[j];
-            }
+            for (i = 0; i < 8; i++)for (j = 0; j < 3; j++)
+                                       kvec1[i][j] = kvec1[i][j] + (double)shiftk[j] / (GLfloat)(2 * ng[j]);
             /**/
-            if (i1 < 0) i1 = i1 + ng[0];
-            if (i2 < 0) i2 = i2 + ng[1];
-            if (i3 < 0) i3 = i3 + ng[2];
-            if (ii1 < 0) ii1 = ii1 + ng[0];
-            if (ii2 < 0) ii2 = ii2 + ng[1];
-            if (ii3 < 0) ii3 = ii3 + ng[2];
+            if (i0 < 0) i0 = i0 + ng[0];
+            if (i1 < 0) i1 = i1 + ng[1];
+            if (i2 < 0) i2 = i2 + ng[2];
+            if (ii0 < 0) ii0 = ii0 + ng[0];
+            if (ii1 < 0) ii1 = ii1 + ng[1];
+            if (ii2 < 0) ii2 = ii2 + ng[2];
             /**/
-            if (ii1 >= ng[0]) ii1 = 0;
-            if (ii2 >= ng[1]) ii2 = 0;
-            if (ii3 >= ng[2]) ii3 = 0;
+            if (ii0 >= ng[0]) ii0 = 0;
+            if (ii1 >= ng[1]) ii1 = 0;
+            if (ii2 >= ng[2]) ii2 = 0;
             /**/
-            eig1[0] = eig[ib][i1][i2][i3];
-            eig1[1] = eig[ib][i1][i2][ii3];
-            eig1[2] = eig[ib][i1][ii2][i3];
-            eig1[3] = eig[ib][i1][ii2][ii3];
-            eig1[4] = eig[ib][ii1][i2][i3];
-            eig1[5] = eig[ib][ii1][i2][ii3];
-            eig1[6] = eig[ib][ii1][ii2][i3];
-            eig1[7] = eig[ib][ii1][ii2][ii3];
+            eig1[0] = eig[ib][i0][i1][i2] - EF;
+            eig1[1] = eig[ib][i0][i1][ii2] - EF;
+            eig1[2] = eig[ib][i0][ii1][i2] - EF;
+            eig1[3] = eig[ib][i0][ii1][ii2] - EF;
+            eig1[4] = eig[ib][ii0][i1][i2] - EF;
+            eig1[5] = eig[ib][ii0][i1][ii2] - EF;
+            eig1[6] = eig[ib][ii0][ii1][i2] - EF;
+            eig1[7] = eig[ib][ii0][ii1][ii2] - EF;
             /**/
-            mat1[0] = mat[ib][i1][i2][i3];
-            mat1[1] = mat[ib][i1][i2][ii3];
-            mat1[2] = mat[ib][i1][ii2][i3];
-            mat1[3] = mat[ib][i1][ii2][ii3];
-            mat1[4] = mat[ib][ii1][i2][i3];
-            mat1[5] = mat[ib][ii1][i2][ii3];
-            mat1[6] = mat[ib][ii1][ii2][i3];
-            mat1[7] = mat[ib][ii1][ii2][ii3];
+            mat1[0] = mat[ib][i0][i1][i2];
+            mat1[1] = mat[ib][i0][i1][ii2];
+            mat1[2] = mat[ib][i0][ii1][i2];
+            mat1[3] = mat[ib][i0][ii1][ii2];
+            mat1[4] = mat[ib][ii0][i1][i2];
+            mat1[5] = mat[ib][ii0][i1][ii2];
+            mat1[6] = mat[ib][ii0][ii1][i2];
+            mat1[7] = mat[ib][ii0][ii1][ii2];
             /**/
             tetrahedron(ib, eig1, mat1, kvec1);
           }
@@ -910,14 +948,14 @@ void fermi_patch()
       matp[ib] = (GLfloat**)malloc(ntri[ib] * sizeof(GLfloat*));
       clr[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
       kvp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
-      for (i1 = 0; i1 < ntri[ib]; ++i1){
-        nmlp[ib][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-        matp[ib][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-        clr[ib][i1] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
-        kvp[ib][i1] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
-        for (i2 = 0; i2 < 3; ++i2){
-          kvp[ib][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-          clr[ib][i1][i2] = (GLfloat*)malloc(4 * sizeof(GLfloat));
+      for (i0 = 0; i0 < ntri[ib]; ++i0){
+        nmlp[ib][i0] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        matp[ib][i0] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        clr[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
+        kvp[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
+        for (i1 = 0; i1 < 3; ++i1){
+          kvp[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+          clr[ib][i0][i1] = (GLfloat*)malloc(4 * sizeof(GLfloat));
         }
       }
     }
@@ -1769,45 +1807,93 @@ void special_key(
     /**/
   }
 } /* special_key */
-/**
+  /**
+  * Free variables for patch
+  */
+void free_patch() {
+  int ib, i0, i1;
+
+  for (ib = 0; ib < nb; ++ib) {
+    for (i0 = 0; i0 < ntri[ib]; ++i0) {
+      for (i1 = 0; i1 < 3; ++i1) {
+        free(kvp[ib][i0][i1]);
+        free(clr[ib][i0][i1]);
+      }
+      free(nmlp[ib][i0]);
+      free(matp[ib][i0]);
+      free(clr[ib][i0]);
+      free(kvp[ib][i0]);
+    }
+    free(nmlp[ib]);
+    free(matp[ib]);
+    free(clr[ib]);
+    free(kvp[ib]);
+  }
+  free(nmlp);
+  free(matp);
+  free(clr);
+  free(kvp);
+
+  for (ib = 0; ib < nb; ++ib) {
+    for (i0 = 0; i0 < nnl[ib]; ++i0) {
+      for (i1 = 0; i1 < 2; ++i1) {
+        free(kvnl[ib][i0][i1]);
+      }
+      free(kvnl[ib][i0]);
+    }
+    free(kvnl[ib]);
+  }
+  free(kvnl);
+
+}/**
  * Main menu
  */
 void main_menu(int value /**< [in] Selected menu*/){
   /**/
-  int ib, i1, i2, i3, ierr;
-  GLfloat emin, emax;
-  /**/
-  if(value == 2){
+  if (value == 9) {
     /*
-      Shift Fermi energy
+      Exit
     */
-    emin =  100000.0;
+    printf("\nExit. \n\n");
+    free(eig);
+    free(mat);
+    free(ntri);
+    free(draw_band);
+    free(bzl);
+    free(nnl);
+    free_patch();
+    exit(0);
+  }
+}
+/*
+ Shift Fermi energy
+*/
+void menu_shiftEF(int value /**< [in] Selected menu*/) 
+{
+  int ib, i0, i1, i2, ierr;
+  GLfloat emin, emax;
+
+  if (value == 1) {
+    emin = 100000.0;
     emax = -100000.0;
-    for (ib = 0; ib < nb; ++ib) {  
-      for (i1 = 0; i1 < ng[0]; ++i1) {
-        for (i2 = 0; i2 < ng[1]; ++i2) {
-          for (i3 = 0; i3 < ng[2]; ++i3) {
-            eig[ib][i1][i2][i3] = eig[ib][i1][i2][i3] + def;
-            if(emin > eig[ib][i1][i2][i3]) emin = eig[ib][i1][i2][i3];
-            if(emax < eig[ib][i1][i2][i3]) emax = eig[ib][i1][i2][i3];
+    for (ib = 0; ib < nb; ++ib) {
+      for (i0 = 0; i0 < ng[0]; ++i0) {
+        for (i1 = 0; i1 < ng[1]; ++i1) {
+          for (i2 = 0; i2 < ng[2]; ++i2) {
+            if (emin > eig[ib][i0][i1][i2]) emin = eig[ib][i0][i1][i2];
+            if (emax < eig[ib][i0][i1][i2]) emax = eig[ib][i0][i1][i2];
           }
         }
       }
     }
     printf("Min  Max  E_F \n");
-    printf("%f %f %f \n",emin, emax, def);
+    printf("%f %f %f \n", emin, emax, EF);
     printf("New Fermi energy : ");
-    ierr = scanf("%f", &def);
-    if(ierr == 0) printf("error ! reading ef");
-    for (ib = 0; ib < nb; ++ib) {  
-      for (i1 = 0; i1 < ng[0]; ++i1) {
-        for (i2 = 0; i2 < ng[1]; ++i2) {
-          for (i3 = 0; i3 < ng[2]; ++i3) {
-            eig[ib][i1][i2][i3] = eig[ib][i1][i2][i3] - def;
-          }
-        }
-      }
-    }
+    //
+    ierr = scanf("%f", &EF);
+    if (ierr != 1) printf("error ! reading ef");
+    /**/
+    free_patch();
     query = 1;
     fermi_patch();
     query = 0;
@@ -1818,25 +1904,8 @@ void main_menu(int value /**< [in] Selected menu*/){
     /**/
     glutPostRedisplay();
   }
-  else if(value == 9){
-    /*
-      Exit
-    */
-    printf("\nExit. \n\n");
-    free(eig);
-    free(mat);
-    free(ntri);
-    free(draw_band);
-    free(nmlp);
-    free(kvp);
-    free(matp);
-    free(clr);
-    free(bzl);
-    free(nnl);
-    free(kvnl);
-    exit(0);
-  }
 }
+
 /**
  * Change mouse function
  */
@@ -1919,12 +1988,8 @@ void menu_colorscale(int value /**<[in] Selected menu*/){
 void menu_bzmode(int value /**<[in] Selected menu*/){
   if(value == 1 && fbz != 1){
     fbz = 1;
-    free(kvp);
-    free(nmlp);
-    free(clr);
-    free(matp);
-    free(kvnl);
     /**/
+    free_patch();
     query = 1;
     fermi_patch();
     query = 0;
@@ -1937,12 +2002,8 @@ void menu_bzmode(int value /**<[in] Selected menu*/){
   }
   else if(value == 2 && fbz != -1){
     fbz = -1;
-    free(kvp);
-    free(nmlp);
-    free(clr);
-    free(matp);
-    free(kvnl);
     /**/
+    free_patch();
     query = 1;
     fermi_patch();
     query = 0;
@@ -2002,17 +2063,12 @@ void menu_colorbar(int value /**<[in] Selected menu*/){
  * Change tetrahedron
  */
 void menu_tetra(int value) /**<[in] Selected menu*/{
-  int imenu2;
   /**/
   if(value != itet){
     printf("Tetra patern %d \n", value + 1);
     itet = value;
-    free(kvp);
-    free(nmlp);
-    free(clr);
-    free(matp);
-    free(kvnl);
     init_corner();
+    free_patch();
     query = 1;
     fermi_patch();
     query = 0;
@@ -2122,7 +2178,7 @@ Munu
 */
 void FS_CreateMenu()
 {
-  int ib;
+  int ib, ishiftEF;
   char ibstr[20] = { 0 };
   /**/
   imousemenu = glutCreateMenu(menu_mouse);
@@ -2139,6 +2195,9 @@ void FS_CreateMenu()
     else sprintf(ibstr, "[ ] band # %d", ib + 1);
     glutAddMenuEntry(ibstr, ib);
   }
+  /* Shift Fermi energy */
+  ishiftEF = glutCreateMenu(menu_shiftEF);
+  glutAddMenuEntry("Shift Fermi energy", 1);
   /* Background color */
   ibgmenu = glutCreateMenu(menu_bgcolor);
   if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
@@ -2194,7 +2253,7 @@ void FS_CreateMenu()
   imenu = glutCreateMenu(main_menu);
   glutAddSubMenu("Band", ibandmenu);
   glutAddSubMenu("Mouse Drag", imousemenu);
-  glutAddMenuEntry("Shift Fermi energy", 2);
+  glutAddSubMenu("Shift Fermi energy", ishiftEF);
   glutAddSubMenu("Background color", ibgmenu);
   glutAddSubMenu("Color scale mode", icsmenu);
   glutAddSubMenu("Brillouin zone", ibzmenu);
@@ -2226,6 +2285,13 @@ int main(
   int argc /**< [in] */, 
   char *argv[] /**< [in] */)
 {
+  if (argc < 2) {
+    printf("\n\nInput file is not specified !\n");
+    printf("  Press any key to exit.\n");
+    getchar();
+    exit(-1);
+  }
+
   /**/
   read_file(argv[1]);
   init_corner();

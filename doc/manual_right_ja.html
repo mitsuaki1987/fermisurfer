@@ -18,7 +18,7 @@
   <body bgcolor="CCFFCC">
 
     <center><h1>FermiSurferマニュアル</h1></center>
-    <center><h2>バージョン1.4</h2></center>
+    <center><h2>バージョン1.5</h2></center>
     <center><h2>河村光晶</h2></center>
 
     <hr><a name="hajimeni"><h1>1, はじめに</h1></a>
@@ -58,9 +58,7 @@
       <p><code>doc/manual_ja.pdf</code> : マニュアル(日本語)</p>
       <p><code>examples/mgb2_vfz.frmsf</code> : サンプル入力ファイル</p>
       <p><code>src/fermisurfer.c</code> : ソースファイル</p>
-      <p><code>src/mac.diff</code> : Mac OSX用　パッチ</p>
-      <p><code>src/Makefile</code> : Linux用　Makefile</p>
-      <p><code>src/Makefile-mac</code> : Mac OSX用　Makefile</p>
+      <p><code>src/Makefile</code> : Makefile</p>
     </dl>
     
     <hr><a name="instlation"><h1>4, インストール手順</h1></a>
@@ -96,16 +94,16 @@ $ make install
 
     <ol>
       <li><p>Xcodeをあらかじめインストールしておく</p></li>
-      <li><p>ソースコードにパッチを当てる</p>
+      <li><p>Makefileを適当なエディタで開いて#macの下の行の#を消す.</p>
         <pre><code>
 $ cd ./src
-$ patch -p1 &lt; mac.diff
+$ emacs Makefile 
         </code></pre>
       </li>
       <li><p>メイク</p>
         <pre><code>
-$ make -f Makefile-mac fermisurfer
-$ make -f Makefile-mac install
+$ make fermisurfer
+$ make install
         </code></pre>
       </li>
     </ol>
@@ -114,21 +112,7 @@ $ make -f Makefile-mac install
     
     <hr><h2>4.3, Windowsの場合</h2>
 
-    <ol>
-      <li><p>freeglutWindows Development Libraryのサイト</p>
-        <pre><code>
-http://www.transmissionzero.co.uk/software/freeglut-devel/
-        </code></pre>
-        <p>内の「freeglut MSVC package」という項目から <code>freeglut.dll</code>を含む
-          <code>zip</code>ファイルを ダウンロードし, 展開する.</p></li>
-      <li><p>展開したフォルダ内の<code>bin</code>というフォルダに入っている, 
-          <code>freeglut.dll</code>を<code>fermisurfer.exe</code>
-          のあるフォルダ(<code>bin</code>)にコピーする.</p>
-        <p>(注) <code>bin\x64\</code>にも<code>freeglut.dll</code>があるが, 
-          そちらは使わない.</p></li>
-      <li><p><code>fermisurfer.exe</code>と<code>freeglut.dll</code>は
-          常に同じフォルダにおいておくこと.</p></li>
-    </ol>
+    <p>実行可能ファイル<code>bin/fermisurfer.exe</code>を直接実行します.</p>
     
     <hr><a name="inputfile"><h1>5, Input file</h1></a>
 
