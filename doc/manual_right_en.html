@@ -18,7 +18,7 @@
   <body bgcolor="CCFFCC">
 
     <center><h1>Manual for FermiSurfer</h1></center>
-    <center><h2>Version 1.5</h2></center>
+    <center><h2>Version 1.6</h2></center>
     <center><h2>Mitsuaki Kawamura</h2></center>
 
     <hr>
@@ -54,11 +54,14 @@
     <hr><h1><a name="files-in-this-package">3, Files in this package</a></h1>
 
     <dl>
-      <p><code>bin/fermisurfer.exe</code> : Executable for Windows</p>
+      <p><code>bin/fermisurfer.exe</code> : Executable for Windows (Main program)</p>
+      <p><code>bin/bxsf2frmsf.exe</code> : Executable for Windows (Utility to convert file)</p>
       <p><code>doc/manual_en.pdf</code> : Manual (English)</p>
       <p><code>doc/manual_ja.pdf</code> : Manual (Japanese)</p>
-      <p><code>examples/mgb2_vfz.frmsf</code> : Sample input file</p>
-      <p><code>src/fermisurfer.c</code> : Source file</p>
+      <p><code>examples/mgb2_vfz.frmsf</code> : Sample input file for <code>fermisurfer</code></p>
+      <p><code>examples/pb.bxsf</code> : Sample input file for <code>bxsf2frmsf</code></p>
+      <p><code>src/fermisurfer.c</code> : Source file (Main program)</p>
+      <p><code>src/bxsf2frmsf.c</code> : Source file (Utility to convert file)</p>
       <p><code>src/Makefile</code> : Makefile for Linux & Mac OSX</p>
     </dl>
 
@@ -109,7 +112,9 @@ $ make install
 
     <hr><h2 id="installation-in-windows">4.3, Installation in Windows</h2>
 
-    <p>Use an executable <code>bin/fermisurfer.exe</code></p>
+    <p>Use an executable <code>bin/fermisurfer.exe</code> .
+      You can also compile <code>fermisurfer</code> manually
+      by using freeglut library.</p>
 
     <hr><h1><a name="input-file">5, Input file</a></h1>
 
@@ -123,9 +128,6 @@ $ make install
       <li><p>The orbital energy at each band and $k$ (We call it "energy") .</p></li>
       <li><p>Variables that you want to plot with color (We call it "matrix elements").</p></li>
     </ul>
-    <p>This program supports two kind of uniform $k$ grid, 
-      a grid (${\rm \Gamma}$ centered) and grid with a half-grid shift. 
-      The latter is used when the matrix element becomes singular at ${\rm \Gamma}$.</p>
     <p>The input file is as follows (<code>mgb2_vfz.fs</code>):</p>
     <pre><code>
 40          40          36        (1)
@@ -154,18 +156,84 @@ $ make install
 -10.315671
     </code></pre>
     <ol>
-      <li><p>The $k$ point grid</p></li>
-      <li><p>0 for ${\rm \Gamma}$ centered grid. 1 for shifted grid.</p></li>
+      <li><p>The number of $k$ in each direction</p></li>
+     <li><p>Switch to specify type of $k$ grid (Choose from <code>0, 1, 2</code>)</p>
+        <p>$k$ grid is represented as follows:<p>
+        <p>$$\begin{aligned}
+          {\boldsymbol k}_{i,j,k} = 
+          x_i {\boldsymbol b}_1
+          +y_j {\boldsymbol b}_2
+          +z_k {\boldsymbol b}_3,
+          \end{aligned}$$</p>
+        where $i, j, k = 1 \cdots N_1, 1 \cdots N_2, 1 \cdots N_3$, 
+        and $N_1, N_2, N_3$ are the number of $k$ in each direction.
+        </p>$x_i, y_j,z_k$ can be chosen from below:</p>
+        <ul>
+          <li><p><code>0</code> (Monkhorst-Pack grid) : 
+            $x_i = \frac{2 i - 1 - N_1}{2 N_1}$</p>
+          </li>
+          <li><p><code>1</code> : 
+            $x_i = \frac{i - 1}{N_1}$</p>
+          </li>
+          <li><p><code>2</code> : 
+            $x_i = \frac{2 i - 1}{2 N_1}$</p>
+          </li>
+        </ul>
+      </li>
       <li><p>The number of bands</p></li>
       <li><p>Reciprocal lattice vector 1 (arbitrary unit)</p></li>
       <li><p>Reciprocal lattice vector 2</p></li>
       <li><p>Reciprocal lattice vector 3</p></li>
-      <li><p>Energy</p></li>
-      <li><p>Matrix elements</p></li>
+      <li><p>Energy</p>
+      <p><code>fermisurfer</code> assume that the Fermi energy is <code>0.0</code>
+        in the default.
+        You can shift the Fermi energy by using
+        <code>Shift Fermi Energy</code> menu described at the section 6.5.</p></li>
+      <li><p>Matrix elements</p>
+        <p>If you have no quantity to plot on Fermi surfaces,
+          please use <code>Unicolor</code> switch in 
+          <code>Color scale mode</code> menu described at section 6.7.
+          In that case, although this &quot;Matrix elements&quot;
+          is not used by <code>fermisurfer</code>, 
+          please fill them with arbitrary numbers.</p>
+      </li>
     </ol>
 
+    <hr><h2>5.2, Converting bxsf file</h2>
+    
+    <p>
+      You can generate input files for <code>fermisurfer</code> from
+      an input file for XCrysDen (the bxsf format)
+      by using the utility program <code>bxsf2frmsf</code>.
+    </p>
+    <p>使い方は次のとおりです.<code>examples/</code>ディレクトリにある<code>pb.bxsf</code>
+      ファイルを例として使います.</p>
+
+    <h3>5.2.1, For Linuxの場合</h2>
+
+    <p>You can launch generated executable as follows:</p>
+    <pre><code>
+$ bxsf2frmsf pb.bxsf
+    </code></pre>
+    <p>You need a space between the command and input-file name.
+      After it finishes, the following files are generated:</p>
+    <ul>
+      <li><code>pb_vf.frmsf</code>: Absolute value of the Fermi velocity</li>
+      <li><code>pb_vfx.frmsf</code>: $x$ component of the Fermi velocity</li>
+      <li><code>pb_vfy.frmsf</code>: $y$ component of the Fermi velocity</li>
+      <li><code>pb_vfz.frmsf</code>: $z$ component of the Fermi velocity</li>
+      <li><code>pb_vfa1.frmsf</code>: Component of the Fermi velocity (along ${a_1}$)</li>
+      <li><code>pb_vfa2.frmsf</code>: Component of the Fermi velocity (along ${a_2}$)</li>
+      <li><code>pb_vfa3.frmsf</code>: Component of the Fermi velocity (along ${a_3}$)</li>
+    </ul>
+
+    <h3>5.2.2, For Windows</h3>
+
+    <p>Click mouse right button on the input file. 
+      Choose "Open With ..." menu, then choose <code>bxsf2frmsf.exe</code>.</p>
+
     <hr><h2 id="how-to-produce-the-input-file-in-c-and-fortran-programs">
-      5.2, How to produce the input file in C and fortran programs</h2>
+      5.3, How to produce the input file in C and fortran programs</h2>
 
     <p>fortran</p>
     <pre><code>
@@ -216,19 +284,19 @@ $ make install
 
   FILE* fo;
   int ibnd, ik1, ik2, ik3;
-
-  fo = fopen(&quot;sample.fs&quot;, &quot;w&quot;);
-  ierr = fprintf(fo, &quot;%d %d %d&quot;, nk1, nk2, nk3);
-  ierr = fprintf(fo, &quot;%d, iswitch);
-  ierr = fprintf(fo, &quot;%d, nbnd);
-  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec1[0], bvec1[1], bvec1[2]); 
-  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec2[0], bvec2[1], bvec2[2]);
-  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec3[0], bvec3[1], bvec3[2]);
+  
+  fo = fopen(“sample.frmsf”, “w”);
+  ierr = fprintf(fo, &quot;%d %d %d\n&quot;, nk1, nk2, nk3);
+  ierr = fprintf(fo, &quot;%d\n&quot;, iswitch);
+  ierr = fprintf(fo, &quot;%d\n&quot;, nbnd);
+  ierr = fprintf(fo, &quot;%e %e %e\n&quot;, bvec1[0], bvec1[1], bvec1[2]); 
+  ierr = fprintf(fo, &quot;%e %e %e\n&quot;, bvec2[0], bvec2[1], bvec2[2]);
+  ierr = fprintf(fo, &quot;%e %e %e\n&quot;, bvec3[0], bvec3[1], bvec3[2]);
   for (ibnd = 0; ibnd &lt; nbnd; ++ibnd) {  
      for (ik1 = 0; ik1 &lt; nk1; ++ik1) { 
         for (ik2 = 0; ik2 &lt; nk2; ++ik2) { 
            for (ik3 = 0; ik3 &lt; nk3; ++ik3) { 
-              ierr = fprintf(fo, &quot;%e&quot;, eig[ibnd][ik1][ik2][ik3]); 
+              ierr = fprintf(fo, &quot;%e\n&quot;, eig[ibnd][ik1][ik2][ik3]); 
            } 
         } 
      } 
@@ -237,7 +305,7 @@ $ make install
      for (ik1 = 0; ik1 &lt; nk1; ++ik1) { 
         for (ik2 = 0; ik2 &lt; nk2; ++ik2) { 
            for (ik3 = 0; ik3 &lt; nk3; ++ik3) { 
-              ierr = fprintf(fo, &quot;%e&quot;, x[ibnd][ik1][ik2][ik3]); 
+              ierr = fprintf(fo, &quot;%e\n&quot;, x[ibnd][ik1][ik2][ik3]); 
            } 
         } 
      } 
@@ -426,6 +494,12 @@ Fermi energy shift :
     <hr><h2 id="exit">6.13, Exit</h2>
 
     <p>This finishes <code>fermisurfer</code>.</p>
+
+    <hr><h2>6.14, Saving images</h2>
+
+    <p><code>fermisurfer</code> does not have any functions to
+      save images to a file.
+      Please use the screenshot on your PC.</p>
 
     <hr><h1><a name="gallery">7, Gallery</a></h1>
 

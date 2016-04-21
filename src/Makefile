@@ -1,7 +1,7 @@
 
 CC = gcc
-CFLAGS=-fopenmp -O3 -lglut -lGLU -lGL -lm -g
 
+CFLAGS=-fopenmp -O3 -lglut -lGLU -lGL -lm -g
 # for mac
 #CFLAGS=-D mac -O3 -lglut -lGLU -lGL -lm
 

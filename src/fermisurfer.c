@@ -66,7 +66,7 @@ int lmouse = 1;    /**< Switch for the mouse function */
 /**
  Menu
 */
-int ibandmenu, ibgmenu, icsmenu, ibzmenu, inlmenu,
+int ibandmenu, isetview, ibgmenu, icsmenu, ibzmenu, inlmenu,
 icbmenu, itetmenu, istereomenu, imousemenu, imenu;
 /**
  * Variables for Brillouin zone boundaries
@@ -102,6 +102,7 @@ GLfloat trans[3] = {0.0, 0.0, 0.0};    /**< Translation              */
 GLfloat rot[3][3] = {{1.0, 0.0, 0.0},  /**< Rotation matrix          */
                      {0.0, 1.0, 0.0},   
                      {0.0, 0.0, 1.0}};
+GLfloat thetax = 0.0, thetay = 0.0, thetaz = 0.0;
 /**
  * Colors
  */
@@ -1905,7 +1906,81 @@ void menu_shiftEF(int value /**< [in] Selected menu*/)
     glutPostRedisplay();
   }
 }
+/*
+Setting of view
+*/
+void menu_view(int value /**< [in] Selected menu*/)
+{
+  int ib, i0, i1, i2, ierr;
+  GLfloat emin, emax;
 
+  if (value == 1) {
+ 
+    printf("  Current Scale : %f\n", scl);
+    printf("      New Scale : ");
+    scanf("%f", &scl);
+ 
+  }
+  else  if (value == 2) {
+
+    printf("  Current Position(x y) : %f %f\n", trans[0], trans[1]);
+    printf("      New Position(x y) : ");
+    scanf("%f %f", &trans[0], &trans[1]);
+ 
+  }
+  else  if (value == 3) {
+
+    /*
+    printf("\n#####  Current View setting  #####\n\n");
+    printf("  Rot : %10.5f  %10.5f  %10.5f\n", rot[0][0], rot[0][1], rot[0][2]);
+    printf("        %10.5f  %10.5f  %10.5f\n", rot[1][0], rot[1][1], rot[1][2]);
+    printf("        %10.5f  %10.5f  %10.5f\n", rot[2][0], rot[2][1], rot[2][2]);
+    */
+    /**/
+    thetay = asin(rot[0][2]);
+    if (cosf(thetay) != 0.0) {
+      if (-rot[1][2] / cosf(thetay) >= 0.0) thetax = acosf(rot[2][2] / cosf(thetay));
+      else thetax = 6.283185307 - acosf(rot[2][2] / cosf(thetay));
+      if (-rot[0][1] / cosf(thetay) >= 0.0) thetaz = acosf(rot[0][0] / cosf(thetay));
+      else thetaz = 6.283185307 - acosf(rot[0][0] / cosf(thetay));
+    }
+    else {
+      thetax = 0.0;
+      if (rot[1][0] >= 0.0) thetaz = acosf(rot[1][1]);
+      else thetaz = 6.283185307 - acosf(rot[1][1]);
+    }
+    thetax = 180.0 / 3.14159265 * thetax;
+    thetay = 180.0 / 3.14159265 * thetay;
+    thetaz = 180.0 / 3.14159265 * thetaz;
+    printf("  Current Rotation (theta_x theta_y teta_z) in degree : %f %f %f\n", thetax, thetay, thetaz);
+    printf("      New Rotation (theta_x theta_y teta_z) in degree : ");
+    scanf("%f %f %f", &thetax, &thetay, &thetaz);
+    thetax = 3.14159265 / 180.0 * thetax;
+    thetay = 3.14159265 / 180.0 * thetay;
+    thetaz = 3.14159265 / 180.0 * thetaz;
+
+    rot[0][0] = cosf(thetay)* cosf(thetaz);
+    rot[0][1] = -cosf(thetay)* sin(thetaz);
+    rot[0][2] = sinf(thetay);
+    rot[1][0] = cosf(thetaz)* sinf(thetax)* sinf(thetay) + cosf(thetax)* sinf(thetaz);
+    rot[1][1] = cosf(thetax) * cosf(thetaz) - sinf(thetax)* sinf(thetay)* sinf(thetaz);
+    rot[1][2] = -cosf(thetay)* sinf(thetax);
+    rot[2][0] = -cosf(thetax)* cosf(thetaz)* sinf(thetay) + sinf(thetax)* sinf(thetaz);
+    rot[2][1] = cosf(thetaz)* sinf(thetax) + cosf(thetax)* sinf(thetay)* sinf(thetaz);
+    rot[2][2] = cos(thetax)* cosf(thetay);
+
+    /*
+    printf("\n#####  New View setting  #####\n\n");
+    printf("  Rot : %10.5f  %10.5f  %10.5f\n", rot[0][0], rot[0][1], rot[0][2]);
+    printf("        %10.5f  %10.5f  %10.5f\n", rot[1][0], rot[1][1], rot[1][2]);
+    printf("        %10.5f  %10.5f  %10.5f\n", rot[2][0], rot[2][1], rot[2][2]);
+    */
+
+  }
+
+  glutPostRedisplay();
+
+}
 /**
  * Change mouse function
  */
@@ -2198,6 +2273,11 @@ void FS_CreateMenu()
   /* Shift Fermi energy */
   ishiftEF = glutCreateMenu(menu_shiftEF);
   glutAddMenuEntry("Shift Fermi energy", 1);
+  /* Set view */
+  isetview = glutCreateMenu(menu_view);
+  glutAddMenuEntry("Scale", 1);
+  glutAddMenuEntry("Position", 2);
+  glutAddMenuEntry("Rotation", 3);
   /* Background color */
   ibgmenu = glutCreateMenu(menu_bgcolor);
   if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
@@ -2254,6 +2334,7 @@ void FS_CreateMenu()
   glutAddSubMenu("Band", ibandmenu);
   glutAddSubMenu("Mouse Drag", imousemenu);
   glutAddSubMenu("Shift Fermi energy", ishiftEF);
+  glutAddSubMenu("Set view", isetview);
   glutAddSubMenu("Background color", ibgmenu);
   glutAddSubMenu("Color scale mode", icsmenu);
   glutAddSubMenu("Brillouin zone", ibzmenu);

@@ -18,7 +18,7 @@
   <body bgcolor="CCFFCC">
 
     <center><h1>FermiSurferマニュアル</h1></center>
-    <center><h2>バージョン1.5</h2></center>
+    <center><h2>バージョン1.6</h2></center>
     <center><h2>河村光晶</h2></center>
 
     <hr><a name="hajimeni"><h1>1, はじめに</h1></a>
@@ -53,11 +53,14 @@
     <a name="filesinthispackage"><h1>3, このパッケージに含まれているファイル</h1></a>
 
     <dl>
-      <p><code>bin/fermisurfer.exe</code> : Windows用実行ファイル</p>
+      <p><code>bin/fermisurfer.exe</code> : Windows用実行ファイル(本体)</p>
+      <p><code>bin/bxsf2frmsf.exe</code> : Windows用実行ファイル(ファイル変換用ユーティリティ)</p>
       <p><code>doc/manual_en.pdf</code> : マニュアル(英語)</p>
       <p><code>doc/manual_ja.pdf</code> : マニュアル(日本語)</p>
       <p><code>examples/mgb2_vfz.frmsf</code> : サンプル入力ファイル</p>
-      <p><code>src/fermisurfer.c</code> : ソースファイル</p>
+      <p><code>examples/pb.bxsf</code> : サンプル入力ファイル</p>
+      <p><code>src/fermisurfer.c</code> : ソースファイル(本体)</p>
+      <p><code>src/bxsf2frmsf.c</code> : ソースファイル(ファイル変換用ユーティリティ)</p>
       <p><code>src/Makefile</code> : Makefile</p>
     </dl>
     
@@ -82,12 +85,13 @@ $ sudo yum install freeglut-devel.x86_64
       <li><p>メイク</p>
         <pre><code>  
 $ cd ./src
-$ make fermisurfer
+$ make all
 $ make install
         </code></pre>
       </li>
     </ol>
-    <p>以上で実行可能ファイル <code>fermisurfer</code> が作られ, 
+    <p>以上で実行可能ファイル <code>fermisurfer</code>および
+      <code>bxsf2frmsf</code> が作られ, 
       <code>/usr/local/bin/</code>にコピーされます.</p>
     
     <hr><h2>4.2, Mac OSX の場合</h2>
@@ -107,16 +111,17 @@ $ make install
         </code></pre>
       </li>
     </ol>
-    <p>以上で実行可能ファイル <code>fermisurfer</code> が作られ, 
+    <p>以上で実行可能ファイル <code>fermisurfer</code> および
+      <code>bxsf2frmsf</code>が作られ, 
       <code>/usr/local/bin/</code>にコピーされます.</p>
     
     <hr><h2>4.3, Windowsの場合</h2>
 
-    <p>実行可能ファイル<code>bin/fermisurfer.exe</code>を直接実行します.</p>
+    <p>実行可能ファイル<code>bin/fermisurfer.exe</code>を直接実行します.
+    freeglutライブラリをダウンロードして自分でコンパイルすることも可能です.</p>
     
     <hr><a name="inputfile"><h1>5, Input file</h1></a>
 
-    
     <hr><h2>5.1, input fileの書式</h2>
 
     <p>用意するデータは,</p>
@@ -130,13 +135,6 @@ $ make install
           $k$グリッド点での値</p></li>
     </ul>
     <p>です.</p>
-    <p>※ $k$グリッドの取り方
-      $k$点の取り方として, 
-      ${\rm \Gamma}$点を含むグリッドと, 
-      ${\rm \Gamma}$点から半グリッド分だけずらしたグリッド
-      の二つに対応しています. 
-      後者はプロットしたい物理量が${\rm \Gamma}$点で特異的になっている
-      場合等に使われる事を想定しています.</p>
     <p>上記データを次のとおりの書式で並べます(サンプルファイル
       <code>mgb2_vfz.frmsf</code>の中身).</p>
     <pre><code>
@@ -167,17 +165,85 @@ $ make install
     </code></pre>
     <ol>
       <li><p>$k$グリッド数</p></li>
-      <li><p>${\rm \Gamma}$点を含むグリッド
-          (含まないグリッドでは1とする)</p></li>
+      <li><p>$k$グリッドの指定方法(<code>0, 1, 2</code>のいずれか)</p>
+        <p>$k$グリッドを次のように表します.<p>
+        <p>$$\begin{aligned}
+          {\boldsymbol k}_{i,j,k} = 
+          x_i {\boldsymbol b}_1
+          +y_j {\boldsymbol b}_2
+          +z_k {\boldsymbol b}_3
+          \end{aligned}$$</p>
+        ただし$i, j, k$は$1$から各逆格子ベクトル方向の分割数$N_1, N_2, N_3$
+        (上で読み取ったもの)とする
+        </p>$x_i, y_j,z_k$は次の3つのとり方が可能です.</p>
+        <ul>
+          <li><p><code>0</code>の場合(Monkhorst-Packグリッド) : 
+            $x_i = \frac{2 i - 1 - N_1}{2 N_1}$</p>
+          </li>
+          <li><p><code>1</code>の場合 : 
+            $x_i = \frac{i - 1}{N_1}$</p>
+          </li>
+          <li><p><code>2</code>の場合 : 
+            $x_i = \frac{2 i - 1}{2 N_1}$</p>
+          </li>
+        </ul>
+      </li>
       <li><p>バンド本数</p></li>
       <li><p>逆格子ベクトル1 (任意単位)</p></li>
       <li><p>逆格子ベクトル2</p></li>
       <li><p>逆格子ベクトル3</p></li>
-      <li><p>エネルギー (並び順は下記参照)</p></li>
-      <li><p>物理量 (並び順は下記参照)</p></li>
+      <li><p>エネルギー (並び順は5.3節参照)</p>
+      <p><code>fermisurfer</code>はデフォルトではFermiエネルギーを
+        <code>0.0</code>としています.
+        ただし, 後述の<code>Shift Fermi Energy</code>メニューを用いて
+        Fermiエネルギーを<code>0.0</code>以外の値に変更することも可能です.</p></li>
+      <li><p>物理量 (並び順は5.3節参照)</p>
+        <p>特にカラープロットをしたい量が無く, Fermi面の描画のみを行いたい場合には,
+          後述の<code>Color scale mode</code>メニューから
+          <code>Unicolor</code>を選択してください.
+          その際, この&quot;物理量&quot;は利用されることはありませんが, 
+          ファイルの読み込みを完了させるために何らかの数字で埋めてください
+          (すべて<code>1.0</code>とするなど).</p>
+      </li>
     </ol>
+
+    <hr><h2>5.2, BXSF形式からの変換</h2>
     
-    <hr><h2>5.2, C/fortranでの入力ファイルの書き出し方</h2>
+    <p>
+      付属のユーティリティー<code>bxsf2frmsf</code>を使うと
+      XCrysDen用の入力ファイルから<code>fermisurfer</code>で読み取り可能な入力ファイルが
+      作られます.
+      また, そのときにFermi面上にカラープロットされるFermi速度が, 
+      エネルギーバンドから計算されます.
+    </p>
+    <p>使い方は次のとおりです.<code>examples/</code>ディレクトリにある<code>pb.bxsf</code>
+      ファイルを例として使います.</p>
+
+    <h3>5.2.1, Linuxの場合</h2>
+
+    <p>作成した実行可能ファイル<code>bxsf2frmsf</code>にパスが通っている状態で</p>
+    <pre><code>
+$ bxsf2frmsf pb.bxsf
+    </code></pre>
+    <p>とコマンド, スペース, 入力ファイル名とタイプします. 
+      その後, 次のファイルが生成されます.</p>
+    <ul>
+      <li><code>pb_vf.frmsf</code>: Fermi速度の絶対値</li>
+      <li><code>pb_vfx.frmsf</code>: Fermi速度の$x$成分</li>
+      <li><code>pb_vfy.frmsf</code>: Fermi速度の$y$成分</li>
+      <li><code>pb_vfz.frmsf</code>: Fermi速度の$z$成分</li>
+      <li><code>pb_vfa1.frmsf</code>: Fermi速度の, 格子ベクトル${a_1}$に平行な成分</li>
+      <li><code>pb_vfa2.frmsf</code>: Fermi速度の, 格子ベクトル${a_2}$に平行な成分</li>
+      <li><code>pb_vfa3.frmsf</code>: Fermi速度の, 格子ベクトル${a_3}$に平行な成分</li>
+    </ul>
+
+    <h3>5.2.2, Windowsの場合</h3>
+
+    <p>入力ファイル(この場合は<code>pb.bxsf</code>)を右クリックし, 
+      メニューから「プログラムから開く」を選択し, 
+      実行ファイルを<code>bxsf2frmsf.exe</code>に設定してください.</p>
+
+    <hr><h2>5.3, C/fortranでの入力ファイルの書き出し方</h2>
 
     <p>・fortran</p>
     <pre><code>
@@ -230,17 +296,17 @@ $ make install
   int ibnd, ik1, ik2, ik3;
   
   fo = fopen(“sample.frmsf”, “w”);
-  ierr = fprintf(fo, &quot;%d %d %d&quot;, nk1, nk2, nk3);
-  ierr = fprintf(fo, &quot;%d, iswitch);
-  ierr = fprintf(fo, &quot;%d, nbnd);
-  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec1[0], bvec1[1], bvec1[2]); 
-  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec2[0], bvec2[1], bvec2[2]);
-  ierr = fprintf(fp, &quot;%e %e %e&quot;, bvec3[0], bvec3[1], bvec3[2]);
+  ierr = fprintf(fo, &quot;%d %d %d\n&quot;, nk1, nk2, nk3);
+  ierr = fprintf(fo, &quot;%d\n&quot;, iswitch);
+  ierr = fprintf(fo, &quot;%d\n&quot;, nbnd);
+  ierr = fprintf(fo, &quot;%e %e %e\n&quot;, bvec1[0], bvec1[1], bvec1[2]); 
+  ierr = fprintf(fo, &quot;%e %e %e\n&quot;, bvec2[0], bvec2[1], bvec2[2]);
+  ierr = fprintf(fo, &quot;%e %e %e\n&quot;, bvec3[0], bvec3[1], bvec3[2]);
   for (ibnd = 0; ibnd &lt; nbnd; ++ibnd) {  
      for (ik1 = 0; ik1 &lt; nk1; ++ik1) { 
         for (ik2 = 0; ik2 &lt; nk2; ++ik2) { 
            for (ik3 = 0; ik3 &lt; nk3; ++ik3) { 
-              ierr = fprintf(fo, &quot;%e&quot;, eig[ibnd][ik1][ik2][ik3]); 
+              ierr = fprintf(fo, &quot;%e\n&quot;, eig[ibnd][ik1][ik2][ik3]); 
            } 
         } 
      } 
@@ -249,7 +315,7 @@ $ make install
      for (ik1 = 0; ik1 &lt; nk1; ++ik1) { 
         for (ik2 = 0; ik2 &lt; nk2; ++ik2) { 
            for (ik3 = 0; ik3 &lt; nk3; ++ik3) { 
-              ierr = fprintf(fo, &quot;%e&quot;, x[ibnd][ik1][ik2][ik3]); 
+              ierr = fprintf(fo, &quot;%e\n&quot;, x[ibnd][ik1][ik2][ik3]); 
            } 
         } 
      } 
@@ -463,6 +529,13 @@ Fermi energy shift :
 
     <p>Fermi Surferを終了します.</p>
     
+    <hr><h2>6.14, 画像の保存方法</h2>
+
+    <p><code>fermisurfer</code>には画像をファイル出力する機能はありません.
+    お使いのPCにあった方法でスクリーンショットを取得して
+      (<code>Printscreen</code>キーを押すなど)
+    ペイントブラシやgimpで編集して画像を作成してください.</p>
+
     <hr><a name="garally"><h1>7, ギャラリー</h1></a>
 
     <p>IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与 (図10). 
