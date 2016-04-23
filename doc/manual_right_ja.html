@@ -18,7 +18,7 @@
   <body bgcolor="CCFFCC">
 
     <center><h1>FermiSurferマニュアル</h1></center>
-    <center><h2>バージョン1.6</h2></center>
+    <center><h2>バージョン1.7</h2></center>
     <center><h2>河村光晶</h2></center>
 
     <hr><a name="hajimeni"><h1>1, はじめに</h1></a>
@@ -436,16 +436,36 @@ Fermi energy shift :
       図3: <code>Shift Fermi energy</code>メニューで
       Fermi エネルギーを0 Ryから0.1 Ryに変える.</p>
     
-    <hr><h2>6.6, Background color</h2>
+    <hr><h2>6.6, Set view</h2>
+
+    <p>視点を変更します.</p>
+    <dl>
+      <dt>Scale</dt>
+      <dd><p>図形のサイズを指定します.</p>
+      </dd>
+      <dt>Position</dt>
+      <dd><p>図形の上下位置を指定します.</p>
+      </dd>
+      <dt>Rotation</dt>
+      <dd><p>x,y,z軸周りの回転角を指定します.回転操作はz軸-y軸-x軸の順で行われます</p>
+      </dd>
+    </dl>
+    <p>それぞれのメニューを選択すると, はじめに現在の値が表示され, 
+      その後変更後の値を入れるプロンプトが現れます(図４).</p>
+    <p><img src="figs/setview.jpg" align="middle" width="800" alt="" />
+      図4: <code>Set view</code>メニューで
+      視点を変更する.</p>
+    
+    <hr><h2>6.7, Background color</h2>
 
     <p>背景色を黒または白に切り替えます. 
-      Brillouin Zoneの枠線も白/黒と切り替わります (図4).</p>
+      Brillouin Zoneの枠線も白/黒と切り替わります (図5).</p>
     <p><img src="figs/background.jpg" align="middle" width="800" alt="" />
-      図4: <code>Background color</code>メニューで背景色を白/黒に切り替える.</p>
+      図5: <code>Background color</code>メニューで背景色を白/黒に切り替える.</p>
     
-    <hr><h2>6.7, Color scale mode</h2>
+    <hr><h2>6.8, Color scale mode</h2>
 
-    <p>Fermi面の色表示のさせ方を変更します(図5).</p>
+    <p>Fermi面の色表示のさせ方を変更します(図6).</p>
     <dl>
       <dt>Auto(デフォルト)</dt>
       <dd><p>カラースケールの範囲をFermi面上での物理量の最小値から最大値までとします.</p>
@@ -472,12 +492,12 @@ Fermi energy shift :
       </dd>
     </dl>
     <p><img src="figs/colorscale.jpg" align="middle" width="800" alt="" />
-      図5: <code>Color scale mode</code>メニュー.</p>
+      図6: <code>Color scale mode</code>メニュー.</p>
     
-    <hr><h2>6.8, Brillouin zone</h2>
+    <hr><h2>6.9, Brillouin zone</h2>
 
     <p>描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
-      切り替える事が出来ます (図6).</p>
+      切り替える事が出来ます (図7).</p>
     <dl>
       <dt>Fisrst Brillouin Zone</dt>
       <dd><p><span class="math">${\rm \Gamma}$</span> 
@@ -488,23 +508,23 @@ Fermi energy shift :
       </dd>
     </dl>
     <p><img src="figs/brillouinzone.jpg" align="middle" width="800" alt="" />
-      図6: <code>Brillouin zone</code>メニューでBrillouin領域のとり方を変更する.</p>
+      図7: <code>Brillouin zone</code>メニューでBrillouin領域のとり方を変更する.</p>
     
-    <hr><h2>6.9, Node line</h2>
+    <hr><h2>6.10, Node line</h2>
 
-    <p>物理量が0となるところに引く線(node line)のOn/Offを切り替えます(図7).</p>
+    <p>物理量が0となるところに引く線(node line)のOn/Offを切り替えます(図8).</p>
     <p><img src="figs/nodeline.jpg" align="middle" width="800" alt="" /> 
-      図7: <code>Node line</code>メニューでnode lineの表示/非表示を切り替える.</p>
+      図8: <code>Node line</code>メニューでnode lineの表示/非表示を切り替える.</p>
     
-    <hr><h2>6.10, Color bar On/Off</h2>
+    <hr><h2>6.11, Color bar On/Off</h2>
 
-    <p>カラーバーの表示/非表示を切り替えます(図8).</p>
+    <p>カラーバーの表示/非表示を切り替えます(図9).</p>
     <p><img src="figs/colorbar.jpg" align="middle" width="800" alt="" />
-      図8: <code>Color bar On/Off</code>メニューでカラーバーの表示/非表示を切り替える.</p>
+      図9: <code>Color bar On/Off</code>メニューでカラーバーの表示/非表示を切り替える.</p>
     
-    <hr><h2>6.11, Stereogram</h2>
+    <hr><h2>6.12, Stereogram</h2>
 
-    <p>裸眼立体視用の図の表示/非表示を切り替えます(図9).</p>
+    <p>裸眼立体視用の図の表示/非表示を切り替えます(図10).</p>
     <dl>
       <dt>None (デフォルト)</dt>
       <dd><p>立体視を無効にします.</p>
@@ -517,19 +537,19 @@ Fermi energy shift :
       </dd>
     </dl>
     <p><img src="figs/stereogram.jpg" align="middle" width="800" alt="" />
-      図9: <code>Stereogram</code>メニューで立体視用画像を表示する.</p>
+      図10: <code>Stereogram</code>メニューで立体視用画像を表示する.</p>
     
-    <hr><h2>6.12, Tetrahedron</h2>
+    <hr><h2>6.13, Tetrahedron</h2>
 
     <p>四面体の切り方を変えます(デフォルトは<code>tetra # 1</code>). 
       図が綺麗になる可能性がありますが, 
       多くの場合は逆に図がギザギザして汚くなるようです.</p>
     
-    <hr><h2>6.13, Exit</h2>
+    <hr><h2>6.14, Exit</h2>
 
     <p>Fermi Surferを終了します.</p>
     
-    <hr><h2>6.14, 画像の保存方法</h2>
+    <hr><h2>6.15, 画像の保存方法</h2>
 
     <p><code>fermisurfer</code>には画像をファイル出力する機能はありません.
     お使いのPCにあった方法でスクリーンショットを取得して
@@ -538,10 +558,10 @@ Fermi energy shift :
 
     <hr><a name="garally"><h1>7, ギャラリー</h1></a>
 
-    <p>IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与 (図10). 
+    <p>IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与 (図11). 
       理化学研究所 有田グループ 佐野航氏提供).</p>
     <p><img src="figs/iro2.jpg" align="middle" width="800" alt="" />
-      図10: IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与.</p>
+      図11: IrO$_2$のHall係数に対するFermi面上の各軌道からの寄与.</p>
     
     <hr><a name="acknoledge"><h1>8, 謝辞</h1></a>
 

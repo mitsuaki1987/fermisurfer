@@ -18,7 +18,7 @@
   <body bgcolor="CCFFCC">
 
     <center><h1>Manual for FermiSurfer</h1></center>
-    <center><h2>Version 1.6</h2></center>
+    <center><h2>Version 1.7</h2></center>
     <center><h2>Mitsuaki Kawamura</h2></center>
 
     <hr>
@@ -206,10 +206,9 @@ $ make install
       an input file for XCrysDen (the bxsf format)
       by using the utility program <code>bxsf2frmsf</code>.
     </p>
-    <p>使い方は次のとおりです.<code>examples/</code>ディレクトリにある<code>pb.bxsf</code>
-      ファイルを例として使います.</p>
+    <p>The usage is as follow (we use <code>examples/pb.bxsf</code> as an example.):</p>
 
-    <h3>5.2.1, For Linuxの場合</h2>
+    <h3>5.2.1, For Linux</h2>
 
     <p>You can launch generated executable as follows:</p>
     <pre><code>
@@ -285,7 +284,7 @@ $ bxsf2frmsf pb.bxsf
   FILE* fo;
   int ibnd, ik1, ik2, ik3;
   
-  fo = fopen(“sample.frmsf”, “w”);
+  fo = fopen("sample.frmsf", "w");
   ierr = fprintf(fo, &quot;%d %d %d\n&quot;, nk1, nk2, nk3);
   ierr = fprintf(fo, &quot;%d\n&quot;, iswitch);
   ierr = fprintf(fo, &quot;%d\n&quot;, nbnd);
@@ -422,17 +421,38 @@ Fermi energy shift :
       Fig. 3: The Fermi energy is set from 0 Ry to 0.1 Ry 
       with <code>Shift Fermi energy</code> menu</p>
 
-    <hr><h2 id="background-color">6.6, Background color</h2>
+   <hr><h2 id="setview">6.6, Set view</h2>
+
+    <p>Changing the view point.</p>
+    <dl>
+      <dt>Scale</dt>
+      <dd><p>Change the size of the figure.</p>
+      </dd>
+      <dt>Position</dt>
+      <dd><p>Change the xy position of the figure.</p>
+      </dd>
+      <dt>Rotation</dt>
+      <dd><p>Change angles at x-, y-, z- axis.
+          Rotaions are performed as z-y-x axis.</p>
+      </dd>
+    </dl>
+    <p>In each menu, first the current value is printed.
+      then a prompt to input the new value appears (Fig. 4).</p>
+    
+    <p><img src="figs/setview.jpg" align="middle" width="800" alt="" />
+      Fig. 4: Modify the view point by using <code>Set view</code> menu</p>
+ 
+    <hr><h2 id="background-color">6.7, Background color</h2>
 
     <p>The background color is toggled between black and white; 
       the edge of the Brillouin Zone is also toggled between white and black 
-      (Fig. 4).</p>
+      (Fig. 5).</p>
     <p><img src="figs/background.jpg" align="middle" width="800" alt="" />
-      Fig. 4: The background color is toggled with <code>Background color</code> menu.</p>
+      Fig. 5: The background color is toggled with <code>Background color</code> menu.</p>
 
-    <hr><h2 id="color-scale-mode">6.7, Color scale mode</h2>
+    <hr><h2 id="color-scale-mode">6.8, Color scale mode</h2>
 
-    <p>It turns color pattern on Fermi surfaces (Fig. 5).</p>
+    <p>It turns color pattern on Fermi surfaces (Fig. 6).</p>
     <dl>
       <p>Auto(default) : It makes blue as the minimum on Fermi surfaces 
         and red as the maximum on them.</p>
@@ -447,55 +467,55 @@ Fermi energy shift :
           $\rightarrow$ cyan $\rightarrow$ blue $\rightarrow$ magenta $\rightarrow$ red.</p>
     </dl>
     <p><img src="figs/colorscale.jpg" align="middle" width="800" alt="" />
-      Fig. 5: <code>Color scale mode</code> menu.</p>
+      Fig. 6: <code>Color scale mode</code> menu.</p>
 
-    <hr><h2 id="brillouin-zone">6.8, Brillouin zone</h2>
+    <hr><h2 id="brillouin-zone">6.9, Brillouin zone</h2>
 
-    <p>You choose Brillouin-zone type as follows (Fig. 6):</p>
+    <p>You choose Brillouin-zone type as follows (Fig. 7):</p>
     <dl>
       <p>First Brillouin Zone : The region surrounded by Bragg's planes 
         the nearest to ${\rm \Gamma}$ point.</p>
       <p>Primitive Brillouin Zone : A hexahedron whose corner is the reciprocal lattice point.</p>
     </dl>
     <p><img src="figs/brillouinzone.jpg" align="middle" width="800" alt="" />
-      Fig. 6: You can change the type of the Brillouin zone 
+      Fig. 7: You can change the type of the Brillouin zone 
       with <code>Brillouin zone</code> menu.</p>
 
-    <hr><h2 id="node-line">6.9, Node line</h2>
+    <hr><h2 id="node-line">6.10, Node line</h2>
 
     <p>The line on which the matrix element becomes 0 (we call it node line) 
-      becomes enable/disable (Fig. 7).</p>
+      becomes enable/disable (Fig. 8).</p>
     <p><img src="figs/nodeline.jpg" align="middle" width="800" alt="" /> 
-      Fig. 7: Toggling the node line with <code>Node line</code> menu.</p>
+      Fig. 8: Toggling the node line with <code>Node line</code> menu.</p>
 
-    <hr><h2 id="color-bar-onoff">6.10, Color bar On/Off</h2>
+    <hr><h2 id="color-bar-onoff">6.11, Color bar On/Off</h2>
 
-    <p>The color bar becomes enable/disable (Fig. 8).</p>
+    <p>The color bar becomes enable/disable (Fig. 9).</p>
     <p><img src="figs/colorbar.jpg" align="middle" width="800" alt="" />
-      Fig. 8: Toggling the color bar with <code>Color bar On/Off</code> menu.</p>
+      Fig. 9: Toggling the color bar with <code>Color bar On/Off</code> menu.</p>
 
-    <hr><h2 id="stereogram">6.11, Stereogram</h2>
+    <hr><h2 id="stereogram">6.12, Stereogram</h2>
 
     <p>The stereogram (parallel eyes and cross eyes) becomes enabled/disabled 
-      (Fig. 9).</p>
+      (Fig. 10).</p>
     <dl>
       <p>None (Default)</p>
       <p>Parallel : Parallel-eyes stereogram</p>
       <p>Cross : Cross-eyes stereogram</p>
     </dl>
     <p><img src="figs/stereogram.jpg" align="middle" width="800" alt="" />
-      Fig. 9: The stereogram becomes enabled/disabled with <code>Stereogram</code> menu.</p>
+      Fig. 10: The stereogram becomes enabled/disabled with <code>Stereogram</code> menu.</p>
 
-    <hr><h2 id="tetrahedron">6.12, Tetrahedron</h2>
+    <hr><h2 id="tetrahedron">6.13, Tetrahedron</h2>
 
     <p>You change the scheme to divide into tetrahedra (<code>tetra # 1</code> as default). 
       It is experimental.</p>
 
-    <hr><h2 id="exit">6.13, Exit</h2>
+    <hr><h2 id="exit">6.14, Exit</h2>
 
     <p>This finishes <code>fermisurfer</code>.</p>
 
-    <hr><h2>6.14, Saving images</h2>
+    <hr><h2>6.15, Saving images</h2>
 
     <p><code>fermisurfer</code> does not have any functions to
       save images to a file.
@@ -504,9 +524,9 @@ Fermi energy shift :
     <hr><h1><a name="gallery">7, Gallery</a></h1>
 
     <p>Contributions of each Fermi surfaces to the Hall effect in IrO$_2$ 
-      (Fig. 10. Provided by Mr. Wataru Sano in Arita group, RIKEN)</p>
+      (Fig. 11. Provided by Mr. Wataru Sano in Arita group, RIKEN)</p>
     <p><img src="figs/iro2.jpg" align="middle" width="800" alt="" />
-      Fig. 10: Contributions of each Fermi surfaces to the Hall effect</p>
+      Fig. 11: Contributions of each Fermi surfaces to the Hall effect</p>
 
     <hr><h1><a name="acknowledgment">8, Acknowledgment</a></h1>
 
