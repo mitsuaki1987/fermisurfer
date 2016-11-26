@@ -37,10 +37,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#ifdef MAC
+
+#if defined(MAC)
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
+#endif
+
+#if defined(_OPENMP)
 #include <omp.h>
 #endif
  /**
@@ -1850,19 +1854,38 @@ void free_patch() {
  * Main menu
  */
 void main_menu(int value /**< [in] Selected menu*/){
+  int i0, i1, ib, ibzl, i;
   /**/
   if (value == 9) {
     /*
       Exit
     */
     printf("\nExit. \n\n");
+    free_patch();
+    for (ib = 0; ib < nb; ib++) {
+      for (i0 = 0; i0 < ng[0]; i0++) {
+        for (i1 = 0; i1 < ng[1]; i1++) {
+          free(eig[ib][i0][i1]);
+          free(mat[ib][i0][i1]);
+        }
+        free(eig[ib][i0]);
+        free(mat[ib][i0]);
+      }
+      free(eig[ib]);
+      free(mat[ib]);
+    }
     free(eig);
     free(mat);
     free(ntri);
     free(draw_band);
+    for (ibzl = 0; ibzl < nbzl; ++ibzl) {
+      for (i = 0; i < 2; ++i) {
+        free(bzl[ibzl][i]);
+      }
+      free(bzl[ibzl]);
+    }
     free(bzl);
     free(nnl);
-    free_patch();
     exit(0);
   }
 }
@@ -1911,21 +1934,20 @@ Setting of view
 */
 void menu_view(int value /**< [in] Selected menu*/)
 {
-  int ib, i0, i1, i2, ierr;
-  GLfloat emin, emax;
+  int ierr;
 
   if (value == 1) {
  
     printf("  Current Scale : %f\n", scl);
     printf("      New Scale : ");
-    scanf("%f", &scl);
+    ierr = scanf("%f", &scl);
  
   }
   else  if (value == 2) {
 
     printf("  Current Position(x y) : %f %f\n", trans[0], trans[1]);
     printf("      New Position(x y) : ");
-    scanf("%f %f", &trans[0], &trans[1]);
+    ierr = scanf("%f %f", &trans[0], &trans[1]);
  
   }
   else  if (value == 3) {
@@ -1954,7 +1976,7 @@ void menu_view(int value /**< [in] Selected menu*/)
     thetaz = 180.0 / 3.14159265 * thetaz;
     printf("  Current Rotation (theta_x theta_y teta_z) in degree : %f %f %f\n", thetax, thetay, thetaz);
     printf("      New Rotation (theta_x theta_y teta_z) in degree : ");
-    scanf("%f %f %f", &thetax, &thetay, &thetaz);
+    ierr = scanf("%f %f %f", &thetax, &thetay, &thetaz);
     thetax = 3.14159265 / 180.0 * thetax;
     thetay = 3.14159265 / 180.0 * thetay;
     thetaz = 3.14159265 / 180.0 * thetaz;
@@ -2385,8 +2407,8 @@ int main(
   /**/
   max_and_min_bz();
   /**/
-#ifndef MAC
 #pragma omp parallel 
+#if defined(_OPENMP)
   printf("Threads : %d \n", omp_get_num_threads());
 #endif
   /**/

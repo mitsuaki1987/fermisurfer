@@ -27,33 +27,12 @@
           かつ何らかの物理量をFermi面上にカラーマップとして表示させる可視化ツールです。
         </p>
         
-        <table width="100%" valign="top">
-	  <tr>
-	    <td width="50%">
-	      <p><a href="http://osdn.jp/projects/fermisurfer/releases/">ダウンロード</a></p>
-	      <p><a href="./manual_ja.html">日本語マニュアル</a></p>
-	      <p><a href="./manual_en.html">Manual in English</a></p>
-	      <p><a href="http://osdn.jp/projects/fermisurfer/ticket/">バグ報告</a></p>
-	      <p><a href="http://osdn.jp/projects/fermisurfer/forums/">フォーラム</a></p>
-	      <p><a href="http://osdn.jp/projects/fermisurfer/lists/">メーリングリスト</a></p>
-            </td>
-	    <td width="50%">
-	      <div style="margin-left: auto; margin-right: auto;">
-                <script type="text/javascript"><!--
-                                                   google_ad_client = "ca-pub-9941151214016196";
-                                                   google_ad_slot = "5483180928";
-                                                   google_ad_width = 200;
-                                                   google_ad_height = 200;
-                                                   //-->
-                </script>
-                <script type="text/javascript"
-                        src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-                </script>
-	      </div>
-	    </td>
-	  </tr>
-        </table>
-        
+	<p><a href="http://osdn.jp/projects/fermisurfer/releases/">ダウンロード</a></p>
+	<p><a href="./manual_ja.html">日本語マニュアル</a></p>
+	<p><a href="./manual_en.html">Manual in English</a></p>
+	<p><a href="http://osdn.jp/projects/fermisurfer/ticket/">バグ報告</a></p>
+	<p><a href="http://osdn.jp/projects/fermisurfer/forums/">フォーラム</a></p>
+	<p><a href="http://osdn.jp/projects/fermisurfer/lists/">メーリングリスト</a></p>
 
         <script type="text/javascript">
 	  var sfjp_widget_width = null;
@@ -69,49 +48,6 @@
 
         <br />
 
-        <table style="width: 100%;">
-	  <tr>
-	    <td style="width: 50%; vertical-align: top;">
-              <div style="float:right;">
-                <script type="text/javascript"><!--
-                                                   google_ad_client = "ca-pub-9941151214016196";
-                                                   google_ad_slot = "4581088621";
-                                                   google_ad_width = 300;
-                                                   google_ad_height = 250;
-                                                   //-->
-                </script>
-                <script type="text/javascript"
-                        src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-                </script>
-              </div>
-	    </td>
-	    <td style="width: 50%;">
-	      <div style="float: left; font-size: 85%; border:2px solid #888; margin: .5em;">
-	        <div class="titlebar">OSDNの主なプロジェクト</div>
-	        <ul style="margin-right: 1em; margin-top: 0px;">
-	          <li><a href="http://osdn.jp/projects/clamwin/">ウイルス対策 <strong>ClamWin</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/sevenzip/">圧縮・展開（解凍） <strong>7-Zip</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/pdfcreator/">PDF作成 <strong>PDFCreator</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/opentween/">Twitterクライアント <strong>OpenTween</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/openoffice-docj/">
-                      <strong>OpenOffice.org ドキュメントプロジェクト</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/ttssh2/">
-                      ターミナルエミュレータ <strong>TeraTerm</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/winscp/">
-                      SCPクライアント <strong>WinSCP</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/tortoisesvn/">
-                      Subversionクライアント <strong>TortoiseSVN</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/crystaldiskinfo/">
-                      ディスク情報表示ツール <strong>CrystalDiskInfo</strong></a></li>
-	          <li><a href="http://osdn.jp/projects/crystaldiskmark/">
-                      ディスクベンチマーク <strong>CrystalDiskMark</strong></a></li>
-	        </ul>
-	        <div style="text-align: right;"><a href="http://osdn.jp/top/topdl.php?type=downloads_day">
-                    もっと見る&nbsp;&gt;&gt;</a></div>
-	      </div>
-	    </td>
-	  </tr>
-        </table>
         <div style="border: 1px solid #9cf; padding: .5em;">
 
 	  <div>
@@ -131,15 +67,7 @@
                                            google_ad_height = 90;
                                            //-->
         </script>
-        <script type="text/javascript"
-                src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-        </script>
 
-        <div style="text-align: center; background: #F0F0F0; border-top: 4px solid gray; color: gray; margin-top: 1em;">
-	  <div><a style="color: gray;" href="http://osdn.jp/">OSDN</a>関連サイト</div>
-	  <a style="color: gray;" href="http://srad.jp/">スラド</a> |
-	  <a style="color: gray;" href="http://osdn.co.jp/">OSDN株式会社</a>
-        </div>
       </div>
     </div>
 </div>

@@ -1,9 +1,9 @@
 
 CC = gcc
 
-CFLAGS=-fopenmp -O3 -lglut -lGLU -lGL -lm -g
+CFLAGS=-O3 -lglut -lGLU -lGL -lm -g
 # for mac
-#CFLAGS=-D mac -O3 -lglut -lGLU -lGL -lm
+CFLAGS=-D MAC -O3 -lglut -lGLU -lGL -lm
 
 all:fermisurfer bxsf2frmsf
 
