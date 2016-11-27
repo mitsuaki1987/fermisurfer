@@ -3,7 +3,7 @@ CC = gcc
 
 CFLAGS=-O3 -lglut -lGLU -lGL -lm -g
 # for mac
-CFLAGS=-D MAC -O3 -lglut -lGLU -lGL -lm
+#CFLAGS=-D MAC -O3 -framework OpenGL -framework GLUT -lm
 
 all:fermisurfer bxsf2frmsf
 
