@@ -26,3 +26,5 @@ src/bxsf2frmsf
 *.rc
 *.dll
 src/resource.h
+doc/ja/_build/
+doc/en/_build/
