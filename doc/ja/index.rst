@@ -6,8 +6,6 @@
 Welcome to FermiSurfer's documentation!
 =============================================
 
-Contents:
-
 .. toctree::
    :maxdepth: 3
 
