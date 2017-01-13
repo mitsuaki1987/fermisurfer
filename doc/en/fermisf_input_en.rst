@@ -78,13 +78,13 @@ The input file is as follows (``mgb2_vfz.fs``):
 
 #. Reciprocal lattice vector 3
 
-#. Energy
+#. Energy (The order of component is written in  :ref:`format` )
 
    ``fermisurfer`` assume that the Fermi energy is ``0.0`` in the
    default. You can shift the Fermi energy by using
    ``Shift Fermi Energy`` menu described at the section 6.5.
 
-#. Matrix elements
+#. Matrix elements (The order of component is written in  :ref:`format` )
 
    If you have no quantity to plot on Fermi surfaces, please use
    ``Unicolor`` switch in ``Color scale mode`` menu described at section
@@ -127,6 +127,8 @@ For Windows
 
 Click mouse right button on the input file. Choose "Open With ..." menu,
 then choose ``bxsf2frmsf.exe``.
+
+.. _format:
 
 How to produce the input file in C and fortran programs
 -------------------------------------------------------

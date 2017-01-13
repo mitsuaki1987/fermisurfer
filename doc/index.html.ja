@@ -28,8 +28,8 @@
         </p>
         
 	<p><a href="http://osdn.jp/projects/fermisurfer/releases/">ダウンロード</a></p>
-	<p><a href="./manual_ja.html">日本語マニュアル</a></p>
-	<p><a href="./manual_en.html">Manual in English</a></p>
+	<p>日本語マニュアル(<a href="./ja/index.html">HTML</a>/<a href="./ja/fermisurfer.pdf">PDF</a>)</p>
+	<p>Manual in English(<a href="./en/index.html">HTML</a>/<a href="./en/fermisurfer.pdf">PDF</a>)</p>
 	<p><a href="http://osdn.jp/projects/fermisurfer/ticket/">バグ報告</a></p>
 	<p><a href="http://osdn.jp/projects/fermisurfer/forums/">フォーラム</a></p>
 	<p><a href="http://osdn.jp/projects/fermisurfer/lists/">メーリングリスト</a></p>
