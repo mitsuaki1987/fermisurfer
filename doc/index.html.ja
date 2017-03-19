@@ -17,54 +17,57 @@
           <a href="index.html">English</a></p>
         <hr>
         <h1><a href="http://osdn.jp/projects/fermisurfer/">FermiSurfer</a></h1>
-	    <a href="http://osdn.jp/">OSDN</a>
-	    <a href="http://osdn.jp/softwaremap/">プロジェクト</a>
-	    <a href="http://osdn.jp/projects/fermisurfer/">FermiSurfer</a>
-	    概要
         
-        <p>
+        <h4>
           FermiSurferは固体物理学の各種数値計算結果を入力としてFermi面の描画し、
           かつ何らかの物理量をFermi面上にカラーマップとして表示させる可視化ツールです。
-        </p>
-        
-	    <p><a href="http://osdn.jp/projects/fermisurfer/releases/">ダウンロード</a></p>
-	    <p>日本語マニュアル(
+        </h4>
+
+        <hr>
+        <h2>News</h2>
+        <h3>2017/3/19 QuantumESPRESSO-6.1用インターフェースをリリースしました !</h3>
+        <h4>
+          QuantumESPRESSOの出力を利用して以下の量をFermi面上にカラープロットすることが出来ます。
+          <ul>
+            <li>Fermi速度の絶対値</li>
+            <li>各原子軌道のプロジェクション</li>
+          </ul>
+          <p>
+            以下のサイトからダウンロードしたファイルを QE6.0のディレクトリ内で展開し、ビルドすることにより使えます。
+          </p>
+          <p><a href="http://qe-forge.org/gf/project/dfpttetra/frs/">
+              http://qe-forge.org/gf/project/dfpttetra/frs/
+          </a></p>
+          <p>Fermisurfer-QEインターフェイスはDFPT-tetraプロジェクトに含まれています。 
+          サンプル例は展開したパッチの中の <code>PP/example/fermisurf_example/</code> にあります。</p>
+        </h4>
+        <hr>
+        <script type="text/javascript">
+          var sfjp_widget_width = 300;
+          var sfjp_widget_customcss = null;
+        </script>
+        <script src="//osdn.net/projects/fermisurfer/files/compact.js"
+                type="text/javascript" charset="utf-8"></script>
+	    <h2><a href="http://osdn.jp/projects/fermisurfer/releases/">全てのバージョンを見る</a></h2>
+	    <h2>日本語マニュアル(
           <a href="./ja/_build/html/index.html">HTML</a>/
           <a href="./ja/_build/latex/fermisurfer.pdf">PDF</a>)
-        </p>
-	    <p>Manual in English(
+        </h2>
+	    <h2>Manual in English(
           <a href="./en/_build/html/index.html">HTML</a>/
           <a href="./en/_build/latex/fermisurfer.pdf">PDF</a>)
-        </p>
-	    <p><a href="http://osdn.jp/projects/fermisurfer/ticket/">バグ報告</a></p>
-	    <p><a href="http://osdn.jp/projects/fermisurfer/forums/">フォーラム</a></p>
-	    <p><a href="http://osdn.jp/projects/fermisurfer/lists/">メーリングリスト</a></p>
-
-        <script type="text/javascript">
-	      var sfjp_widget_width = null;
-	      var sfjp_widget_customcss = null;
-        </script>
-        <script src="http://osdn.jp/projects/fermisurfer/files/compact.js" type="text/javascript" charset="utf-8"></script>
-
-        <div>
-          fermisurferの最新のリリースなどのファイルをダウンロードするには、
-          fermisurferの<a href="http://osdn.jp/projects/fermisurfer/releases/">
-            ダウンロードファイル一覧</a>のページに移動し、ファイル名を選択することで、ダウンロードが始まります。
-        </div>
+        </h2>
+	    <h2><a href="http://osdn.jp/projects/fermisurfer/ticket/">バグ報告</a></h2>
+	    <h2><a href="http://osdn.jp/projects/fermisurfer/forums/">フォーラム</a></h2>
+	    <h2><a href="http://osdn.jp/projects/fermisurfer/lists/">メーリングリスト</a></h2>
 
         <br />
+        <hr>
 
-        <div style="border: 1px solid #9cf; padding: .5em;">
-
-	      <div>
-	        <a href="http://osdn.jp/">
-	          <img src="http://osdn.jp/sflogo.php?group_id=9671&type=3"
-		           width="210" height="63" border="0" alt="OSDN">
-	        </a>
-	      </div>
-
-	      <br style="clear: right;" />
-        </div>
+	    <a href="http://osdn.jp/">
+	      <img src="http://osdn.jp/sflogo.php?group_id=9671&type=3"
+		       width="210" height="63" border="0" alt="OSDN">
+	    </a>
 
         <script type="text/javascript"><!--
                                            google_ad_client = "ca-pub-9941151214016196";
@@ -76,7 +79,6 @@
 
       </div>
     </div>
-</div>
 
-</body>
+  </body>
 </html>
