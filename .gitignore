@@ -28,3 +28,5 @@ src/bxsf2frmsf
 src/resource.h
 doc/ja/_build/
 doc/en/_build/
+*.o
+doc/html/
