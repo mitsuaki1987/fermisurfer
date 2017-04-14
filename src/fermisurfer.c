@@ -79,12 +79,28 @@ int main(
   int argc /**< [in] */, 
   char *argv[] /**< [in] */)
 {
+  printf("\n");
+  printf("  Welocome to FermiSurfer ver. 1.8\n");
+  printf("\n");
   if (argc < 2) {
-    printf("\n\nInput file is not specified !\n");
-    printf("  Press any key to exit.\n");
+    printf("\n");
+    printf("    Input file is not specified !\n");
+    printf("      Press any key to exit.\n");
     getchar();
     exit(-1);
   }
+  /**/
+#if defined(_OPENMP)
+#pragma omp parallel 
+#pragma omp master
+  nthreads = omp_get_num_threads();
+#else
+  nthreads = 1;
+#endif
+  printf("    Number of threads : %d\n", nthreads);
+  printf("\n");
+  printf("    Initialize variables ...\n");
+  printf("\n");
   initialize_val();
   /**/
   read_file(argv[1]);
@@ -97,13 +113,6 @@ int main(
   bz_lines();
   /**/
   max_and_min_bz();
-  /**/
-#if defined(_OPENMP)
-#pragma omp parallel 
-#pragma omp master
-  nthreads = omp_get_num_threads();
-#endif
-  printf("Number of threads : %d \n", nthreads);
   /**/
   printf("\n#####  First Brillouin zone mode  ##### \n\n");
   query = 1;

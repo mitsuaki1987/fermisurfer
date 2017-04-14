@@ -33,11 +33,16 @@ THE SOFTWARE.
 #include <GL/glut.h>
 #endif
 
+#if defined(_OPENMP)
+#include <omp.h>
+#endif
+
 /**
 * Store triangle patch
 */
 void triangle(
   int ib /**<[in] The band index*/,
+  int *ntri0, /**<[inout] Index of triangle patch*/
   int nbr /**<[in] Bragg plane*/,
   GLfloat mat1[3] /**<[in] The matrix element*/,
   GLfloat kvec1[3][3] /**<[in] k-vector of corners*/)
@@ -73,7 +78,7 @@ void triangle(
         for (i = 0; i<3; ++i)
           kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
                       + kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-        triangle(ib, ibr + 1, mat2, kvec2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2);
         return;
       }
       else if (brnrm[ibr] + thr < prod[2]) {
@@ -86,7 +91,7 @@ void triangle(
         for (i = 0; i<3; ++i) 
           kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
                       + kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-        triangle(ib, ibr + 1, mat2, kvec2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2);
         /**/
         mat2[0] = mat1[1] * (brnrm[ibr] - prod[2]) / (prod[1] - prod[2])
                 + mat1[2] * (brnrm[ibr] - prod[1]) / (prod[2] - prod[1]);
@@ -100,7 +105,7 @@ void triangle(
         for (i = 0; i<3; ++i)
           kvec2[2][i] = kvec1[0][i] * (brnrm[ibr] - prod[2]) / (prod[0] - prod[2])
                       + kvec1[2][i] * (brnrm[ibr] - prod[0]) / (prod[2] - prod[0]);
-        triangle(ib, ibr + 1, mat2, kvec2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2);
         return;
       }
       else {
@@ -109,17 +114,17 @@ void triangle(
   } /* if fbz == 1 */
     /**/
   if (query == 1) {
-    ntri[ib] = ntri[ib] + 1;
+    *ntri0 += 1;
   }
   else {
-    normal_vec(kvec1[0], kvec1[1], kvec1[2], nmlp[ib][ntri[ib]]);
+    normal_vec(kvec1[0], kvec1[1], kvec1[2], nmlp[ib][*ntri0]);
     for (i = 0; i < 3; ++i) {
-      matp[ib][ntri[ib]][i] = mat1[i];
+      matp[ib][*ntri0][i] = mat1[i];
       for (j = 0; j < 3; ++j) {
-        kvp[ib][ntri[ib]][i][j] = kvec1[i][j];
+        kvp[ib][*ntri0][i][j] = kvec1[i][j];
       }
     }
-    ntri[ib] = ntri[ib] + 1;
+    *ntri0 += 1;
   }
   /**/
 }/* triangle */
@@ -128,6 +133,7 @@ void triangle(
  */
 void tetrahedron(
   int ib /**< [in] The band index*/,
+  int *ntri0, /**< [inout] index of trixngle*/
   GLfloat eig1[8] /**< [in] Orbital energies*/,
   GLfloat mat1[8] /**< [in] Matrix elements*/,
   GLfloat kvec1[8][3] /**< [in] k vectors*/)
@@ -168,7 +174,7 @@ void tetrahedron(
       mat3[0] = mat2[0] * a[0][1] + mat2[1] * a[1][0];
       mat3[1] = mat2[0] * a[0][2] + mat2[2] * a[2][0];
       mat3[2] = mat2[0] * a[0][3] + mat2[3] * a[3][0];
-      triangle(ib, 0, mat3, kvec3);
+      triangle(ib, ntri0, 0, mat3, kvec3);
     }
     else if (eig2[1] <= 0.00 && 0.00 < eig2[2]) {
       for (i = 0; i < 3; ++i) kvec3[0][i] = kvec2[0][i] * a[0][2] + kvec2[2][i] * a[2][0];
@@ -177,7 +183,7 @@ void tetrahedron(
       mat3[0] = mat2[0] * a[0][2] + mat2[2] * a[2][0];
       mat3[1] = mat2[0] * a[0][3] + mat2[3] * a[3][0];
       mat3[2] = mat2[1] * a[1][2] + mat2[2] * a[2][1];
-      triangle(ib, 0, mat3, kvec3);
+      triangle(ib, ntri0, 0, mat3, kvec3);
       /**/
       for (i = 0; i < 3; ++i) kvec3[0][i] = kvec2[1][i] * a[1][3] + kvec2[3][i] * a[3][1];
       for (i = 0; i < 3; ++i) kvec3[1][i] = kvec2[0][i] * a[0][3] + kvec2[3][i] * a[3][0];
@@ -185,7 +191,7 @@ void tetrahedron(
       mat3[0] = mat2[1] * a[1][3] + mat2[3] * a[3][1];
       mat3[1] = mat2[0] * a[0][3] + mat2[3] * a[3][0];
       mat3[2] = mat2[1] * a[1][2] + mat2[2] * a[2][1];
-      triangle(ib, 0, mat3, kvec3);
+      triangle(ib, ntri0, 0, mat3, kvec3);
     }
     else if (eig2[2] <= 0.00 && 0.00 < eig2[3]) {
       for (i = 0; i < 3; ++i) kvec3[0][i] = kvec2[3][i] * a[3][0] + kvec2[0][i] * a[0][3];
@@ -194,7 +200,7 @@ void tetrahedron(
       mat3[0] = mat2[3] * a[3][0] + mat2[0] * a[0][3];
       mat3[1] = mat2[3] * a[3][1] + mat2[1] * a[1][3];
       mat3[2] = mat2[3] * a[3][2] + mat2[2] * a[2][3];
-      triangle(ib, 0, mat3, kvec3);
+      triangle(ib, ntri0, 0, mat3, kvec3);
     }
     else {
     }
@@ -206,6 +212,7 @@ void tetrahedron(
 void fermi_patch()
 {
   int ib, i0, i1, i2, ii0, ii1, ii2, j0, j1, j2, start[3], i, j;
+  int ntri0, ithread;
   GLfloat kvec1[8][3], eig1[8], mat1[8];
   /**/
   if (fbz == 1) {
@@ -216,12 +223,20 @@ void fermi_patch()
   }
   /**/
 #pragma omp parallel default(none) \
-  shared(nb,ntri,start,ng,ng0,eig,EF,mat,shiftk) \
-  private(ib,j0,j1,j2,i0,i1,i2,ii0,ii1,ii2,kvec1,eig1,mat1,i,j)
+  shared(nb,ntri,ntri_th,start,ng,ng0,eig,EF,mat,shiftk,query) \
+  private(ib,j0,j1,j2,i0,i1,i2,ii0,ii1,ii2,kvec1,eig1,mat1,i,j,ntri0,ithread)
   {
-#pragma omp for nowait
+#if defined(_OPENMP)
+    ithread = omp_get_thread_num();
+#else
+    ithread = 0;
+#endif
     for (ib = 0; ib < nb; ++ib) {
-      ntri[ib] = 0;
+
+      if(query == 1) ntri0 = 0;
+      else ntri0 = ntri_th[ib][ithread];
+
+#pragma omp for nowait schedule(static, 1)
       for (j0 = start[0]; j0 < ng[0]; ++j0) {
         for (j1 = start[1]; j1 < ng[1]; ++j1) {
           for (j2 = start[2]; j2 < ng[2]; ++j2) {
@@ -289,43 +304,65 @@ void fermi_patch()
             mat1[6] = mat[ib][ii0][ii1][i2];
             mat1[7] = mat[ib][ii0][ii1][ii2];
             /**/
-            tetrahedron(ib, eig1, mat1, kvec1);
-          }
-        }
-      }
-    }
+            tetrahedron(ib, &ntri0, eig1, mat1, kvec1);
+          }/*for (j0 = start[0]; j0 < ng[0]; ++j0)*/
+        }/*for (j1 = start[1]; j1 < ng[1]; ++j1)*/
+      }/*for (j0 = start[0]; j0 < ng[0]; ++j0)*/
+      if (query == 1) ntri_th[ib][ithread] = ntri0;
+    }/*for (ib = 0; ib < nb; ++ib)*/
   } /* End of parallel region */
-    /**/
+  /**
+   * If this run is workspace query, malloc arrays
+   */
   if (query == 1) {
+    /*
+     * Sum patches in all threads 
+     */
+    for (ib = 0; ib < nb; ib++) {
+      for (ithread = 1; ithread < nthreads; ithread++) {
+        ntri_th[ib][ithread] += ntri_th[ib][ithread - 1];
+      }
+      ntri[ib] = ntri_th[ib][nthreads - 1];
+      for (ithread = nthreads - 1; ithread > 0; ithread--) {
+        ntri_th[ib][ithread] = ntri_th[ib][ithread - 1];
+      }
+      ntri_th[ib][0] = 0;
+    }
+    /**/
     printf("band   # of patchs \n");
     for (ib = 0; ib < nb; ib++) {
       printf("%d       %d \n", ib + 1, ntri[ib]);
     }
     printf("\n");
-    /*
-    Allocation of triangler patches
-    */
+    /**
+     * Allocation of triangler patches
+     */
     nmlp = (GLfloat***)malloc(nb * sizeof(GLfloat**));
     matp = (GLfloat***)malloc(nb * sizeof(GLfloat**));
     clr = (GLfloat****)malloc(nb * sizeof(GLfloat***));
     kvp = (GLfloat****)malloc(nb * sizeof(GLfloat***));
+    nmlp_rot = (GLfloat***)malloc(nb * sizeof(GLfloat**));
+    kvp_rot = (GLfloat****)malloc(nb * sizeof(GLfloat***));
     for (ib = 0; ib < nb; ++ib) {
       nmlp[ib] = (GLfloat**)malloc(ntri[ib] * sizeof(GLfloat*));
       matp[ib] = (GLfloat**)malloc(ntri[ib] * sizeof(GLfloat*));
       clr[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
       kvp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
+      nmlp_rot[ib] = (GLfloat**)malloc(ntri[ib] * sizeof(GLfloat*));
+      kvp_rot[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
       for (i0 = 0; i0 < ntri[ib]; ++i0) {
         nmlp[ib][i0] = (GLfloat*)malloc(3 * sizeof(GLfloat));
         matp[ib][i0] = (GLfloat*)malloc(3 * sizeof(GLfloat));
         clr[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
         kvp[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
+        nmlp_rot[ib][i0] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        kvp_rot[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
         for (i1 = 0; i1 < 3; ++i1) {
           kvp[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+          kvp_rot[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
           clr[ib][i0][i1] = (GLfloat*)malloc(4 * sizeof(GLfloat));
-        }
-      }
-    }
-    /**/
-  }
-  /**/
+        }/*for (i1 = 0; i1 < 3; ++i1)*/
+      }/*for (i0 = 0; i0 < ntri[ib]; ++i0)*/
+    }/*for (ib = 0; ib < nb; ++ib)*/
+  }/*if (query == 1)*/
 } /* fermi_patch */

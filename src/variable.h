@@ -72,9 +72,12 @@ GLfloat brnrm[26];    /**< Norms of Bragg plane vectors */
  * Variables for patchs
  */
 int *ntri;          /**< The number of triangle patch       [nb] */
+int **ntri_th;      /**< The number of triangle patch in each thread [nb] */
 int *draw_band;     /**< Switch for drawn bands    [nb] */
 GLfloat ***nmlp;    /**< Normal vector of patchs   [nb][ntri][3] */
 GLfloat ****kvp;    /**< K-vectors of points       [nb][ntri][3][3] */
+GLfloat ***nmlp_rot;    /**< Normal vector of patchs   [nb][ntri][3] */
+GLfloat ****kvp_rot;    /**< K-vectors of points       [nb][ntri][3][3] */
 GLfloat ***matp;    /**< Matrix elements of points [nb][ntri][3] */
 GLfloat ****clr;    /**< Colors of points          [nb][ntri][3][4] */
 int itet;       /**< Counter for tetrahedron */
@@ -83,6 +86,7 @@ int itet;       /**< Counter for tetrahedron */
  */
 int *nnl; /**< The number of nodeline */
 GLfloat ****kvnl; /**< K-vector of nodeline [nb][nnl][2][3] */
+GLfloat ****kvnl_rot; /**< K-vector of nodeline [nb][nnl][2][3] */
 /**
  * Variables for mouse  & cursorkey
  */

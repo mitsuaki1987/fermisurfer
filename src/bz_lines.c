@@ -45,7 +45,7 @@ int bragg_vert(
   GLfloat vert2[3] /**< [in] end point of line*/)
 {
   int kbr, i, lbr, nbr0;
-  GLfloat bmat[3][3], rhs[3], prod, thr = 0.0001, det;
+  GLfloat bmat[3][3], rhs[3], prod, thr = (GLfloat)0.0001, det;
   /**/
   nbr0 = nbr;
   /**/

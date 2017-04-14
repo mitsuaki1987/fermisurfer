@@ -38,32 +38,43 @@ void free_patch() {
       for (i1 = 0; i1 < 3; ++i1) {
         free(kvp[ib][i0][i1]);
         free(clr[ib][i0][i1]);
+        free(kvp_rot[ib][i0][i1]);
       }
       free(nmlp[ib][i0]);
       free(matp[ib][i0]);
       free(clr[ib][i0]);
       free(kvp[ib][i0]);
+      free(nmlp_rot[ib][i0]);
+      free(kvp_rot[ib][i0]);
     }
     free(nmlp[ib]);
     free(matp[ib]);
     free(clr[ib]);
     free(kvp[ib]);
+    free(nmlp_rot[ib]);
+    free(kvp_rot[ib]);
   }
   free(nmlp);
   free(matp);
   free(clr);
   free(kvp);
+  free(nmlp_rot);
+  free(kvp_rot);
 
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < nnl[ib]; ++i0) {
       for (i1 = 0; i1 < 2; ++i1) {
         free(kvnl[ib][i0][i1]);
+        free(kvnl_rot[ib][i0][i1]);
       }
       free(kvnl[ib][i0]);
+      free(kvnl_rot[ib][i0]);
     }
     free(kvnl[ib]);
+    free(kvnl_rot[ib]);
   }
   free(kvnl);
+  free(kvnl_rot);
 }
 /**
 * Max. & Min. of matrix elements.

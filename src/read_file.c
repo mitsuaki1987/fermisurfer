@@ -79,6 +79,8 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   if (ierr == 0) printf("error ! reading nb");
   printf("# of bands : %d \n", nb);
   ntri = (int*)malloc(nb * sizeof(int));
+  ntri_th = (int**)malloc(nb * sizeof(int*));
+  for (ib = 0; ib < nb; ib++) ntri_th[ib] = (int*)malloc(nthreads * sizeof(int));
   nnl = (int*)malloc(nb * sizeof(int));
   draw_band = (int*)malloc(nb * sizeof(int));
   for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
