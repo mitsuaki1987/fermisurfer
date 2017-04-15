@@ -80,12 +80,16 @@ int main(
   char *argv[] /**< [in] */)
 {
   printf("\n");
-  printf("  Welocome to FermiSurfer ver. 1.8\n");
+  printf("########################################\n");
+  printf("##                                    ##\n");
+  printf("##  Welocome to FermiSurfer ver. 1.8  ##\n");
+  printf("##                                    ##\n");
+  printf("########################################\n");
   printf("\n");
   if (argc < 2) {
     printf("\n");
-    printf("    Input file is not specified !\n");
-    printf("      Press any key to exit.\n");
+    printf("  Input file is not specified !\n");
+    printf("    Press any key to exit.\n");
     getchar();
     exit(-1);
   }
@@ -97,9 +101,9 @@ int main(
 #else
   nthreads = 1;
 #endif
-  printf("    Number of threads : %d\n", nthreads);
+  printf("  Number of threads : %d\n", nthreads);
   printf("\n");
-  printf("    Initialize variables ...\n");
+  printf("  Initialize variables ...\n");
   printf("\n");
   initialize_val();
   /**/
@@ -114,23 +118,23 @@ int main(
   /**/
   max_and_min_bz();
   /**/
-  printf("\n#####  First Brillouin zone mode  ##### \n\n");
   query = 1;
   fermi_patch();
   query = 0;
   fermi_patch();
   calc_nodeline();
   /**/
-  printf("\n#####  Full color scale  ##### \n\n");
   max_and_min();
   /*
     Description
   */
-  printf("\n#####  How to handle  ##### \n\n");
-  printf("          mouse drag : Rotate objects \n");
-  printf("          mousewheel : Resize objects \n");
-  printf("           cursorkey : Move objects \n");
-  printf("  mouse right button : Menu \n");
+  printf("\n");
+  printf("  ##  How to handle  ###################\n");
+  printf("\n");
+  printf("              mouse drag : Rotate objects\n");
+  printf("              mousewheel : Resize objects\n");
+  printf("               cursorkey : Move objects\n");
+  printf("      mouse right button : Menu\n");
   printf("\n");
   /**/
   glutInit(&argc, argv);

@@ -84,12 +84,13 @@ void interpol_energy() {
    * 3rd order - three dimensional Kumo interpolation
    */
 #pragma omp parallel default(none) \
-  shared(ib,nb,ng0,ng,eig,eig0,mat,mat0,interpol) \
-  private (i0,i1,ii,i2,j0,j1,j2,coef,eig1,mat1,eig2,mat2,eig3,mat3)
+  shared(nb,ng0,ng,eig,eig0,mat,mat0,interpol) \
+  private (ib,i0,i1,ii,i2,j0,j1,j2,coef,eig1,mat1,eig2,mat2,eig3,mat3)
   {
     for (ib = 0; ib < nb; ib++) {
 # pragma omp for nowait
       for (i0 = 0; i0 < ng0[0]; i0++) {
+        //if (ith == 1) continue;
         for (i1 = 0; i1 < ng0[1]; i1++) {
           for (i2 = 0; i2 < ng0[2]; i2++) {
             for (j0 = 0; j0 < 4; j0++) {
@@ -104,7 +105,6 @@ void interpol_energy() {
                 }/*for (j2 = 0; j2 < 4; j2++)*/
               }/*for (j1 = 0; j1 < 4; j1++)*/
             }/*for (i2 = 0; i2 < ng0[2]; i2++)*/
-
             for (j0 = 0; j0 < interpol; j0++) {
               kumo_coef(j0, &coef[0]);
               for (j1 = 0; j1 < 4; j1++) {

@@ -97,9 +97,9 @@ void menu_shiftEF(int value /**< [in] Selected menu*/)
         }
       }
     }
-    printf("Min  Max  E_F \n");
-    printf("%f %f %f \n", emin, emax, EF);
-    printf("New Fermi energy : ");
+    printf("    Min  Max  E_F \n");
+    printf("    %f %f %f \n", emin, emax, EF);
+    printf("    New Fermi energy : ");
     //
     ierr = scanf("%f", &EF);
     if (ierr != 1) printf("error ! reading ef");
@@ -125,8 +125,8 @@ void menu_interpol(int value /**< [in] Selected menu*/)
   GLfloat emin, emax;
 
   if (value == 1) {
-    printf("Old interpolation ratio : %d\n", interpol);
-    printf("New interpolation ratio : ");
+    printf("    Old interpolation ratio : %d\n", interpol);
+    printf("    New interpolation ratio : ");
     //
     ierr = scanf("%d", &interpol);
     if (ierr != 1) printf("error ! reading interpol");
@@ -153,15 +153,15 @@ void menu_view(int value /**< [in] Selected menu*/)
 
   if (value == 1) {
 
-    printf("  Current Scale : %f\n", scl);
-    printf("      New Scale : ");
+    printf("    Current Scale : %f\n", scl);
+    printf("        New Scale : ");
     ierr = scanf("%f", &scl);
 
   }
   else  if (value == 2) {
 
-    printf("  Current Position(x y) : %f %f\n", trans[0], trans[1]);
-    printf("      New Position(x y) : ");
+    printf("    Current Position(x y) : %f %f\n", trans[0], trans[1]);
+    printf("        New Position(x y) : ");
     ierr = scanf("%f %f", &trans[0], &trans[1]);
 
   }
@@ -183,8 +183,8 @@ void menu_view(int value /**< [in] Selected menu*/)
     thetax = 180.0 / 3.14159265 * thetax;
     thetay = 180.0 / 3.14159265 * thetay;
     thetaz = 180.0 / 3.14159265 * thetaz;
-    printf("  Current Rotation (theta_x theta_y teta_z) in degree : %f %f %f\n", thetax, thetay, thetaz);
-    printf("      New Rotation (theta_x theta_y teta_z) in degree : ");
+    printf("    Current Rotation (theta_x theta_y teta_z) in degree : %f %f %f\n", thetax, thetay, thetaz);
+    printf("        New Rotation (theta_x theta_y teta_z) in degree : ");
     ierr = scanf("%f %f %f", &thetax, &thetay, &thetaz);
     thetax = 3.14159265 / 180.0 * thetax;
     thetay = 3.14159265 / 180.0 * thetay;
@@ -364,7 +364,7 @@ void menu_colorbar(int value /**<[in] Selected menu*/) {
 void menu_tetra(int value) /**<[in] Selected menu*/ {
   /**/
   if (value != itet) {
-    printf("Tetra patern %d \n", value + 1);
+    printf("    Tetra patern %d \n", value + 1);
     itet = value;
     init_corner();
     free_patch();

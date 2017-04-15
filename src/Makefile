@@ -1,7 +1,7 @@
 
 CC = gcc
 
-CFLAGS=-O3 -lglut -lGLU -lGL -lm -g -fopenmp
+CFLAGS=-g -O0 -lglut -lGLU -lGL -lm -fopenmp -g
 # for mac
 #CFLAGS=-D MAC -O3 -framework OpenGL -framework GLUT -lm
 

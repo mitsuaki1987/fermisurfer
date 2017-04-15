@@ -42,3 +42,4 @@ void normal_vec(
   GLfloat in2[3] /**< [in] Corner 2*/,
   GLfloat in3[3] /**< [in] Corner 3*/,
   GLfloat out[3] /**< [out] The normal vector*/);
+int get_thread();

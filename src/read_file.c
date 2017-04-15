@@ -43,13 +43,15 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     getchar();
     exit(EXIT_FAILURE);
   }
-  printf("\n#####  Brillouin zone informations  ##### \n\n");
+  printf("\n");
+  printf("  ##  Brillouin zone informations  ###########\n");
+  printf("\n");
   /*
   k-point grid
   */
   ierr = fscanf(fp, "%d%d%d", &ng0[0], &ng0[1], &ng0[2]);
   if (ierr == 0) printf("error ! reading ng");
-  printf("k point grid : %d %d %d \n", ng0[0], ng0[1], ng0[2]);
+  printf("    k point grid : %d %d %d \n", ng0[0], ng0[1], ng0[2]);
   for (i = 0; i < 3; i++) ng[i] = ng0[i];
   /*
   Shift of k-point grid
@@ -58,15 +60,15 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   if (ierr == 0) printf("error ! reading lshift");
 
   if (lshift == 0) {
-    printf("k point grid is the Monkhorst-Pack grid. \n");
+    printf("    k point grid is the Monkhorst-Pack grid. \n");
     for (i = 0; i < 3; i++) shiftk[i] = (ng0[i] + 1) % 2;
   }
   else if (lshift == 1) {
-    printf("k point grid starts from Gamma. \n");
+    printf("    k point grid starts from Gamma. \n");
     for (i = 0; i < 3; i++) shiftk[i] = 0;
   }
   else if (lshift == 2) {
-    printf("k point grid starts from Gamma + a half grid. \n");
+    printf("    k point grid starts from Gamma + a half grid. \n");
     for (i = 0; i < 3; i++) shiftk[i] = 1;
   }
   else {
@@ -77,7 +79,7 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   */
   ierr = fscanf(fp, "%d", &nb);
   if (ierr == 0) printf("error ! reading nb");
-  printf("# of bands : %d \n", nb);
+  printf("    # of bands : %d\n", nb);
   ntri = (int*)malloc(nb * sizeof(int));
   ntri_th = (int**)malloc(nb * sizeof(int*));
   for (ib = 0; ib < nb; ib++) ntri_th[ib] = (int*)malloc(nthreads * sizeof(int));
@@ -90,7 +92,7 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   for (i = 0; i < 3; ++i) {
     ierr = fscanf(fp, "%e%e%e", &bvec[i][0], &bvec[i][1], &bvec[i][2]);
     if (ierr == 0) printf("error ! reading bvec");
-    printf("bvec %d : %f %f %f \n", i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
+    printf("    bvec %d : %f %f %f \n", i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
   }
   /*
   Allocation of Kohn-Sham energies $ matrix elements

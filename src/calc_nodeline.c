@@ -25,15 +25,12 @@ THE SOFTWARE.
 #include <stdio.h>
 #include <math.h>
 #include "variable.h"
+#include "basic_math.h"
 
 #if defined(MAC)
 #include <GLUT/glut.h>
 #else
 #include <GL/glut.h>
-#endif
-
-#if defined(_OPENMP)
-#include <omp.h>
 #endif
 
 /**
@@ -49,11 +46,7 @@ void calc_nodeline() {
   shared(nb,nnl,matp,ntri,ntri_th) \
   private(ib,itri,mprod,nnl0,ithread)
   {
-#if defined(_OPENMP)
-    ithread = omp_get_thread_num();
-#else
-    ithread = 0;
-#endif
+    ithread = get_thread();
     for (ib = 0; ib < nb; ib++) {
       nnl0 = 0;
 #pragma omp for
@@ -99,11 +92,10 @@ void calc_nodeline() {
     }
     ntri_th[ib][0] = 0;
   }
-  printf("band   # of nodeline \n");
+  printf("    band   # of nodeline\n");
   for (ib = 0; ib < nb; ib++) {
-    printf("%d       %d \n", ib + 1, nnl[ib]);
+    printf("    %d       %d\n", ib + 1, nnl[ib]);
   }
-  printf("\n");
   /**
    * Allocation of nodeline
    */
@@ -126,11 +118,7 @@ void calc_nodeline() {
   shared(nb,nnl,matp,kvnl,kvp,ntri,ntri_th) \
   private(ib,itri,mprod,i,nnl0,ithread)
   {
-#if defined(_OPENMP)
-    ithread = omp_get_thread_num();
-#else
-    ithread = 0;
-#endif
+    ithread = get_thread();
     for (ib = 0; ib < nb; ib++) {
       nnl0 = ntri_th[ib][ithread];
 #pragma omp for

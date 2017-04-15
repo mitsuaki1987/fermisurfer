@@ -33,10 +33,6 @@ THE SOFTWARE.
 #include <GL/glut.h>
 #endif
 
-#if defined(_OPENMP)
-#include <omp.h>
-#endif
-
 /**
 * Store triangle patch
 */
@@ -216,9 +212,19 @@ void fermi_patch()
   GLfloat kvec1[8][3], eig1[8], mat1[8];
   /**/
   if (fbz == 1) {
+    if (query == 1) {
+      printf("\n");
+      printf("  ##  First Brillouin zone mode  #######\n");
+      printf("\n");
+    }
     for (i0 = 0; i0 < 3; ++i0) start[i0] = - ng[i0];
   }
   else {
+    if (query == 1) {
+      printf("\n");
+      printf("  ##  Premitive Brillouin zone mode  #######\n");
+      printf("\n");
+    }
     for (i0 = 0; i0 < 3; ++i0) start[i0] = 0;
   }
   /**/
@@ -226,11 +232,7 @@ void fermi_patch()
   shared(nb,ntri,ntri_th,start,ng,ng0,eig,EF,mat,shiftk,query) \
   private(ib,j0,j1,j2,i0,i1,i2,ii0,ii1,ii2,kvec1,eig1,mat1,i,j,ntri0,ithread)
   {
-#if defined(_OPENMP)
-    ithread = omp_get_thread_num();
-#else
-    ithread = 0;
-#endif
+    ithread = get_thread();
     for (ib = 0; ib < nb; ++ib) {
 
       if(query == 1) ntri0 = 0;
@@ -329,9 +331,9 @@ void fermi_patch()
       ntri_th[ib][0] = 0;
     }
     /**/
-    printf("band   # of patchs \n");
+    printf("    band   # of patchs\n");
     for (ib = 0; ib < nb; ib++) {
-      printf("%d       %d \n", ib + 1, ntri[ib]);
+      printf("    %d       %d\n", ib + 1, ntri[ib]);
     }
     printf("\n");
     /**

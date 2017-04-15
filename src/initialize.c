@@ -220,8 +220,10 @@ void max_and_min_bz() {
   int ib, i0, i1, i2;
   GLfloat eigmin, eigmax, matmin, matmax;
   /**/
-  printf("\n#####  Max. and Min. of each bands  ##### \n\n");
-  printf("Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max \n");
+  printf("\n");
+  printf("  ##  Max. and Min. of each bands  #######################\n");
+  printf("\n");
+  printf("    Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max\n");
   for (ib = 0; ib < nb; ib++) {
     eigmax = -100000000.0000;
     eigmin = 100000000.0000;
@@ -237,7 +239,7 @@ void max_and_min_bz() {
         }
       }
     }
-    printf("%d     %f     %f     %f     %f \n", ib + 1, eigmin, eigmax, matmin, matmax);
+    printf("    %d     %f     %f     %f     %f\n", ib + 1, eigmin, eigmax, matmin, matmax);
   }
   /**/
 }/* max_and_min_bz */

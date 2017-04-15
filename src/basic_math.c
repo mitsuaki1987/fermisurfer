@@ -29,6 +29,10 @@ THE SOFTWARE.
 #include <GL/glut.h>
 #endif
 
+#if defined(_OPENMP)
+#include <omp.h>
+#endif
+
 /**
 *Work as Modulo function of fortran
 */
@@ -122,3 +126,13 @@ void normal_vec(
   norm = sqrtf(out[0] * out[0] + out[1] * out[1] + out[2] * out[2]);
   for (i = 0; i<3; i++) out[i] = out[i] / norm;
 } /* normal_vec */
+
+int get_thread() {
+  int ithread;
+#if defined(_OPENMP)
+  ithread = omp_get_thread_num();
+#else
+  ithread = 0;
+#endif
+  return ithread;
+}

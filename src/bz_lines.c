@@ -131,7 +131,7 @@ void bz_lines() {
   }
   /**/
   if (query == 1) {
-    printf("# of lines for BZ : %d \n", nbzl);
+    printf("    # of lines for BZ : %d\n", nbzl);
     /**/
     bzl = (GLfloat***)malloc(nbzl * sizeof(GLfloat*));
     for (ibzl = 0; ibzl < nbzl; ++ibzl) {
