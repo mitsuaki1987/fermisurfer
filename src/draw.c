@@ -32,14 +32,14 @@ THE SOFTWARE.
 #endif
 
 /**
-* Draw Fermi surfaces
+ Draw Fermi surfaces
 */
 void draw_fermi() {
   int i, j, ib, itri;
   GLfloat vect[3];
-  /**
-   * First, rotate k-vector and normal vector
-   */
+  /*
+   First, rotate k-vector and normal vector
+  */
 #pragma omp parallel default(none) \
   shared(nb,draw_band,ntri,rot,nmlp,nmlp_rot,kvp,kvp_rot,trans) \
   private(ib,itri,i,j)
@@ -64,9 +64,9 @@ void draw_fermi() {
       }/*if (draw_band[ib] == 1)*/
     }/*for (ib = 0; ib < nb; ib++)*/
   }/*End of parallel region*/
-  /**
-   * Second, draw each triangle
-   */
+  /*
+   Second, draw each triangle
+  */
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
       glBegin(GL_TRIANGLES);
@@ -80,13 +80,13 @@ void draw_fermi() {
       glEnd();
     }/**/
   }/**/
-  /**
-   * Nodeline
-   */
+  /*
+   Nodeline
+  */
   if (nodeline == 1) {
-    /**
-     * First, rotate k-vector
-     */
+    /*
+     First, rotate k-vector
+    */
 #pragma omp parallel default(none) \
     shared(nb,draw_band,nnl,rot,trans,kvnl,kvnl_rot) \
     private(ib,itri,i,j)
@@ -108,10 +108,10 @@ void draw_fermi() {
         }/*if (draw_band[ib] == 1)*/
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
-    /**
-     * Second, draw each triangle
-     */
-  glLineWidth(10.0);
+    /*
+     Second, draw each triangle
+    */
+    glLineWidth(10.0);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
     glBegin(GL_LINES);
@@ -126,14 +126,14 @@ void draw_fermi() {
   }/*if (nodeline == 1)*/
 }/*void draw_fermi*/
 /**
- * Draw lines of BZ boundaries
- */
+ Draw lines of BZ boundaries
+*/
 void draw_bz_lines() {
   int ibzl, i, j;
   GLfloat bzl2[3], bvec2[3][3], linecolor[4];
-  /**
-   * Line color is oposit of BG color
-   */
+  /*
+   Line color is oposit of BG color
+  */
   if (blackback == 1) 
     for (i = 0; i<4; i++) linecolor[i] = white[i];
   else
@@ -142,9 +142,9 @@ void draw_bz_lines() {
   glLineWidth(2.0);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, linecolor);
-  /**
-   * First Brillouin zone mode
-   */
+  /*
+   First Brillouin zone mode
+  */
   if (fbz == 1) {
     glBegin(GL_LINES);
     for (ibzl = 0; ibzl < nbzl; ++ibzl) {
@@ -160,9 +160,9 @@ void draw_bz_lines() {
     glEnd();
   }
   else {
-    /**
-     * Premitive BZ mode
-     */
+    /*
+     Premitive BZ mode
+    */
     for (i = 0; i < 3; ++i) {
       for (j = 0; j < 3; ++j) {
         bvec2[i][j] = rot[j][0] * bvec[i][0]
@@ -195,8 +195,8 @@ void draw_bz_lines() {
   /**/
 } /* draw bz_lines */
 /**
- * Draw color scale
- */
+ Draw color scale
+*/
 void draw_colorbar()
 {
   int i, j;
@@ -299,8 +299,8 @@ void draw_colorbar()
   }
 }/*void draw_colorbar*/
 /**
- * Draw points for the stereogram
- */
+ Draw points for the stereogram
+*/
 void draw_circles() {
   int i;
   GLfloat r;
@@ -335,8 +335,8 @@ void draw_circles() {
   glEnd();
 }/*void draw_circles*/
 /**
- * Glut Display function
- */
+ Glut Display function
+*/
 void display()
 {
   GLfloat pos[] = { 1.0, 1.0, 1.0, 0.0 };
@@ -380,23 +380,23 @@ void display()
     theta = 0.0;
     dx = 0.0;
   }
-  /**
-   * Initialize
-   */
+  /*
+   Initialize
+  */
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glLoadIdentity();
-  /**
-   * Set view point & view line
-   */
+  /*
+   Set view point & view line
+  */
   gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-  /**
-   * Set position of light
-   */
+  /*
+   Set position of light
+  */
   if (lstereo == 1) {
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    /**
-     * Draw color scale
-     */
+    /*
+     Draw color scale
+    */
     if (lcolorbar == 1) draw_colorbar();
   }
   else {
@@ -406,21 +406,21 @@ void display()
     glRotated(theta, 0.0, 1.0, 0.0);
   }
   glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
-  /**
-   * Rotation & Zoom
-   */
+  /*
+   Rotation & Zoom
+  */
   glScaled(scl, scl, scl);
-  /**
-   * Draw Brillouin zone boundaries
-   */
+  /*
+   Draw Brillouin zone boundaries
+  */
   draw_bz_lines();
-  /**
-   * Draw Fermi surfaces
-   */
+  /*
+   Draw Fermi surfaces
+  */
   draw_fermi();
-  /**
-   * Draw the second object for stereogram
-   */
+  /*
+   Draw the second object for stereogram
+  */
   if (lstereo != 1) {
     glPushMatrix();
     glLoadIdentity();

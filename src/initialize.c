@@ -26,7 +26,7 @@ THE SOFTWARE.
 #include "variable.h"
 
 /**
-* Initialize corners of tetrahedron
+ Initialize corners of tetrahedron
 */
 void init_corner() {
   int i, j;
@@ -184,7 +184,7 @@ void init_corner() {
   }
 }
 /**
-* Compute Bragg vetor
+ Compute Bragg vetor
 */
 void bragg_vector() {
   int i0, i1, i2, i, ibr;
@@ -212,10 +212,10 @@ void bragg_vector() {
       }
     }
   }
-} /* bragg_vector */
-  /**
-  * Max and Minimum in Brillouine zone
-  */
+}/* bragg_vector */
+/**
+ Max and Minimum in Brillouine zone
+*/
 void max_and_min_bz() {
   int ib, i0, i1, i2;
   GLfloat eigmin, eigmax, matmin, matmax;
@@ -243,7 +243,9 @@ void max_and_min_bz() {
   }
   /**/
 }/* max_and_min_bz */
-
+/**
+ Initialize global variables
+*/
 void initialize_val() {
   blackback = 1;
   fcscl = 1;
@@ -259,8 +261,8 @@ void initialize_val() {
   rot[1][0] = 0.0; rot[1][1] = 1.0; rot[1][2] = 0.0;
   rot[2][0] = 0.0; rot[2][1] = 0.0; rot[2][2] = 1.0;
   thetax = 0.0, thetay = 0.0, thetaz = 0.0;
-  /**
-  * Colors
+  /*
+   Colors
   */
   black[0]   = 0.0; black[1]   = 0.0; black[2]   = 0.0; black[3]   = 1.0;
   white[0]   = 1.0; white[1]   = 1.0; white[2]   = 1.0; white[3]   = 1.0;
@@ -272,4 +274,4 @@ void initialize_val() {
   blue[0]    = 0.0; blue[1]    = 0.0; blue[2]    = 1.0; blue[3]    = 1.0;
   EF = 0.0;
   interpol = 1;
-}
+}/*void initialize_val*/

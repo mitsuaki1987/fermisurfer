@@ -38,14 +38,14 @@ THE SOFTWARE.
 #endif
 
 /**
- * Main menu
- */
+ Main menu
+*/
 void main_menu(int value /**< [in] Selected menu*/) {
   int i0, i1, ib, ibzl, i;
   /**/
   if (value == 9) {
     /*
-    Exit
+     Exit
     */
     printf("\nExit. \n\n");
     free_patch();
@@ -76,9 +76,9 @@ void main_menu(int value /**< [in] Selected menu*/) {
     exit(0);
   }
 }
-/*
- * Shift Fermi energy
- */
+/**
+ Shift Fermi energy
+*/
 void menu_shiftEF(int value /**< [in] Selected menu*/)
 {
   int ib, i0, i1, i2, ierr;
@@ -116,9 +116,9 @@ void menu_shiftEF(int value /**< [in] Selected menu*/)
     glutPostRedisplay();
   }
 }
-/*
- * Shift Fermi energy
- */
+/**
+ Shift Fermi energy
+*/
 void menu_interpol(int value /**< [in] Selected menu*/)
 {
   int ib, i0, i1, i2, ierr;
@@ -144,9 +144,9 @@ void menu_interpol(int value /**< [in] Selected menu*/)
     glutPostRedisplay();
   }
 }
-/*
- * Setting of view
- */
+/**
+ Setting of view
+*/
 void menu_view(int value /**< [in] Selected menu*/)
 {
   int ierr;
@@ -206,8 +206,8 @@ void menu_view(int value /**< [in] Selected menu*/)
 
 }
 /**
- * Change mouse function
- */
+ Change mouse function
+*/
 void menu_mouse(int value /**< [in] Selected menu*/) {
   /**/
   if (value == 1 && lmouse != 1) {
@@ -222,11 +222,10 @@ void menu_mouse(int value /**< [in] Selected menu*/) {
     lmouse = 3;
     glutPostRedisplay();
   }
-  /**/
 } /* menu_band */
 /**
- * On / Off band
- */
+ On / Off band
+*/
 void menu_band(int value /**< [in] Selected menu*/) {
   /**/
   if (draw_band[value] == 0) {
@@ -236,11 +235,10 @@ void menu_band(int value /**< [in] Selected menu*/) {
     draw_band[value] = 0;
   }
   glutPostRedisplay();
-  /**/
 } /* menu_band */
 /**
- * Change background color
- */
+ Change background color
+*/
 void menu_bgcolor(int value /**<[in] Selected menu*/) {
   if (value == 1 && blackback != 1) {
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -252,11 +250,10 @@ void menu_bgcolor(int value /**<[in] Selected menu*/) {
     blackback = 0;
     glutPostRedisplay();
   }
-  /**/
 }/* bgcolor change*/
 /**
- * Change color scale mode
- */
+ Change color scale mode
+*/
 void menu_colorscale(int value /**<[in] Selected menu*/) {
   /**/
   if (value == 1 && fcscl != 1) {
@@ -279,11 +276,10 @@ void menu_colorscale(int value /**<[in] Selected menu*/) {
     max_and_min();
     glutPostRedisplay();
   }
-  /**/
 } /* menu_colorscale */
 /**
- * Change Brillouin zone
- */
+ Change Brillouin zone
+*/
 void menu_bzmode(int value /**<[in] Selected menu*/) {
   if (value == 1 && fbz != 1) {
     fbz = 1;
@@ -315,8 +311,8 @@ void menu_bzmode(int value /**<[in] Selected menu*/) {
   }
 } /* menu_bzmode */
 /**
- * On/Off Node line
- */
+ On/Off Node line
+*/
 void menu_nodeline(int value /**<[in] Selected menu*/) {
   if (value == 1 && nodeline != 1) {
     nodeline = 1;
@@ -326,11 +322,10 @@ void menu_nodeline(int value /**<[in] Selected menu*/) {
     nodeline = 0;
     glutPostRedisplay();
   }
-  /**/
 } /* menu_nodeline */
 /**
- * Tern stereogram
- */
+ Tern stereogram
+*/
 void menu_stereo(int value /**<[in] Selected menu*/) {
   if (value == 1 && lstereo != 1) {
     lstereo = 1;
@@ -346,8 +341,8 @@ void menu_stereo(int value /**<[in] Selected menu*/) {
   }
 } /* menu_stereo */
 /**
- * On/Off Colorbar
- */
+ On/Off Colorbar
+*/
 void menu_colorbar(int value /**<[in] Selected menu*/) {
   if (value == 1 && lcolorbar != 1) {
     lcolorbar = 1;
@@ -359,8 +354,8 @@ void menu_colorbar(int value /**<[in] Selected menu*/) {
   }
 } /* menu_colorbar */
 /**
- * Change tetrahedron
- */
+ Change tetrahedron
+*/
 void menu_tetra(int value) /**<[in] Selected menu*/ {
   /**/
   if (value != itet) {
@@ -378,8 +373,8 @@ void menu_tetra(int value) /**<[in] Selected menu*/ {
   }
 } /* menu_tetra */
 /**
- * Munu
- */
+ Modify text in the right-click munu
+*/
 void FS_ModifyMenu(int status)
 {
   int ib;
@@ -389,9 +384,9 @@ void FS_ModifyMenu(int status)
     glutPostRedisplay();
   }
   else {
-    /**
-     * Operation with mouse drag
-     */
+    /*
+     Operation with mouse drag
+    */
     glutSetMenu(imenu_mouse);
     for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
     if (lmouse == 1) glutAddMenuEntry("[x] Rotate", 1);
@@ -400,9 +395,9 @@ void FS_ModifyMenu(int status)
     else glutAddMenuEntry("[ ] Scale", 2);
     if (lmouse == 3) glutAddMenuEntry("[x] Translate", 3);
     else glutAddMenuEntry("[ ] Translate", 3);
-    /**
-     * Band menu
-     */
+    /*
+     Band menu
+    */
     glutSetMenu(imenu_band);
     for (ib = 0; ib < nb; ib++) glutRemoveMenuItem(1);
     for (ib = 0; ib < nb; ib++) {
@@ -410,25 +405,25 @@ void FS_ModifyMenu(int status)
       else sprintf(menu_str, "[ ] band # %d", ib + 1);
       glutAddMenuEntry(menu_str, ib);
     }
-    /**
-     * Operation with mouse drag
-     */
+    /*
+     Operation with mouse drag
+    */
     glutSetMenu(imenu_interpol);
     glutRemoveMenuItem(1);
     sprintf(menu_str, "Ratio : %d", interpol);
     glutAddMenuEntry(menu_str, 1);
-    /**
-     * Background color
-     */
+    /*
+     Background color
+    */
     glutSetMenu(imenu_bgcolor);
     for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
     if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
     else glutAddMenuEntry("[ ] Black", 1);
     if (blackback == 0) glutAddMenuEntry("[x] White", 2);
     else glutAddMenuEntry("[ ] White", 2);
-    /**
-     * Color scale mode
-     */
+    /*
+     Color scale mode
+    */
     glutSetMenu(imenu_colorscale);
     for (ib = 0; ib < 4; ib++) glutRemoveMenuItem(1);
     if (fcscl == 1) glutAddMenuEntry("[x] Auto", 1);
@@ -439,36 +434,36 @@ void FS_ModifyMenu(int status)
     else glutAddMenuEntry("[ ] Unicolor", 3);
     if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
     else glutAddMenuEntry("[ ] Periodic", 4);
-    /**
-     * Brillouin zone
-     */
+    /*
+     Brillouin zone
+    */
     glutSetMenu(imenu_bzmode);
     for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
     if (fbz == 1) glutAddMenuEntry("[x] First Brillouin zone", 1);
     else glutAddMenuEntry("[ ] First Brillouin zone", 1);
     if (fbz == -1) glutAddMenuEntry("[x] Primitive Brillouin zone", 2);
     else glutAddMenuEntry("[ ] Primitive Brillouin zone", 2);
-    /**
-     * Nodeline on/off
-     */
+    /*
+     Nodeline on/off
+    */
     glutSetMenu(imenu_nodeline);
     for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
     if (nodeline == 1) glutAddMenuEntry("[x] On", 1);
     else glutAddMenuEntry("[ ] On", 1);
     if (nodeline == 0) glutAddMenuEntry("[x] Off", 2);
     else glutAddMenuEntry("[ ] Off", 2);
-    /**
-     * Colorbar on/off
-     */
+    /*
+     Colorbar on/off
+    */
     glutSetMenu(imenu_colorbar);
     for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
     if (lcolorbar == 1) glutAddMenuEntry("[x] On", 1);
     else glutAddMenuEntry("[ ] On", 1);
     if (lcolorbar == 0) glutAddMenuEntry("[x] Off", 2);
     else glutAddMenuEntry("[ ] Off", 2);
-    /**
-     * Stereogram
-     */
+    /*
+     Stereogram
+    */
     glutSetMenu(imenu_stereo);
     for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
     if (lstereo == 1) glutAddMenuEntry("[x] None", 1);
@@ -477,9 +472,9 @@ void FS_ModifyMenu(int status)
     else glutAddMenuEntry("[ ] Parallel", 2);
     if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
     else glutAddMenuEntry("[ ] Cross", 3);
-    /**
-     * Tetrahedron
-     */
+    /*
+     Tetrahedron
+    */
     glutSetMenu(imenu_tetra);
     for (ib = 0; ib < 16; ib++) glutRemoveMenuItem(1);
     for (ib = 0; ib < 16; ib++) {
@@ -491,15 +486,15 @@ void FS_ModifyMenu(int status)
   }
 }
 /**
- * Munu
- */
+ Main routine of Right-click Munu
+*/
 void FS_CreateMenu()
 {
   int ib, imenu_shiftEF, imenu_view;
   char menu_str[20] = { 0 };
-  /**
-   * Mouse drag works as ...
-   */
+  /*
+   Mouse drag works as ...
+  */
   imenu_mouse = glutCreateMenu(menu_mouse);
   if (lmouse == 1) glutAddMenuEntry("[x] Rotate", 1);
   else glutAddMenuEntry("[ ] Rotate", 1);
@@ -507,44 +502,44 @@ void FS_CreateMenu()
   else glutAddMenuEntry("[ ] Scale", 2);
   if (lmouse == 3) glutAddMenuEntry("[x] Translate", 3);
   else glutAddMenuEntry("[ ] Translate", 3);
-  /**
-   * On/Off  each band 
-   */
+  /*
+   On/Off  each band 
+  */
   imenu_band = glutCreateMenu(menu_band);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) sprintf(menu_str, "[x] band # %d", ib + 1);
     else sprintf(menu_str, "[ ] band # %d", ib + 1);
     glutAddMenuEntry(menu_str, ib);
   }
-  /**
-   * Shift Fermi energy
-   */
+  /*
+   Shift Fermi energy
+  */
   imenu_shiftEF = glutCreateMenu(menu_shiftEF);
   glutAddMenuEntry("Shift Fermi energy", 1);
-  /**
-   * Modify interpolation ratio
-   */
+  /*
+   Modify interpolation ratio
+  */
   sprintf(menu_str, "Ratio : %d", interpol);
   imenu_interpol = glutCreateMenu(menu_interpol);
   glutAddMenuEntry(menu_str, 1);
-  /**
-   * Set view
-   */
+  /*
+   Set view
+  */
   imenu_view = glutCreateMenu(menu_view);
   glutAddMenuEntry("Scale", 1);
   glutAddMenuEntry("Position", 2);
   glutAddMenuEntry("Rotation", 3);
-  /**
-   * Background color
-   */
+  /*
+   Background color
+  */
   imenu_bgcolor = glutCreateMenu(menu_bgcolor);
   if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
   else glutAddMenuEntry("[ ] Black", 1);
   if (blackback == 0) glutAddMenuEntry("[x] White", 2);
   else glutAddMenuEntry("[ ] White", 2);
-  /**
-   * Color scale mode
-   */
+  /*
+   Color scale mode
+  */
   imenu_colorscale = glutCreateMenu(menu_colorscale);
   if (fcscl == 1) glutAddMenuEntry("[x] Auto", 1);
   else glutAddMenuEntry("[ ] Auto", 1);
@@ -554,33 +549,33 @@ void FS_CreateMenu()
   else glutAddMenuEntry("[ ] Unicolor", 3);
   if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
   else glutAddMenuEntry("[ ] Periodic", 4);
-  /**
-   * Brillouin zone
-   */
+  /*
+   Brillouin zone
+  */
   imenu_bzmode = glutCreateMenu(menu_bzmode);
   if (fbz == 1) glutAddMenuEntry("[x] First Brillouin zone", 1);
   else glutAddMenuEntry("[ ] First Brillouin zone", 1);
   if (fbz == -1) glutAddMenuEntry("[x] Primitive Brillouin zone", 2);
   else glutAddMenuEntry("[ ] Primitive Brillouin zone", 2);
-  /**
-   * Nodeline on/off
-   */
+  /*
+   Nodeline on/off
+  */
   imenu_nodeline = glutCreateMenu(menu_nodeline);
   if (nodeline == 1) glutAddMenuEntry("[x] On", 1);
   else glutAddMenuEntry("[ ] On", 1);
   if (nodeline == 0) glutAddMenuEntry("[x] Off", 2);
   else glutAddMenuEntry("[ ] Off", 2);
-  /**
-   * Colorbar on/off
-   */
+  /*
+   Colorbar on/off
+  */
   imenu_colorbar = glutCreateMenu(menu_colorbar);
   if (lcolorbar == 1) glutAddMenuEntry("[x] On", 1);
   else glutAddMenuEntry("[ ] On", 1);
   if (lcolorbar == 0) glutAddMenuEntry("[x] Off", 2);
   else glutAddMenuEntry("[ ] Off", 2);
-  /**
-   * Stereogram
-   */
+  /*
+   Stereogram
+  */
   imenu_stereo = glutCreateMenu(menu_stereo);
   if (lstereo == 1) glutAddMenuEntry("[x] None", 1);
   else glutAddMenuEntry("[ ] None", 1);
@@ -588,18 +583,18 @@ void FS_CreateMenu()
   else glutAddMenuEntry("[ ] Parallel", 2);
   if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
   else glutAddMenuEntry("[ ] Cross", 3);
-  /**
-   * Tetrahedron 
-   */
+  /*
+   Tetrahedron 
+  */
   imenu_tetra = glutCreateMenu(menu_tetra);
   for (ib = 0; ib < 16; ib++) {
     if (itet == ib) sprintf(menu_str, "[x] tetra # %d", ib + 1);
     else sprintf(menu_str, "[ ] tetra # %d", ib + 1);
     glutAddMenuEntry(menu_str, ib);
   }
-  /**
-   * Main menu
-   */
+  /*
+   Main menu
+  */
   imenu = glutCreateMenu(main_menu);
   glutAddSubMenu("Band", imenu_band);
   glutAddSubMenu("Mouse Drag", imenu_mouse);

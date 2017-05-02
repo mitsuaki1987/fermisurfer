@@ -29,7 +29,7 @@ THE SOFTWARE.
 #include "basic_math.h"
 
 /**
-* Free variables for patch
+ Free variables for patch
 */
 void free_patch() {
   int ib, i0, i1;
@@ -76,9 +76,9 @@ void free_patch() {
   }
   free(kvnl);
   free(kvnl_rot);
-}
+}/*void free_patch()*/
 /**
-* Max. & Min. of matrix elements.
+ Compute Max. & Min. of matrix elements.
 */
 void max_and_min() {
   int ib, itri, i, j, ierr, ithread;
@@ -254,4 +254,4 @@ private(ib,itri,i,mat2,j)
   }
   free(max_th);
   free(min_th);
-} /* max_and_min */
+}/* max_and_min */

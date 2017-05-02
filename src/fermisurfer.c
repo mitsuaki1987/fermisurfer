@@ -22,18 +22,23 @@
   THE SOFTWARE.
 */
 /**
- * \mainpage My Personal Index Page
- * @f$\Delta_{n k}@f$
- * \section intro_sec Introduction
- *
- * This is the introduction.
- *
- * \section install_sec Installation
- *
- * \subsection step1 Step 1: Opening the box
- *  
- * etc...
- */
+\mainpage FermiSurfer Main Page
+
+Fermisurfer displays Fermi surfaces 
+with a color plot of the arbitraly matrix element
+
+\section Definition
+ 
+- \f$\varepsilon_{n k}\f$ : Energy
+- \f$\Delta_{n k}\f$ : Any \f$(n, k)\f$-dependent value for the color plot.
+ 
+\section sec_routine Important routines
+- Main routine: main()
+
+\section file_sec Important files
+- Main routine : fermisurfer.c
+- Global valiable : variable.h
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include "variable.h"
@@ -58,8 +63,8 @@
 #endif
 
 /**
- * Glut init function
- */
+ Glut init function
+*/
 void init(void)
 {
   glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -73,8 +78,8 @@ void init(void)
   FS_CreateMenu();
 } /* init */
 /**
- * Main routine
- */
+ Main routine
+*/
 int main(
   int argc /**< [in] */, 
   char *argv[] /**< [in] */)

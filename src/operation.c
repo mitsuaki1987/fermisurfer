@@ -32,14 +32,14 @@ THE SOFTWARE.
 #endif
 
 /**
- * Window resize
- */
+ Window resize
+*/
 void resize(
   int w /**<[in] Window width*/,
   int h /**<[in] Window height*/)
 {
   /*
-   * Scale of translation of mousepointer
+   Scale of translation of mousepointer
   */
   sx = 1.0 / (GLfloat)w;
   sy = 1.0 / (GLfloat)h;
@@ -54,15 +54,15 @@ void resize(
   glMatrixMode(GL_MODELVIEW);
 } /* end resize */
 /**
- * Idling
- */
+ Idling
+*/
 void idle(void)
 {
   glutPostRedisplay();
 } /* idle */
 /**
- * Glut mouse function
- */
+ Glut mouse function
+*/
 void mouse(
   int button /**< [in] pushed button*/,
   int state /**< [in] down or up or ?*/,
@@ -71,8 +71,8 @@ void mouse(
 {
   switch (button) {
   /*
-   * Drag
-   */
+   Drag
+  */
   case GLUT_LEFT_BUTTON:
     switch (state) {
     case GLUT_DOWN:
@@ -91,7 +91,7 @@ void mouse(
     }
     break;
     /*
-    Zoom up
+     Zoom up
     */
   case MOUSE_SCROLL_UP:
     switch (state) {
@@ -106,7 +106,7 @@ void mouse(
     }
     break;
     /*
-    Zoom down
+     Zoom down
     */
   case MOUSE_SCROLL_DOWN:
     switch (state) {
@@ -121,15 +121,15 @@ void mouse(
     }
     break;
     /*
-    No pushing
+     No pushing
     */
   default:
     break;
   }
 } /* end mouse */
 /**
- * Glut motion function
- */
+ Glut motion function
+*/
 void motion(
   int x /**< [in] position of cursor*/,
   int y /**< [in] position of cursor*/)
@@ -137,13 +137,12 @@ void motion(
   int i, j;
   GLfloat dx, dy, a, rot0[3][3], rot1[3][3], ax, ay;
   /*
-  Translation of mousepointer from starting point
+   Translation of mousepointer from starting point
   */
   dx = (x - cx) * sx;
   dy = (y - cy) * sy;
-  /**/
   /*
-  Distanse from starting point
+   Distanse from starting point
   */
   a = sqrt(dx * dx + dy * dy);
   /**/
@@ -151,7 +150,7 @@ void motion(
     /**/
     if (a != 0.0) {
       /*
-       * Compute rotational matrix from translation of mousepointer
+       Compute rotational matrix from translation of mousepointer
       */
       ax = -dy;
       ay = dx;
@@ -188,11 +187,10 @@ void motion(
   }
   cx = x;
   cy = y;
-  /**/
 } /* motion */
-/*
- * Glut keyboard function
- */
+/**
+ Glut keyboard function
+*/
 void keyboard(
   unsigned char key /**< [in] Typed key*/,
   int x /**< [in]*/,
@@ -202,8 +200,8 @@ void keyboard(
   }
 } /* keyboard */
 /**
- * Glut special key function
- */
+ Glut special key function
+*/
 void special_key(
   int key /**< [in] typed special key*/,
   int x /**< [in]*/,

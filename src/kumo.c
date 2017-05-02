@@ -33,9 +33,13 @@ THE SOFTWARE.
 #endif
 
 /**
- * Compute coefficient for the Kumo interpolation
- */
-void kumo_coef(int j, GLfloat *coef) {
+ Compute coefficient for the French-curve (Kumo) interpolation
+ \f[
+  A^{\rm intp} = \sum_{i = 1}^4 C_i A_i^{\rm orig}
+ \f]
+*/
+void kumo_coef(int j /**< [in] Interpolated grid index */, 
+  GLfloat *coef /**< [out] Coefficient of interpolation*/) {
   GLfloat x, mx;
   x = (GLfloat)j / (GLfloat)interpol;
   mx = 1.0 - x;
@@ -45,15 +49,16 @@ void kumo_coef(int j, GLfloat *coef) {
   coef[3] = -0.5 * x * x * mx;
 }
 /**
- * Interpolation of energy and matrix
- */
+ Interpolation of energy and matrix 
+ with the French-curve (Kumo) interpolation.
+*/
 void interpol_energy() {
   int ib, i0, i1, ii, i2, j0, j1, j2;
   GLfloat coef[4];
   GLfloat eig1[4][4][4], mat1[4][4][4], eig2[4][4], mat2[4][4], eig3[4], mat3[4];
-  /**
-   * Reallocate
-   */
+  /*
+   Reallocate
+  */
   for (ib = 0; ib < nb; ib++) {
     for (i0 = 0; i0 < ng[0]; i0++) {
       for (i1 = 0; i1 < ng[1]; i1++) {
@@ -80,9 +85,9 @@ void interpol_energy() {
       }/*for (i1 = 0; i1 < ng[1]; i1++)*/
     }/*for (i0 = 0; i0 < ng[0]; i0++)*/
   }/*for (ib = 0; ib < nb; ib++)*/
-  /**
-   * 3rd order - three dimensional Kumo interpolation
-   */
+  /*
+   3rd order - three dimensional Kumo interpolation
+  */
 #pragma omp parallel default(none) \
   shared(nb,ng0,ng,eig,eig0,mat,mat0,interpol) \
   private (ib,i0,i1,ii,i2,j0,j1,j2,coef,eig1,mat1,eig2,mat2,eig3,mat3)

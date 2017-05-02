@@ -34,13 +34,13 @@ THE SOFTWARE.
 #endif
 
 /**
-* Node line
+ Compute node-line where \f$\Delta_{n k} = 0\f$
 */
 void calc_nodeline() {
   int ib, itri, i, j, nnl0, ithread;
   GLfloat mprod[2];
   /*
-  Query
+   Query
   */
 #pragma omp parallel default(none) \
   shared(nb,nnl,matp,ntri,ntri_th) \
@@ -79,9 +79,9 @@ void calc_nodeline() {
       ntri_th[ib][ithread] = nnl0;
     }/*for (ib = 0; ib < nb; ib++)*/
   }/* End of parallel region */
-  /**
-   * Sum node-lines in all threads
-   */
+  /*
+   Sum node-lines in all threads
+  */
   for (ib = 0; ib < nb; ib++) {
     for (ithread = 1; ithread < nthreads; ithread++) {
       ntri_th[ib][ithread] += ntri_th[ib][ithread - 1];
@@ -96,9 +96,9 @@ void calc_nodeline() {
   for (ib = 0; ib < nb; ib++) {
     printf("    %d       %d\n", ib + 1, nnl[ib]);
   }
-  /**
-   * Allocation of nodeline
-   */
+  /*
+   Allocation of nodeline
+  */
   kvnl = (GLfloat****)malloc(nb * sizeof(GLfloat***));
   kvnl_rot = (GLfloat****)malloc(nb * sizeof(GLfloat***));
   for (ib = 0; ib < nb; ++ib) {

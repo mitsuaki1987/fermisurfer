@@ -34,7 +34,7 @@ THE SOFTWARE.
 #endif
 
 /**
-* Store triangle patch
+ Store triangle patch
 */
 void triangle(
   int ib /**<[in] The band index*/,
@@ -122,14 +122,13 @@ void triangle(
     }
     *ntri0 += 1;
   }
-  /**/
 }/* triangle */
- /**
- * Tetrahedrron method
- */
+/**
+ Tetrahedrron method
+*/
 void tetrahedron(
   int ib /**< [in] The band index*/,
-  int *ntri0, /**< [inout] index of trixngle*/
+  int *ntri0, /**< [in,out] index of trixngle*/
   GLfloat eig1[8] /**< [in] Orbital energies*/,
   GLfloat mat1[8] /**< [in] Matrix elements*/,
   GLfloat kvec1[8][3] /**< [in] k vectors*/)
@@ -140,7 +139,7 @@ void tetrahedron(
   /**/
   for (it = 0; it < 6; ++it) {
     /*
-    Define corners of the tetrahedron
+     Define corners of the tetrahedron
     */
     for (i = 0; i < 4; ++i) {
       eig2[i] = eig1[corner[it][i]];
@@ -152,7 +151,7 @@ void tetrahedron(
                     + bvec[2][j] * kvec1[corner[it][i]][2];
     }
     /*
-    Sort of eig1
+     Sort of eig1
     */
     eigsort(4, eig2, mat2, kvec2);
     for (i = 0; i < 4; ++i) {
@@ -161,7 +160,7 @@ void tetrahedron(
       }
     }
     /*
-    Draw triangle in each cases
+     Draw triangle in each cases
     */
     if (eig2[0] <= 0.00 && 0.00 < eig2[1]) {
       for (i = 0; i < 3; ++i) kvec3[0][i] = kvec2[0][i] * a[0][1] + kvec2[1][i] * a[1][0];
@@ -202,9 +201,9 @@ void tetrahedron(
     }
   }
 }/* tetrahedron */
- /**
- * Patches for FSs
- */
+/**
+ Patches for FSs
+*/
 void fermi_patch()
 {
   int ib, i0, i1, i2, ii0, ii1, ii2, j0, j1, j2, start[3], i, j;
@@ -313,13 +312,13 @@ void fermi_patch()
       if (query == 1) ntri_th[ib][ithread] = ntri0;
     }/*for (ib = 0; ib < nb; ++ib)*/
   } /* End of parallel region */
-  /**
-   * If this run is workspace query, malloc arrays
-   */
+  /*
+   If this run is workspace query, malloc arrays
+  */
   if (query == 1) {
     /*
-     * Sum patches in all threads 
-     */
+     Sum patches in all threads 
+    */
     for (ib = 0; ib < nb; ib++) {
       for (ithread = 1; ithread < nthreads; ithread++) {
         ntri_th[ib][ithread] += ntri_th[ib][ithread - 1];
@@ -336,9 +335,9 @@ void fermi_patch()
       printf("    %d       %d\n", ib + 1, ntri[ib]);
     }
     printf("\n");
-    /**
-     * Allocation of triangler patches
-     */
+    /*
+     Allocation of triangler patches
+    */
     nmlp = (GLfloat***)malloc(nb * sizeof(GLfloat**));
     matp = (GLfloat***)malloc(nb * sizeof(GLfloat**));
     clr = (GLfloat****)malloc(nb * sizeof(GLfloat***));

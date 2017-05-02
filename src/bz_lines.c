@@ -35,7 +35,7 @@ THE SOFTWARE.
 #endif
 
 /**
-* Judge wheser this line is the edge of 1st BZ
+ Judge wheser this line is the edge of 1st BZ
 */
 int bragg_vert(
   int ibr /**< [in] Index of a Bragg plane*/,
@@ -59,19 +59,19 @@ int bragg_vert(
     rhs[1] = brnrm[jbr];
     rhs[2] = brnrm[kbr];
     /*
-    if Bragg planes do not cross, roop next kbr
+     if Bragg planes do not cross, roop next kbr
     */
     det = solve3(bmat, rhs);
     if (fabsf(det) < thr) continue;
     /*
-    if vert0 = vert1, roop next kbr
+     if vert0 = vert1, roop next kbr
     */
     prod = (vert2[0] - rhs[0]) * (vert2[0] - rhs[0])
          + (vert2[1] - rhs[1]) * (vert2[1] - rhs[1])
          + (vert2[2] - rhs[2]) * (vert2[2] - rhs[2]);
     if (prod < thr) continue;
     /*
-    is corner really in 1st BZ ?
+     is corner really in 1st BZ ?
     */
     i = 0;
     for (lbr = 0; lbr < 26; ++lbr) {
@@ -92,14 +92,14 @@ int bragg_vert(
     }
   }
   /*
-  this line is not a BZ boundary
+   this line is not a BZ boundary
   */
   return 0;
   /**/
 }/* bragg_vert */
- /**
- * Compute Brillouin zone boundariy lines
- */
+/**
+ Compute Brillouin zone boundariy lines
+*/
 void bz_lines() {
   /**/
   int ibr, jbr, nbr, ibzl, i, j, lvert;
@@ -138,9 +138,7 @@ void bz_lines() {
       bzl[ibzl] = (GLfloat**)malloc(2 * sizeof(GLfloat*));
       for (i = 0; i < 2; ++i) {
         bzl[ibzl][i] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-      }
-    }
-    /**/
-  }
-  /**/
+      }/*for (i = 0; i < 2; ++i)*/
+    }/*for (ibzl = 0; ibzl < nbzl; ++ibzl)*/
+  }/*if (query == 1)*/
 } /* bz_lines */

@@ -34,19 +34,23 @@ THE SOFTWARE.
 #endif
 
 /**
-*Work as Modulo function of fortran
+ Work as Modulo function of fortran
+ \return Modulated value
 */
-int modulo(int i, int n) {
+int modulo(
+  int i /**< [in] */, 
+  int n /**< [in]*/) {
   int j;
   j = (i + 100 * n) % n;
   return j;
 }/*modulo(int i, int n)*/
- /**
- * Solve linear system
- */
+/**
+ Solve linear system
+ \return Determinant
+*/
 GLfloat solve3(
   GLfloat a[3][3] /**< [in] Matix*/,
-  GLfloat b[3] /**< [inout] Right hand side vector*/)
+  GLfloat b[3] /**< [in,out] Right hand side vector*/)
 {
   int i;
   GLfloat det, c[3];
@@ -72,13 +76,13 @@ GLfloat solve3(
   /**/
 }
 /**
-* Sort eigenvalues
+ Sort eigenvalues
 */
 void eigsort(
   int n /**< [in] the number of components*/,
-  GLfloat* eig2 /**< [inout] the orbital energy*/,
-  GLfloat* mat2 /**< [inout] the matrix element*/,
-  GLfloat kvec2[][3] /**< [inout] k-vectors of corners*/)
+  GLfloat* eig2 /**< [in,out] the orbital energy*/,
+  GLfloat* mat2 /**< [in,out] the matrix element*/,
+  GLfloat kvec2[][3] /**< [in,out] k-vectors of corners*/)
 {
   int i, j, k;
   GLfloat tmp;

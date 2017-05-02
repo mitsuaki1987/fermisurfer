@@ -28,14 +28,14 @@ THE SOFTWARE.
 #include "basic_math.h"
 
 /**
-* Input from Fermi surface file
+ Input from Fermi surface file
 */
 void read_file(char *fname/**<[in] fname  Input file name*/)
 {
   int ib, i, i0, i1, i2, ii0, ii1, ii2, ierr;
   FILE *fp;
   /*
-  Open input file.
+   Open input file.
   */
   if ((fp = fopen(fname, "r")) == NULL) {
     printf("file open error!!\n");
@@ -47,14 +47,14 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   printf("  ##  Brillouin zone informations  ###########\n");
   printf("\n");
   /*
-  k-point grid
+   k-point grid
   */
   ierr = fscanf(fp, "%d%d%d", &ng0[0], &ng0[1], &ng0[2]);
   if (ierr == 0) printf("error ! reading ng");
   printf("    k point grid : %d %d %d \n", ng0[0], ng0[1], ng0[2]);
   for (i = 0; i < 3; i++) ng[i] = ng0[i];
   /*
-  Shift of k-point grid
+   Shift of k-point grid
   */
   ierr = fscanf(fp, "%d", &lshift);
   if (ierr == 0) printf("error ! reading lshift");
@@ -75,7 +75,7 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     exit(0);
   }
   /*
-   * # of bands
+   # of bands
   */
   ierr = fscanf(fp, "%d", &nb);
   if (ierr == 0) printf("error ! reading nb");
@@ -87,7 +87,7 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   draw_band = (int*)malloc(nb * sizeof(int));
   for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
   /*
-  Reciplocal lattice vectors
+   Reciplocal lattice vectors
   */
   for (i = 0; i < 3; ++i) {
     ierr = fscanf(fp, "%e%e%e", &bvec[i][0], &bvec[i][1], &bvec[i][2]);
@@ -95,7 +95,7 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     printf("    bvec %d : %f %f %f \n", i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
   }
   /*
-  Allocation of Kohn-Sham energies $ matrix elements
+   Allocation of Kohn-Sham energies $ matrix elements
   */
   eig0 = (GLfloat****)malloc(nb * sizeof(GLfloat***));
   mat0 = (GLfloat****)malloc(nb * sizeof(GLfloat***));
@@ -120,7 +120,7 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     }
   }
   /*
-  Kohn-Sham energies
+   Kohn-Sham energies
   */
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < ng0[0]; ++i0) {
@@ -139,7 +139,7 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     }
   }
   /*
-  Matrix elements
+   Matrix elements
   */
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < ng0[0]; ++i0) {
@@ -158,5 +158,4 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     }
   }
   fclose(fp);
-  /**/
 } /* read_file */
