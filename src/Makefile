@@ -17,7 +17,8 @@ initialize.o \
 kumo.o \
 menu.o \
 operation.o \
-read_file.o
+read_file.o \
+section.o
 
 HEADERS= \
 basic_math.h \
@@ -31,6 +32,7 @@ kumo.h \
 menu.h \
 operation.h \
 read_file.h \
+section.h \
 variable.h
 
 all:fermisurfer bxsf2frmsf
@@ -67,3 +69,4 @@ kumo.o:$(HEADERS)
 menu.o:$(HEADERS)
 operation.o:$(HEADERS)
 read_file.o:$(HEADERS)
+section.o:$(HEADERS)

@@ -254,6 +254,7 @@ void initialize_val() {
   lcolorbar = 1;
   lstereo = 1;
   lmouse = 1;
+  lsection = 0;
   itet = 0;
   scl = 1.0;
   trans[0] = 0.0; trans[1] = 0.0; trans[2] = 0.0;

@@ -34,7 +34,7 @@ THE SOFTWARE.
 /**
  Draw Fermi surfaces
 */
-void draw_fermi() {
+static void draw_fermi() {
   int i, j, ib, itri;
   GLfloat vect[3];
   /*
@@ -128,7 +128,7 @@ void draw_fermi() {
 /**
  Draw lines of BZ boundaries
 */
-void draw_bz_lines() {
+static void draw_bz_lines() {
   int ibzl, i, j;
   GLfloat bzl2[3], bvec2[3][3], linecolor[4];
   /*
@@ -167,7 +167,8 @@ void draw_bz_lines() {
       for (j = 0; j < 3; ++j) {
         bvec2[i][j] = rot[j][0] * bvec[i][0]
                     + rot[j][1] * bvec[i][1]
-                    + rot[j][2] * bvec[i][2];
+                    + rot[j][2] * bvec[i][2]
+                    + trans[j];
       }
     }
     glBegin(GL_LINE_STRIP);
@@ -190,14 +191,29 @@ void draw_bz_lines() {
     for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[1][i]; glVertex3fv(bzl2);
     glEnd();
   }
-  /**/
+  /*
+   Section for the 2D Fermi line
+  */
+  if (lsection == 1) {
+    glBegin(GL_POLYGON);
+    glNormal3fv(secvec);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
+    for (ibzl = 0; ibzl < nbzl2d; ++ibzl) {
+      for (j = 0; j < 3; ++j)
+        bzl2[j] = rot[j][0] * bzl2d[ibzl][0]
+                + rot[j][1] * bzl2d[ibzl][1]
+                + rot[j][2] * bzl2d[ibzl][2]
+                + trans[j];
+      glVertex3fv(bzl2);
+    }
+    glEnd();
+  }/*if (lsection == 1)*/
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
-  /**/
 } /* draw bz_lines */
 /**
  Draw color scale
 */
-void draw_colorbar()
+static void draw_colorbar()
 {
   int i, j;
   GLfloat mat2, barcolor[4];
@@ -301,7 +317,7 @@ void draw_colorbar()
 /**
  Draw points for the stereogram
 */
-void draw_circles() {
+static void draw_circles(double dx2d) {
   int i;
   GLfloat r;
   /**/
@@ -318,30 +334,53 @@ void draw_circles() {
   /**/
   glBegin(GL_TRIANGLE_FAN);
   glNormal3f(0.0, 0.0, 1.0);
-  glVertex3f(0.7, scl, 0.0);
+  glVertex3f(0.7 - dx2d, scl, 0.0);
   for (i = 0; i <= 20; i++) {
-    glVertex3f(r * cos((GLfloat)i / 20.0 * 6.283185307) + 0.7,
+    glVertex3f(r * cos((GLfloat)i / 20.0 * 6.283185307) + 0.7 - dx2d,
                r * sin((GLfloat)i / 20.0 * 6.283185307) + scl, 0.0);
   }
   glEnd();
   /**/
   glBegin(GL_TRIANGLE_FAN);
   glNormal3f(0.0, 0.0, 1.0);
-  glVertex3f(-0.7, scl, 0.0);
+  glVertex3f(-0.7 - dx2d, scl, 0.0);
   for (i = 0; i <= 20; i++) {
-    glVertex3f(r * cos((GLfloat)i / 20.0 * 6.283185307) - 0.7,
+    glVertex3f(r * cos((GLfloat)i / 20.0 * 6.283185307) - 0.7 - dx2d,
                r * sin((GLfloat)i / 20.0 * 6.283185307) + scl, 0.0);
   }
   glEnd();
 }/*void draw_circles*/
 /**
+ Draw Fermi lines
+*/
+static void draw_fermi_line() {
+  int i, ib, itri;
+  GLfloat vect[3];
+
+  glLineWidth(2.0);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
+  glBegin(GL_LINES);
+  for (ib = 0; ib < nb; ib++) {
+    if (draw_band[ib] == 1) {
+      for (itri = 0; itri < n2d[ib]; ++itri) {
+        for (i = 0; i < 2; ++i) {
+          glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, clr2d[ib][itri][i]);
+          glVertex3fv(kv2d[ib][itri][i]);
+        }/*for (i = 0; i < 2; ++i)*/
+      }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
+    }/*if (draw_band[ib] == 1)*/
+  }/* for (ib = 0; ib < nb; ib++)*/
+  glEnd();
+  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+}/*void draw_fermi_line*/
+ /**
  Glut Display function
 */
 void display()
 {
   GLfloat pos[] = { 1.0, 1.0, 1.0, 0.0 };
   GLfloat amb[] = { 0.2, 0.2, 0.2, 0.0 };
-  double dx, theta, posz, phi;
+  double dx, dx2d, theta, posz, phi;
   GLfloat pos1[4], pos2[4];
   /**/
   if (lstereo == 2) {
@@ -380,6 +419,8 @@ void display()
     theta = 0.0;
     dx = 0.0;
   }
+  if (lsection == 1) dx2d = 0.7;
+  else dx2d = 0.0;
   /*
    Initialize
   */
@@ -394,6 +435,7 @@ void display()
   */
   if (lstereo == 1) {
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
+    glTranslated(-dx2d, 0.0, 0.0);
     /*
      Draw color scale
     */
@@ -401,8 +443,8 @@ void display()
   }
   else {
     glLightfv(GL_LIGHT0, GL_POSITION, pos1);
-    draw_circles();
-    glTranslated(-dx, 0.0, 0.0);
+    draw_circles(dx2d);
+    glTranslated(-dx-dx2d, 0.0, 0.0);
     glRotated(theta, 0.0, 1.0, 0.0);
   }
   glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
@@ -427,7 +469,7 @@ void display()
     gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     glLightfv(GL_LIGHT0, GL_POSITION, pos2);
     /**/
-    glTranslated(dx, 0.0, 0.0);
+    glTranslated(dx-dx2d, 0.0, 0.0);
     glRotated(-theta, 0.0, 1.0, 0.0);
     /**/
     glScaled(scl, scl, scl);
@@ -436,6 +478,22 @@ void display()
     /**/
     glPopMatrix();
   }
-  /**/
+  /*
+   Draw 2D Fermi line
+  */
+  if (lsection == 1) {
+    glPushMatrix();
+    glLoadIdentity();
+    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
+    /**/
+    if (lstereo == 1) glTranslated(dx2d, 0.0, 0.0);
+    else glTranslated(2.0 * dx2d, 0.0, 0.0);
+    /**/
+    glScaled(scl, scl, scl);
+    draw_fermi_line();
+    /**/
+    glPopMatrix();
+  }/*if (lsection == 1)*/
   glutSwapBuffers();
 }/*void display*/

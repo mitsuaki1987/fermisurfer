@@ -33,7 +33,9 @@ THE SOFTWARE.
 */
 void free_patch() {
   int ib, i0, i1;
-
+  /*
+   Fermi patch
+  */
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < ntri[ib]; ++i0) {
       for (i1 = 0; i1 < 3; ++i1) {
@@ -61,21 +63,40 @@ void free_patch() {
   free(kvp);
   free(nmlp_rot);
   free(kvp_rot);
-
+  /*
+   Nodal line
+  */
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < nnl[ib]; ++i0) {
       for (i1 = 0; i1 < 2; ++i1) {
         free(kvnl[ib][i0][i1]);
         free(kvnl_rot[ib][i0][i1]);
-      }
+      }/*for (i1 = 0; i1 < 2; ++i1)*/
       free(kvnl[ib][i0]);
       free(kvnl_rot[ib][i0]);
-    }
+    }/*for (i0 = 0; i0 < nnl[ib]; ++i0)*/
     free(kvnl[ib]);
     free(kvnl_rot[ib]);
-  }
+  }/*for (ib = 0; ib < nb; ++ib)*/
   free(kvnl);
   free(kvnl_rot);
+  /*
+   2D Fermi line
+  */
+  for (ib = 0; ib < nb; ++ib) {
+    for (i0 = 0; i0 < n2d[ib]; ++i0) {
+      for (i1 = 0; i1 < 2; ++i1) {
+        free(kv2d[ib][i0][i1]);
+        free(clr2d[ib][i0][i1]);
+      }/*for (i1 = 0; i1 < 2; ++i1)*/
+      free(kv2d[ib][i0]);
+      free(clr2d[ib][i0]);
+    }/*for (i0 = 0; i0 < n2d[ib]; ++i0)*/
+    free(kv2d[ib]);
+    free(clr2d[ib]);
+  }/*for (ib = 0; ib < nb; ++ib)*/
+  free(kv2d);
+  free(clr2d);
 }/*void free_patch()*/
 /**
  Compute Max. & Min. of matrix elements.

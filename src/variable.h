@@ -56,16 +56,17 @@ int nodeline;  /**< Switch for node lines */
 int lcolorbar; /**< Switch for colorbar */
 int lstereo;   /**< Switch for the stereogram */
 int lmouse;    /**< Switch for the mouse function */
+int lsection;    /**< Switch for the 2D Fermi lines*/
 /*
  Menu
 */
-int imenu_band, imenu_interpol, imenu_bgcolor, imenu_colorscale, imenu_bzmode, 
+int imenu_band, imenu_interpol, imenu_bgcolor, imenu_colorscale, imenu_bzmode, imenu_section, 
 imenu_nodeline, imenu_colorbar, imenu_tetra, imenu_stereo, imenu_mouse, imenu;
 /*
  Variables for Brillouin zone boundaries
 */
 int nbzl;             /**< The number of Lines of 1st Brillouin zone */
-GLfloat ***bzl;       /**< Lines of 1st BZ [nbzl][2][3] */
+GLfloat bzl[676][2][3];       /**< Lines of 1st BZ [nbzl(max:26*26=676)][2][3] */
 GLfloat bragg[26][3]; /**< Bragg plane vectors */
 GLfloat brnrm[26];    /**< Norms of Bragg plane vectors */
 /*
@@ -87,6 +88,17 @@ int itet;       /**< Counter for tetrahedron */
 int *nnl; /**< The number of nodeline */
 GLfloat ****kvnl; /**< K-vector of nodeline [nb][nnl][2][3] */
 GLfloat ****kvnl_rot; /**< K-vector of nodeline [nb][nnl][2][3] */
+/*
+ 2D Fermi line
+*/
+GLfloat secvec[3]; /**< k-vector to define section*/
+GLfloat secscale; /**0.0 or 1.0*/
+GLfloat axis2d[2][3]; /**< k-vector to define section*/
+int *n2d;
+GLfloat ****kv2d;/**< k-vector for 2D plot[nb][n2d][2][2] */
+GLfloat ****clr2d; /**< Matrix element for 2D plot[nb][n2d][2][4] */
+int nbzl2d;             /**< The number of Lines of 1st Brillouin zone */
+GLfloat bzl2d[26][3];       /**< Lines of 1st BZ [nbzl2d(max:26)][3] */
 /*
   Variables for mouse  & cursorkey
 */

@@ -30,6 +30,8 @@ THE SOFTWARE.
 #include "fermi_patch.h"
 #include "calc_nodeline.h"
 #include "kumo.h"
+#include "initialize.h"
+#include "section.h"
 
 #if defined(MAC)
 #include <GLUT/glut.h>
@@ -65,13 +67,6 @@ void main_menu(int value /**< [in] Selected menu*/) {
     free(mat);
     free(ntri);
     free(draw_band);
-    for (ibzl = 0; ibzl < nbzl; ++ibzl) {
-      for (i = 0; i < 2; ++i) {
-        free(bzl[ibzl][i]);
-      }
-      free(bzl[ibzl]);
-    }
-    free(bzl);
     free(nnl);
     exit(0);
   }
@@ -105,13 +100,13 @@ void menu_shiftEF(int value /**< [in] Selected menu*/)
     if (ierr != 1) printf("error ! reading ef");
     /**/
     free_patch();
-    query = 1;
-    fermi_patch();
-    query = 0;
-    fermi_patch();
-    calc_nodeline();
-    /**/
+    query = 1; fermi_patch();
+    query = 0; fermi_patch();
     max_and_min();
+    query = 1; calc_nodeline();
+    query = 0; calc_nodeline();
+    query = 1; calc_section();
+    query = 0; calc_section();
     /**/
     glutPostRedisplay();
   }
@@ -133,13 +128,13 @@ void menu_interpol(int value /**< [in] Selected menu*/)
     /**/
     interpol_energy();
     free_patch();
-    query = 1;
-    fermi_patch();
-    query = 0;
-    fermi_patch();
-    calc_nodeline();
-    /**/
+    query = 1; fermi_patch();
+    query = 0; fermi_patch();
     max_and_min();
+    query = 1; calc_nodeline();
+    query = 0; calc_nodeline();
+    query = 1; calc_section();
+    query = 0; calc_section();
     /**/
     glutPostRedisplay();
   }
@@ -285,13 +280,13 @@ void menu_bzmode(int value /**<[in] Selected menu*/) {
     fbz = 1;
     /**/
     free_patch();
-    query = 1;
-    fermi_patch();
-    query = 0;
-    fermi_patch();
-    calc_nodeline();
-    /**/
+    query = 1; fermi_patch();
+    query = 0; fermi_patch();
     max_and_min();
+    query = 1; calc_nodeline();
+    query = 0; calc_nodeline();
+    query = 1; calc_section();
+    query = 0; calc_section();
     /**/
     glutPostRedisplay();
   }
@@ -299,13 +294,13 @@ void menu_bzmode(int value /**<[in] Selected menu*/) {
     fbz = -1;
     /**/
     free_patch();
-    query = 1;
-    fermi_patch();
-    query = 0;
-    fermi_patch();
-    calc_nodeline();
-    /**/
+    query = 1; fermi_patch();
+    query = 0; fermi_patch();
     max_and_min();
+    query = 1; calc_nodeline();
+    query = 0; calc_nodeline();
+    query = 1; calc_section();
+    query = 0; calc_section();
     /**/
     glutPostRedisplay();
   }
@@ -341,6 +336,61 @@ void menu_stereo(int value /**<[in] Selected menu*/) {
   }
 } /* menu_stereo */
 /**
+ Menu for 2D Fermi lines
+*/
+void menu_section(int value) /**<[in] Selected menu*/ {
+  int ierr, ii, jj, ib;
+  GLfloat vec[3];
+
+  if (value == 1) {
+    if (lsection != 1) {
+      lsection = 1;
+      glutPostRedisplay();
+    }
+    else {
+      lsection = 0;
+      glutPostRedisplay();
+    }
+  }/*if (value == 1)*/
+  else if (value > 1) {
+    if (value == 2) secscale = 1.0;
+    else secscale = 0.0;
+
+    printf("    New Millor index : ");
+    ierr = scanf("%f %f %f", &vec[0], &vec[1], &vec[2]);
+    /*
+     Fractional -> Cartecian
+    */
+    for (ii = 0; ii < 3; ii++) {
+      secvec[ii] = 0.0;
+      for (jj = 0; jj < 3; jj++) {
+        secvec[ii] += vec[jj] * bvec[jj][ii];
+      }/*for (jj = 0; jj < 3; jj++)*/
+    }/*for (ii = 0; ii < 3; ii++)*/
+    /*
+     Free variables for Fermi line
+    */
+    for (ib = 0; ib < nb; ++ib) {
+      for (ii = 0; ii < n2d[ib]; ++ii) {
+        for (jj = 0; jj < 2; ++jj) {
+          free(kv2d[ib][ii][jj]);
+          free(clr2d[ib][ii][jj]);
+        }/*for (jj = 0; jj < 2; ++jj)*/
+        free(kv2d[ib][ii]);
+        free(clr2d[ib][ii]);
+      }/*for (ii = 0; ii < n2d[ib]; ++ii)*/
+      free(kv2d[ib]);
+      free(clr2d[ib]);
+    }/*for (ib = 0; ib < nb; ++ib)*/
+    free(kv2d);
+    free(clr2d);
+
+    query = 1; calc_section();
+    query = 0; calc_section();
+    glutPostRedisplay();
+  }/*else if (value > 1)*/
+} /*void menu_section*/
+/**
  On/Off Colorbar
 */
 void menu_colorbar(int value /**<[in] Selected menu*/) {
@@ -363,12 +413,13 @@ void menu_tetra(int value) /**<[in] Selected menu*/ {
     itet = value;
     init_corner();
     free_patch();
-    query = 1;
-    fermi_patch();
-    query = 0;
-    fermi_patch();
-    calc_nodeline();
+    query = 1; fermi_patch();
+    query = 0; fermi_patch();
     max_and_min();
+    query = 1; calc_nodeline();
+    query = 0; calc_nodeline();
+    query = 1; calc_section();
+    query = 0; calc_section();
     glutPostRedisplay();
   }
 } /* menu_tetra */
@@ -472,6 +523,15 @@ void FS_ModifyMenu(int status)
     else glutAddMenuEntry("[ ] Parallel", 2);
     if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
     else glutAddMenuEntry("[ ] Cross", 3);
+    /*
+     2D Fermi lines
+    */
+    glutSetMenu(imenu_section);
+    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
+    if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
+    else glutAddMenuEntry("[ ] Section", 1);
+    glutAddMenuEntry("Modify section", 2);
+    glutAddMenuEntry("Modify section (across Gamma)", 3);
     /*
      Tetrahedron
     */
@@ -584,6 +644,14 @@ void FS_CreateMenu()
   if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
   else glutAddMenuEntry("[ ] Cross", 3);
   /*
+   2D Fermi lines
+  */
+  imenu_section = glutCreateMenu(menu_section);
+  if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
+  else glutAddMenuEntry("[ ] Section", 1);
+  glutAddMenuEntry("Modify section", 2);
+  glutAddMenuEntry("Modify section (across Gamma)", 3);
+  /*
    Tetrahedron 
   */
   imenu_tetra = glutCreateMenu(menu_tetra);
@@ -607,6 +675,7 @@ void FS_CreateMenu()
   glutAddSubMenu("Node lines", imenu_nodeline);
   glutAddSubMenu("Color bar On/Off", imenu_colorbar);
   glutAddSubMenu("Stereogram", imenu_stereo);
+  glutAddSubMenu("Section", imenu_section);
   glutAddSubMenu("Tetrahedron", imenu_tetra);
   glutAddMenuEntry("Exit", 9);
   glutAttachMenu(GLUT_RIGHT_BUTTON);

@@ -84,6 +84,7 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
   ntri_th = (int**)malloc(nb * sizeof(int*));
   for (ib = 0; ib < nb; ib++) ntri_th[ib] = (int*)malloc(nthreads * sizeof(int));
   nnl = (int*)malloc(nb * sizeof(int));
+  n2d = (int*)malloc(nb * sizeof(int));
   draw_band = (int*)malloc(nb * sizeof(int));
   for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
   /*
@@ -94,6 +95,8 @@ void read_file(char *fname/**<[in] fname  Input file name*/)
     if (ierr == 0) printf("error ! reading bvec");
     printf("    bvec %d : %f %f %f \n", i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
   }
+  for (i = 0; i < 3; ++i) secvec[i] = bvec[2][i];
+  secscale = 0.0;
   /*
    Allocation of Kohn-Sham energies $ matrix elements
   */

@@ -51,6 +51,7 @@ with a color plot of the arbitraly matrix element
 #include "calc_nodeline.h"
 #include "bz_lines.h"
 #include "free_patch.h"
+#include "section.h"
 
 #if defined(MAC)
 #include <GLUT/glut.h>
@@ -116,20 +117,17 @@ int main(
   init_corner();
   bragg_vector();
   /**/
-  query = 1;
-  bz_lines();
-  query = 0;
   bz_lines();
   /**/
   max_and_min_bz();
   /**/
-  query = 1;
-  fermi_patch();
-  query = 0;
-  fermi_patch();
-  calc_nodeline();
-  /**/
+  query = 1; fermi_patch();
+  query = 0; fermi_patch();
   max_and_min();
+  query = 1; calc_nodeline();
+  query = 0; calc_nodeline();
+  query = 1; calc_section();
+  query = 0; calc_section();
   /*
     Description
   */
