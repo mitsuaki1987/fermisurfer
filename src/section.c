@@ -242,7 +242,7 @@ void calc_section() {
   calc_2dbz();
 
 #pragma omp parallel default(none) \
-  shared(nb,n2d,clr,clr2d,kvp,ntri,ntri_th,secvec,secscale,query) \
+  shared(nb,n2d,clr,clr2d,kvp,ntri,ntri_th,secvec,secscale,query,kv2d) \
   private(ib,itri,norm,nprod,i,j,n2d0,ithread,vec)
   {
     ithread = get_thread();
@@ -262,35 +262,35 @@ void calc_section() {
         /**/
         if (fabsf(norm[1]) < 0.00001 && fabsf(norm[2]) < 0.00001) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i)vec[0][i] = kvp[ib][itri][1][i];
-            for (i = 0; i < 3; ++i)vec[1][i] = kvp[ib][itri][2][i];
-            for (i = 0; i < 4; ++i)clr2d[ib][n2d0][0][i] = clr[ib][itri][1][i];
-            for (i = 0; i < 4; ++i)clr2d[ib][n2d0][1][i] = clr[ib][itri][2][i];
+            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][1][i];
+            for (i = 0; i < 3; ++i) vec[1][i] = kvp[ib][itri][2][i];
+            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][1][i];
+            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] = clr[ib][itri][2][i];
             proj_2d(ib, n2d0, vec);
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (fabsf(norm[1]) < 0.00001 && fabsf(norm[2]) < 0.00001)*/
         else if (fabsf(norm[0]) < 0.00001 && fabsf(norm[2]) < 0.00001) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i)vec[0][i] = kvp[ib][itri][0][i];
-            for (i = 0; i < 3; ++i)vec[1][i] = kvp[ib][itri][2][i];
-            for (i = 0; i < 4; ++i)clr2d[ib][n2d0][0][i] = clr[ib][itri][0][i];
-            for (i = 0; i < 4; ++i)clr2d[ib][n2d0][1][i] = clr[ib][itri][2][i];
+            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][0][i];
+            for (i = 0; i < 3; ++i) vec[1][i] = kvp[ib][itri][2][i];
+            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][0][i];
+            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] = clr[ib][itri][2][i];
             proj_2d(ib, n2d0, vec);
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (fabsf(norm[0]) < 0.00001 && fabsf(norm[2]) < 0.00001)*/
         else if (fabsf(norm[0]) < 0.00001 && fabsf(norm[1]) < 0.00001) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i)vec[0][i] = kvp[ib][itri][0][i];
-            for (i = 0; i < 3; ++i)vec[1][i] = kvp[ib][itri][1][i];
-            for (i = 0; i < 4; ++i)clr2d[ib][n2d0][0][i] = clr[ib][itri][0][i];
-            for (i = 0; i < 4; ++i)clr2d[ib][n2d0][1][i] = clr[ib][itri][1][i];
+            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][0][i];
+            for (i = 0; i < 3; ++i) vec[1][i] = kvp[ib][itri][1][i];
+            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][0][i];
+            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] = clr[ib][itri][1][i];
             proj_2d(ib, n2d0, vec);
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*if (fabsf(norm[0]) < 0.00001 && fabsf(norm[1]) < 0.00001)*/
-        else if (fabsf(norm[0]) < 0.00001 && nprod[0] < 0.00001) {
+        else if (fabsf(norm[0]) < 0.00001 && nprod[0] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][0][i];
             for (i = 0; i < 3; ++i) vec[1][i] =
@@ -302,7 +302,7 @@ void calc_section() {
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (fabsf(norm[0]) < 0.00001 && nprod[0] < 0.00001)*/
-        else if (fabsf(norm[1]) < 0.00001 && nprod[1] < 0.00001) {
+        else if (fabsf(norm[1]) < 0.00001 && nprod[1] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][1][i];
             for (i = 0; i < 3; ++i) vec[1][i] =
@@ -314,7 +314,7 @@ void calc_section() {
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (fabsf(norm[1]) < 0.00001 && nprod[1] < 0.00001)*/
-        else if (fabsf(norm[2]) < 0.00001 && nprod[2] < 0.00001) {
+        else if (fabsf(norm[2]) < 0.00001 && nprod[2] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][2][i];
             for (i = 0; i < 3; ++i) vec[1][i] =
@@ -326,11 +326,11 @@ void calc_section() {
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (fabsf(norm[2]) < 0.00001 && nprod[2] < 0.00001)*/
-        else if (nprod[1] < 0.00001 && nprod[2] < 0.00001) {
+        else if (nprod[1] < 0.0 && nprod[2] < 0.0) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i)vec[0][i] =
+            for (i = 0; i < 3; ++i) vec[0][i] =
               (norm[0] * kvp[ib][itri][1][i] - norm[1] * kvp[ib][itri][0][i]) / (norm[0] - norm[1]);
-            for (i = 0; i < 3; ++i)vec[1][i] =
+            for (i = 0; i < 3; ++i) vec[1][i] =
               (norm[0] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][0][i]) / (norm[0] - norm[2]);
             for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] =
               (norm[0] * clr[ib][itri][1][i] - norm[1] * clr[ib][itri][0][i]) / (norm[0] - norm[1]);
@@ -340,11 +340,11 @@ void calc_section() {
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (nprod[1] < 0.00001 && nprod[2] < 0.00001)*/
-        else if (nprod[0] < 0.00001 && nprod[2] < 0.00001) {
+        else if (nprod[0] < 0.0 && nprod[2] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) vec[0][i] =
               (norm[0] * kvp[ib][itri][1][i] - norm[1] * kvp[ib][itri][0][i]) / (norm[0] - norm[1]);
-            for (i = 0; i < 3; ++i)vec[1][i] =
+            for (i = 0; i < 3; ++i) vec[1][i] =
               (norm[1] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][1][i]) / (norm[1] - norm[2]);
             for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] =
               (norm[0] * clr[ib][itri][1][i] - norm[1] * clr[ib][itri][0][i]) / (norm[0] - norm[1]);
@@ -354,11 +354,11 @@ void calc_section() {
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (nprod[0] < 0.00001 && nprod[2] < 0.00001)*/
-        else if (nprod[1] < 0.00001 && nprod[0] < 0.00001) {
+        else if (nprod[1] < 0.0 && nprod[0] < 0.0) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i)vec[0][i] =
+            for (i = 0; i < 3; ++i) vec[0][i] =
               (norm[0] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][0][i]) / (norm[0] - norm[2]);
-            for (i = 0; i < 3; ++i)vec[1][i] =
+            for (i = 0; i < 3; ++i) vec[1][i] =
               (norm[1] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][1][i]) / (norm[1] - norm[2]);
             for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] =
               (norm[0] * clr[ib][itri][2][i] - norm[2] * clr[ib][itri][0][i]) / (norm[0] - norm[2]);

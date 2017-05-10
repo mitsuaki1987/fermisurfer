@@ -76,7 +76,7 @@ void calc_nodeline() {
           }/*if (query == 0)*/
           nnl0 += 1;
         }/*if (fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][1]) < 0.00001)*/
-        else if (fabsf(matp[ib][itri][0]) < 0.00001 && mprod[0] < 0.00001) {
+        else if (fabsf(matp[ib][itri][0]) < 0.00001 && mprod[0] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][0][i];
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
@@ -85,7 +85,7 @@ void calc_nodeline() {
           }/*if (query == 0)*/
           nnl0 += 1;
         }/*else if (fabsf(matp[ib][itri][0]) < 0.00001 && mprod[0] < 0.00001)*/
-        else if (fabsf(matp[ib][itri][1]) < 0.00001 && mprod[1] < 0.00001) {
+        else if (fabsf(matp[ib][itri][1]) < 0.00001 && mprod[1] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][1][i];
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
@@ -94,7 +94,7 @@ void calc_nodeline() {
           }/*if (query == 0)*/
           nnl0 += 1;
         }/*else if (fabsf(matp[ib][itri][1]) < 0.00001 && mprod[1] < 0.00001)*/
-        else if (fabsf(matp[ib][itri][2]) < 0.00001 && mprod[2] < 0.00001) {
+        else if (fabsf(matp[ib][itri][2]) < 0.00001 && mprod[2] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][2][i];
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
@@ -103,7 +103,7 @@ void calc_nodeline() {
           }/*if (query == 0)*/
           nnl0 += 1;
         }/*else if (fabsf(matp[ib][itri][2]) < 0.00001 && mprod[2] < 0.00001)*/
-        else if (mprod[2] < 0.00001 && mprod[1] < 0.00001) {
+        else if (mprod[2] < 0.0 && mprod[1] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] =
               (matp[ib][itri][0] * kvp[ib][itri][1][i] - matp[ib][itri][1] * kvp[ib][itri][0][i])
@@ -114,7 +114,7 @@ void calc_nodeline() {
           }/*if (query == 0)*/
           nnl0 += 1;
         }/*else if (mprod[2] < 0.00001 && mprod[1] < 0.00001)*/
-        else if (mprod[2] < 0.00001 && mprod[0] < 0.00001) {
+        else if (mprod[2] < 0.0 && mprod[0] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] =
               (matp[ib][itri][0] * kvp[ib][itri][1][i] - matp[ib][itri][1] * kvp[ib][itri][0][i])
@@ -125,7 +125,7 @@ void calc_nodeline() {
           }/*if (query == 0)*/
           nnl0 += 1;
         }/*else if (mprod[2] < 0.00001 && mprod[0] < 0.00001)*/
-        else if (mprod[1] < 0.00001 && mprod[0] < 0.00001) {
+        else if (mprod[1] < 0.0 && mprod[0] < 0.0) {
           if (query == 0) {
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] =
               (matp[ib][itri][0] * kvp[ib][itri][2][i] - matp[ib][itri][2] * kvp[ib][itri][0][i])
