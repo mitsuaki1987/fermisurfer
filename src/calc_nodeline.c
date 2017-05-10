@@ -38,7 +38,7 @@ THE SOFTWARE.
 */
 void calc_nodeline() {
   int ib, itri, i, j, nnl0, ithread;
-  GLfloat mprod[2];
+  GLfloat mprod[3];
 
 #pragma omp parallel default(none) \
   shared(nb,nnl,matp,kvnl,kvp,ntri,ntri_th,query) \
@@ -51,16 +51,17 @@ void calc_nodeline() {
 #pragma omp for
       for (itri = 0; itri < ntri[ib]; ++itri) {
         /**/
-        mprod[0] = matp[ib][itri][0] * matp[ib][itri][1];
-        mprod[1] = matp[ib][itri][1] * matp[ib][itri][2];
+        mprod[0] = matp[ib][itri][1] * matp[ib][itri][2];
+        mprod[1] = matp[ib][itri][2] * matp[ib][itri][0];
+        mprod[2] = matp[ib][itri][0] * matp[ib][itri][1];
         /**/
-        if (fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][1]) < 0.00001) {
+        if (fabsf(matp[ib][itri][1]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][0][i];
-            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] = kvp[ib][itri][1][i];
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][1][i];
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] = kvp[ib][itri][2][i];
           }/*if (query == 0)*/
           nnl0 += 1;
-        }/*if (fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][1]) < 0.00001)*/
+        }/*if (fabsf(matp[ib][itri][1]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001)*/
         else if (fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001) {
           if (query == 0) {
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][0][i];
@@ -68,38 +69,63 @@ void calc_nodeline() {
           }/*if (query == 0)*/
           nnl0 += 1;
         }/*if (fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001)*/
-        else if (fabsf(matp[ib][itri][1]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001) {
+        else if (fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][1]) < 0.00001) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][1][i];
-            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] = kvp[ib][itri][2][i];
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][0][i];
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] = kvp[ib][itri][1][i];
           }/*if (query == 0)*/
           nnl0 += 1;
-        }/*if (fabsf(matp[ib][itri][1]) < 0.00001 && fabsf(matp[ib][itri][2]) < 0.00001)*/
-        else if (mprod[0] < 0.0) {
-          if (mprod[1] < 0.0) {
-            if (query == 0) {
-              for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] =
-                (matp[ib][itri][0] * kvp[ib][itri][1][i] - matp[ib][itri][1] * kvp[ib][itri][0][i])
-                / (matp[ib][itri][0] - matp[ib][itri][1]);
-              for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
-                (matp[ib][itri][1] * kvp[ib][itri][2][i] - matp[ib][itri][2] * kvp[ib][itri][1][i])
-                / (matp[ib][itri][1] - matp[ib][itri][2]);
-            }/*if (query == 0)*/
-            nnl0 += 1;
-          }/*if (mprod[1] < 0.0)*/
-          else {
-            if (query == 0) {
-              for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] =
-                (matp[ib][itri][0] * kvp[ib][itri][1][i] - matp[ib][itri][1] * kvp[ib][itri][0][i])
-                / (matp[ib][itri][0] - matp[ib][itri][1]);
-              for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
-                (matp[ib][itri][0] * kvp[ib][itri][2][i] - matp[ib][itri][2] * kvp[ib][itri][0][i])
-                / (matp[ib][itri][0] - matp[ib][itri][2]);
-            }/*if (query == 0)*/
-            nnl0 += 1;
-          }
-        }/* else if (mprod[0] < 0.0)*/
-        else if (mprod[1] < 0.0) {
+        }/*if (fabsf(matp[ib][itri][0]) < 0.00001 && fabsf(matp[ib][itri][1]) < 0.00001)*/
+        else if (fabsf(matp[ib][itri][0]) < 0.00001 && mprod[0] < 0.00001) {
+          if (query == 0) {
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][0][i];
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
+              (matp[ib][itri][1] * kvp[ib][itri][2][i] - matp[ib][itri][2] * kvp[ib][itri][1][i])
+              / (matp[ib][itri][1] - matp[ib][itri][2]);
+          }/*if (query == 0)*/
+          nnl0 += 1;
+        }/*else if (fabsf(matp[ib][itri][0]) < 0.00001 && mprod[0] < 0.00001)*/
+        else if (fabsf(matp[ib][itri][1]) < 0.00001 && mprod[1] < 0.00001) {
+          if (query == 0) {
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][1][i];
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
+              (matp[ib][itri][0] * kvp[ib][itri][2][i] - matp[ib][itri][2] * kvp[ib][itri][0][i])
+              / (matp[ib][itri][0] - matp[ib][itri][2]);
+          }/*if (query == 0)*/
+          nnl0 += 1;
+        }/*else if (fabsf(matp[ib][itri][1]) < 0.00001 && mprod[1] < 0.00001)*/
+        else if (fabsf(matp[ib][itri][2]) < 0.00001 && mprod[2] < 0.00001) {
+          if (query == 0) {
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] = kvp[ib][itri][2][i];
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
+              (matp[ib][itri][0] * kvp[ib][itri][1][i] - matp[ib][itri][1] * kvp[ib][itri][0][i])
+              / (matp[ib][itri][0] - matp[ib][itri][1]);
+          }/*if (query == 0)*/
+          nnl0 += 1;
+        }/*else if (fabsf(matp[ib][itri][2]) < 0.00001 && mprod[2] < 0.00001)*/
+        else if (mprod[2] < 0.00001 && mprod[1] < 0.00001) {
+          if (query == 0) {
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] =
+              (matp[ib][itri][0] * kvp[ib][itri][1][i] - matp[ib][itri][1] * kvp[ib][itri][0][i])
+              / (matp[ib][itri][0] - matp[ib][itri][1]);
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
+              (matp[ib][itri][0] * kvp[ib][itri][2][i] - matp[ib][itri][2] * kvp[ib][itri][0][i])
+              / (matp[ib][itri][0] - matp[ib][itri][2]);
+          }/*if (query == 0)*/
+          nnl0 += 1;
+        }/*else if (mprod[2] < 0.00001 && mprod[1] < 0.00001)*/
+        else if (mprod[2] < 0.00001 && mprod[0] < 0.00001) {
+          if (query == 0) {
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] =
+              (matp[ib][itri][0] * kvp[ib][itri][1][i] - matp[ib][itri][1] * kvp[ib][itri][0][i])
+              / (matp[ib][itri][0] - matp[ib][itri][1]);
+            for (i = 0; i < 3; ++i)kvnl[ib][nnl0][1][i] =
+              (matp[ib][itri][1] * kvp[ib][itri][2][i] - matp[ib][itri][2] * kvp[ib][itri][1][i])
+              / (matp[ib][itri][1] - matp[ib][itri][2]);
+          }/*if (query == 0)*/
+          nnl0 += 1;
+        }/*else if (mprod[2] < 0.00001 && mprod[0] < 0.00001)*/
+        else if (mprod[1] < 0.00001 && mprod[0] < 0.00001) {
           if (query == 0) {
             for (i = 0; i < 3; ++i)kvnl[ib][nnl0][0][i] =
               (matp[ib][itri][0] * kvp[ib][itri][2][i] - matp[ib][itri][2] * kvp[ib][itri][0][i])
@@ -109,7 +135,7 @@ void calc_nodeline() {
               / (matp[ib][itri][1] - matp[ib][itri][2]);
           }/*if (query == 0)*/
           nnl0 += 1;
-        }/*else if (mprod[1] < 0.0)*/
+        }/*else if (mprod[1] < 0.00001 && mprod[0] < 0.00001)*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       if (query == 1) ntri_th[ib][ithread] = nnl0;
     }/*for (ib = 0; ib < nb; ib++)*/

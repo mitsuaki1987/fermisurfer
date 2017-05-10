@@ -95,11 +95,12 @@ GLfloat secvec[3]; /**< k-vector to define section*/
 GLfloat secscale; /**0.0 or 1.0*/
 GLfloat axis2d[2][3]; /**< k-vector to define section*/
 int *n2d;
-GLfloat ****kv2d;/**< k-vector for 2D plot[nb][n2d][2][2] */
+GLfloat ****kv2d;/**< k-vector for 2D plot[nb][n2d][2][3] */
 GLfloat ****clr2d; /**< Matrix element for 2D plot[nb][n2d][2][4] */
 int nbzl2d;             /**< The number of Lines of 1st Brillouin zone */
 GLfloat bzl2d[26][3];       /**< Lines of 1st BZ [nbzl2d(max:26)][3] */
-/*
+GLfloat bzl2d_proj[26][3];  /**< Lines of 1st BZ [nbzl2d(max:26)][3], projected into 2D plane */
+                            /*
   Variables for mouse  & cursorkey
 */
 GLfloat sx; /**< Scale of mouse movement */
@@ -114,6 +115,7 @@ GLfloat thetax, thetay, thetaz;
  Colors
 */
 GLfloat   black[4]; /**<  Black color code */
+GLfloat    gray[4]; /**<  Gray color code */
 GLfloat   white[4]; /**<  White color code */
 GLfloat    cyan[4]; /**<  Cyan color code */
 GLfloat magenta[4]; /**<  Magenta color code */

@@ -292,6 +292,7 @@ void menu_bzmode(int value /**<[in] Selected menu*/) {
   }
   else if (value == 2 && fbz != -1) {
     fbz = -1;
+    lsection = 0;
     /**/
     free_patch();
     query = 1; fermi_patch();
@@ -528,7 +529,8 @@ void FS_ModifyMenu(int status)
     */
     glutSetMenu(imenu_section);
     for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
-    if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
+    if (fbz == -1) glutAddMenuEntry("[Cannot] Section", 0);
+    else if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
     else glutAddMenuEntry("[ ] Section", 1);
     glutAddMenuEntry("Modify section", 2);
     glutAddMenuEntry("Modify section (across Gamma)", 3);
@@ -544,7 +546,7 @@ void FS_ModifyMenu(int status)
     }
     glutPostRedisplay();
   }
-}
+}/*void FS_ModifyMenu*/
 /**
  Main routine of Right-click Munu
 */
@@ -647,7 +649,8 @@ void FS_CreateMenu()
    2D Fermi lines
   */
   imenu_section = glutCreateMenu(menu_section);
-  if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
+  if (fbz == -1) glutAddMenuEntry("[Cannot] Section", 0); 
+  else if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
   else glutAddMenuEntry("[ ] Section", 1);
   glutAddMenuEntry("Modify section", 2);
   glutAddMenuEntry("Modify section (across Gamma)", 3);

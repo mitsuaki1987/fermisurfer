@@ -111,7 +111,7 @@ static void draw_fermi() {
     /*
      Second, draw each triangle
     */
-    glLineWidth(10.0);
+    glLineWidth(2.0);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
     glBegin(GL_LINES);
@@ -191,13 +191,15 @@ static void draw_bz_lines() {
     for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[1][i]; glVertex3fv(bzl2);
     glEnd();
   }
+  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
   /*
    Section for the 2D Fermi line
   */
   if (lsection == 1) {
     glBegin(GL_POLYGON);
     glNormal3fv(secvec);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
+    if (blackback == 1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
+    else glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
     for (ibzl = 0; ibzl < nbzl2d; ++ibzl) {
       for (j = 0; j < 3; ++j)
         bzl2[j] = rot[j][0] * bzl2d[ibzl][0]
@@ -208,7 +210,6 @@ static void draw_bz_lines() {
     }
     glEnd();
   }/*if (lsection == 1)*/
-  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
 } /* draw bz_lines */
 /**
  Draw color scale
@@ -354,9 +355,25 @@ static void draw_circles(double dx2d) {
  Draw Fermi lines
 */
 static void draw_fermi_line() {
-  int i, ib, itri;
-  GLfloat vect[3];
-
+  int i, ib, ibzl, itri;
+  GLfloat vect[3], linecolor[4];
+  /*
+   Draw 2D BZ lines
+  */
+  if (blackback == 1)
+    for (i = 0; i<4; i++) linecolor[i] = white[i];
+  else
+    for (i = 0; i<4; i++) linecolor[i] = black[i];
+  /**/
+  glLineWidth(2.0);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, linecolor);
+  glBegin(GL_LINE_LOOP);
+  for (ibzl = 0; ibzl < nbzl2d; ++ibzl) glVertex3fv(bzl2d_proj[ibzl]);
+  glEnd();
+  /*
+   Draw Fermi lines
+  */
   glLineWidth(2.0);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
   glBegin(GL_LINES);
