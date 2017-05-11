@@ -28,43 +28,61 @@ Windows. The information from the input file is printed.
 
 ::
 
-    #####  Brillouin zone informations  ##### 
+   ########################################
+   ##                                    ##
+   ##  Welocome to FermiSurfer ver. 1.8  ##
+   ##                                    ##
+   ########################################
+   
+     Number of threads : 4
 
-    k point grid : 40 40 36 
-    k point grid is not shifted 
-    # of bands : 3 
-    bvec 1 : 1.000000 0.577350 -0.000000 
-    bvec 2 : 0.000000 1.154701 0.000000 
-    bvec 3 : 0.000000 -0.000000 0.872065 
-
-    # of lines for BZ : 84  (1)
-
-    #####  Max. and Min. of each bands  ##### 
-
-    Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max 
-    1     -0.428153     0.056262     -24.048639     24.048639 (2)
-    2     -0.289572     0.121181     -23.320309     23.320309 (2)
-    3     -0.133566     0.497620     -43.651634     43.651634 (2)
-
-    #####  First Brillouin zone mode  #####
-
-    band   # of patchs
-    1       8824  (3)
-    2       29469 (3)
-    3       28315 (3)
-
-    band   # of nodeline 
-    1       632   (4)
-    2       1524  (4)
-    3       2268  (4)
-
-    #####  Full color scale  ##### 
-
-    Max. value : 22.283419  (5)
-    Min. value : -22.283419 (5)
-        
-
-#. The number of lines on the edge of the Brillouin zone.
+     Initialize variables ...
+   
+   
+     ##  Brillouin zone informations  ###########
+   
+       k point grid : 40 40 36
+       k point grid starts from Gamma.
+       # of bands : 3
+       bvec 1 : 1.000000 0.577350 -0.000000
+       bvec 2 : 0.000000 1.154701 0.000000
+       bvec 3 : 0.000000 -0.000000 0.872065
+   
+     ##  Max. and Min. of each bands  #######################
+   
+       Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max
+       1     -0.428153     0.056262     -24.048639     24.048639 (1)
+       2     -0.289572     0.121181     -23.320309     23.320309 (1)
+       3     -0.133566     0.497620     -43.651634     43.651634 (1)
+   
+     ##  First Brillouin zone mode  #######
+   
+       band   # of patchs
+       1       8824  (2)
+       2       29354 (2)
+       3       28293 (2)
+   
+   
+     ##  Full color scale mode #############
+   
+       Max. value : 22.283419  (3)
+       Min. value : -22.251053 (3)
+   
+       band   # of nodeline
+       1       632  (4)
+       2       1524 (4)
+       3       2268 (4)
+       band   # of Fermi-line
+       1       100
+       2       736
+       3       0
+   
+     ##  How to handle  ###################
+   
+                 mouse drag : Rotate objects
+                 mousewheel : Resize objects
+                  cursorkey : Move objects
+         mouse right button : Menu
 
 #. The maximum/minimum value of energies and matrix elements in each
    bands.
@@ -72,12 +90,12 @@ Windows. The information from the input file is printed.
 #. The number of patches (planes that makes Fermi surfaces) in each
    bands.
 
-#. The number of node lines in each band.
-
 #. The maximum and the minimum of matrix elements on Fermi surface.
    These correspond to the red and the blue; in this case, the matrix
    element is -22.283419 in the blue region, and that is 22.283419 in
-   the red region. [(2) is Max./Min. in whole Brillouin zone.]
+   the red region. [(1) is Max./Min. in whole Brillouin zone.]
+
+#. The number of node lines in each band.
 
 Then, Operations are printed, and Fermi surfaces are drawn (Fig. :num:`start`).
 
@@ -147,6 +165,24 @@ surfaces are depicted (Fig. :num:`shift`).
             The Fermi energy is set from 0 Ry to 0.1 Ry with
             "Shift Fermi energy" menu
 
+Interpolation
+-------------
+
+Smooth the Fermi surface with the interpolation (Fig. :num:`interpolate`).
+Please type the number of interpolation points at the prompt
+
+::
+
+   New interpolation ratio :
+
+The time for the plot increases with the interpolation ratio.
+
+.. _interpolate:
+     
+.. figure:: ../figs/interpolate.png
+
+   Modify the number of interpolation points from 1 to 4 with "Interpolate" menu.
+            
 Set view
 --------
 
@@ -271,6 +307,39 @@ Cross : Cross-eyes stereogram
 
             The stereogram becomes enabled/disabled with
             "Stereogram" menu.
+
+Section
+-------
+
+Display a 2D plot of the Fermi surface (line)
+on an arbitrary section of the Brillouin zone (Fig. :num:`section`).
+   
+Section
+   Toggle the 2D plot of the Fermi surface (line).
+
+Modify Section
+   Specify the section. Please type the normal vector (**fractional coordinate**) at the prompt
+
+   ::
+
+       New Miller index : 
+
+   The section crosses the head of the normal vector.
+       
+Modify Section (across Gamma)
+   Specify the section. Please type the normal vector (**fractional coordinate**) at the prompt
+
+   ::
+
+       New Miller index : 
+
+   The section crosses :math:`\Gamma` point.
+
+.. _section:
+     
+.. figure:: ../figs/section.png
+
+   Display 2D plot of the Fermi surface (line) with "Section" menu.
 
 Tetrahedron
 -----------

@@ -29,55 +29,73 @@ Windowsの場合
 
 ::
 
-    #####  Brillouin zone informations  ##### 
+   ########################################
+   ##                                    ##
+   ##  Welocome to FermiSurfer ver. 1.8  ##
+   ##                                    ##
+   ########################################
+   
+     Number of threads : 4
 
-    k point grid : 40 40 36 
-    k point grid is not shifted 
-    # of bands : 3 
-    bvec 1 : 1.000000 0.577350 -0.000000 
-    bvec 2 : 0.000000 1.154701 0.000000 
-    bvec 3 : 0.000000 -0.000000 0.872065 
-
-    # of lines for BZ : 84  (1)
-
-    #####  Max. and Min. of each bands  ##### 
-         
-    Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max 
-    1     -0.428153     0.056262     -24.048639     24.048639 (2)
-    2     -0.289572     0.121181     -23.320309     23.320309 (2)
-    3     -0.133566     0.497620     -43.651634     43.651634 (2)
-
-    #####  First Brillouin zone mode  #####
-
-    band   # of patchs
-    1       8824  (3)
-    2       29469 (3)
-    3       28315 (3)
-
-    band   # of nodeline 
-    1       632   (4)
-    2       1524  (4)
-    3       2268  (4)
-
-    #####  Full color scale  ##### 
-
-    Max. value : 22.283419  (5)
-    Min. value : -22.283419 (5) 
-        
-
-#. Brillouin領域の境界を表示する線の数.
+     Initialize variables ...
+   
+   
+     ##  Brillouin zone informations  ###########
+   
+       k point grid : 40 40 36
+       k point grid starts from Gamma.
+       # of bands : 3
+       bvec 1 : 1.000000 0.577350 -0.000000
+       bvec 2 : 0.000000 1.154701 0.000000
+       bvec 3 : 0.000000 -0.000000 0.872065
+   
+     ##  Max. and Min. of each bands  #######################
+   
+       Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max
+       1     -0.428153     0.056262     -24.048639     24.048639 (1)
+       2     -0.289572     0.121181     -23.320309     23.320309 (1)
+       3     -0.133566     0.497620     -43.651634     43.651634 (1)
+   
+     ##  First Brillouin zone mode  #######
+   
+       band   # of patchs
+       1       8824  (2)
+       2       29354 (2)
+       3       28293 (2)
+   
+   
+     ##  Full color scale mode #############
+   
+       Max. value : 22.283419  (3)
+       Min. value : -22.251053 (3)
+   
+       band   # of nodeline
+       1       632  (4)
+       2       1524 (4)
+       3       2268 (4)
+       band   # of Fermi-line
+       1       100
+       2       736
+       3       0
+   
+     ##  How to handle  ###################
+   
+                 mouse drag : Rotate objects
+                 mousewheel : Resize objects
+                  cursorkey : Move objects
+         mouse right button : Menu
 
 #. それぞれのバンドにおけるエネルギーと物理量の最小値・最大値.
 
 #. それぞれのバンドにおけるパッチ(Fermi面を構成する平面)の数.
 
-#. それぞれのバンドにおけるnode line (後述)の本数.
-
 #. 物理量のFermi面における最大値と最小値.
    この数字がカラーバーの最大・最小に対応します.
    下の例では一番青いところが-22.283419,
    一番赤いところが22.283419となります.
-   (2)で表示されているのはBrillouin領域全体のものです.
+   (1)で表示されているのはBrillouin領域全体のものです.
+
+#. それぞれのバンドにおけるnode line (後述)の本数.
 
 次に操作方法が出力され, Fermi面が描画されます(図 :num:`start` ).
 
@@ -147,6 +165,24 @@ Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
 
    "Shift Fermi energy"メニューで Fermi エネルギーを0.0 Ryから0.1 Ryに変える.
 
+Interpolation
+-------------
+
+補間により図の曲面を滑らかにします (図 :num:`interpolate`).
+コンソールの
+
+::
+
+   New interpolation ratio :
+
+の後に分点数を入力してください. ただし分点数を増やすと描画にかかる時間も増えます.
+
+.. _interpolate:
+     
+.. figure:: ../figs/interpolate.png
+
+   "Interpolate"メニューで 分点数を1から4に変える.
+   
 Set view
 --------
 
@@ -270,6 +306,41 @@ Cross
 .. figure:: ../figs/stereogram.png
 
    "Stereogram" メニューで立体視用画像を表示する.
+
+Section
+-------
+
+Brillouin領域を任意の断面で切り取り,
+2次元のFermi面(線)を描画します (図 :num:`section`).
+   
+Section
+   断面の表示・非表示を切り替えます.
+
+Modify Section
+   断面を指定します. コンソールの
+
+   ::
+
+       New Miller index : 
+
+   の後に法線ベクトル(フラクショナル座標)を入力してください.
+   断面は法線ベクトルの先端を通ります.
+       
+Modify Section (across Gamma)
+   断面を指定します. コンソールの
+
+   ::
+
+       New Miller index : 
+
+   の後に法線ベクトル(フラクショナル座標)を入力してください.
+   断面は :math:`\Gamma` 点を通ります.
+
+.. _section:
+     
+.. figure:: ../figs/section.png
+
+   "Section" メニューでFermi面の断面を表示する.
 
 Tetrahedron
 -----------

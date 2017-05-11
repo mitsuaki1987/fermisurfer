@@ -357,7 +357,7 @@ void menu_section(int value) /**<[in] Selected menu*/ {
     if (value == 2) secscale = 1.0;
     else secscale = 0.0;
 
-    printf("    New Millor index : ");
+    printf("    New Miller index : ");
     ierr = scanf("%f %f %f", &vec[0], &vec[1], &vec[2]);
     /*
      Fractional -> Cartecian
