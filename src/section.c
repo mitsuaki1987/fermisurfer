@@ -23,6 +23,7 @@ THE SOFTWARE.
 */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include "variable.h"
 #include "basic_math.h"
