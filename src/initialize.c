@@ -21,12 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+@brief Functions that initilize variables.
+*/
 #include <stdio.h>
 #include "variable.h"
 
 /**
- Initialize corners of tetrahedron
+ @brief Specify corners of tetrahedron
+
+ Modify : ::corner
 */
 void init_corner() {
   int i, j;
@@ -184,7 +188,9 @@ void init_corner() {
   }
 }
 /**
- Compute Bragg vetor
+ @brief Compute Bragg vetor
+
+ Modify : ::bragg, ::brnrm
 */
 void bragg_vector() {
   int i0, i1, i2, i, ibr;
@@ -194,27 +200,32 @@ void bragg_vector() {
   for (i0 = -1; i0 <= 1; ++i0) {
     for (i1 = -1; i1 <= 1; ++i1) {
       for (i2 = -1; i2 <= 1; ++i2) {
+        /*
+         Excepte Gamma points
+        */
+        if (i0 == 0 && i1 == 0 && i2 == 0) continue;
+        /*
+         Fractional -> Cartecian
+        */
+        for (i = 0; i < 3; ++i)
+          bragg[ibr][i] = ((GLfloat)i0 * bvec[0][i]
+                        +  (GLfloat)i1 * bvec[1][i]
+                        +  (GLfloat)i2 * bvec[2][i]) * 0.5;
+        /*
+         And its norm
+        */
+        brnrm[ibr] = bragg[ibr][0] * bragg[ibr][0]
+                   + bragg[ibr][1] * bragg[ibr][1]
+                   + bragg[ibr][2] * bragg[ibr][2];
         /**/
-        if (i0 == 0 && i1 == 0 && i2 == 0) {
-        }
-        else {
-          for (i = 0; i < 3; ++i) 
-            bragg[ibr][i] = ((GLfloat)i0 * bvec[0][i]
-                          +  (GLfloat)i1 * bvec[1][i]
-                          +  (GLfloat)i2 * bvec[2][i]) * 0.5;
-          /**/
-          brnrm[ibr] = bragg[ibr][0] * bragg[ibr][0]
-                     + bragg[ibr][1] * bragg[ibr][1]
-                     + bragg[ibr][2] * bragg[ibr][2];
-          /**/
-          ibr = ibr + 1;
-        }
-      }
-    }
-  }
+        ibr = ibr + 1;
+      }/*for (i2 = -1; i2 <= 1; ++i2)*/
+    }/*for (i1 = -1; i1 <= 1; ++i1)*/
+  }/*for (i0 = -1; i0 <= 1; ++i0)*/
 }/* bragg_vector */
 /**
- Max and Minimum in Brillouine zone
+ @brief Print max and minimum @f$\varepsilon_{n k}, \Delta_{n k}@f$
+        in the whole Brillouine zone
 */
 void max_and_min_bz() {
   int ib, i0, i1, i2;
@@ -236,15 +247,19 @@ void max_and_min_bz() {
           if (eig0[ib][i0][i1][i2] < eigmin) eigmin = eig0[ib][i0][i1][i2];
           if (mat0[ib][i0][i1][i2] > matmax) matmax = mat0[ib][i0][i1][i2];
           if (mat0[ib][i0][i1][i2] < matmin) matmin = mat0[ib][i0][i1][i2];
-        }
-      }
-    }
+        }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
+      }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
+    }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
     printf("    %d     %f     %f     %f     %f\n", ib + 1, eigmin, eigmax, matmin, matmax);
-  }
-  /**/
+  }/*for (ib = 0; ib < nb; ib++)*/
 }/* max_and_min_bz */
 /**
- Initialize global variables
+ @brief Initialize global variables
+
+ Modify : ::blackback, ::fcscl, ::fbz, ::nodeline, ::lcolorbar, ::lstereo, ::lmouse, 
+          ::lsection, ::itet, ::scl, ::trans, ::rot, ::thetax, ::thetay, ::thetaz,
+          ::black, ::gray, ::white, ::cyan, ::magenta, ::yellow, ::red, ::green, ::blue,
+          ::EF, ::interpol
 */
 void initialize_val() {
   blackback = 1;
@@ -256,6 +271,11 @@ void initialize_val() {
   lmouse = 1;
   lsection = 0;
   itet = 0;
+  EF = 0.0;
+  interpol = 1;
+  /*
+   Size & Position & Direction of figure
+  */
   scl = 1.0;
   trans[0] = 0.0; trans[1] = 0.0; trans[2] = 0.0;
   rot[0][0] = 1.0; rot[0][1] = 0.0; rot[0][2] = 0.0;
@@ -274,6 +294,4 @@ void initialize_val() {
   red[0]     = 1.0; red[1]     = 0.0; red[2]     = 0.0; red[3]     = 1.0;
   green[0]   = 0.0; green[1]   = 1.0; green[2]   = 0.0; green[3]   = 1.0;
   blue[0]    = 0.0; blue[1]    = 0.0; blue[2]    = 1.0; blue[3]    = 1.0;
-  EF = 0.0;
-  interpol = 1;
 }/*void initialize_val*/

@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+@brief Functions for the 2D Fermi line
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -33,24 +35,30 @@ THE SOFTWARE.
 #else
 #include <GL/glut.h>
 #endif
-
 /**
- Project 3D vector into 2D plane
-*/
-static void proj_2d(int ib, int n2d0, GLfloat vec[2][3]) {
-  int ii, jj, kk;
+ @brief Project 3D \f$k\f$-vector into 2D plane. 
 
-  for (jj = 0; jj < 2; jj++) {
-    for (kk = 0; kk < 2; kk++) {
-      kv2d[ib][n2d0][jj][kk] = 0.0;
-      for (ii = 0; ii < 3; ii++)
-        kv2d[ib][n2d0][jj][kk] += axis2d[kk][ii] * vec[jj][ii];
-    }/*for (kk = 0; kk < 2; kk++)*/
-    kv2d[ib][n2d0][jj][2] = 0.0;
-  }/*for (jj = 0; j < 2; jj++)*/
+ Modify: ::kv2d
+*/
+static void proj_2d(
+  GLfloat vec[3] //!< [in,out] Line ends to be projected
+) 
+{
+  int ii, kk;
+  GLfloat vec0[3];
+
+  for (kk = 0; kk < 2; kk++) {
+    vec0[kk] = 0.0;
+    for (ii = 0; ii < 3; ii++)
+      vec0[kk] += axis2d[kk][ii] * vec[ii];
+  }/*for (kk = 0; kk < 2; kk++)*/
+  vec0[2] = 0.0;
+  for (kk = 0; kk < 3; kk++)vec[kk] = vec0[kk];
 }/*proj_2d*/
 /**
- Set Projection axis for 2D plane
+ @brief Set Projection axis for 2D plane
+
+ Modify : ::axis2d
 */
 static void set2daxis() {
   int ii, jj;
@@ -85,14 +93,15 @@ static void set2daxis() {
   norm = sqrt(norm);
   for (jj = 0; jj < 3; jj++) axis2d[1][jj] /= norm;
 }/*static void set_2daxis*/
- /**
- Judge wheser this line is the edge of 1st BZ (or the premitive BZ)
- */
+/**
+ @brief Judge wheser this line is the edge of 1st BZ (or the premitive BZ)
+*/
 int bragg_vert2d(
-  int jbr /**< [in] Index of a Bragg plane*/,
-  int nbr /**< [in] */,
-  GLfloat vert[3] /**< [in] start point of line*/,
-  GLfloat vert2[3] /**< [in] end point of line*/)
+  int jbr, //!< [in] Index of a Bragg plane
+  int nbr, //!< [in]
+  GLfloat vert[3], //!< [inout] start point of line
+  GLfloat vert2[3] //!< [in] end point of line
+)
 {
   int kbr, i, lbr, nbr0;
   GLfloat bmat[3][3], rhs[3], prod, thr = (GLfloat)0.0001, det;
@@ -134,26 +143,31 @@ int bragg_vert2d(
         i = 1;
         break;
       }
-    }
+    }/*for (lbr = 0; lbr < 26; ++lbr)*/
     if (i == 1) {
     }
     else {
       for (i = 0; i<3; ++i) vert[i] = rhs[i];
       return kbr + 1;
     }
-  }
+  }/*for (kbr = nbr0; kbr < 26; ++kbr)*/
   /*
   this line is not a BZ boundary
   */
   return 0;
-  /**/
 }/* bragg_vert2d */
 /**
- Compute boundary of 2D BZ
+ @brief Compute boundary of 2D BZ
+
+ Modify : ::nbzl2d, ::bzl2d_proj
 */
-static void calc_2dbz() {
+void calc_2dbz() {
   int jbr, nbr, i, j, lvert, ibzl;
   GLfloat vert[2][3], vec[26][2][3], prod;
+  /*
+   Set Projection axis for 2D plane
+  */
+  set2daxis();
 
   nbzl2d = 0;
 
@@ -222,29 +236,27 @@ static void calc_2dbz() {
    Project into 2D plane
   */
   for (ibzl = 0; ibzl < nbzl2d; ibzl++) {
-    for (i = 0; i < 2; i++) {
-      bzl2d_proj[ibzl][i] = 0.0;
-      for (j = 0; j < 3; j++)
-        bzl2d_proj[ibzl][i] += axis2d[i][j] * bzl2d[ibzl][j];
-    }/*for (kk = 0; kk < 2; kk++)*/
-    bzl2d_proj[ibzl][2] = 0.0;
+    for (i = 0; i < 3; i++) bzl2d_proj[ibzl][i] = bzl2d[ibzl][i];
+    proj_2d(bzl2d_proj[ibzl]);
   }/*for (ibzl = 0; ibzl < nbzl2d; ibzl++)*/
 }/*calc_2dbz()*/
 /**
- Compute Fermi-line 
+ @brief Compute Fermi-line 
+
+ Modify : ::ntri_th, ::n2d, ::clr2d, ::kv2d
+
+ If ::query = 1, this routine only compute the number of line segment and
+ malloc variables.
+
+ If ::query = 0, actually compute lines and store them.
 */
 void calc_section() {
-  int ib, itri, i, j, n2d0, ithread;
-  GLfloat nprod[3], norm[3], vec[2][3];
-  /*
-   Set Projection axis for 2D plane
-  */
-  set2daxis();
-  calc_2dbz();
+  int ib, itri, i, j, n2d0, ithread, sw[3];
+  GLfloat matp2[3], kvp2[3][3], norm[3], a[3][3];
 
 #pragma omp parallel default(none) \
-  shared(nb,n2d,clr,clr2d,kvp,ntri,ntri_th,secvec,secscale,query,kv2d) \
-  private(ib,itri,norm,nprod,i,j,n2d0,ithread,vec)
+  shared(nb,n2d,clr,clr2d,kvp,kv2d,ntri,ntri_th,secvec,secscale,query) \
+  private(ib,itri,norm,sw,i,j,n2d0,ithread,a)
   {
     ithread = get_thread();
     for (ib = 0; ib < nb; ib++) {
@@ -257,115 +269,44 @@ void calc_section() {
           norm[i] = 0.0;
           for (j = 0; j < 3; j++) norm[i] += secvec[j] * (kvp[ib][itri][i][j] - secscale * secvec[j]);
         }
-        nprod[0] = norm[1] * norm[2];
-        nprod[1] = norm[2] * norm[0];
-        nprod[2] = norm[0] * norm[1];
-        /**/
-        if (fabsf(norm[1]) < 0.00001 && fabsf(norm[2]) < 0.00001) {
+        eigsort(3, norm, sw);
+        for (i = 0; i < 3; ++i) {
+          for (j = 0; j < 3; ++j) {
+            a[i][j] = (0.00 - norm[sw[j]]) / (norm[sw[i]] - norm[sw[j]]);
+          }/*for (j = 0; j < 3; ++j)*/
+        }/*for (i = 0; i < 3; ++i)*/
+         /**/
+        if ((norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]]) || (norm[sw[0]] <= 0.0 && 0.0 < norm[sw[1]])) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][1][i];
-            for (i = 0; i < 3; ++i) vec[1][i] = kvp[ib][itri][2][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][1][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] = clr[ib][itri][2][i];
-            proj_2d(ib, n2d0, vec);
-          }/*if (query == 0)*/
-          n2d0 += 1;
-        }/*else if (fabsf(norm[1]) < 0.00001 && fabsf(norm[2]) < 0.00001)*/
-        else if (fabsf(norm[0]) < 0.00001 && fabsf(norm[2]) < 0.00001) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][0][i];
-            for (i = 0; i < 3; ++i) vec[1][i] = kvp[ib][itri][2][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][0][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] = clr[ib][itri][2][i];
-            proj_2d(ib, n2d0, vec);
-          }/*if (query == 0)*/
-          n2d0 += 1;
-        }/*else if (fabsf(norm[0]) < 0.00001 && fabsf(norm[2]) < 0.00001)*/
-        else if (fabsf(norm[0]) < 0.00001 && fabsf(norm[1]) < 0.00001) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][0][i];
-            for (i = 0; i < 3; ++i) vec[1][i] = kvp[ib][itri][1][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][0][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] = clr[ib][itri][1][i];
-            proj_2d(ib, n2d0, vec);
-          }/*if (query == 0)*/
-          n2d0 += 1;
-        }/*if (fabsf(norm[0]) < 0.00001 && fabsf(norm[1]) < 0.00001)*/
-        else if (fabsf(norm[0]) < 0.00001 && nprod[0] < 0.0) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][0][i];
-            for (i = 0; i < 3; ++i) vec[1][i] =
-              (norm[1] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][1][i]) / (norm[1] - norm[2]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][0][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] =
-              (norm[1] * clr[ib][itri][2][i] - norm[2] * clr[ib][itri][1][i]) / (norm[1] - norm[2]);
-            proj_2d(ib, n2d0, vec);
-          }/*if (query == 0)*/
-          n2d0 += 1;
-        }/*else if (fabsf(norm[0]) < 0.00001 && nprod[0] < 0.00001)*/
-        else if (fabsf(norm[1]) < 0.00001 && nprod[1] < 0.0) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][1][i];
-            for (i = 0; i < 3; ++i) vec[1][i] =
-              (norm[0] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][0][i]) / (norm[0] - norm[2]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][1][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] =
-              (norm[0] * clr[ib][itri][2][i] - norm[2] * clr[ib][itri][0][i]) / (norm[0] - norm[2]);
-            proj_2d(ib, n2d0, vec);
-          }/*if (query == 0)*/
-          n2d0 += 1;
-        }/*else if (fabsf(norm[1]) < 0.00001 && nprod[1] < 0.00001)*/
-        else if (fabsf(norm[2]) < 0.00001 && nprod[2] < 0.0) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] = kvp[ib][itri][2][i];
-            for (i = 0; i < 3; ++i) vec[1][i] =
-              (norm[0] * kvp[ib][itri][1][i] - norm[1] * kvp[ib][itri][0][i]) / (norm[0] - norm[1]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] = clr[ib][itri][2][i];
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] =
-              (norm[0] * clr[ib][itri][1][i] - norm[1] * clr[ib][itri][0][i]) / (norm[0] - norm[1]);
-            proj_2d(ib, n2d0, vec);
-          }/*if (query == 0)*/
-          n2d0 += 1;
-        }/*else if (fabsf(norm[2]) < 0.00001 && nprod[2] < 0.00001)*/
-        else if (nprod[1] < 0.0 && nprod[2] < 0.0) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] =
-              (norm[0] * kvp[ib][itri][1][i] - norm[1] * kvp[ib][itri][0][i]) / (norm[0] - norm[1]);
-            for (i = 0; i < 3; ++i) vec[1][i] =
-              (norm[0] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][0][i]) / (norm[0] - norm[2]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] =
-              (norm[0] * clr[ib][itri][1][i] - norm[1] * clr[ib][itri][0][i]) / (norm[0] - norm[1]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] =
-              (norm[0] * clr[ib][itri][2][i] - norm[2] * clr[ib][itri][0][i]) / (norm[0] - norm[2]);
-            proj_2d(ib, n2d0, vec);
-          }/*if (query == 0)*/
-          n2d0 += 1;
-        }/*else if (nprod[1] < 0.00001 && nprod[2] < 0.00001)*/
-        else if (nprod[0] < 0.0 && nprod[2] < 0.0) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] =
-              (norm[0] * kvp[ib][itri][1][i] - norm[1] * kvp[ib][itri][0][i]) / (norm[0] - norm[1]);
-            for (i = 0; i < 3; ++i) vec[1][i] =
-              (norm[1] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][1][i]) / (norm[1] - norm[2]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] =
-              (norm[0] * clr[ib][itri][1][i] - norm[1] * clr[ib][itri][0][i]) / (norm[0] - norm[1]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] =
-              (norm[1] * clr[ib][itri][2][i] - norm[2] * clr[ib][itri][1][i]) / (norm[1] - norm[2]);
-            proj_2d(ib, n2d0, vec);
+            for (i = 0; i < 3; ++i) {
+              kv2d[ib][n2d0][0][i] = kvp[ib][itri][sw[1]][i] * a[1][0] + kvp[ib][itri][sw[0]][i] * a[0][1];
+              kv2d[ib][n2d0][1][i] = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
+            }/*for (i = 0; i < 3; ++i)*/
+            for (i = 0; i < 4; ++i) {
+              clr2d[ib][n2d0][0][i] = clr[ib][itri][sw[1]][i] * a[1][0]
+                                    + clr[ib][itri][sw[0]][i] * a[0][1];
+              clr2d[ib][n2d0][1][i] = clr[ib][itri][sw[2]][i] * a[2][0]
+                                    + clr[ib][itri][sw[0]][i] * a[0][2];
+            }/*for (i = 0; i < 4; ++i)*/
+            proj_2d(kv2d[ib][n2d0][0]);
+            proj_2d(kv2d[ib][n2d0][1]);
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (nprod[0] < 0.00001 && nprod[2] < 0.00001)*/
-        else if (nprod[1] < 0.0 && nprod[0] < 0.0) {
+        else if ((norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]]) || (norm[sw[1]] <= 0.0 && 0.0 < norm[sw[2]])) {
           if (query == 0) {
-            for (i = 0; i < 3; ++i) vec[0][i] =
-              (norm[0] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][0][i]) / (norm[0] - norm[2]);
-            for (i = 0; i < 3; ++i) vec[1][i] =
-              (norm[1] * kvp[ib][itri][2][i] - norm[2] * kvp[ib][itri][1][i]) / (norm[1] - norm[2]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][0][i] =
-              (norm[0] * clr[ib][itri][2][i] - norm[2] * clr[ib][itri][0][i]) / (norm[0] - norm[2]);
-            for (i = 0; i < 4; ++i) clr2d[ib][n2d0][1][i] =
-              (norm[1] * clr[ib][itri][2][i] - norm[2] * clr[ib][itri][1][i]) / (norm[1] - norm[2]);
-            proj_2d(ib, n2d0, vec);
+            for (i = 0; i < 3; ++i) {
+              kv2d[ib][n2d0][0][i] = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
+              kv2d[ib][n2d0][1][i] = kvp[ib][itri][sw[2]][i] * a[2][1] + kvp[ib][itri][sw[1]][i] * a[1][2];
+            }/*for (i = 0; i < 3; ++i)*/
+            for (i = 0; i < 4; ++i) {
+              clr2d[ib][n2d0][0][i] = clr[ib][itri][sw[2]][i] * a[2][0]
+                                    + clr[ib][itri][sw[0]][i] * a[0][2];
+              clr2d[ib][n2d0][1][i] = clr[ib][itri][sw[2]][i] * a[2][1]
+                                    + clr[ib][itri][sw[1]][i] * a[1][2];
+            }/*for (i = 0; i < 4; ++i)*/
+            proj_2d(kv2d[ib][n2d0][0]);
+            proj_2d(kv2d[ib][n2d0][1]);
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (nprod[1] < 0.00001 && nprod[0] < 0.00001)*/

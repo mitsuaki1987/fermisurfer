@@ -21,7 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+@brief Compute @f$\varepsilon_{n k}, \Delta_{n k}@f$ on
+denser @f$k@f$-grid with French-curve (Kumo) interpolation
+*/
 #include <stdlib.h>
 #include "basic_math.h"
 #include "variable.h"
@@ -33,13 +36,15 @@ THE SOFTWARE.
 #endif
 
 /**
- Compute coefficient for the French-curve (Kumo) interpolation
- \f[
+ @brief Compute coefficient for the French-curve (Kumo) interpolation
+ @f[
   A^{\rm intp} = \sum_{i = 1}^4 C_i A_i^{\rm orig}
- \f]
+ @f]
 */
-void kumo_coef(int j /**< [in] Interpolated grid index */, 
-  GLfloat *coef /**< [out] Coefficient of interpolation*/) {
+static void kumo_coef(
+  int j, //!< [in] Interpolated grid index
+  GLfloat *coef //!< [out] Coefficient of interpolation @f$C_i@f$
+) {
   GLfloat x, mx;
   x = (GLfloat)j / (GLfloat)interpol;
   mx = 1.0 - x;
@@ -49,8 +54,10 @@ void kumo_coef(int j /**< [in] Interpolated grid index */,
   coef[3] = -0.5 * x * x * mx;
 }
 /**
- Interpolation of energy and matrix 
- with the French-curve (Kumo) interpolation.
+ @brief Interpolation of energy and matrix 
+        with the French-curve (Kumo) interpolation.
+
+ Modify : ::eig, ::mat
 */
 void interpol_energy() {
   int ib, i0, i1, ii, i2, j0, j1, j2;

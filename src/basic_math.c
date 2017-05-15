@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+@brief Mathematical operations used in various step
+*/
 #include <math.h>
 #if defined(MAC)
 #include <GLUT/glut.h>
@@ -34,23 +36,25 @@ THE SOFTWARE.
 #endif
 
 /**
- Work as Modulo function of fortran
- \return Modulated value
+ @brief Work as Modulo function of fortran
+ @return Modulated value
 */
 int modulo(
-  int i /**< [in] */, 
-  int n /**< [in]*/) {
+  int i, //!< [in]
+  int n //!< [in]
+) {
   int j;
   j = (i + 100 * n) % n;
   return j;
 }/*modulo(int i, int n)*/
 /**
- Solve linear system
- \return Determinant
+ @brief Solve linear system
+ @return Determinant
 */
 GLfloat solve3(
-  GLfloat a[3][3] /**< [in] Matix*/,
-  GLfloat b[3] /**< [in,out] Right hand side vector*/)
+  GLfloat a[3][3], //!< [in] Matix
+  GLfloat b[3] //!< [in,out] Right hand side vector
+)
 {
   int i;
   GLfloat det, c[3];
@@ -73,64 +77,61 @@ GLfloat solve3(
   /**/
   for (i = 0; i<3; ++i) b[i] = c[i] / det;
   return det;
-  /**/
-}
+}/*GLfloat solve3*/
 /**
- Sort eigenvalues
+ @brief Simple sort
 */
 void eigsort(
-  int n /**< [in] the number of components*/,
-  GLfloat* eig2 /**< [in,out] the orbital energy*/,
-  GLfloat* mat2 /**< [in,out] the matrix element*/,
-  GLfloat kvec2[][3] /**< [in,out] k-vectors of corners*/)
+  int n, //!< [in] the number of components
+  GLfloat *key, //!< [in] Variables to be sorted [n].
+  int *swap //!< [out] Order of index (sorted)
+)
 {
   int i, j, k;
-  GLfloat tmp;
-  /**/
+
+  for (i = 0; i < n; ++i) swap[i] = i;
+
   for (i = 0; i < n - 1; ++i) {
     for (j = i + 1; j < n; ++j) {
-      if (eig2[j] < eig2[i]) {
-        tmp = eig2[j];
-        eig2[j] = eig2[i];
-        eig2[i] = tmp;
-        /**/
-        tmp = mat2[j];
-        mat2[j] = mat2[i];
-        mat2[i] = tmp;
-        /**/
-        for (k = 0; k < 3; ++k) {
-          tmp = kvec2[j][k];
-          kvec2[j][k] = kvec2[i][k];
-          kvec2[i][k] = tmp;
-        }
-      }
-    }
-  }
-} /* eigsort */
-  /**
-  * Calculate normal vector
-  */
+      if (key[swap[j]] < key[swap[i]]) {
+        /*
+         Swap
+        */
+        k = swap[j];
+        swap[j] = swap[i];
+        swap[i] = k;
+      }/*if (sortee[j][0] < sortee[i][0])*/
+    }/*for (j = i + 1; j < n; ++j)*/
+  }/*for (i = 0; i < n - 1; ++i)*/
+}/*eigsort*/
+/**
+ @brief Calculate normal vector from corners of triangle
+*/
 void normal_vec(
-  GLfloat in1[3] /**< [in] Corner 1*/,
-  GLfloat in2[3] /**< [in] Corner 2*/,
-  GLfloat in3[3] /**< [in] Corner 3*/,
-  GLfloat out[3] /**< [out] The normal vector*/)
+  GLfloat in1[3], //!< [in] Corner 1
+  GLfloat in2[3], //!< [in] Corner 2
+  GLfloat in3[3], //!< [in] Corner 3
+  GLfloat out[3] //!< [out] The normal vector
+)
 {
   int i;
   GLfloat norm;
   out[0] = in1[1] * in2[2] - in1[2] * in2[1]
-    + in2[1] * in3[2] - in2[2] * in3[1]
-    + in3[1] * in1[2] - in3[2] * in1[1];
+         + in2[1] * in3[2] - in2[2] * in3[1]
+         + in3[1] * in1[2] - in3[2] * in1[1];
   out[1] = in1[2] * in2[0] - in1[0] * in2[2]
-    + in2[2] * in3[0] - in2[0] * in3[2]
-    + in3[2] * in1[0] - in3[0] * in1[2];
+         + in2[2] * in3[0] - in2[0] * in3[2]
+         + in3[2] * in1[0] - in3[0] * in1[2];
   out[2] = in1[0] * in2[1] - in1[1] * in2[0]
-    + in2[0] * in3[1] - in2[1] * in3[0]
-    + in3[0] * in1[1] - in3[1] * in1[0];
+         + in2[0] * in3[1] - in2[1] * in3[0]
+         + in3[0] * in1[1] - in3[1] * in1[0];
   norm = sqrtf(out[0] * out[0] + out[1] * out[1] + out[2] * out[2]);
   for (i = 0; i<3; i++) out[i] = out[i] / norm;
 } /* normal_vec */
-
+/**
+ @brief OpenMP wrapper, get the number of threads
+ @return the number of threads 
+*/
 int get_thread() {
   int ithread;
 #if defined(_OPENMP)

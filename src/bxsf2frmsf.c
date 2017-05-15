@@ -21,20 +21,27 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
+/**@file
+@brief Convert BXSF format to FRMSF format and compute Fermi velocity
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
-int nb;
-int ng[3]; 
+int Nb;//!< Number of bands
+int Ng[3];//!< @f$k@f$-grid along each direction
 
-double bvec[3][3];
+double Bvec[3][3];//!< Reciprocal lattice vector
 
-double ****eig;
-double *****vf;
-
-void read_dat(char *fname/**<[in] fname  Input file name*/) {
+double ****Eig;//!< Eigenvalue @f$\varepsilon_{n k}@f$ [::Nb][::Ng[0]][::Ng[1]][::Ng[2]]
+double *****vf;//!< Fermi velocity @f${\bf v}_{{\rm F} n k}@f$ [::Nb][::Ng[0]][::Ng[1]][::Ng[2]][7]
+/*
+@brief Read BXSF file
+*/
+static void read_dat(
+  char *fname//!<[in] Input file name
+) {
   FILE *fp;
   char ctmp[256], ctmpEF1[16], ctmpEF2[16];
   int ierr, ii, ib, ik0, ik1, ik2;
@@ -64,56 +71,52 @@ void read_dat(char *fname/**<[in] fname  Input file name*/) {
   cerr = fgets(ctmp, 256, fp);
 
   cerr = fgets(ctmp, 256, fp);
-  ierr = sscanf(ctmp, "%d", &nb);
-  printf("  Number of bands : %d \n", nb);
+  ierr = sscanf(ctmp, "%d", &Nb);
+  printf("  Number of bands : %d \n", Nb);
   cerr = fgets(ctmp, 256, fp);
-  ierr = sscanf(ctmp, "%d%d%d", &ng[0], &ng[1], &ng[2]);
-  for (ii = 0; ii < 3; ii++) ng[ii] -= 1;
-  printf("  k point grid : %d %d %d \n", ng[0], ng[1], ng[2]);
+  ierr = sscanf(ctmp, "%d%d%d", &Ng[0], &Ng[1], &Ng[2]);
+  for (ii = 0; ii < 3; ii++) Ng[ii] -= 1;
+  printf("  k point grid : %d %d %d \n", Ng[0], Ng[1], Ng[2]);
 
   cerr = fgets(ctmp, 256, fp);
   for (ii = 0; ii < 3; ++ii) {
     cerr = fgets(ctmp, 256, fp);
-    ierr = sscanf(ctmp, "%le%le%le", &bvec[0][ii], &bvec[1][ii], &bvec[2][ii]);
-    printf("  bvec %d : %f %f %f \n", ii + 1, bvec[0][ii], bvec[1][ii], bvec[2][ii]);
+    ierr = sscanf(ctmp, "%le%le%le", &Bvec[0][ii], &Bvec[1][ii], &Bvec[2][ii]);
+    printf("  Bvec %d : %f %f %f \n", ii + 1, Bvec[0][ii], Bvec[1][ii], Bvec[2][ii]);
   }
   
-  eig = (double****)malloc(nb * sizeof(double***));
-  for (ib = 0; ib < nb; ib++) {
-    eig[ib] = (double***)malloc((ng[0] + 1) * sizeof(double**));
-    for (ik0 = 0; ik0 <= ng[0]; ik0++) {
-      eig[ib][ik0] = (double**)malloc((ng[1] + 1) * sizeof(double*));
-      for (ik1 = 0; ik1 <= ng[1]; ik1++) {
-        eig[ib][ik0][ik1] = (double*)malloc((ng[2] + 1) * sizeof(double));
-      }/*for (ik1 = 0; ik1 < ng[1]; ik1++)*/
-    }/*for (ik0 = 0; ik0 < ng[0]; ik0++)*/
-  }/*for (ib = 0; ib < nb; ib++)*/
+  Eig = (double****)malloc(Nb * sizeof(double***));
+  for (ib = 0; ib < Nb; ib++) {
+    Eig[ib] = (double***)malloc((Ng[0] + 1) * sizeof(double**));
+    for (ik0 = 0; ik0 <= Ng[0]; ik0++) {
+      Eig[ib][ik0] = (double**)malloc((Ng[1] + 1) * sizeof(double*));
+      for (ik1 = 0; ik1 <= Ng[1]; ik1++) {
+        Eig[ib][ik0][ik1] = (double*)malloc((Ng[2] + 1) * sizeof(double));
+      }/*for (ik1 = 0; ik1 < Ng[1]; ik1++)*/
+    }/*for (ik0 = 0; ik0 < Ng[0]; ik0++)*/
+  }/*for (ib = 0; ib < Nb; ib++)*/
 
-  for (ib = 0; ib < nb; ib++) {
+  for (ib = 0; ib < Nb; ib++) {
     cerr = fgets(ctmp, 256, fp);
     printf("  Reading %s", ctmp);
 
-    for (ik0 = 0; ik0 <= ng[0]; ik0++) {
-      for (ik1 = 0; ik1 <= ng[1]; ik1++) {
-        for (ik2 = 0; ik2 <= ng[2]; ik2++) {
-          ierr = fscanf(fp, "%le", &eig[ib][ik0][ik1][ik2]);
-          eig[ib][ik0][ik1][ik2] -= EF;
-        }/*for (ik2 = 0; ik2 < ng[2]; ik2++)*/
-      }/*for (ik1 = 0; ik1 < ng[1]; ik1++)*/
-    }/*for (ik0 = 0; ik0 < ng[0]; ik0++)*/
+    for (ik0 = 0; ik0 <= Ng[0]; ik0++) {
+      for (ik1 = 0; ik1 <= Ng[1]; ik1++) {
+        for (ik2 = 0; ik2 <= Ng[2]; ik2++) {
+          ierr = fscanf(fp, "%le", &Eig[ib][ik0][ik1][ik2]);
+          Eig[ib][ik0][ik1][ik2] -= EF;
+        }/*for (ik2 = 0; ik2 < Ng[2]; ik2++)*/
+      }/*for (ik1 = 0; ik1 < Ng[1]; ik1++)*/
+    }/*for (ik0 = 0; ik0 < Ng[0]; ik0++)*/
 
     cerr = fgets(ctmp, 256, fp);
 
-  }/*for (ib = 0; ib < nb; ib++)*/
+  }/*for (ib = 0; ib < Nb; ib++)*/
 }
-
-void fvel() {
-  /*
-    !--------------------------------------------------------------------------
-  !
-  ! This routine compute the Fermi verocity from differentiate of e_{n k}.
-  !
-  */
+/**
+@brief This routine compute the Fermi verocity from differentiate of e_{n k}.
+*/
+static void fvel() {
   int ik0, ik1, ik2, ib, ii, jj, ikv[3], ikp[3], ikm[3];
   double de[3];
   double det, avec[3][3], alength[3];
@@ -123,22 +126,22 @@ void fvel() {
   /*
    Compute direct lattice vectors
   */
-  det = -bvec[0][2] * bvec[1][1] * bvec[2][0]
-    + bvec[0][1] * bvec[1][2] * bvec[2][0]
-    + bvec[0][2] * bvec[1][0] * bvec[2][1]
-    - bvec[0][0] * bvec[1][2] * bvec[2][1]
-    - bvec[0][1] * bvec[1][0] * bvec[2][2]
-    + bvec[0][0] * bvec[1][1] * bvec[2][2];
+  det = -Bvec[0][2] * Bvec[1][1] * Bvec[2][0]
+      + Bvec[0][1] * Bvec[1][2] * Bvec[2][0]
+      + Bvec[0][2] * Bvec[1][0] * Bvec[2][1]
+      - Bvec[0][0] * Bvec[1][2] * Bvec[2][1]
+      - Bvec[0][1] * Bvec[1][0] * Bvec[2][2]
+      + Bvec[0][0] * Bvec[1][1] * Bvec[2][2];
 
-  avec[0][0] = -bvec[1][2] * bvec[2][1] + bvec[1][1] * bvec[2][2];
-  avec[0][1] = bvec[0][2] * bvec[2][1] - bvec[0][1] * bvec[2][2];
-  avec[0][2] = -bvec[0][2] * bvec[1][1] + bvec[0][1] * bvec[1][2];
-  avec[1][0] = bvec[1][2] * bvec[2][0] - bvec[1][0] * bvec[2][2];
-  avec[1][1] = -bvec[0][2] * bvec[2][0] + bvec[0][0] * bvec[2][2];
-  avec[1][2] = bvec[0][2] * bvec[1][0] - bvec[0][0] * bvec[1][2];
-  avec[2][0] = -bvec[1][1] * bvec[2][0] + bvec[1][0] * bvec[2][1];
-  avec[2][1] = bvec[0][1] * bvec[2][0] - bvec[0][0] * bvec[2][1];
-  avec[2][2] = -bvec[0][1] * bvec[1][0] + bvec[0][0] * bvec[1][1];
+  avec[0][0] = -Bvec[1][2] * Bvec[2][1] + Bvec[1][1] * Bvec[2][2];
+  avec[0][1] = Bvec[0][2] * Bvec[2][1] - Bvec[0][1] * Bvec[2][2];
+  avec[0][2] = -Bvec[0][2] * Bvec[1][1] + Bvec[0][1] * Bvec[1][2];
+  avec[1][0] = Bvec[1][2] * Bvec[2][0] - Bvec[1][0] * Bvec[2][2];
+  avec[1][1] = -Bvec[0][2] * Bvec[2][0] + Bvec[0][0] * Bvec[2][2];
+  avec[1][2] = Bvec[0][2] * Bvec[1][0] - Bvec[0][0] * Bvec[1][2];
+  avec[2][0] = -Bvec[1][1] * Bvec[2][0] + Bvec[1][0] * Bvec[2][1];
+  avec[2][1] = Bvec[0][1] * Bvec[2][0] - Bvec[0][0] * Bvec[2][1];
+  avec[2][2] = -Bvec[0][1] * Bvec[1][0] + Bvec[0][0] * Bvec[1][1];
   for (ii = 0; ii < 3; ++ii) {
     for (jj = 0; jj < 3; ++jj) avec[ii][jj] /= det;
       printf("  avec %d : %f %f %f \n", ii + 1, avec[ii][0], avec[ii][1], avec[ii][2]);
@@ -151,43 +154,43 @@ void fvel() {
   /*
    malloc fermi velocity
   */
-  vf = (double*****)malloc(nb * sizeof(double****));
-  for (ib = 0; ib < nb; ib++) {
-    vf[ib] = (double****)malloc(ng[0] * sizeof(double***));
-    for (ik0 = 0; ik0 < ng[0]; ik0++) {
-      vf[ib][ik0] = (double***)malloc(ng[1] * sizeof(double**));
-      for (ik1 = 0; ik1 < ng[1]; ik1++) {
-        vf[ib][ik0][ik1] = (double**)malloc(ng[2] * sizeof(double*));
-        for (ik2 = 0; ik2 < ng[2]; ik2++) {
+  vf = (double*****)malloc(Nb * sizeof(double****));
+  for (ib = 0; ib < Nb; ib++) {
+    vf[ib] = (double****)malloc(Ng[0] * sizeof(double***));
+    for (ik0 = 0; ik0 < Ng[0]; ik0++) {
+      vf[ib][ik0] = (double***)malloc(Ng[1] * sizeof(double**));
+      for (ik1 = 0; ik1 < Ng[1]; ik1++) {
+        vf[ib][ik0][ik1] = (double**)malloc(Ng[2] * sizeof(double*));
+        for (ik2 = 0; ik2 < Ng[2]; ik2++) {
           vf[ib][ik0][ik1][ik2] = (double*)malloc(7 * sizeof(double));
         }
-      }/*for (ik1 = 0; ik1 < ng[1]; ik1++)*/
-    }/*for (ik0 = 0; ik0 < ng[0]; ik0++)*/
-  }/*for (ib = 0; ib < nb; ib++)*/
+      }/*for (ik1 = 0; ik1 < Ng[1]; ik1++)*/
+    }/*for (ik0 = 0; ik0 < Ng[0]; ik0++)*/
+  }/*for (ib = 0; ib < Nb; ib++)*/
 
-  for (ik0 = 0; ik0 < ng[0]; ik0++) {
+  for (ik0 = 0; ik0 < Ng[0]; ik0++) {
     ikv[0] = ik0;
-    for (ik1 = 0; ik1 < ng[1]; ik1++) {
+    for (ik1 = 0; ik1 < Ng[1]; ik1++) {
       ikv[1] = ik1;
-      for (ik2 = 0; ik2 < ng[2]; ik2++) {
+      for (ik2 = 0; ik2 < Ng[2]; ik2++) {
         ikv[2] = ik2;
  
-        for (ib = 0; ib < nb; ib++) {
+        for (ib = 0; ib < Nb; ib++) {
           for (ii = 0; ii < 3; ii++) {
 
             for (jj = 0; jj < 3; jj++) {
               ikp[jj] = ikv[jj];
               ikm[jj] = ikv[jj];
             }
-            if(ikv[ii] == ng[ii] - 1) ikp[ii] = 0;
+            if(ikv[ii] == Ng[ii] - 1) ikp[ii] = 0;
             else ikp[ii] += 1;
 
-            if (ikv[ii] == 0) ikm[ii] = ng[ii] - 1;
+            if (ikv[ii] == 0) ikm[ii] = Ng[ii] - 1;
             else ikm[ii] -= 1;
 
-            de[ii] = eig[ib][ikp[0]][ikp[1]][ikp[2]]
-                   - eig[ib][ikm[0]][ikm[1]][ikm[2]];
-            de[ii] *= 0.5 * (double)ng[ii];
+            de[ii] = Eig[ib][ikp[0]][ikp[1]][ikp[2]]
+                   - Eig[ib][ikm[0]][ikm[1]][ikm[2]];
+            de[ii] *= 0.5 * (double)Ng[ii];
           }/*for (ii = 0; ii < 3; ii++)*/
 
           for (ii = 0; ii < 3; ii++) {
@@ -200,14 +203,20 @@ void fvel() {
             + vf[ib][ik0][ik1][ik2][4] * vf[ib][ik0][ik1][ik2][4]
             + vf[ib][ik0][ik1][ik2][5] * vf[ib][ik0][ik1][ik2][5]);
    
-        }/*for (ib = 0; ib < nb; ib++)*/
-      }/* for (ik2 = 0; ik2 < ng[2]; ik2++)*/
-    }/*for (ik1 = 0; ik1 < ng[1]; ik1++)*/
-  }/* for (ik0 = 0; ik0 < ng[0]; ik0++)*/
+        }/*for (ib = 0; ib < Nb; ib++)*/
+      }/* for (ik2 = 0; ik2 < Ng[2]; ik2++)*/
+    }/*for (ik1 = 0; ik1 < Ng[1]; ik1++)*/
+  }/* for (ik0 = 0; ik0 < Ng[0]; ik0++)*/
 }/*void fvel()*/
-
-
-void write_file(char *fname1, char *ext, int component) {
+/**
+@brief Write FRMSF file
+*/
+static void write_file(
+  char *fname1, //!< [in] File name without 
+  char *ext, //!< [in] File tail
+  int component //!< [in] Component of the Fermi velocity
+) 
+{
   FILE* fo;
   int ierr, ibnd, ik0, ik1, ik2, ii;
   char fname2[256];
@@ -234,26 +243,26 @@ void write_file(char *fname1, char *ext, int component) {
   printf("  %s\n", fname2);
 
   fo = fopen(fname2, "w");
-  ierr = fprintf(fo, "%d %d %d\n", ng[0], ng[1], ng[2]);
+  ierr = fprintf(fo, "%d %d %d\n", Ng[0], Ng[1], Ng[2]);
   ierr = fprintf(fo, "%d\n", 1);
-  ierr = fprintf(fo, "%d\n", nb);
-  ierr = fprintf(fo, "%e %e %e\n", bvec[0][0], bvec[1][0], bvec[2][0]);
-  ierr = fprintf(fo, "%e %e %e\n", bvec[0][1], bvec[1][1], bvec[2][1]);
-  ierr = fprintf(fo, "%e %e %e\n", bvec[0][2], bvec[1][2], bvec[2][2]);
+  ierr = fprintf(fo, "%d\n", Nb);
+  ierr = fprintf(fo, "%e %e %e\n", Bvec[0][0], Bvec[1][0], Bvec[2][0]);
+  ierr = fprintf(fo, "%e %e %e\n", Bvec[0][1], Bvec[1][1], Bvec[2][1]);
+  ierr = fprintf(fo, "%e %e %e\n", Bvec[0][2], Bvec[1][2], Bvec[2][2]);
 
-  for (ibnd = 0; ibnd < nb; ++ibnd) {
-    for (ik0 = 0; ik0 < ng[0]; ++ik0) {
-      for (ik1 = 0; ik1 < ng[1]; ++ik1) {
-        for (ik2 = 0; ik2 < ng[2]; ++ik2) {
-          ierr = fprintf(fo, "%e\n", eig[ibnd][ik0][ik1][ik2]);
+  for (ibnd = 0; ibnd < Nb; ++ibnd) {
+    for (ik0 = 0; ik0 < Ng[0]; ++ik0) {
+      for (ik1 = 0; ik1 < Ng[1]; ++ik1) {
+        for (ik2 = 0; ik2 < Ng[2]; ++ik2) {
+          ierr = fprintf(fo, "%e\n", Eig[ibnd][ik0][ik1][ik2]);
         }
       }
     }
   }
-  for (ibnd = 0; ibnd < nb; ++ibnd) {
-    for (ik0 = 0; ik0 < ng[0]; ++ik0) {
-      for (ik1 = 0; ik1 < ng[1]; ++ik1) {
-        for (ik2 = 0; ik2 < ng[2]; ++ik2) {
+  for (ibnd = 0; ibnd < Nb; ++ibnd) {
+    for (ik0 = 0; ik0 < Ng[0]; ++ik0) {
+      for (ik1 = 0; ik1 < Ng[1]; ++ik1) {
+        for (ik2 = 0; ik2 < Ng[2]; ++ik2) {
           ierr = fprintf(fo, "%e\n", vf[ibnd][ik0][ik1][ik2][component]);
         }
       }
@@ -262,10 +271,13 @@ void write_file(char *fname1, char *ext, int component) {
   fclose(fo);
 
 }/*void write_file()*/
-
+/*
+ @brief Main routine of BXSF2FRMSF
+*/
 int main(
-  int argc /**< [in] */,
-  char *argv[] /**< [in] */)
+  int argc, //!< [in]
+  char *argv[] //!< [in] Input file name
+)
 {
   if (argc < 2) {
     printf("\n\nInput file is not specified !\n");

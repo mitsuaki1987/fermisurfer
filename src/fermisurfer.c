@@ -21,23 +21,36 @@
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   THE SOFTWARE.
 */
-/**
-\mainpage FermiSurfer Main Page
+/**@file
+ @brief Main routine
+*/
+/**@mainpage FermiSurfer Main Page
 
 Fermisurfer displays Fermi surfaces 
-with a color plot of the arbitraly matrix element
+with a color-plot of the arbitraly matrix element
 
-\section Definition
+@section Notation
  
-- \f$\varepsilon_{n k}\f$ : Energy
-- \f$\Delta_{n k}\f$ : Any \f$(n, k)\f$-dependent value for the color plot.
+- @f$\varepsilon_{n k}@f$ : Energy
+- @f$\Delta_{n k}@f$ : Any @f$(n, k)@f$-dependent value for the color-plot.
+- @f$N_b@f$ : Number of bands
  
-\section sec_routine Important routines
+@section sec_routine Important routines
 - Main routine: main()
+- Right click menu : FS_CreateMenu(), FS_ModifyMenu(int status)
 
-\section file_sec Important files
+@section sec_file Important files
 - Main routine : fermisurfer.c
 - Global valiable : variable.h
+
+@section sec_flow Flow
+
+- main() :
+  - read_file() : Read .frmsf file
+  - compute_patch_segment() : Compute patch and segment
+    - fermi_patch() : Compute patches constructing Fermi surface
+  - display() : Display figures with OpenGL
+
 */
 #include <stdlib.h>
 #include <stdio.h>
@@ -64,7 +77,7 @@ with a color plot of the arbitraly matrix element
 #endif
 
 /**
- Glut init function
+ @brief Initialize GLUT canvas
 */
 void init(void)
 {
@@ -79,11 +92,16 @@ void init(void)
   FS_CreateMenu();
 } /* init */
 /**
- Main routine
+ @brief Main routine of FermiSurfer
+
+ Refer: ::query
+
+ Modify: ::query, ::nthreads
 */
 int main(
-  int argc /**< [in] */, 
-  char *argv[] /**< [in] */)
+  int argc, //!< [in]
+  char *argv[] //!< [in] Input file name
+)
 {
   printf("\n");
   printf("########################################\n");
@@ -116,18 +134,15 @@ int main(
   read_file(argv[1]);
   init_corner();
   bragg_vector();
-  /**/
+  /*
+   Brillouin zone
+  */
   bz_lines();
+  calc_2dbz();
   /**/
   max_and_min_bz();
   /**/
-  query = 1; fermi_patch();
-  query = 0; fermi_patch();
-  max_and_min();
-  query = 1; calc_nodeline();
-  query = 0; calc_nodeline();
-  query = 1; calc_section();
-  query = 0; calc_section();
+  compute_patch_segment();
   /*
     Description
   */

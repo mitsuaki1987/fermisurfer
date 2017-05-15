@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+@brief Create & modify right-click menu. And operate their function.
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -39,10 +41,28 @@ THE SOFTWARE.
 #include <GL/glut.h>
 #endif
 
+void compute_patch_segment() {
+  query = 1; fermi_patch();
+  query = 0; fermi_patch();
+  max_and_min();
+  query = 1; calc_nodeline();
+  query = 0; calc_nodeline();
+  query = 1; calc_section();
+  query = 0; calc_section();
+}
+
+static void refresh_patch_segment() {
+  free_patch();
+  compute_patch_segment();
+}
+
 /**
- Main menu
+ @brief handle main menu. Currently, only Exit.
+ Othere menus are in submenu.
 */
-void main_menu(int value /**< [in] Selected menu*/) {
+static void main_menu(
+  int value //!< [in] Selected menu
+) {
   int i0, i1, ib, ibzl, i;
   /**/
   if (value == 9) {
@@ -72,9 +92,13 @@ void main_menu(int value /**< [in] Selected menu*/) {
   }
 }
 /**
- Shift Fermi energy
+ @brief Shift Fermi energy
+
+ Modify : ::EF
+
+ This menu modify Fermi energy and compute Fermi surfaces, etc.
 */
-void menu_shiftEF(int value /**< [in] Selected menu*/)
+static void menu_shiftEF(int value /**< [in] Selected menu*/)
 {
   int ib, i0, i1, i2, ierr;
   GLfloat emin, emax;
@@ -99,22 +123,20 @@ void menu_shiftEF(int value /**< [in] Selected menu*/)
     ierr = scanf("%f", &EF);
     if (ierr != 1) printf("error ! reading ef");
     /**/
-    free_patch();
-    query = 1; fermi_patch();
-    query = 0; fermi_patch();
-    max_and_min();
-    query = 1; calc_nodeline();
-    query = 0; calc_nodeline();
-    query = 1; calc_section();
-    query = 0; calc_section();
+    refresh_patch_segment();
     /**/
     glutPostRedisplay();
   }
 }
 /**
- Shift Fermi energy
+ @brief Shift Fermi energy
+
+ This routine modify interpolation ratio (::interpol) 
+ then compute Fermi surfaces, etc.
 */
-void menu_interpol(int value /**< [in] Selected menu*/)
+static void menu_interpol(
+  int value //!< [in] Selected menu
+)
 {
   int ib, i0, i1, i2, ierr;
   GLfloat emin, emax;
@@ -127,22 +149,20 @@ void menu_interpol(int value /**< [in] Selected menu*/)
     if (ierr != 1) printf("error ! reading interpol");
     /**/
     interpol_energy();
-    free_patch();
-    query = 1; fermi_patch();
-    query = 0; fermi_patch();
-    max_and_min();
-    query = 1; calc_nodeline();
-    query = 0; calc_nodeline();
-    query = 1; calc_section();
-    query = 0; calc_section();
+    refresh_patch_segment();
     /**/
     glutPostRedisplay();
   }
 }
 /**
- Setting of view
+ @brief Setting of view
+
+ This modify scale (::scl) & tarnslation (::trans) & 
+ rotation (::thetax, ::thetay, ::thetaz, ::rot), 
 */
-void menu_view(int value /**< [in] Selected menu*/)
+static void menu_view(
+  int value //!< [in] Selected menu
+)
 {
   int ierr;
 
@@ -201,10 +221,12 @@ void menu_view(int value /**< [in] Selected menu*/)
 
 }
 /**
- Change mouse function
+ @brief Change the function associated to the mouse movement(::lmouse)
 */
-void menu_mouse(int value /**< [in] Selected menu*/) {
-  /**/
+static void menu_mouse(
+  int value //!< [in] Selected menu
+) 
+{
   if (value == 1 && lmouse != 1) {
     lmouse = 1;
     glutPostRedisplay();
@@ -219,10 +241,12 @@ void menu_mouse(int value /**< [in] Selected menu*/) {
   }
 } /* menu_band */
 /**
- On / Off band
+ @brief Toggle the appearance of each band (::draw_band)
 */
-void menu_band(int value /**< [in] Selected menu*/) {
-  /**/
+static void menu_band(
+  int value //!< [in] Selected menu
+)
+{
   if (draw_band[value] == 0) {
     draw_band[value] = 1;
   }
@@ -232,9 +256,12 @@ void menu_band(int value /**< [in] Selected menu*/) {
   glutPostRedisplay();
 } /* menu_band */
 /**
- Change background color
+ @brief Change background color (::blackback)
 */
-void menu_bgcolor(int value /**<[in] Selected menu*/) {
+static void menu_bgcolor(
+  int value //!<[in] Selected menu
+)
+{
   if (value == 1 && blackback != 1) {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     blackback = 1;
@@ -247,10 +274,12 @@ void menu_bgcolor(int value /**<[in] Selected menu*/) {
   }
 }/* bgcolor change*/
 /**
- Change color scale mode
+ @brief Change color scale mode (::fcscl)
 */
-void menu_colorscale(int value /**<[in] Selected menu*/) {
-  /**/
+static void menu_colorscale(
+  int value //!<[in] Selected menu
+)
+{
   if (value == 1 && fcscl != 1) {
     fcscl = 1;
     max_and_min();
@@ -273,43 +302,31 @@ void menu_colorscale(int value /**<[in] Selected menu*/) {
   }
 } /* menu_colorscale */
 /**
- Change Brillouin zone
+ @brief Change Brillouin zone (::fbz)
 */
-void menu_bzmode(int value /**<[in] Selected menu*/) {
+static void menu_bzmode(
+  int value //!<[in] Selected menu
+)
+{
   if (value == 1 && fbz != 1) {
     fbz = 1;
-    /**/
-    free_patch();
-    query = 1; fermi_patch();
-    query = 0; fermi_patch();
-    max_and_min();
-    query = 1; calc_nodeline();
-    query = 0; calc_nodeline();
-    query = 1; calc_section();
-    query = 0; calc_section();
-    /**/
+    refresh_patch_segment();
     glutPostRedisplay();
   }
   else if (value == 2 && fbz != -1) {
     fbz = -1;
     lsection = 0;
-    /**/
-    free_patch();
-    query = 1; fermi_patch();
-    query = 0; fermi_patch();
-    max_and_min();
-    query = 1; calc_nodeline();
-    query = 0; calc_nodeline();
-    query = 1; calc_section();
-    query = 0; calc_section();
-    /**/
+    refresh_patch_segment();
     glutPostRedisplay();
   }
 } /* menu_bzmode */
 /**
- On/Off Node line
+ @brief Toggle apearance of nodale-line
 */
-void menu_nodeline(int value /**<[in] Selected menu*/) {
+static void menu_nodeline(
+  int value //!<[in] Selected menu
+)
+{
   if (value == 1 && nodeline != 1) {
     nodeline = 1;
     glutPostRedisplay();
@@ -318,11 +335,13 @@ void menu_nodeline(int value /**<[in] Selected menu*/) {
     nodeline = 0;
     glutPostRedisplay();
   }
-} /* menu_nodeline */
+}/*menu_nodeline*/
 /**
- Tern stereogram
+ @brief Tern stereogram (::lstereo)
 */
-void menu_stereo(int value /**<[in] Selected menu*/) {
+static void menu_stereo(
+  int value //!<[in] Selected menu
+) {
   if (value == 1 && lstereo != 1) {
     lstereo = 1;
     glutPostRedisplay();
@@ -337,9 +356,12 @@ void menu_stereo(int value /**<[in] Selected menu*/) {
   }
 } /* menu_stereo */
 /**
- Menu for 2D Fermi lines
+ @brief Modify and toggle appearance of 2D Fermi lines (::lsection)
 */
-void menu_section(int value) /**<[in] Selected menu*/ {
+static void menu_section(
+  int value //!<[in] Selected menu
+)
+{
   int ierr, ii, jj, ib;
   GLfloat vec[3];
 
@@ -386,15 +408,19 @@ void menu_section(int value) /**<[in] Selected menu*/ {
     free(kv2d);
     free(clr2d);
 
+    calc_2dbz();
     query = 1; calc_section();
     query = 0; calc_section();
     glutPostRedisplay();
   }/*else if (value > 1)*/
 } /*void menu_section*/
 /**
- On/Off Colorbar
+ @brief Toggle Colorbar (::lcolorbar)
 */
-void menu_colorbar(int value /**<[in] Selected menu*/) {
+static void menu_colorbar(
+  int value //!<[in] Selected menu
+)
+{
   if (value == 1 && lcolorbar != 1) {
     lcolorbar = 1;
     glutPostRedisplay();
@@ -405,29 +431,26 @@ void menu_colorbar(int value /**<[in] Selected menu*/) {
   }
 } /* menu_colorbar */
 /**
- Change tetrahedron
+ @brief Change tetrahedron (::itet)
 */
-void menu_tetra(int value) /**<[in] Selected menu*/ {
-  /**/
+static void menu_tetra(
+  int value //!<[in] Selected menu
+)
+{
   if (value != itet) {
     printf("    Tetra patern %d \n", value + 1);
     itet = value;
     init_corner();
-    free_patch();
-    query = 1; fermi_patch();
-    query = 0; fermi_patch();
-    max_and_min();
-    query = 1; calc_nodeline();
-    query = 0; calc_nodeline();
-    query = 1; calc_section();
-    query = 0; calc_section();
+    refresh_patch_segment();
     glutPostRedisplay();
   }
-} /* menu_tetra */
+}/*menu_tetra*/
 /**
- Modify text in the right-click munu
+ @brief Modify text in the right-click munu
 */
-void FS_ModifyMenu(int status)
+void FS_ModifyMenu(
+  int status//!<[in]
+)
 {
   int ib;
   char menu_str[20] = { 0 };
@@ -548,7 +571,7 @@ void FS_ModifyMenu(int status)
   }
 }/*void FS_ModifyMenu*/
 /**
- Main routine of Right-click Munu
+ @brief Create Right-click Menu
 */
 void FS_CreateMenu()
 {

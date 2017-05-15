@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+@brief Handle operations associated to mouse drag and window resize
+*/
 #include <math.h>
 #include "variable.h"
 
@@ -30,13 +32,15 @@ THE SOFTWARE.
 #else
 #include <GL/glut.h>
 #endif
-
 /**
- Window resize
+ @brief Window resize
+
+ Modify : ::sx, ::sy
 */
 void resize(
-  int w /**<[in] Window width*/,
-  int h /**<[in] Window height*/)
+  int w, //!<[in] Window width
+  int h //!<[in] Window height
+)
 {
   /*
    Scale of translation of mousepointer
@@ -54,20 +58,23 @@ void resize(
   glMatrixMode(GL_MODELVIEW);
 } /* end resize */
 /**
- Idling
+ @brief Idling
 */
 void idle(void)
 {
   glutPostRedisplay();
 } /* idle */
 /**
- Glut mouse function
+ @brief Glut mouse function
+
+ Modify : ::cx, ::cy, ::scl
 */
 void mouse(
-  int button /**< [in] pushed button*/,
-  int state /**< [in] down or up or ?*/,
-  int x /**< [in] position of mouse cursor*/,
-  int y /**< [in] position of mouse cursor*/)
+  int button, //!< [in] pushed button
+  int state, //!< [in] down or up or ?
+  int x, //!< [in] position of mouse cursor
+  int y //!< [in] position of mouse cursor
+)
 {
   switch (button) {
   /*
@@ -128,11 +135,14 @@ void mouse(
   }
 } /* end mouse */
 /**
- Glut motion function
+ @brief Glut motion function
+
+ Modify : ::scl, ::trans
 */
 void motion(
-  int x /**< [in] position of cursor*/,
-  int y /**< [in] position of cursor*/)
+  int x, //!< [in] position of cursor
+  int y //!< [in] position of cursor
+)
 {
   int i, j;
   GLfloat dx, dy, a, rot0[3][3], rot1[3][3], ax, ay;
@@ -189,23 +199,27 @@ void motion(
   cy = y;
 } /* motion */
 /**
- Glut keyboard function
+ @brief Glut keyboard function
 */
 void keyboard(
-  unsigned char key /**< [in] Typed key*/,
-  int x /**< [in]*/,
-  int y /**< [in]*/)
+  unsigned char key, //!< [in] Typed key
+  int x, //!< [in]
+  int y //!< [in]
+)
 {
   switch (key) {
   }
 } /* keyboard */
 /**
- Glut special key function
+ @brief Glut special key function
+
+ Modify : ::trans
 */
 void special_key(
-  int key /**< [in] typed special key*/,
-  int x /**< [in]*/,
-  int y /**< [in]*/)
+  int key, //!< [in] typed special key
+  int x, //!< [in]
+  int y //!< [in]
+)
 {
   switch (key) {
   case GLUT_KEY_UP:

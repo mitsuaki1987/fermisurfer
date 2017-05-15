@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+ @brief Compute lines of BZ boundary
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -33,16 +35,16 @@ THE SOFTWARE.
 #else
 #include <GL/glut.h>
 #endif
-
 /**
- Judge wheser this line is the edge of 1st BZ
+ @brief Judge wheser this line is the edge of 1st BZ
 */
 static int bragg_vert(
-  int ibr /**< [in] Index of a Bragg plane*/,
-  int jbr /**< [in] Index of a Bragg plane*/,
-  int nbr /**< [in] */,
-  GLfloat vert[3] /**< [in] start point of line*/,
-  GLfloat vert2[3] /**< [in] end point of line*/)
+  int ibr, //!< [in] Index of a Bragg plane
+  int jbr, //!< [in] Index of a Bragg plane
+  int nbr, //!< [in]
+  GLfloat vert[3], //!< [in] start point of line
+  GLfloat vert2[3] //!< [in] end point of line
+)
 {
   int kbr, i, lbr, nbr0;
   GLfloat bmat[3][3], rhs[3], prod, thr = (GLfloat)0.0001, det;
@@ -97,7 +99,9 @@ static int bragg_vert(
   return 0;
 }/* bragg_vert */
 /**
- Compute Brillouin zone boundariy lines
+ @brief Compute Brillouin zone boundariy lines
+
+ Modify : ::nbzl, ::bzl
 */
 void bz_lines() {
   /**/

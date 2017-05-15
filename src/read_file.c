@@ -21,16 +21,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+@brief Read .frmsf file
+*/
 #include <stdlib.h>
 #include <stdio.h>
 #include "variable.h"
 #include "basic_math.h"
-
 /**
- Input from Fermi surface file
+ @brief Input from Fermi surface file
 */
-void read_file(char *fname/**<[in] fname  Input file name*/)
+void read_file(
+  char *fname//!<[in] Input file name
+)
 {
   int ib, i, i0, i1, i2, ii0, ii1, ii2, ierr;
   FILE *fp;

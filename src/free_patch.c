@@ -21,7 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
+/**@file
+@brief Refresh patch
+*/
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
@@ -29,7 +31,10 @@ THE SOFTWARE.
 #include "basic_math.h"
 
 /**
- Free variables for patch
+ @brief Free variables for patch before new patch is computed
+
+ Free : ::nmlp, ::matp, ::clr, ::kvp, ::nmlp_rot, ::kvp_rot,
+        ::kvnl, ::kvnl_rot, ::kv2d, ::clr2d
 */
 void free_patch() {
   int ib, i0, i1;
@@ -99,7 +104,10 @@ void free_patch() {
   free(clr2d);
 }/*void free_patch()*/
 /**
- Compute Max. & Min. of matrix elements.
+ @brief Compute Max. & Min. of matrix elements.
+ Compute color of each patch 
+
+ Modify : ::clr
 */
 void max_and_min() {
   int ib, itri, i, j, ierr, ithread;

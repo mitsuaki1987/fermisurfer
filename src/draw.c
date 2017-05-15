@@ -21,6 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+/**@file 
+ @brief Functions for actual displaying
+*/
 
 #include <math.h>
 #include "variable.h"
@@ -32,7 +35,12 @@ THE SOFTWARE.
 #endif
 
 /**
- Draw Fermi surfaces
+ @brief Draw Fermi surfaces
+
+ Modify : ::nmlp_rot, ::kvp_rot, ::kvnl_rot
+
+ First, rotate ::nmlp and ::kvp with OpenMP then draw them.
+ Also draw nodeline in the same way.
 */
 static void draw_fermi() {
   int i, j, ib, itri;
@@ -109,7 +117,7 @@ static void draw_fermi() {
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /*
-     Second, draw each triangle
+     Second, draw each lines
     */
     glLineWidth(2.0);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
@@ -126,7 +134,7 @@ static void draw_fermi() {
   }/*if (nodeline == 1)*/
 }/*void draw_fermi*/
 /**
- Draw lines of BZ boundaries
+ @brief Draw lines of BZ boundaries
 */
 static void draw_bz_lines() {
   int ibzl, i, j;
@@ -155,10 +163,10 @@ static void draw_bz_lines() {
                   + rot[j][2] * bzl[ibzl][i][2]
                   + trans[j];
         glVertex3fv(bzl2);
-      }
-    }
+      }/*for (i = 0; i< 2; ++i)*/
+    }/*for (ibzl = 0; ibzl < nbzl; ++ibzl)*/
     glEnd();
-  }
+  }/*if (fbz == 1)*/
   else {
     /*
      Premitive BZ mode
@@ -190,7 +198,7 @@ static void draw_bz_lines() {
     for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[1][i]; glVertex3fv(bzl2);
     for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[1][i]; glVertex3fv(bzl2);
     glEnd();
-  }
+  }/*if (fbz != 1)*/
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
   /*
    Section for the 2D Fermi line
@@ -207,12 +215,13 @@ static void draw_bz_lines() {
                 + rot[j][2] * bzl2d[ibzl][2]
                 + trans[j];
       glVertex3fv(bzl2);
-    }
+    }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
     glEnd();
   }/*if (lsection == 1)*/
-} /* draw bz_lines */
+}/*draw bz_lines */
 /**
- Draw color scale
+ @brief Draw color-bar or colr-circle (periodic) 
+        as a color scale
 */
 static void draw_colorbar()
 {
@@ -253,21 +262,11 @@ static void draw_colorbar()
     glVertex3fv(colorbar[9]);
     glVertex3fv(colorbar[10]);
     glEnd();
-    /**/
-    /* if(nodeline == 1){ */
-    /*   glLineWidth(2.0); */
-    /*   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black); */
-    /*   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black); */
-    /*   glBegin(GL_LINES); */
-    /*   glVertex3fv(colorbar[11]); */
-    /*   glVertex3fv(colorbar[12]); */
-    /*   glEnd(); */
-    /* } */
-  }
+  }/*if (fcscl == 1 || fcscl == 2)*/
   else if (fcscl == 4) {
-    /**
-     * Periodic color scale
-     */
+    /*
+     Periodic color scale
+    */
     for (i = 0; i <= 60; i++) {
       /**/
       mat2 = (GLfloat)i / 60.0 * 6.0;
@@ -312,13 +311,15 @@ static void draw_colorbar()
       glVertex3f(0.15 * cos((GLfloat)(i + 1) / 60.0 * 6.283185307),
                  0.15 * sin((GLfloat)(i + 1) / 60.0 * 6.283185307) - 1.0, 0.0);
       glEnd();
-    }
-  }
+    }/*for (i = 0; i <= 60; i++)*/
+  }/*else if (fcscl == 4)*/
 }/*void draw_colorbar*/
 /**
- Draw points for the stereogram
+ @brief Draw eye-points for the stereogram
 */
-static void draw_circles(double dx2d) {
+static void draw_circles(
+  double dx2d //!< [in] Translation used for the section-mode
+) {
   int i;
   GLfloat r;
   /**/
@@ -352,7 +353,7 @@ static void draw_circles(double dx2d) {
   glEnd();
 }/*void draw_circles*/
 /**
- Draw Fermi lines
+ @brief Draw 2D Fermi lines
 */
 static void draw_fermi_line() {
   int i, ib, ibzl, itri;
@@ -390,8 +391,9 @@ static void draw_fermi_line() {
   glEnd();
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
 }/*void draw_fermi_line*/
- /**
- Glut Display function
+/**
+ @brief Glut Display function
+ called by glutDisplayFunc
 */
 void display()
 {
@@ -399,8 +401,11 @@ void display()
   GLfloat amb[] = { 0.2, 0.2, 0.2, 0.0 };
   double dx, dx2d, theta, posz, phi;
   GLfloat pos1[4], pos2[4];
-  /**/
+
   if (lstereo == 2) {
+    /*
+     Parallel eyes
+    */
     theta = 3.1416 / 180.0 * 2.50;
     posz = 5.0;
     dx = 0.7;
@@ -416,8 +421,11 @@ void display()
     pos2[1] = 0.0;
     pos2[2] = posz * sin(phi);
     pos2[3] = 1.0;
-  }
+  }/*if (lstereo == 2)*/
   else if (lstereo == 3) {
+    /*
+     Cross eyes
+    */
     theta = -3.1416 / 180.0 * 2.0;
     posz = 5.0;
     dx = -0.7;
@@ -431,11 +439,11 @@ void display()
     pos2[1] = 0.0;
     pos2[2] = posz * cos(theta);
     pos2[3] = 1.0;
-  }
+  }/*if (lstereo == 3)*/
   else {
     theta = 0.0;
     dx = 0.0;
-  }
+  }/*lstero == 1*/
   if (lsection == 1) dx2d = 0.7;
   else dx2d = 0.0;
   /*

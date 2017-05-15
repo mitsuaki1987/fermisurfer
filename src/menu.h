@@ -22,5 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+void compute_patch_segment();
 void FS_CreateMenu();
 void FS_ModifyMenu(int status);

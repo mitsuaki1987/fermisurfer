@@ -29,17 +29,7 @@ THE SOFTWARE.
 #endif
 
 int modulo(int i, int n);
-GLfloat solve3(
-  GLfloat a[3][3] /**< [in] Matix*/,
-  GLfloat b[3] /**< [inout] Right hand side vector*/);
-void eigsort(
-  int n /**< [in] the number of components*/,
-  GLfloat* eig2 /**< [inout] the orbital energy*/,
-  GLfloat* mat2 /**< [inout] the matrix element*/,
-  GLfloat kvec2[][3] /**< [inout] k-vectors of corners*/);
-void normal_vec(
-  GLfloat in1[3] /**< [in] Corner 1*/,
-  GLfloat in2[3] /**< [in] Corner 2*/,
-  GLfloat in3[3] /**< [in] Corner 3*/,
-  GLfloat out[3] /**< [out] The normal vector*/);
+GLfloat solve3(GLfloat a[3][3], GLfloat b[3]);
+void eigsort(int n, GLfloat *key, int *swap);
+void normal_vec(GLfloat in1[3], GLfloat in2[3], GLfloat in3[3], GLfloat out[3]);
 int get_thread();
