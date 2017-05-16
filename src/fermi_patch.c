@@ -43,6 +43,32 @@ THE SOFTWARE.
  BZ boundary (Bragg plane).
  If ::query == 1, this routine only increment the number of patch.
  If ::query == 0, store acutually the corner.
+
+ - DO @f${\bf l}@f$ in Bragg vector
+   - @f${p_i = {\bf l}\cdot{\bf k}}@f$
+   - Sort : @f$p_0<p_1<p_2@f$
+   - @f[
+       a_{i j} \equiv \frac{-p_j}{p_i - p_j}
+     @f]
+   - if (@f$|{\bf l}| < p_0@f$)
+     - This patch is not in the 1st BZ
+   - if (@f$p_0 < |{\bf l}| < p_1@f$)
+     - @f${\bf k}'_0 = {\bf k}_0@f$
+     - @f${\bf k}'_1 = {\bf k}_0 a_{0 1} + {\bf k}_1 a_{1 0}@f$
+     - @f${\bf k}'_2 = {\bf k}_0 a_{0 2} + {\bf k}_2 a_{2 0}@f$
+   - if (@f$p_1 < |{\bf l}| < p_2@f$)
+     - @f${\bf k}'_0 = {\bf k}_0@f$
+     - @f${\bf k}'_1 = {\bf k}_1@f$
+     - @f${\bf k}'_2 = {\bf k}_0 a_{0 2} + {\bf k}_2 a_{2 0}@f$
+     - and
+     - @f${\bf k}'_0 = {\bf k}_1 a_{1 2} + {\bf k}_2 a_{2 1}@f$
+     - @f${\bf k}'_1 = {\bf k}_1@f$
+     - @f${\bf k}'_2 = {\bf k}_0 a_{0 2} + {\bf k}_2 a_{2 0}@f$
+   - if (@f$p_2 < |{\bf l}| < p_3@f$)
+     - @f${\bf k}'_0 = {\bf k}_0@f$
+     - @f${\bf k}'_1 = {\bf k}_1@f$
+     - @f${\bf k}'_2 = {\bf k}_2@f$
+ - END DO
 */
 static void triangle(
   int ib, //!<[in] The band index
@@ -138,7 +164,28 @@ static void triangle(
   *ntri0 += 1;
 }/* triangle */
 /**
- @brief Cut triangle patch with the tetrahedron method.
+@brief Cut triangle patch with the tetrahedron method.
+
+ - Sort : @f$\varepsilon_0<\varepsilon_1<\varepsilon_2<\varepsilon_3@f$
+ - @f[
+     a_{i j} \equiv \frac{-\varepsilon_j}{\varepsilon_i - \varepsilon_j}
+   @f]
+ - if (@f$\varepsilon_0 < 0 < \varepsilon_1@f$)
+   - @f${\bf k}'_0 = {\bf k}_0 a_{0 1} + {\bf k}_1 a_{1 0}@f$
+   - @f${\bf k}'_1 = {\bf k}_0 a_{0 2} + {\bf k}_2 a_{2 0}@f$
+   - @f${\bf k}'_2 = {\bf k}_0 a_{0 3} + {\bf k}_3 a_{3 0}@f$
+ - if (@f$\varepsilon_1 < 0 < \varepsilon_2@f$)
+   - @f${\bf k}'_0 = {\bf k}_0 a_{0 2} + {\bf k}_2 a_{2 0}@f$
+   - @f${\bf k}'_1 = {\bf k}_0 a_{0 3} + {\bf k}_3 a_{3 0}@f$
+   - @f${\bf k}'_2 = {\bf k}_1 a_{1 2} + {\bf k}_2 a_{2 1}@f$
+   - and
+   - @f${\bf k}'_0 = {\bf k}_1 a_{1 3} + {\bf k}_3 a_{3 1}@f$
+   - @f${\bf k}'_1 = {\bf k}_0 a_{0 3} + {\bf k}_3 a_{3 0}@f$
+   - @f${\bf k}'_2 = {\bf k}_1 a_{1 2} + {\bf k}_2 a_{2 1}@f$
+ - if (@f$\varepsilon_2 < 0 < \varepsilon_3@f$)
+   - @f${\bf k}'_0 = {\bf k}_3 a_{3 0} + {\bf k}_0 a_{0 3}@f$
+   - @f${\bf k}'_1 = {\bf k}_3 a_{3 1} + {\bf k}_1 a_{1 3}@f$
+   - @f${\bf k}'_2 = {\bf k}_3 a_{3 2} + {\bf k}_2 a_{2 3}@f$
 */
 static void tetrahedron(
   int ib, //!< [in] The band index
