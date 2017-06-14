@@ -20,16 +20,15 @@ Linuxの場合
           $ sudo yum install freeglut-devel.x86_64
                       
 
-#. メイク
+#. インストール
 
    .. code-block:: bash
          
-       $ cd ./src
-       $ make all
+       $ ./configure
+       $ make
        $ make install
-               
 
-以上で実行可能ファイル ``fermisurfer`` および ``bxsf2frmsf`` が作られ,
+以上で実行可能ファイル ``src/fermisurfer`` および ``src/bxsf2frmsf`` が作られ,
 ``/usr/local/bin/`` にコピーされます.
 
 Mac OSX の場合
@@ -37,23 +36,15 @@ Mac OSX の場合
 
 #. Xcodeをあらかじめインストールしておく
 
-#. Makefileを適当なエディタで開いて#macの下の行の#を消す.
+#. インストール
 
    .. code-block:: bash
 
-       $ cd ./src
-       $ emacs Makefile 
-               
-
-#. メイク
-
-   .. code-block:: bash
-
-       $ make fermisurfer
+       $ ./configure
+       $ make 
        $ make install
                
-
-以上で実行可能ファイル ``fermisurfer`` および ``bxsf2frmsf`` が作られ,
+以上で実行可能ファイル ``src/fermisurfer`` および ``src/bxsf2frmsf`` が作られ,
 ``/usr/local/bin/`` にコピーされます.
 
 Windowsの場合

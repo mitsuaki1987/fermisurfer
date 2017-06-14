@@ -20,41 +20,32 @@ Installation in Linux
               $ sudo yum install freeglut-devel.x86_64
                     
 
-#. Make
+#. Install
 
    .. code-block:: bash
 
-       $ cd ./src
-       $ make fermisurfer
-       $ make install
+      $ ./configure
+      $ make
+      $ make install
                
-
-Then a binary file ``fermisurfer`` is generated and put in
-``/usr/local/bin/``.
+Then binary files ``src/fermisurfer`` and ``src/bxsf2frmsf`` are generated and
+copied into ``/usr/local/bin/``.
 
 For Mac OSX
 -----------
 
 #. Install Xcode.
 
-#. Open ``Makefile`` with an editor, and delete ``#`` below ``#mac``.
+#. Install
 
    .. code-block:: bash
 
-       $ cd ./src
-       $ emacs Makefile
+      $ ./configure
+      $ make
+      $ make install
                
-
-#. Make.
-
-   .. code-block:: bash
-
-       $ make fermisurfer
-       $ make install
-               
-
-   Then a binary file ``fermisurfer`` is generated and put in
-   ``/usr/local/bin/``.
+Then binary files ``src/fermisurfer`` and ``src/bxsf2frmsf`` are generated and
+copied into ``/usr/local/bin/``.
 
 Installation in Windows
 -----------------------

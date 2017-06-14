@@ -24,16 +24,19 @@ THE SOFTWARE.
 /**@file
 @brief Functions for computing patch of Fermi surface
 */
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GLUT_H)
+#include <GL/glut.h>
+#elif defined(HAVE_GLUT_GLUT_H)
+#include <GLUT/glut.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "variable.h"
 #include "basic_math.h"
-
-#if defined(MAC)
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 /**
  @brief Store triangle patch
 

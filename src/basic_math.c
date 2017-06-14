@@ -24,12 +24,16 @@ THE SOFTWARE.
 /**@file
 @brief Mathematical operations used in various step
 */
-#include <math.h>
-#if defined(MAC)
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
 #endif
+#if defined(HAVE_GL_GLUT_H)
+#include <GL/glut.h>
+#elif defined(HAVE_GLUT_GLUT_H)
+#include <GLUT/glut.h>
+#endif
+
+#include <math.h>
 
 #if defined(_OPENMP)
 #include <omp.h>

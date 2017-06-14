@@ -21,15 +21,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-/**@file
+/**
+@file
 @brief Global variables
 */
 #pragma once
 
-#if defined(MAC)
-#include <GLUT/glut.h>
-#else
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GLUT_H)
 #include <GL/glut.h>
+#elif defined(HAVE_GLUT_GLUT_H)
+#include <GLUT/glut.h>
 #endif
 
 /*

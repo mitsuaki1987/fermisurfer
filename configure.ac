@@ -15,9 +15,9 @@ AX_OPENMP([CFLAGS="$CFLAGS $OPENMP_CFLAGS"])
 echo ""
 echo "  Check OpenGL and GLUT"
 echo ""
-AX_CHECK_GL
-AX_CHECK_GLU
 AX_CHECK_GLUT
+CFLAGS="$CFLAGS $GLUT_CFLAGS"
+LIBS="$LIBS $GLUT_LIBS -lm"
 echo ""
 echo "  Output files"
 echo ""
@@ -31,9 +31,9 @@ AC_OUTPUT
 echo ""
 echo "  SUMMARY"
 echo ""
-echo "             CC = ${FC}"
-echo "         CFLAGS = ${FCFLAGS}"
-echo "           LIBS = ${LIBS}"
+echo "        CC = ${CC}"
+echo "    CFLAGS = ${CFLAGS}"
+echo "      LIBS = ${LIBS}"
 echo ""
 echo "  Configure done."
 echo ""

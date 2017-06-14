@@ -21,20 +21,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-/**@file
+/**
+@file
 @brief Functions for the 2D Fermi line
 */
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GLUT_H)
+#include <GL/glut.h>
+#elif defined(HAVE_GLUT_GLUT_H)
+#include <GLUT/glut.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "variable.h"
 #include "basic_math.h"
-
-#if defined(MAC)
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 /**
  @brief Project 3D \f$k\f$-vector into 2D plane. 
 

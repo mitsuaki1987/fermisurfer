@@ -24,6 +24,15 @@ THE SOFTWARE.
 /**@file
 @brief Create & modify right-click menu. And operate their function.
 */
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GLUT_H)
+#include <GL/glut.h>
+#elif defined(HAVE_GLUT_GLUT_H)
+#include <GLUT/glut.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
@@ -34,12 +43,6 @@ THE SOFTWARE.
 #include "kumo.h"
 #include "initialize.h"
 #include "section.h"
-
-#if defined(MAC)
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 
 void compute_patch_segment() {
   query = 1; fermi_patch();
@@ -206,14 +209,14 @@ static void menu_view(
     thetaz = 3.14159265 / 180.0 * thetaz;
 
     rot[0][0] = cosf(thetay)* cosf(thetaz);
-    rot[0][1] = -cosf(thetay)* sin(thetaz);
+    rot[0][1] = -cosf(thetay)* sinf(thetaz);
     rot[0][2] = sinf(thetay);
     rot[1][0] = cosf(thetaz)* sinf(thetax)* sinf(thetay) + cosf(thetax)* sinf(thetaz);
     rot[1][1] = cosf(thetax) * cosf(thetaz) - sinf(thetax)* sinf(thetay)* sinf(thetaz);
     rot[1][2] = -cosf(thetay)* sinf(thetax);
     rot[2][0] = -cosf(thetax)* cosf(thetaz)* sinf(thetay) + sinf(thetax)* sinf(thetaz);
     rot[2][1] = cosf(thetaz)* sinf(thetax) + cosf(thetax)* sinf(thetay)* sinf(thetaz);
-    rot[2][2] = cos(thetax)* cosf(thetay);
+    rot[2][2] = cosf(thetax)* cosf(thetay);
 
   }
 

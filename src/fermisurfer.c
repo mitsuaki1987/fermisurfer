@@ -52,6 +52,15 @@ with a color-plot of the arbitraly matrix element
   - display() : Display figures with OpenGL
 
 */
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GLUT_H)
+#include <GL/glut.h>
+#elif defined(HAVE_GLUT_GLUT_H)
+#include <GLUT/glut.h>
+#endif
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "variable.h"
@@ -65,12 +74,6 @@ with a color-plot of the arbitraly matrix element
 #include "bz_lines.h"
 #include "free_patch.h"
 #include "section.h"
-
-#if defined(MAC)
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
 
 #if defined(_OPENMP)
 #include <omp.h>
@@ -106,7 +109,7 @@ int main(
   printf("\n");
   printf("########################################\n");
   printf("##                                    ##\n");
-  printf("##  Welocome to FermiSurfer ver. 1.8  ##\n");
+  printf("##  Welocome to FermiSurfer ver. 1.9  ##\n");
   printf("##                                    ##\n");
   printf("########################################\n");
   printf("\n");

@@ -30,3 +30,4 @@ doc/ja/_build/
 doc/en/_build/
 *.o
 doc/html/
+autom4te.cache/
