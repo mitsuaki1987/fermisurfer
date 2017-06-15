@@ -109,7 +109,7 @@ int main(
   printf("\n");
   printf("########################################\n");
   printf("##                                    ##\n");
-  printf("##  Welocome to FermiSurfer ver. 1.9  ##\n");
+  printf("##  Welocome to FermiSurfer ver. %s  ##\n", VERSION);
   printf("##                                    ##\n");
   printf("########################################\n");
   printf("\n");

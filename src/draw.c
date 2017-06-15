@@ -399,7 +399,7 @@ static void draw_fermi_line() {
  @brief Glut Display function
  called by glutDisplayFunc
 */
-void display()
+void display(void)
 {
   GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
