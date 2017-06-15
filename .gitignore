@@ -6,3 +6,10 @@ doc/html/
 *.o
 autom4te.cache/
 windows/
+src/.deps/
+config.log
+config.status
+config.h
+stamp-h1
+/Makefile
+src/Makefile
