@@ -18,7 +18,6 @@ doc/manual_ja.pdf
 src/fermisurfer.vcxproj.user
 ConsoleApplication1/
 src/bxsf2frmsf
-*.ico
 *.suo
 *.opendb
 *.db

@@ -210,7 +210,7 @@ void bragg_vector() {
         for (i = 0; i < 3; ++i)
           bragg[ibr][i] = ((GLfloat)i0 * bvec[0][i]
                         +  (GLfloat)i1 * bvec[1][i]
-                        +  (GLfloat)i2 * bvec[2][i]) * 0.5;
+                        +  (GLfloat)i2 * bvec[2][i]) * 0.5f;
         /*
          And its norm
         */

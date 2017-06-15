@@ -48,8 +48,8 @@ void resize(
   /*
    Scale of translation of mousepointer
   */
-  sx = 1.0 / (GLfloat)w;
-  sy = 1.0 / (GLfloat)h;
+  sx = 1.0f / (GLfloat)w;
+  sy = 1.0f / (GLfloat)h;
   /**/
   glViewport(0, 0, w, h);
   /**/
@@ -106,7 +106,7 @@ void mouse(
   case MOUSE_SCROLL_UP:
     switch (state) {
     case GLUT_DOWN:
-      scl = scl * 1.1;
+      scl = scl * 1.1f;
       glutPostRedisplay();
       break;
     case GLUT_UP:
@@ -121,7 +121,7 @@ void mouse(
   case MOUSE_SCROLL_DOWN:
     switch (state) {
     case GLUT_DOWN:
-      scl = scl * 0.9;
+      scl = scl * 0.9f;
       glutPostRedisplay();
       break;
     case GLUT_UP:
@@ -157,7 +157,7 @@ void motion(
   /*
    Distanse from starting point
   */
-  a = sqrt(dx * dx + dy * dy);
+  a = sqrtf(dx * dx + dy * dy);
   /**/
   if (lmouse == 1) {
     /**/
@@ -168,31 +168,31 @@ void motion(
       ax = -dy;
       ay = dx;
       /**/
-      a = a * 10.0;
+      a = a * 10.0f;
       /**/
-      rot0[0][0] = (ax * ax + ay * ay * cos(a)) / (ax * ax + ay * ay);
-      rot0[0][1] = ax * ay * (cos(a) - 1.0) / (ax * ax + ay * ay);
-      rot0[0][2] = ay * sin(a) / sqrtf(ax * ax + ay * ay);
-      rot0[1][0] = ax * ay * (cos(a) - 1.0) / (ax * ax + ay * ay);
-      rot0[1][1] = (ax * ax * cos(a) + ay * ay) / (ax * ax + ay * ay);
-      rot0[1][2] = ax * sin(a) / sqrtf(ax * ax + ay * ay);
-      rot0[2][0] = -ay * sin(a) / sqrtf(ax * ax + ay * ay);
-      rot0[2][1] = -ax * sin(a) / sqrtf(ax * ax + ay * ay);
-      rot0[2][2] = cos(a);
+      rot0[0][0] = (ax * ax + ay * ay * cosf(a)) / (ax * ax + ay * ay);
+      rot0[0][1] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
+      rot0[0][2] = ay * sinf(a) / sqrtf(ax * ax + ay * ay);
+      rot0[1][0] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
+      rot0[1][1] = (ax * ax * cosf(a) + ay * ay) / (ax * ax + ay * ay);
+      rot0[1][2] =  ax * sinf(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][0] = -ay * sinf(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][1] = -ax * sinf(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][2] = cosf(a);
       /**/
       for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
       /**/
       for (i = 0; i < 3; i++) {
         for (j = 0; j < 3; j++) {
           rot[i][j] = rot0[i][0] * rot1[0][j]
-            + rot0[i][1] * rot1[1][j]
-            + rot0[i][2] * rot1[2][j];
+                    + rot0[i][1] * rot1[1][j]
+                    + rot0[i][2] * rot1[2][j];
         }
       }
     }
   }
   else if (lmouse == 2) {
-    scl = scl * exp(-dy);
+    scl = scl * expf(-dy);
   }
   else {
     trans[0] = trans[0] + dx;
@@ -226,22 +226,22 @@ void special_key(
 {
   switch (key) {
   case GLUT_KEY_UP:
-    trans[1] = trans[1] + 0.1;
+    trans[1] = trans[1] + 0.1f;
     glutPostRedisplay();
     break;
   case GLUT_KEY_DOWN:
-    trans[1] = trans[1] - 0.1;
+    trans[1] = trans[1] - 0.1f;
     glutPostRedisplay();
     break;
   case GLUT_KEY_RIGHT:
     /**/
-    trans[0] = trans[0] + 0.1;
+    trans[0] = trans[0] + 0.1f;
     glutPostRedisplay();
     break;
     /**/
   case GLUT_KEY_LEFT:
     /**/
-    trans[0] = trans[0] - 0.1;
+    trans[0] = trans[0] - 0.1f;
     glutPostRedisplay();
     break;
     /**/

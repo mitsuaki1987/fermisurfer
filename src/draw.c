@@ -44,15 +44,16 @@ THE SOFTWARE.
  Also draw nodeline in the same way.
 */
 static void draw_fermi() {
-  int i, j, ib, itri;
-  GLfloat vect[3];
+  int i, ib, itri;
   /*
    First, rotate k-vector and normal vector
   */
 #pragma omp parallel default(none) \
   shared(nb,draw_band,ntri,rot,nmlp,nmlp_rot,kvp,kvp_rot,trans) \
-  private(ib,itri,i,j)
+  private(ib,itri,i)
   {
+    int j;
+
     for (ib = 0; ib < nb; ib++) {
       if (draw_band[ib] == 1) {
 #pragma omp for nowait
@@ -98,8 +99,10 @@ static void draw_fermi() {
     */
 #pragma omp parallel default(none) \
     shared(nb,draw_band,nnl,rot,trans,kvnl,kvnl_rot) \
-    private(ib,itri,i,j)
+    private(ib,itri,i)
     {
+    int j;
+
       for (ib = 0; ib < nb; ib++) {
         /**/
         if (draw_band[ib] == 1) {
@@ -111,7 +114,7 @@ static void draw_fermi() {
                 kvnl_rot[ib][itri][i][j] = rot[j][0] * kvnl[ib][itri][i][0]
                                          + rot[j][1] * kvnl[ib][itri][i][1]
                                          + rot[j][2] * kvnl[ib][itri][i][2]
-                                         + trans[j] + 0.001;
+                                         + trans[j] + 0.001f;
             }/*for (i = 0; i < 2; ++i)*/
           }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
         }/*if (draw_band[ib] == 1)*/
@@ -229,19 +232,19 @@ static void draw_colorbar()
   int i, j;
   GLfloat mat2, barcolor[4];
   GLfloat colorbar[13][3] = {
-    { 0.0, 0.0, 1.0 },
-    { -1.0, -1.0,       0.0 },
-    { -1.0, -1.0 - 0.1, 0.0 },
-    { -0.5, -1.0,       0.0 },
-    { -0.5, -1.0 - 0.1, 0.0 },
-    { 0.0, -1.0,       0.0 },
-    { 0.0, -1.0 - 0.1, 0.0 },
-    { 0.5, -1.0,       0.0 },
-    { 0.5, -1.0 - 0.1, 0.0 },
-    { 1.0, -1.0,       0.0 },
-    { 1.0, -1.0 - 0.1, 0.0 },
-    { 0.0, -1.0,       0.00001 },
-    { 0.0, -1.0 - 0.1, 0.00001 }
+    {  0.0f,  0.0f,        1.0f },
+    { -1.0f, -1.0f,        0.0f },
+    { -1.0f, -1.0f - 0.1f, 0.0f },
+    { -0.5f, -1.0f,        0.0f },
+    { -0.5f, -1.0f - 0.1f, 0.0f },
+    {  0.0f, -1.0f,        0.0f },
+    {  0.0f, -1.0f - 0.1f, 0.0f },
+    {  0.5f, -1.0f,        0.0f },
+    {  0.5f, -1.0f - 0.1f, 0.0f },
+    {  1.0f, -1.0f,        0.0f },
+    {  1.0f, -1.0f - 0.1f, 0.0f },
+    {  0.0f, -1.0f,        0.00001f },
+    {  0.0f, -1.0f - 0.1f, 0.00001f }
   };
   /**/
   if (fcscl == 1 || fcscl == 2) {
@@ -270,47 +273,47 @@ static void draw_colorbar()
     */
     for (i = 0; i <= 60; i++) {
       /**/
-      mat2 = (GLfloat)i / 60.0 * 6.0;
+      mat2 = (GLfloat)i / 60.0f * 6.0f;
       /**/
       if (mat2 <= 1.0) {
-        for (j = 0; j<4; ++j) barcolor[j] = yellow[j] * mat2 + red[j] * (1.0 - mat2);
+        for (j = 0; j<4; ++j) barcolor[j] = yellow[j] * mat2 + red[j] * (1.0f - mat2);
       }
       else if (mat2 <= 2.0) {
-        mat2 = mat2 - 1.0;
-        for (j = 0; j<4; ++j) barcolor[j] = green[j] * mat2 + yellow[j] * (1.0 - mat2);
+        mat2 = mat2 - 1.0f;
+        for (j = 0; j<4; ++j) barcolor[j] = green[j] * mat2 + yellow[j] * (1.0f - mat2);
       }
       else if (mat2 <= 3.0) {
-        mat2 = mat2 - 2.0;
-        for (j = 0; j<4; ++j) barcolor[j] = cyan[j] * mat2 + green[j] * (1.0 - mat2);
+        mat2 = mat2 - 2.0f;
+        for (j = 0; j<4; ++j) barcolor[j] = cyan[j] * mat2 + green[j] * (1.0f - mat2);
       }
       else if (mat2 <= 4.0) {
-        mat2 = mat2 - 3.0;
-        for (j = 0; j<4; ++j) barcolor[j] = blue[j] * mat2 + cyan[j] * (1.0 - mat2);
+        mat2 = mat2 - 3.0f;
+        for (j = 0; j<4; ++j) barcolor[j] = blue[j] * mat2 + cyan[j] * (1.0f - mat2);
       }
       else if (mat2 <= 5.0) {
-        mat2 = mat2 - 4.0;
-        for (j = 0; j<4; ++j) barcolor[j] = magenta[j] * mat2 + blue[j] * (1.0 - mat2);
+        mat2 = mat2 - 4.0f;
+        for (j = 0; j<4; ++j) barcolor[j] = magenta[j] * mat2 + blue[j] * (1.0f - mat2);
       }
       else {
-        mat2 = mat2 - 5.0;
-        for (j = 0; j<4; ++j) barcolor[j] = red[j] * mat2 + magenta[j] * (1.0 - mat2);
+        mat2 = mat2 - 5.0f;
+        for (j = 0; j<4; ++j) barcolor[j] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
       }
       /**/
       glBegin(GL_TRIANGLES);
       glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, barcolor);
       glNormal3fv(colorbar[0]);
-      glVertex3f(0.15 * cos((GLfloat)(i + 1) / 60.0 * 6.283185307),
-                 0.15 * sin((GLfloat)(i + 1) / 60.0 * 6.283185307) - 1.0, 0.0);
-      glVertex3f(0.15 * cos((GLfloat)i / 60.0 * 6.283185307),
-                 0.15 * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
-      glVertex3f(0.2  * cos((GLfloat)i / 60.0 * 6.283185307),
-                 0.2  * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
-      glVertex3f(0.2  * cos((GLfloat)i / 60.0 * 6.283185307),
-                 0.2  * sin((GLfloat)i / 60.0 * 6.283185307) - 1.0, 0.0);
-      glVertex3f(0.2  * cos((GLfloat)(i + 1) / 60.0 * 6.283185307),
-                 0.2  * sin((GLfloat)(i + 1) / 60.0 * 6.283185307) - 1.0, 0.0);
-      glVertex3f(0.15 * cos((GLfloat)(i + 1) / 60.0 * 6.283185307),
-                 0.15 * sin((GLfloat)(i + 1) / 60.0 * 6.283185307) - 1.0, 0.0);
+      glVertex3f(0.15f * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f),
+                 0.15f * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f, 0.0);
+      glVertex3f(0.15f * cosf((GLfloat)i / 60.0f * 6.283185307f),
+                 0.15f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f, 0.0);
+      glVertex3f(0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f),
+                 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f, 0.0);
+      glVertex3f(0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f),
+                 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f, 0.0);
+      glVertex3f(0.2f  * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f),
+                 0.2f  * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f, 0.0);
+      glVertex3f(0.15f * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f),
+                 0.15f * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f, 0.0);
       glEnd();
     }/*for (i = 0; i <= 60; i++)*/
   }/*else if (fcscl == 4)*/
@@ -319,12 +322,12 @@ static void draw_colorbar()
  @brief Draw eye-points for the stereogram
 */
 static void draw_circles(
-  double dx2d //!< [in] Translation used for the section-mode
+  GLfloat dx2d //!< [in] Translation used for the section-mode
 ) {
   int i;
   GLfloat r;
   /**/
-  r = 0.05;
+  r = 0.05f;
   /**/
   if (blackback == 1) {
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
@@ -337,19 +340,19 @@ static void draw_circles(
   /**/
   glBegin(GL_TRIANGLE_FAN);
   glNormal3f(0.0, 0.0, 1.0);
-  glVertex3f(0.7 - dx2d, scl, 0.0);
+  glVertex3f(0.7f - dx2d, scl, 0.0f);
   for (i = 0; i <= 20; i++) {
-    glVertex3f(r * cos((GLfloat)i / 20.0 * 6.283185307) + 0.7 - dx2d,
-               r * sin((GLfloat)i / 20.0 * 6.283185307) + scl, 0.0);
+    glVertex3f(r * cosf((GLfloat)i / 20.0f * 6.283185307f) + 0.7f - dx2d,
+               r * sinf((GLfloat)i / 20.0f * 6.283185307f) + scl, 0.0f);
   }
   glEnd();
   /**/
   glBegin(GL_TRIANGLE_FAN);
   glNormal3f(0.0, 0.0, 1.0);
-  glVertex3f(-0.7 - dx2d, scl, 0.0);
+  glVertex3f(-0.7f - dx2d, scl, 0.0f);
   for (i = 0; i <= 20; i++) {
-    glVertex3f(r * cos((GLfloat)i / 20.0 * 6.283185307) - 0.7 - dx2d,
-               r * sin((GLfloat)i / 20.0 * 6.283185307) + scl, 0.0);
+    glVertex3f(r * cosf((GLfloat)i / 20.0f * 6.283185307f) - 0.7f - dx2d,
+               r * sinf((GLfloat)i / 20.0f * 6.283185307f) + scl, 0.0f);
   }
   glEnd();
 }/*void draw_circles*/
@@ -358,7 +361,7 @@ static void draw_circles(
 */
 static void draw_fermi_line() {
   int i, ib, ibzl, itri;
-  GLfloat vect[3], linecolor[4];
+  GLfloat linecolor[4];
   /*
    Draw 2D BZ lines
   */
@@ -398,54 +401,54 @@ static void draw_fermi_line() {
 */
 void display()
 {
-  GLfloat pos[] = { 1.0, 1.0, 1.0, 0.0 };
-  GLfloat amb[] = { 0.2, 0.2, 0.2, 0.0 };
-  double dx, dx2d, theta, posz, phi;
+  GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+  GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
+  GLfloat dx, dx2d, theta, posz, phi;
   GLfloat pos1[4], pos2[4];
 
   if (lstereo == 2) {
     /*
      Parallel eyes
     */
-    theta = 3.1416 / 180.0 * 2.50;
-    posz = 5.0;
-    dx = 0.7;
-    phi = atan(posz / dx) - theta;
-    theta = (3.1416 * 0.50 - phi) / 3.1416 * 180.0;
+    theta = 3.1416f / 180.0f * 2.5f;
+    posz = 5.0f;
+    dx = 0.7f;
+    phi = atanf(posz / dx) - theta;
+    theta = (3.1416f * 0.5f - phi) / 3.1416f * 180.0f;
     /**/
-    pos1[0] = posz * cos(phi) - dx;
+    pos1[0] = posz * cosf(phi) - dx;
     pos1[1] = 0.0;
-    pos1[2] = posz * sin(phi);
+    pos1[2] = posz * sinf(phi);
     pos1[3] = 1.0;
     /**/
-    pos2[0] = -posz * cos(phi) + dx;
+    pos2[0] = -posz * cosf(phi) + dx;
     pos2[1] = 0.0;
-    pos2[2] = posz * sin(phi);
+    pos2[2] = posz * sinf(phi);
     pos2[3] = 1.0;
   }/*if (lstereo == 2)*/
   else if (lstereo == 3) {
     /*
      Cross eyes
     */
-    theta = -3.1416 / 180.0 * 2.0;
+    theta = -3.1416f / 180.0f * 2.0f;
     posz = 5.0;
-    dx = -0.7;
+    dx = -0.7f;
     /**/
-    pos1[0] = posz * sin(theta) - dx;
+    pos1[0] = posz * sinf(theta) - dx;
     pos1[1] = 0.0;
-    pos1[2] = posz * cos(theta);
+    pos1[2] = posz * cosf(theta);
     pos1[3] = 1.0;
     /**/
-    pos2[0] = -posz * sin(theta) + dx;
+    pos2[0] = -posz * sinf(theta) + dx;
     pos2[1] = 0.0;
-    pos2[2] = posz * cos(theta);
+    pos2[2] = posz * cosf(theta);
     pos2[3] = 1.0;
   }/*if (lstereo == 3)*/
   else {
     theta = 0.0;
     dx = 0.0;
   }/*lstero == 1*/
-  if (lsection == 1) dx2d = 0.7;
+  if (lsection == 1) dx2d = 0.7f;
   else dx2d = 0.0;
   /*
    Initialize

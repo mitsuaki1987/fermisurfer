@@ -66,7 +66,7 @@ static void refresh_patch_segment() {
 static void main_menu(
   int value //!< [in] Selected menu
 ) {
-  int i0, i1, ib, ibzl, i;
+  int i0, i1, ib;
   /**/
   if (value == 9) {
     /*
@@ -141,8 +141,7 @@ static void menu_interpol(
   int value //!< [in] Selected menu
 )
 {
-  int ib, i0, i1, i2, ierr;
-  GLfloat emin, emax;
+  int ierr;
 
   if (value == 1) {
     printf("    Old interpolation ratio : %d\n", interpol);
@@ -156,7 +155,7 @@ static void menu_interpol(
     /**/
     glutPostRedisplay();
   }
-}
+}/*static void menu_interpol*/
 /**
  @brief Setting of view
 
@@ -186,27 +185,27 @@ static void menu_view(
   else  if (value == 3) {
 
     /**/
-    thetay = asin(rot[0][2]);
+    thetay = asinf(rot[0][2]);
     if (cosf(thetay) != 0.0) {
       if (-rot[1][2] / cosf(thetay) >= 0.0) thetax = acosf(rot[2][2] / cosf(thetay));
-      else thetax = 6.283185307 - acosf(rot[2][2] / cosf(thetay));
+      else thetax = 6.283185307f - acosf(rot[2][2] / cosf(thetay));
       if (-rot[0][1] / cosf(thetay) >= 0.0) thetaz = acosf(rot[0][0] / cosf(thetay));
-      else thetaz = 6.283185307 - acosf(rot[0][0] / cosf(thetay));
+      else thetaz = 6.283185307f - acosf(rot[0][0] / cosf(thetay));
     }
     else {
       thetax = 0.0;
       if (rot[1][0] >= 0.0) thetaz = acosf(rot[1][1]);
-      else thetaz = 6.283185307 - acosf(rot[1][1]);
+      else thetaz = 6.283185307f - acosf(rot[1][1]);
     }
-    thetax = 180.0 / 3.14159265 * thetax;
-    thetay = 180.0 / 3.14159265 * thetay;
-    thetaz = 180.0 / 3.14159265 * thetaz;
+    thetax = 180.0f / 3.14159265f * thetax;
+    thetay = 180.0f / 3.14159265f * thetay;
+    thetaz = 180.0f / 3.14159265f * thetaz;
     printf("    Current Rotation (theta_x theta_y teta_z) in degree : %f %f %f\n", thetax, thetay, thetaz);
     printf("        New Rotation (theta_x theta_y teta_z) in degree : ");
     ierr = scanf("%f %f %f", &thetax, &thetay, &thetaz);
-    thetax = 3.14159265 / 180.0 * thetax;
-    thetay = 3.14159265 / 180.0 * thetay;
-    thetaz = 3.14159265 / 180.0 * thetaz;
+    thetax = 3.14159265f / 180.0f * thetax;
+    thetay = 3.14159265f / 180.0f * thetay;
+    thetaz = 3.14159265f / 180.0f * thetaz;
 
     rot[0][0] = cosf(thetay)* cosf(thetaz);
     rot[0][1] = -cosf(thetay)* sinf(thetaz);

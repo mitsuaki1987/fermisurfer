@@ -47,13 +47,15 @@ THE SOFTWARE.
  line segmants and malloc variables.
 */
 void calc_nodeline() {
-  int ib, itri, i, j, nnl0, ithread, sw[3];
-  GLfloat a[3][3];
+  int ib, itri, i, j, ithread;
 
 #pragma omp parallel default(none) \
   shared(nb,nnl,matp,kvnl,kvp,ntri,ntri_th,query) \
-  private(ib,itri,sw,i,j,nnl0,ithread,a)
+  private(ib,itri,i,j,ithread)
   {
+    int sw[3], nnl0;
+    GLfloat a[3][3];
+
     ithread = get_thread();
     for (ib = 0; ib < nb; ib++) {
       if(query == 1) nnl0 = 0;
@@ -64,7 +66,7 @@ void calc_nodeline() {
         eigsort(3, matp[ib][itri], sw);
         for (i = 0; i < 3; ++i) {
           for (j = 0; j < 3; ++j) {
-            a[i][j] = (0.00 - matp[ib][itri][sw[j]]) / (matp[ib][itri][sw[i]] - matp[ib][itri][sw[j]]);
+            a[i][j] = (0.f - matp[ib][itri][sw[j]]) / (matp[ib][itri][sw[i]] - matp[ib][itri][sw[j]]);
           }/*for (j = 0; j < 3; ++j)*/
         }/*for (i = 0; i < 3; ++i)*/
 

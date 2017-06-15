@@ -80,7 +80,7 @@ static void set2daxis() {
 
     norm = 0.0;
     for (jj = 0; jj < 3; jj++) norm += axis2d[0][jj] * axis2d[0][jj];
-    norm = sqrt(norm);
+    norm = sqrtf(norm);
     if (norm > 0.000001) {
       for (jj = 0; jj < 3; jj++) axis2d[0][jj] /= norm;
       break;
@@ -94,7 +94,7 @@ static void set2daxis() {
   axis2d[1][2] = secvec[0] * axis2d[0][1] - secvec[1] * axis2d[0][0];
   norm = 0.0;
   for (jj = 0; jj < 3; jj++) norm += axis2d[1][jj] * axis2d[1][jj];
-  norm = sqrt(norm);
+  norm = sqrtf(norm);
   for (jj = 0; jj < 3; jj++) axis2d[1][jj] /= norm;
 }/*static void set_2daxis*/
 /**
@@ -255,13 +255,15 @@ void calc_2dbz() {
  If ::query = 0, actually compute lines and store them.
 */
 void calc_section() {
-  int ib, itri, i, j, n2d0, ithread, sw[3];
-  GLfloat matp2[3], kvp2[3][3], norm[3], a[3][3];
+  int ib, itri, i, j, ithread;
 
 #pragma omp parallel default(none) \
   shared(nb,n2d,clr,clr2d,kvp,kv2d,ntri,ntri_th,secvec,secscale,query) \
-  private(ib,itri,norm,sw,i,j,n2d0,ithread,a)
+  private(ib,itri,i,j,ithread)
   {
+    int n2d0, sw[3];
+    GLfloat norm[3], a[3][3];
+
     ithread = get_thread();
     for (ib = 0; ib < nb; ib++) {
       if (query == 1) n2d0 = 0;
@@ -276,7 +278,7 @@ void calc_section() {
         eigsort(3, norm, sw);
         for (i = 0; i < 3; ++i) {
           for (j = 0; j < 3; ++j) {
-            a[i][j] = (0.00 - norm[sw[j]]) / (norm[sw[i]] - norm[sw[j]]);
+            a[i][j] = (0.0f - norm[sw[j]]) / (norm[sw[i]] - norm[sw[j]]);
           }/*for (j = 0; j < 3; ++j)*/
         }/*for (i = 0; i < 3; ++i)*/
          /**/

@@ -220,7 +220,7 @@ static void tetrahedron(
 
     for (i = 0; i < 4; ++i) {
       for (j = 0; j < 4; ++j) {
-        a[i][j] = (0.00 - eig2[sw[j]]) / (eig2[sw[i]] - eig2[sw[j]]);
+        a[i][j] = (0.0f - eig2[sw[j]]) / (eig2[sw[i]] - eig2[sw[j]]);
       }/*for (j = 0; j < 4; ++j)*/
     }/*for (i = 0; i < 4; ++i)*/
     /*
@@ -281,9 +281,8 @@ static void tetrahedron(
 */
 void fermi_patch()
 {
-  int ib, i0, i1, i2, ii0, ii1, ii2, j0, j1, j2, start[3], i, j;
-  int ntri0, ithread;
-  GLfloat kvec1[8][3], eig1[8], mat1[8];
+  int ib, i0, i1, j0, start[3];
+  int ithread;
   /**/
   if (fbz == 1) {
     if (query == 1) {
@@ -304,8 +303,11 @@ void fermi_patch()
   /**/
 #pragma omp parallel default(none) \
   shared(nb,ntri,ntri_th,start,ng,ng0,eig,EF,mat,shiftk,query) \
-  private(ib,j0,j1,j2,i0,i1,i2,ii0,ii1,ii2,kvec1,eig1,mat1,i,j,ntri0,ithread)
+  private(ib,j0,i0,i1,ithread)
   {
+    int ntri0, i, j, i2, j1, j2, ii0, ii1, ii2;
+    GLfloat kvec1[8][3], mat1[8], eig1[8];
+
     ithread = get_thread();
     for (ib = 0; ib < nb; ++ib) {
 
@@ -353,7 +355,7 @@ void fermi_patch()
             /**/
             for (i = 0; i < 8; i++)
               for (j = 0; j < 3; j++)
-                kvec1[i][j] = kvec1[i][j] + (double)shiftk[j] / (GLfloat)(2 * ng0[j]);
+                kvec1[i][j] = kvec1[i][j] + (GLfloat)shiftk[j] / (GLfloat)(2 * ng0[j]);
             /**/
             i0 = modulo(i0, ng[0]);
             i1 = modulo(i1, ng[1]);

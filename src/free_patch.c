@@ -110,8 +110,8 @@ void free_patch() {
  Modify : ::clr
 */
 void max_and_min() {
-  int ib, itri, i, j, ierr, ithread;
-  GLfloat matmax, matmin, mat2, *max_th, *min_th;
+  int itri, ierr, ithread;
+  GLfloat matmax, matmin, *max_th, *min_th;
   
   max_th = (GLfloat*)malloc(nthreads * sizeof(GLfloat));
   min_th = (GLfloat*)malloc(nthreads * sizeof(GLfloat));
@@ -124,8 +124,10 @@ void max_and_min() {
   printf("\n");
 
 #pragma omp parallel default(none) \
-  shared(nb,ntri,matp,max_th,min_th) private(ib,itri,i,ithread)
+  shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
   {
+    int i, ib;
+
     ithread = get_thread();
     max_th[ithread] = -100000000.0000;
     min_th[ithread] = 100000000.0000;
@@ -162,30 +164,33 @@ void max_and_min() {
   if (fcscl == 1 || fcscl == 2) {
 #pragma omp parallel default(none) \
 shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red,matmax,matmin) \
-private(ib,itri,i,mat2,j)
+private(itri)
     {
+    int i, j, ib;
+    GLfloat mat2;
+
       for (ib = 0; ib < nb; ib++) {
 #pragma omp for nowait
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             /**/
             mat2 = (matp[ib][itri][i] - matmin) / (matmax - matmin);
-            mat2 = mat2 * 4.0;
+            mat2 = mat2 * 4.0f;
             /**/
             if (mat2 <= 1.0) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
             }
             else if (mat2 <= 2.0) {
-              mat2 = mat2 - 1.0;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0 - mat2);
+              mat2 = mat2 - 1.0f;
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
             }
             else if (mat2 <= 3.0) {
-              mat2 = mat2 - 2.0;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0 - mat2);
+              mat2 = mat2 - 2.0f;
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
             }
             else {
-              mat2 = mat2 - 3.0;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0 - mat2);
+              mat2 = mat2 - 3.0f;
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -195,38 +200,41 @@ private(ib,itri,i,mat2,j)
   else if (fcscl == 4) {
 #pragma omp parallel default(none) \
 shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red,magenta) \
-private(ib,itri,i,mat2,j)
+private(itri)
     {
+    int i, j, ib;
+    GLfloat mat2;
+
       for (ib = 0; ib < nb; ib++) {
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             /**/
-            mat2 = matp[ib][itri][i] / 6.283185307;
+            mat2 = matp[ib][itri][i] / 6.283185307f;
             mat2 = mat2 - floorf(mat2);
-            mat2 = mat2 * 6.0;
+            mat2 = mat2 * 6.0f;
             /**/
             if (mat2 <= 1.0) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + red[j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + red[j] * (1.0f - mat2);
             }
             else if (mat2 <= 2.0) {
-              mat2 = mat2 - 1.0;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + yellow[j] * (1.0 - mat2);
+              mat2 = mat2 - 1.0f;
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + yellow[j] * (1.0f - mat2);
             }
             else if (mat2 <= 3.0) {
-              mat2 = mat2 - 2.0;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + green[j] * (1.0 - mat2);
+              mat2 = mat2 - 2.0f;
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + green[j] * (1.0f - mat2);
             }
             else if (mat2 <= 4.0) {
-              mat2 = mat2 - 3.0;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = blue[j] * mat2 + cyan[j] * (1.0 - mat2);
+              mat2 = mat2 - 3.0f;
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = blue[j] * mat2 + cyan[j] * (1.0f - mat2);
             }
             else if (mat2 <= 5.0) {
-              mat2 = mat2 - 4.0;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = magenta[j] * mat2 + blue[j] * (1.0 - mat2);
+              mat2 = mat2 - 4.0f;
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = magenta[j] * mat2 + blue[j] * (1.0f - mat2);
             }
             else {
-              mat2 = mat2 - 5.0;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + magenta[j] * (1.0 - mat2);
+              mat2 = mat2 - 5.0f;
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -236,45 +244,48 @@ private(ib,itri,i,mat2,j)
   else {
 #pragma omp parallel default(none) \
 shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red) \
-private(ib,itri,i,mat2,j)
+private(itri)
     {
+    int i, j, ib;
+    GLfloat mat2;
+
       for (ib = 0; ib < nb; ib++) {
         /**/
-        mat2 = 1.0 / (GLfloat)(nb - 1) * (GLfloat)ib;
-        mat2 = mat2 * 4.0;
+        mat2 = 1.0f / (GLfloat)(nb - 1) * (GLfloat)ib;
+        mat2 = mat2 * 4.0f;
         /**/
         if (mat2 <= 1.0) {
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
             }
           }
         }
         else if (mat2 <= 2.0) {
-          mat2 = mat2 - 1.0;
+          mat2 = mat2 - 1.0f;
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
             }
           }
         }
         else if (mat2 <= 3.0) {
-          mat2 = mat2 - 2.0;
+          mat2 = mat2 - 2.0f;
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
             }
           }
         }
         else {
-          mat2 = mat2 - 3.0;
+          mat2 = mat2 - 3.0f;
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
             }
           }
         }

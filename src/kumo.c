@@ -49,11 +49,11 @@ static void kumo_coef(
 ) {
   GLfloat x, mx;
   x = (GLfloat)j / (GLfloat)interpol;
-  mx = 1.0 - x;
-  coef[0] = -0.5 * x * mx * mx;
-  coef[1] = mx * (mx*mx + 3.0*x*mx + 0.5*x*x);
-  coef[2] = x * (x*x + 3.0*mx*x + 0.5*mx*mx);
-  coef[3] = -0.5 * x * x * mx;
+  mx = 1.0f - x;
+  coef[0] = -0.5f * x * mx * mx;
+  coef[1] = mx * (mx*mx + 3.0f* x*mx + 0.5f* x* x);
+  coef[2] =  x * ( x* x + 3.0f*mx* x + 0.5f*mx*mx);
+  coef[3] = -0.5f * x *  x * mx;
 }
 /**
  @brief Interpolation of energy and matrix 
@@ -62,9 +62,7 @@ static void kumo_coef(
  Modify : ::eig, ::mat
 */
 void interpol_energy() {
-  int ib, i0, i1, ii, i2, j0, j1, j2;
-  GLfloat coef[4];
-  GLfloat eig1[4][4][4], mat1[4][4][4], eig2[4][4], mat2[4][4], eig3[4], mat3[4];
+  int ib, i0, i1, ii;
   /*
    Reallocate
   */
@@ -99,8 +97,11 @@ void interpol_energy() {
   */
 #pragma omp parallel default(none) \
   shared(nb,ng0,ng,eig,eig0,mat,mat0,interpol) \
-  private (ib,i0,i1,ii,i2,j0,j1,j2,coef,eig1,mat1,eig2,mat2,eig3,mat3)
+  private (ib,i0,i1,ii)
   {
+    int i2, j0, j1, j2;
+    GLfloat coef[4], mat1[4][4][4], eig1[4][4][4], mat2[4][4], eig2[4][4], mat3[4], eig3[4];
+
     for (ib = 0; ib < nb; ib++) {
 # pragma omp for nowait
       for (i0 = 0; i0 < ng0[0]; i0++) {
