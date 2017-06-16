@@ -97,9 +97,9 @@ Windows. The information from the input file is printed.
 
 #. The number of node lines in each band.
 
-Then, Operations are printed, and Fermi surfaces are drawn (Fig. :num:`start`).
+Then, Operations are printed, and Fermi surfaces are drawn (Fig. :num:`startpng`).
 
-.. _start:
+.. _startpng:
      
 .. figure:: ../figs/start.png
 
@@ -156,9 +156,9 @@ input file and the current Fermi energy;
         
 
 Then, you should type the new Fermi energy; finally, the new Fermi
-surfaces are depicted (Fig. :num:`shift`).
+surfaces are depicted (Fig. :num:`shiftpng`).
 
-.. _shift:
+.. _shiftpng:
      
 .. figure:: ../figs/shift.png
 
@@ -168,7 +168,7 @@ surfaces are depicted (Fig. :num:`shift`).
 Interpolation
 -------------
 
-Smooth the Fermi surface with the interpolation (Fig. :num:`interpolate`).
+Smooth the Fermi surface with the interpolation (Fig. :num:`interpolatepng`).
 Please type the number of interpolation points at the prompt
 
 ::
@@ -177,7 +177,7 @@ Please type the number of interpolation points at the prompt
 
 The time for the plot increases with the interpolation ratio.
 
-.. _interpolate:
+.. _interpolatepng:
      
 .. figure:: ../figs/interpolate.png
 
@@ -199,9 +199,9 @@ Rotation
     axis.
 
 In each menu, first the current value is printed. then a prompt to input
-the new value appears (Fig. :num:`setview`).
+the new value appears (Fig. :num:`setviewpng`).
 
-.. _setview:
+.. _setviewpng:
      
 .. figure:: ../figs/setview.png
 
@@ -211,9 +211,9 @@ Background color
 ----------------
 
 The background color is toggled between black and white; the edge of the
-Brillouin Zone is also toggled between white and black (Fig. :num:`background`).
+Brillouin Zone is also toggled between white and black (Fig. :num:`backgroundpng`).
 
-.. _background:
+.. _backgroundpng:
      
 .. figure:: ../figs/background.png
 
@@ -223,7 +223,7 @@ Brillouin Zone is also toggled between white and black (Fig. :num:`background`).
 Color scale mode
 ----------------
 
-It turns color pattern on Fermi surfaces (Fig. :num:`colorscale`).
+It turns color pattern on Fermi surfaces (Fig. :num:`colorscalepng`).
 
 Auto(default) : It makes blue as the minimum on Fermi surfaces and red
 as the maximum on them.
@@ -242,7 +242,7 @@ the color varies as red :math:`\rightarrow` yellow
 :math:`\rightarrow` green :math:`\rightarrow` cyan :math:`\rightarrow` blue
 :math:`\rightarrow` magenta :math:`\rightarrow` red.
 
-.. _colorscale:
+.. _colorscalepng:
      
 .. figure:: ../figs/colorscale.png
 
@@ -251,7 +251,7 @@ the color varies as red :math:`\rightarrow` yellow
 Brillouin zone
 --------------
 
-You choose Brillouin-zone type as follows (Fig. :num:`brillouinzone`):
+You choose Brillouin-zone type as follows (Fig. :num:`brillouinzonepng`):
 
 First Brillouin Zone : The region surrounded by Bragg's planes the
 nearest to :math:`{\rm \Gamma}` point.
@@ -259,7 +259,7 @@ nearest to :math:`{\rm \Gamma}` point.
 Primitive Brillouin Zone : A hexahedron whose corner is the reciprocal
 lattice point.
 
-.. _brillouinzone:
+.. _brillouinzonepng:
      
 .. figure:: ../figs/brillouinzone.png
 
@@ -270,9 +270,9 @@ Node line
 ---------
 
 The line on which the matrix element becomes 0 (we call it node line)
-becomes enable/disable (Fig. :num:`nodeline`).
+becomes enable/disable (Fig. :num:`nodelinepng`).
 
-.. _nodeline:
+.. _nodelinepng:
      
 .. figure:: ../figs/nodeline.png
 
@@ -281,9 +281,9 @@ becomes enable/disable (Fig. :num:`nodeline`).
 Color bar On/Off
 ----------------
 
-The color bar becomes enable/disable (Fig. :num:`colorbar`).
+The color bar becomes enable/disable (Fig. :num:`colorbarpng`).
 
-.. _colorbar:
+.. _colorbarpng:
      
 .. figure:: ../figs/colorbar.png
 
@@ -293,7 +293,7 @@ Stereogram
 ----------
 
 The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
-(Fig. :num:`stereogram`).
+(Fig. :num:`stereogrampng`).
 
 None (Default)
 
@@ -301,7 +301,7 @@ Parallel : Parallel-eyes stereogram
 
 Cross : Cross-eyes stereogram
 
-.. _stereogram:
+.. _stereogrampng:
      
 .. figure:: ../figs/stereogram.png
 
@@ -312,7 +312,7 @@ Section
 -------
 
 Display a 2D plot of the Fermi surface (line)
-on an arbitrary section of the Brillouin zone (Fig. :num:`section`).
+on an arbitrary section of the Brillouin zone (Fig. :num:`sectionpng`).
    
 Section
    Toggle the 2D plot of the Fermi surface (line).
@@ -335,7 +335,7 @@ Modify Section (across Gamma)
 
    The section crosses :math:`\Gamma` point.
 
-.. _section:
+.. _sectionpng:
      
 .. figure:: ../figs/section.png
 

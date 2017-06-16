@@ -107,11 +107,11 @@ int main(
 )
 {
   printf("\n");
-  printf("########################################\n");
-  printf("##                                    ##\n");
+  printf("##########################################\n");
+  printf("##                                      ##\n");
   printf("##  Welocome to FermiSurfer ver. %s  ##\n", VERSION);
-  printf("##                                    ##\n");
-  printf("########################################\n");
+  printf("##                                      ##\n");
+  printf("##########################################\n");
   printf("\n");
   if (argc < 2) {
     printf("\n");

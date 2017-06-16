@@ -97,13 +97,13 @@ Windowsの場合
 
 #. それぞれのバンドにおけるnode line (後述)の本数.
 
-次に操作方法が出力され, Fermi面が描画されます(図 :num:`start` ).
+次に操作方法が出力され, Fermi面が描画されます(図 :num:`startpng` ).
 
-.. _start:
+.. _startpng:
      
 .. figure:: ../figs/start.png
 
-            Fermisurferを起動した直後の画面.
+   Fermisurferを起動した直後の画面.
 
 -  マウスのドラッグによる回転が出来ます.
 
@@ -157,9 +157,9 @@ Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
     Fermi energy shift : 
         
 
-次に新しいFermiエネルギーを入力すると, Fermi面が再描画されます (図 :num:`shift`).
+次に新しいFermiエネルギーを入力すると, Fermi面が再描画されます (図 :num:`shiftpng`).
 
-.. _shift:
+.. _shiftpng:
      
 .. figure:: ../figs/shift.png
 
@@ -168,7 +168,7 @@ Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
 Interpolation
 -------------
 
-補間により図の曲面を滑らかにします (図 :num:`interpolate`).
+補間により図の曲面を滑らかにします (図 :num:`interpolatepng`).
 コンソールの
 
 ::
@@ -177,7 +177,7 @@ Interpolation
 
 の後に分点数を入力してください. ただし分点数を増やすと描画にかかる時間も増えます.
 
-.. _interpolate:
+.. _interpolatepng:
      
 .. figure:: ../figs/interpolate.png
 
@@ -198,9 +198,9 @@ Rotation
     x,y,z軸周りの回転角を指定します.回転操作はz軸-y軸-x軸の順で行われます
 
 それぞれのメニューを選択すると, はじめに現在の値が表示され,
-その後変更後の値を入れるプロンプトが現れます(図 :num:`setview`).
+その後変更後の値を入れるプロンプトが現れます(図 :num:`setviewpng`).
 
-.. _setview:
+.. _setviewpng:
      
 .. figure:: ../figs/setview.png
 
@@ -210,9 +210,9 @@ Background color
 ----------------
 
 背景色を黒または白に切り替えます. Brillouin
-Zoneの枠線も白/黒と切り替わります (図 :num:`background`).
+Zoneの枠線も白/黒と切り替わります (図 :num:`backgroundpng`).
 
-.. _background:
+.. _backgroundpng:
      
 .. figure:: ../figs/background.png
 
@@ -221,7 +221,7 @@ Zoneの枠線も白/黒と切り替わります (図 :num:`background`).
 Color scale mode
 ----------------
 
-Fermi面の色表示のさせ方を変更します(図 :num:`colorscale`).
+Fermi面の色表示のさせ方を変更します(図 :num:`colorscalepng`).
 
 Auto(デフォルト)
     カラースケールの範囲をFermi面上での物理量の最小値から最大値までとします.
@@ -241,7 +241,7 @@ Periodic
     緑 :math:`\rightarrow` シアン :math:`\rightarrow` 青:math:`\rightarrow`
     マゼンタ :math:`\rightarrow` 赤と変わります.
 
-.. _colorscale:
+.. _colorscalepng:
      
 .. figure:: ../figs/colorscale.png
 
@@ -251,7 +251,7 @@ Brillouin zone
 --------------
 
 描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
-切り替える事が出来ます (図 :num:`brillouinzone`).
+切り替える事が出来ます (図 :num:`brillouinzonepng`).
 
 Fisrst Brillouin Zone
     :math:`{\rm \Gamma}` 点から一番近いBragg面で囲まれた領域
@@ -259,7 +259,7 @@ Fisrst Brillouin Zone
 Primitive Brillouine Zone
     逆格子ベクトルを辺とする平行6面体領域
 
-.. _brillouinzone:
+.. _brillouinzonepng:
      
 .. figure:: ../figs/brillouinzone.png
 
@@ -268,9 +268,9 @@ Primitive Brillouine Zone
 Node line
 ---------
 
-物理量が0となるところに引く線(node line)のOn/Offを切り替えます(図 :num:`nodeline`).
+物理量が0となるところに引く線(node line)のOn/Offを切り替えます(図 :num:`nodelinepng`).
 
-.. _nodeline:
+.. _nodelinepng:
      
 .. figure:: ../figs/nodeline.png
 
@@ -279,9 +279,9 @@ Node line
 Color bar On/Off
 ----------------
 
-カラーバーの表示/非表示を切り替えます(図 :num:`colorbar`).
+カラーバーの表示/非表示を切り替えます(図 :num:`colorbarpng`).
 
-.. _colorbar:
+.. _colorbarpng:
      
 .. figure:: ../figs/colorbar.png
 
@@ -290,7 +290,7 @@ Color bar On/Off
 Stereogram
 ----------
 
-裸眼立体視用の図の表示/非表示を切り替えます(図 :num:`stereogram`).
+裸眼立体視用の図の表示/非表示を切り替えます(図 :num:`stereogrampng`).
 
 None (デフォルト)
     立体視を無効にします.
@@ -301,7 +301,7 @@ Parallel
 Cross
     交差法用の図を表示します.
 
-.. _stereogram:
+.. _stereogrampng:
      
 .. figure:: ../figs/stereogram.png
 
@@ -311,7 +311,7 @@ Section
 -------
 
 Brillouin領域を任意の断面で切り取り,
-2次元のFermi面(線)を描画します (図 :num:`section`).
+2次元のFermi面(線)を描画します (図 :num:`sectionpng`).
    
 Section
    断面の表示・非表示を切り替えます.
@@ -336,7 +336,7 @@ Modify Section (across Gamma)
    の後に法線ベクトル(フラクショナル座標)を入力してください.
    断面は :math:`\Gamma` 点を通ります.
 
-.. _section:
+.. _sectionpng:
      
 .. figure:: ../figs/section.png
 
