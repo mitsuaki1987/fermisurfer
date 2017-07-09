@@ -123,7 +123,7 @@ static void draw_fermi() {
     /*
      Second, draw each lines
     */
-    glLineWidth(2.0);
+    glLineWidth(3.0f*scl);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
     glBegin(GL_LINES);
@@ -151,7 +151,7 @@ static void draw_bz_lines() {
   else
     for (i = 0; i<4; i++) linecolor[i] = black[i];
   /**/
-  glLineWidth(2.0);
+  glLineWidth(3.0f*scl);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, linecolor);
   /*
@@ -179,8 +179,7 @@ static void draw_bz_lines() {
       for (j = 0; j < 3; ++j) {
         bvec2[i][j] = rot[j][0] * bvec[i][0]
                     + rot[j][1] * bvec[i][1]
-                    + rot[j][2] * bvec[i][2]
-                    + trans[j];
+                    + rot[j][2] * bvec[i][2];
       }
     }
     glBegin(GL_LINE_STRIP);
@@ -370,7 +369,7 @@ static void draw_fermi_line() {
   else
     for (i = 0; i<4; i++) linecolor[i] = black[i];
   /**/
-  glLineWidth(2.0);
+  glLineWidth(3.0f*scl);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, linecolor);
   glBegin(GL_LINE_LOOP);
@@ -379,7 +378,7 @@ static void draw_fermi_line() {
   /*
    Draw Fermi lines
   */
-  glLineWidth(2.0);
+  glLineWidth(3.0f*scl);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
   glBegin(GL_LINES);
   for (ib = 0; ib < nb; ib++) {
