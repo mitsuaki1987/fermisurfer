@@ -160,7 +160,7 @@ int main(
   /**/
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE  | GLUT_DEPTH);
-  glutCreateWindow(argv[0]);
+  glutCreateWindow(argv[1]);
   glutDisplayFunc(display);
   glutReshapeFunc(resize);
   glutMouseFunc(mouse);

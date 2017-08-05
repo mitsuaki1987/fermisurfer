@@ -40,6 +40,7 @@ void read_file(
   /*
    Open input file.
   */
+  printf("  Openning %s ...\n", fname);
   if ((fp = fopen(fname, "r")) == NULL) {
     printf("file open error!!\n");
     printf("  Press any key to exit.\n");

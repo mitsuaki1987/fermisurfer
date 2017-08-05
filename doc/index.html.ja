@@ -84,7 +84,7 @@
           var sfjp_widget_width = 300;
           var sfjp_widget_customcss = null;
         </script>
-        <script src="//osdn.net/projects/fermisurfer/files/compact.js"
+        <script src="http://osdn.jp/projects/fermisurfer/files/compact.js"
                 type="text/javascript" charset="utf-8"></script>
 	    <h2><a href="http://osdn.jp/projects/fermisurfer/releases/">全てのバージョンを見る</a></h2>
 	    <h2>日本語マニュアル(
