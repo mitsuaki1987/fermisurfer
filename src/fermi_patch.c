@@ -35,6 +35,11 @@ THE SOFTWARE.
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
+#ifdef __ANDROID__
+#include <GLES/gl.h>
+#elif __APPLE__
+#include <OpenGLES/ES1/gl.h>
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>

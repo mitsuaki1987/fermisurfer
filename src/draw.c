@@ -32,6 +32,11 @@ THE SOFTWARE.
 #elif defined(HAVE_GLUT_GLUT_H)
 #include <GLUT/glut.h>
 #endif
+#ifdef __ANDROID__
+#include <GLES/gl.h>
+#elif __APPLE__
+#include <OpenGLES/ES1/gl.h>
+#endif
 
 #include <math.h>
 #include "variable.h"
@@ -44,7 +49,8 @@ THE SOFTWARE.
  Also draw nodeline in the same way.
 */
 static void draw_fermi() {
-  int i, ib, itri;
+  int i, k, ib, itri;
+  GLfloat vertices[9], colors[12], normals[9];
   /*
    First, rotate k-vector and normal vector
   */
@@ -77,19 +83,30 @@ static void draw_fermi() {
   /*
    Second, draw each triangle
   */
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
+  glEnable(GL_COLOR_MATERIAL);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
-      glBegin(GL_TRIANGLES);
       for (itri = 0; itri < ntri[ib]; ++itri) {
-        glNormal3fv(nmlp_rot[ib][itri]);
         for (i = 0; i < 3; ++i) {
-          glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, clr[ib][itri][i]);
-          glVertex3fv(kvp_rot[ib][itri][i]);
-        }/**/
-      }/**/
-      glEnd();
-    }/**/
-  }/**/
+          for (k = 0; k < 3; ++k) normals[k + 3 * i] = nmlp_rot[ib][itri][k];
+          for (k = 0; k < 3; ++k) vertices[k + 3 * i] = kvp_rot[ib][itri][i][k];
+          for (k = 0; k < 4; ++k) colors[k + 4 * i] = clr[ib][itri][i][k];
+        }/*for (i = 0; i < 3; ++i)*/
+        glVertexPointer(3, GL_FLOAT, 0, vertices);
+        glNormalPointer(GL_FLOAT, 0, normals);
+        glColorPointer(4, GL_FLOAT, 0,colors);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+      //glEnd();
+    }/*if (draw_band[ib] == 1)*/
+  }/*for (ib = 0; ib < nb; ib++)*/
+  glDisable(GL_COLOR_MATERIAL);
+  glDisableClientState(GL_COLOR_ARRAY);
+  glDisableClientState(GL_NORMAL_ARRAY);
+  glDisableClientState(GL_VERTEX_ARRAY);
   /*
    Nodeline
   */
@@ -125,7 +142,7 @@ static void draw_fermi() {
     */
     glLineWidth(3.0f*scl);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
     glBegin(GL_LINES);
     for (ib = 0; ib < nb; ib++) {
       if (draw_band[ib] == 1) {
@@ -153,7 +170,7 @@ static void draw_bz_lines() {
   /**/
   glLineWidth(3.0f*scl);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, linecolor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
   /*
    First Brillouin zone mode
   */
@@ -202,7 +219,7 @@ static void draw_bz_lines() {
     for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[1][i]; glVertex3fv(bzl2);
     glEnd();
   }/*if (fbz != 1)*/
-  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
   /*
    Section for the 2D Fermi line
   */
@@ -330,11 +347,11 @@ static void draw_circles(
   /**/
   if (blackback == 1) {
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, white);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
   }
   else {
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
   }
   /**/
   glBegin(GL_TRIANGLE_FAN);
@@ -371,7 +388,7 @@ static void draw_fermi_line() {
   /**/
   glLineWidth(3.0f*scl);
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, linecolor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
   glBegin(GL_LINE_LOOP);
   for (ibzl = 0; ibzl < nbzl2d; ++ibzl) glVertex3fv(bzl2d_proj[ibzl]);
   glEnd();
@@ -385,14 +402,14 @@ static void draw_fermi_line() {
     if (draw_band[ib] == 1) {
       for (itri = 0; itri < n2d[ib]; ++itri) {
         for (i = 0; i < 2; ++i) {
-          glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, clr2d[ib][itri][i]);
+          glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, clr2d[ib][itri][i]);
           glVertex3fv(kv2d[ib][itri][i]);
         }/*for (i = 0; i < 2; ++i)*/
       }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
     }/*if (draw_band[ib] == 1)*/
   }/* for (ib = 0; ib < nb; ib++)*/
   glEnd();
-  glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
 }/*void draw_fermi_line*/
 /**
  @brief Glut Display function
@@ -463,7 +480,7 @@ void display(void)
   */
   if (lstereo == 1) {
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glTranslated(-dx2d, 0.0, 0.0);
+    glTranslatef(-dx2d, 0.0, 0.0);
     /*
      Draw color scale
     */
@@ -472,14 +489,14 @@ void display(void)
   else {
     glLightfv(GL_LIGHT0, GL_POSITION, pos1);
     draw_circles(dx2d);
-    glTranslated(-dx-dx2d, 0.0, 0.0);
-    glRotated(theta, 0.0, 1.0, 0.0);
+    glTranslatef(-dx-dx2d, 0.0, 0.0);
+    glRotatef(theta, 0.0, 1.0, 0.0);
   }
   glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
   /*
    Rotation & Zoom
   */
-  glScaled(scl, scl, scl);
+  glScalef(scl, scl, scl);
   /*
    Draw Brillouin zone boundaries
   */
@@ -497,10 +514,10 @@ void display(void)
     gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     glLightfv(GL_LIGHT0, GL_POSITION, pos2);
     /**/
-    glTranslated(dx-dx2d, 0.0, 0.0);
-    glRotated(-theta, 0.0, 1.0, 0.0);
+    glTranslatef(dx-dx2d, 0.0, 0.0);
+    glRotatef(-theta, 0.0, 1.0, 0.0);
     /**/
-    glScaled(scl, scl, scl);
+    glScalef(scl, scl, scl);
     draw_bz_lines();
     draw_fermi();
     /**/
@@ -515,10 +532,10 @@ void display(void)
     gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
     /**/
-    if (lstereo == 1) glTranslated(dx2d, 0.0, 0.0);
-    else glTranslated(2.0 * dx2d, 0.0, 0.0);
+    if (lstereo == 1) glTranslatef(dx2d, 0.0, 0.0);
+    else glTranslatef(2.0f * dx2d, 0.0, 0.0);
     /**/
-    glScaled(scl, scl, scl);
+    glScalef(scl, scl, scl);
     draw_fermi_line();
     /**/
     glPopMatrix();

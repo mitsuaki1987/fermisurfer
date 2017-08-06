@@ -60,6 +60,12 @@ with a color-plot of the arbitraly matrix element
 #elif defined(HAVE_GLUT_GLUT_H)
 #include <GLUT/glut.h>
 #endif
+#ifdef __ANDROID__
+#include <GLES/gl.h>
+#define VERSION 0.0
+#elif __APPLE__
+#include <OpenGLES/ES1/gl.h>
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -91,6 +97,7 @@ void init(void)
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
   glEnable(GL_NORMALIZE);
+  //glEnable(GL_COLOR_MATERIAL);
   /* Menu */
   FS_CreateMenu();
 } /* init */
