@@ -40,6 +40,7 @@ THE SOFTWARE.
 
 #include <math.h>
 #include "variable.h"
+#include <stdio.h>
 /**
  @brief Draw Fermi surfaces
 
@@ -83,10 +84,6 @@ static void draw_fermi() {
   /*
    Second, draw each triangle
   */
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_NORMAL_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
-  glEnable(GL_COLOR_MATERIAL);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
       for (itri = 0; itri < ntri[ib]; ++itri) {
@@ -103,10 +100,6 @@ static void draw_fermi() {
       //glEnd();
     }/*if (draw_band[ib] == 1)*/
   }/*for (ib = 0; ib < nb; ib++)*/
-  glDisable(GL_COLOR_MATERIAL);
-  glDisableClientState(GL_COLOR_ARRAY);
-  glDisableClientState(GL_NORMAL_ARRAY);
-  glDisableClientState(GL_VERTEX_ARRAY);
   /*
    Nodeline
   */
@@ -141,17 +134,23 @@ static void draw_fermi() {
      Second, draw each lines
     */
     glLineWidth(3.0f*scl);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
-    glBegin(GL_LINES);
+    for (i = 0; i < 2; i++) {
+      for (k = 0; k < 4; k++) colors[k + 4 * i] = black[k];
+      for (k = 0; k < 2; k++) normals[k + 3 * i] = 0.0f;
+      normals[2 + 3 * i] = 0.0f;
+    }
     for (ib = 0; ib < nb; ib++) {
       if (draw_band[ib] == 1) {
         for (itri = 0; itri < nnl[ib]; ++itri) {
-          for (i = 0; i < 2; ++i) glVertex3fv(kvnl_rot[ib][itri][i]);
+          for (i = 0; i < 2; ++i) 
+            for (k = 0; k < 3; ++k) vertices[k + 3 * i] = kvnl_rot[ib][itri][i][k];    
+          glVertexPointer(3, GL_FLOAT, 0, vertices);
+          glNormalPointer(GL_FLOAT, 0, normals);
+          glColorPointer(4, GL_FLOAT, 0, colors);
+          glDrawArrays(GL_LINES, 0, 2);
         }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
       }/*if (draw_band[ib] == 1)*/
     }/* for (ib = 0; ib < nb; ib++)*/
-    glEnd();
   }/*if (nodeline == 1)*/
 }/*void draw_fermi*/
 /**
@@ -159,7 +158,8 @@ static void draw_fermi() {
 */
 static void draw_bz_lines() {
   int ibzl, i, j;
-  GLfloat bzl2[3], bvec2[3][3], linecolor[4];
+  GLfloat bzl2[3], bvec2[3][3], linecolor[4], secvec2[3];
+  GLfloat vertices[300], colors[400], normals[300];
   /*
    Line color is oposit of BG color
   */
@@ -169,13 +169,15 @@ static void draw_bz_lines() {
     for (i = 0; i<4; i++) linecolor[i] = black[i];
   /**/
   glLineWidth(3.0f*scl);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
+  for (i = 0; i < 18; ++i) {
+    for (j = 0; j < 4; j++) colors[j + i * 4] = linecolor[j];
+    for (j = 0; j < 2; j++) normals[j + i * 3] = 0.0f;
+    normals[2 + i * 3] = 1.0f;
+  }/*for (i = 0; i < 2; ++i)*/
   /*
    First Brillouin zone mode
   */
   if (fbz == 1) {
-    glBegin(GL_LINES);
     for (ibzl = 0; ibzl < nbzl; ++ibzl) {
       for (i = 0; i< 2; ++i) {
         for (j = 0; j < 3; ++j) 
@@ -183,10 +185,13 @@ static void draw_bz_lines() {
                   + rot[j][1] * bzl[ibzl][i][1]
                   + rot[j][2] * bzl[ibzl][i][2]
                   + trans[j];
-        glVertex3fv(bzl2);
+        for (j = 0; j < 3; j++) vertices[j + 3 * i] = bzl2[j];
       }/*for (i = 0; i< 2; ++i)*/
+      glVertexPointer(3, GL_FLOAT, 0, vertices);
+      glNormalPointer(GL_FLOAT, 0, normals);
+      glColorPointer(4, GL_FLOAT, 0, colors);
+      glDrawArrays(GL_LINES, 0, 2);
     }/*for (ibzl = 0; ibzl < nbzl; ++ibzl)*/
-    glEnd();
   }/*if (fbz == 1)*/
   else {
     /*
@@ -197,46 +202,54 @@ static void draw_bz_lines() {
         bvec2[i][j] = rot[j][0] * bvec[i][0]
                     + rot[j][1] * bvec[i][1]
                     + rot[j][2] * bvec[i][2];
-      }
-    }
-    glBegin(GL_LINE_STRIP);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[1][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[1][i] + bvec2[2][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[1][i] + bvec2[2][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[1][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[2][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[2][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[1][i] + bvec2[2][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[2][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[2][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[1][i] + bvec2[2][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[1][i]; glVertex3fv(bzl2);
-    for (i = 0; i<3; ++i) bzl2[i] = trans[i] + bvec2[0][i] + bvec2[1][i]; glVertex3fv(bzl2);
-    glEnd();
+      }/*for (j = 0; j < 3; ++j)*/
+    }/*for (i = 0; i < 3; ++i)*/
+    for (i = 0; i<3; ++i) vertices[i] = trans[i];
+    for (i = 0; i<3; ++i) vertices[i+3] = trans[i] + bvec2[0][i];
+    for (i = 0; i<3; ++i) vertices[i+3*2] = trans[i] + bvec2[0][i] + bvec2[1][i];
+    for (i = 0; i<3; ++i) vertices[i+3*3] = trans[i] + bvec2[0][i] + bvec2[1][i] + bvec2[2][i];
+    for (i = 0; i<3; ++i) vertices[i+3*4] = trans[i] + bvec2[1][i] + bvec2[2][i];
+    for (i = 0; i<3; ++i) vertices[i+3*5] = trans[i] + bvec2[1][i];
+    for (i = 0; i<3; ++i) vertices[i+3*6] = trans[i];
+    for (i = 0; i<3; ++i) vertices[i+3*7] = trans[i] + bvec2[2][i];
+    for (i = 0; i<3; ++i) vertices[i+3*8] = trans[i] + bvec2[0][i] + bvec2[2][i];
+    for (i = 0; i<3; ++i) vertices[i+3*9] = trans[i] + bvec2[0][i] + bvec2[1][i] + bvec2[2][i];
+    for (i = 0; i<3; ++i) vertices[i+3*10] = trans[i] + bvec2[0][i] + bvec2[2][i];
+    for (i = 0; i<3; ++i) vertices[i+3*11] = trans[i] + bvec2[0][i];
+    for (i = 0; i<3; ++i) vertices[i+3*12] = trans[i];
+    for (i = 0; i<3; ++i) vertices[i+3*13] = trans[i] + bvec2[2][i];
+    for (i = 0; i<3; ++i) vertices[i+3*14] = trans[i] + bvec2[1][i] + bvec2[2][i];
+    for (i = 0; i<3; ++i) vertices[i+3*15] = trans[i] + bvec2[1][i];
+    for (i = 0; i<3; ++i) vertices[i+3*16] = trans[i] + bvec2[0][i] + bvec2[1][i];
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glNormalPointer(GL_FLOAT, 0, normals);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+    glDrawArrays(GL_LINE_STRIP, 0, 17);
   }/*if (fbz != 1)*/
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
   /*
    Section for the 2D Fermi line
   */
   if (lsection == 1) {
-    glBegin(GL_POLYGON);
-    glNormal3fv(secvec);
-    if (blackback == 1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
-    else glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
+    for (j = 0; j < 3; ++j)
+      secvec2[j] = rot[j][0] * secvec[0]
+                 + rot[j][1] * secvec[1]
+                 + rot[j][2] * secvec[2];
+    for (i = 0; i < nbzl2d; ++i) {
+      for (j = 0; j < 4; j++) colors[j + i * 4] = gray[j];
+      for (j = 0; j < 3; j++) normals[j + i * 3] = secvec2[j];
+    }
     for (ibzl = 0; ibzl < nbzl2d; ++ibzl) {
       for (j = 0; j < 3; ++j)
         bzl2[j] = rot[j][0] * bzl2d[ibzl][0]
                 + rot[j][1] * bzl2d[ibzl][1]
                 + rot[j][2] * bzl2d[ibzl][2]
                 + trans[j];
-      glVertex3fv(bzl2);
+      for (j = 0; j < 3; j++)vertices[j + 3 * ibzl] = bzl2[j];
     }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
-    glEnd();
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glNormalPointer(GL_FLOAT, 0, normals);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, nbzl2d);
   }/*if (lsection == 1)*/
 }/*draw bz_lines */
 /**
@@ -245,10 +258,9 @@ static void draw_bz_lines() {
 */
 static void draw_colorbar()
 {
-  int i, j;
-  GLfloat mat2, barcolor[4];
+  int i, j, k;
+  GLfloat mat2, barcolor[4], vertices[300], normals[300], colors[400];
   GLfloat colorbar[13][3] = {
-    {  0.0f,  0.0f,        1.0f },
     { -1.0f, -1.0f,        0.0f },
     { -1.0f, -1.0f - 0.1f, 0.0f },
     { -0.5f, -1.0f,        0.0f },
@@ -264,24 +276,25 @@ static void draw_colorbar()
   };
   /**/
   if (fcscl == 1 || fcscl == 2) {
-    glBegin(GL_TRIANGLE_STRIP);
-    glNormal3fv(colorbar[0]);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, blue);
-    glVertex3fv(colorbar[1]);
-    glVertex3fv(colorbar[2]);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, cyan);
-    glVertex3fv(colorbar[3]);
-    glVertex3fv(colorbar[4]);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, green);
-    glVertex3fv(colorbar[5]);
-    glVertex3fv(colorbar[6]);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, yellow);
-    glVertex3fv(colorbar[7]);
-    glVertex3fv(colorbar[8]);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, red);
-    glVertex3fv(colorbar[9]);
-    glVertex3fv(colorbar[10]);
-    glEnd();
+    for (i = 0; i < 10; i++) {
+      for (j = 0; j < 3; j++) vertices[j + i * 3] = colorbar[i][j];
+      for (j = 0; j < 2; j++) normals[j + i * 3] = 0.0f;
+      normals[j + i * 3] = 1.0f;
+    }/*for (i = 0; i < 10; i++)*/
+    for (j = 0; j < 4; j++) colors[j] = blue[j];
+    for (j = 0; j < 4; j++) colors[j + 4] = blue[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 2] = cyan[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 3] = cyan[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 4] = green[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 5] = green[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 6] = yellow[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 7] = yellow[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 8] = red[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 9] = red[j];
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glNormalPointer(GL_FLOAT, 0, normals);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 10);
   }/*if (fcscl == 1 || fcscl == 2)*/
   else if (fcscl == 4) {
     /*
@@ -315,22 +328,28 @@ static void draw_colorbar()
         for (j = 0; j<4; ++j) barcolor[j] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
       }
       /**/
-      glBegin(GL_TRIANGLES);
-      glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, barcolor);
-      glNormal3fv(colorbar[0]);
-      glVertex3f(0.15f * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f),
-                 0.15f * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f, 0.0);
-      glVertex3f(0.15f * cosf((GLfloat)i / 60.0f * 6.283185307f),
-                 0.15f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f, 0.0);
-      glVertex3f(0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f),
-                 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f, 0.0);
-      glVertex3f(0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f),
-                 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f, 0.0);
-      glVertex3f(0.2f  * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f),
-                 0.2f  * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f, 0.0);
-      glVertex3f(0.15f * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f),
-                 0.15f * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f, 0.0);
-      glEnd();
+      vertices[0 + 0 * 3] = 0.15f * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f);
+      vertices[1 + 0 * 3] = 0.15f * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f;
+      vertices[0 + 1 * 3] = 0.15f * cosf((GLfloat)i / 60.0f * 6.283185307f);
+      vertices[1 + 1 * 3] = 0.15f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
+      vertices[0 + 2 * 3] = 0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f);
+      vertices[1 + 2 * 3] = 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
+      vertices[0 + 3 * 3] = 0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f);
+      vertices[1 + 3 * 3] = 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
+      vertices[0 + 4 * 3] = 0.2f  * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f);
+      vertices[1 + 4 * 3] = 0.2f  * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f;
+      vertices[0 + 5 * 3] = 0.15f * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f);
+      vertices[1 + 5 * 3] = 0.15f * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f;
+      for (k = 0; k < 6; k++) {
+        vertices[2 + k * 3] = 0.0f;
+        for (j = 0; j < 2; j++) normals[j + k * 3] = 0.0f;
+        normals[j + k * 3] = 1.0f;
+        for (j = 0; j < 4; j++) colors[j + k * 4] = barcolor[j];
+      }/*for (i = 0; i < 10; i++)*/
+      glVertexPointer(3, GL_FLOAT, 0, vertices);
+      glNormalPointer(GL_FLOAT, 0, normals);
+      glColorPointer(4, GL_FLOAT, 0, colors);
+      glDrawArrays(GL_TRIANGLES, 0, 6);
     }/*for (i = 0; i <= 60; i++)*/
   }/*else if (fcscl == 4)*/
 }/*void draw_colorbar*/
@@ -340,44 +359,42 @@ static void draw_colorbar()
 static void draw_circles(
   GLfloat dx2d //!< [in] Translation used for the section-mode
 ) {
-  int i;
-  GLfloat r;
+  int i, j;
+  GLfloat r, vertices[66], colors[88], normals[66];
   /**/
   r = 0.05f;
   /**/
-  if (blackback == 1) {
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, white);
-  }
-  else {
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
-  }
+  for (i = 0; i < 22; i++) {
+    for (j = 0; j < 2; j++)normals[j + i * 3] = 0.0f;
+    normals[2 + i * 3] = 1.0f;
+    vertices[2 + i * 3] = 0.0f;
+    if (blackback == 1)for (j = 0; j < 4; j++) colors[j + i * 4] = white[j];
+    else for (j = 0; j < 4; j++) colors[j + i * 4] = black[j];
+  }/*for (i = 0; i < 22; i++)*/
   /**/
-  glBegin(GL_TRIANGLE_FAN);
-  glNormal3f(0.0, 0.0, 1.0);
-  glVertex3f(0.7f - dx2d, scl, 0.0f);
+  vertices[0] = 0.7f - dx2d;
+  vertices[1] = scl;
   for (i = 0; i <= 20; i++) {
-    glVertex3f(r * cosf((GLfloat)i / 20.0f * 6.283185307f) + 0.7f - dx2d,
-               r * sinf((GLfloat)i / 20.0f * 6.283185307f) + scl, 0.0f);
-  }
-  glEnd();
+    vertices[0 + (i + 1) * 3] = r * cosf((GLfloat)i / 20.0f * 6.283185307f) + 0.7f - dx2d;
+    vertices[1 + (i + 1) * 3] = r * sinf((GLfloat)i / 20.0f * 6.283185307f) + scl;
+  }/*for (i = 0; i <= 20; i++)*/
+  glVertexPointer(3, GL_FLOAT, 0, vertices);
+  glNormalPointer(GL_FLOAT, 0, normals);
+  glColorPointer(4, GL_FLOAT, 0, colors);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 22);
   /**/
-  glBegin(GL_TRIANGLE_FAN);
-  glNormal3f(0.0, 0.0, 1.0);
-  glVertex3f(-0.7f - dx2d, scl, 0.0f);
-  for (i = 0; i <= 20; i++) {
-    glVertex3f(r * cosf((GLfloat)i / 20.0f * 6.283185307f) - 0.7f - dx2d,
-               r * sinf((GLfloat)i / 20.0f * 6.283185307f) + scl, 0.0f);
-  }
-  glEnd();
+  for (i = 0; i < 22; i++) vertices[3 * i] += -1.4f;
+  glVertexPointer(3, GL_FLOAT, 0, vertices);
+  glNormalPointer(GL_FLOAT, 0, normals);
+  glColorPointer(4, GL_FLOAT, 0, colors);
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 22);
 }/*void draw_circles*/
 /**
  @brief Draw 2D Fermi lines
 */
 static void draw_fermi_line() {
-  int i, ib, ibzl, itri;
-  GLfloat linecolor[4];
+  int i, j, ib, ibzl, itri;
+  GLfloat linecolor[4], vertices[60], normals[60], colors[80];
   /*
    Draw 2D BZ lines
   */
@@ -387,29 +404,36 @@ static void draw_fermi_line() {
     for (i = 0; i<4; i++) linecolor[i] = black[i];
   /**/
   glLineWidth(3.0f*scl);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, linecolor);
-  glBegin(GL_LINE_LOOP);
-  for (ibzl = 0; ibzl < nbzl2d; ++ibzl) glVertex3fv(bzl2d_proj[ibzl]);
-  glEnd();
+  for (ibzl = 0; ibzl < nbzl2d; ++ibzl) {
+    for (i = 0; i < 3; i++) vertices[i + 3 * ibzl] = bzl2d_proj[ibzl][i];
+    for (i = 0; i < 4; i++) colors[i + 4 * ibzl] = linecolor[i];
+    for (i = 0; i < 2; i++) normals[i + 3 * ibzl] = 0.0f;
+    normals[2 + 3 * ibzl] = 1.0f;
+  }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
+  glVertexPointer(3, GL_FLOAT, 0, vertices);
+  glNormalPointer(GL_FLOAT, 0, normals);
+  glColorPointer(4, GL_FLOAT, 0, colors);
+  glDrawArrays(GL_LINE_LOOP, 0, nbzl2d);
   /*
    Draw Fermi lines
   */
   glLineWidth(3.0f*scl);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
-  glBegin(GL_LINES);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
       for (itri = 0; itri < n2d[ib]; ++itri) {
         for (i = 0; i < 2; ++i) {
-          glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, clr2d[ib][itri][i]);
-          glVertex3fv(kv2d[ib][itri][i]);
+          for (j = 0; j < 3; j++) vertices[j + 3 * i] = kv2d[ib][itri][i][j];
+          for (j = 0; j < 4; j++) colors[j + 4 * i] = clr2d[ib][itri][i][j];
+          for (j = 0; j < 2; j++) normals[j + 3 * i] = 0.0f;
+          normals[2 + 3 * i] = 1.0f;
         }/*for (i = 0; i < 2; ++i)*/
+        glVertexPointer(3, GL_FLOAT, 0, vertices);
+        glNormalPointer(GL_FLOAT, 0, normals);
+        glColorPointer(4, GL_FLOAT, 0, colors);
+        glDrawArrays(GL_LINES, 0, 2);
       }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
     }/*if (draw_band[ib] == 1)*/
   }/* for (ib = 0; ib < nb; ib++)*/
-  glEnd();
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, black);
 }/*void draw_fermi_line*/
 /**
  @brief Glut Display function
