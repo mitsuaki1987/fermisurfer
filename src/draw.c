@@ -50,32 +50,32 @@ THE SOFTWARE.
  Also draw nodeline in the same way.
 */
 static void draw_fermi() {
-  int i, k, ib, itri;
-  GLfloat vertices[9], colors[12], normals[9];
+  int ib;
   /*
    First, rotate k-vector and normal vector
   */
 #pragma omp parallel default(none) \
   shared(nb,draw_band,ntri,rot,nmlp,nmlp_rot,kvp,kvp_rot,trans) \
-  private(ib,itri,i)
+  private(ib)
   {
-    int j;
+    int i, j, itri;
 
     for (ib = 0; ib < nb; ib++) {
       if (draw_band[ib] == 1) {
 #pragma omp for nowait
         for (itri = 0; itri < ntri[ib]; ++itri) {
-          for (j = 0; j < 3; ++j)
-            nmlp_rot[ib][itri][j] = rot[j][0] * nmlp[ib][itri][0]
-                                  + rot[j][1] * nmlp[ib][itri][1]
-                                  + rot[j][2] * nmlp[ib][itri][2];
-          /**/
           for (i = 0; i < 3; ++i) {
-            for (j = 0; j < 3; ++j)
-              kvp_rot[ib][itri][i][j] = rot[j][0] * kvp[ib][itri][i][0]
-                                      + rot[j][1] * kvp[ib][itri][i][1]
-                                      + rot[j][2] * kvp[ib][itri][i][2]
-                                      + trans[j];
+            for (j = 0; j < 3; ++j) {
+              kvp_rot[ib][j + 3 * i + 9 * itri]
+                = rot[j][0] * kvp[ib][itri][i][0]
+                + rot[j][1] * kvp[ib][itri][i][1]
+                + rot[j][2] * kvp[ib][itri][i][2]
+                + trans[j];
+              nmlp_rot[ib][j + 3 * i + 9 * itri]
+                = rot[j][0] * nmlp[ib][itri][0]
+                + rot[j][1] * nmlp[ib][itri][1]
+                + rot[j][2] * nmlp[ib][itri][2];
+            }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       }/*if (draw_band[ib] == 1)*/
@@ -86,18 +86,10 @@ static void draw_fermi() {
   */
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
-      for (itri = 0; itri < ntri[ib]; ++itri) {
-        for (i = 0; i < 3; ++i) {
-          for (k = 0; k < 3; ++k) normals[k + 3 * i] = nmlp_rot[ib][itri][k];
-          for (k = 0; k < 3; ++k) vertices[k + 3 * i] = kvp_rot[ib][itri][i][k];
-          for (k = 0; k < 4; ++k) colors[k + 4 * i] = clr[ib][itri][i][k];
-        }/*for (i = 0; i < 3; ++i)*/
-        glVertexPointer(3, GL_FLOAT, 0, vertices);
-        glNormalPointer(GL_FLOAT, 0, normals);
-        glColorPointer(4, GL_FLOAT, 0,colors);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
-      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-      //glEnd();
+      glVertexPointer(3, GL_FLOAT, 0, kvp_rot[ib]);
+      glNormalPointer(GL_FLOAT, 0, nmlp_rot[ib]);
+      glColorPointer(4, GL_FLOAT, 0, clr[ib]);
+      glDrawArrays(GL_TRIANGLES, 0, ntri[ib] * 3);
     }/*if (draw_band[ib] == 1)*/
   }/*for (ib = 0; ib < nb; ib++)*/
   /*
@@ -109,9 +101,9 @@ static void draw_fermi() {
     */
 #pragma omp parallel default(none) \
     shared(nb,draw_band,nnl,rot,trans,kvnl,kvnl_rot) \
-    private(ib,itri,i)
+    private(ib)
     {
-    int j;
+    int i, j, itri;
 
       for (ib = 0; ib < nb; ib++) {
         /**/
@@ -121,10 +113,11 @@ static void draw_fermi() {
             for (i = 0; i < 2; ++i) {
               /**/
               for (j = 0; j < 3; ++j)
-                kvnl_rot[ib][itri][i][j] = rot[j][0] * kvnl[ib][itri][i][0]
-                                         + rot[j][1] * kvnl[ib][itri][i][1]
-                                         + rot[j][2] * kvnl[ib][itri][i][2]
-                                         + trans[j] + 0.001f;
+                kvnl_rot[ib][j+3*i+6*itri]
+                = rot[j][0] * kvnl[ib][itri][i][0]
+                + rot[j][1] * kvnl[ib][itri][i][1]
+                + rot[j][2] * kvnl[ib][itri][i][2]
+                + trans[j] + 0.001f;
             }/*for (i = 0; i < 2; ++i)*/
           }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
         }/*if (draw_band[ib] == 1)*/
@@ -133,22 +126,12 @@ static void draw_fermi() {
     /*
      Second, draw each lines
     */
-    glLineWidth(3.0f*scl);
-    for (i = 0; i < 2; i++) {
-      for (k = 0; k < 4; k++) colors[k + 4 * i] = black[k];
-      for (k = 0; k < 2; k++) normals[k + 3 * i] = 0.0f;
-      normals[2 + 3 * i] = 0.0f;
-    }
     for (ib = 0; ib < nb; ib++) {
       if (draw_band[ib] == 1) {
-        for (itri = 0; itri < nnl[ib]; ++itri) {
-          for (i = 0; i < 2; ++i) 
-            for (k = 0; k < 3; ++k) vertices[k + 3 * i] = kvnl_rot[ib][itri][i][k];    
-          glVertexPointer(3, GL_FLOAT, 0, vertices);
-          glNormalPointer(GL_FLOAT, 0, normals);
-          glColorPointer(4, GL_FLOAT, 0, colors);
-          glDrawArrays(GL_LINES, 0, 2);
-        }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
+        glVertexPointer(3, GL_FLOAT, 0, kvnl_rot[ib]);
+        glNormalPointer(GL_FLOAT, 0, nmlnl[ib]);
+        glColorPointer(4, GL_FLOAT, 0, clrnl[ib]);
+        glDrawArrays(GL_LINES, 0, 2 * nnl[ib]);
       }/*if (draw_band[ib] == 1)*/
     }/* for (ib = 0; ib < nb; ib++)*/
   }/*if (nodeline == 1)*/
@@ -259,25 +242,22 @@ static void draw_bz_lines() {
 static void draw_colorbar()
 {
   int i, j, k;
-  GLfloat mat2, barcolor[4], vertices[300], normals[300], colors[400];
-  GLfloat colorbar[13][3] = {
-    { -1.0f, -1.0f,        0.0f },
-    { -1.0f, -1.0f - 0.1f, 0.0f },
-    { -0.5f, -1.0f,        0.0f },
-    { -0.5f, -1.0f - 0.1f, 0.0f },
-    {  0.0f, -1.0f,        0.0f },
-    {  0.0f, -1.0f - 0.1f, 0.0f },
-    {  0.5f, -1.0f,        0.0f },
-    {  0.5f, -1.0f - 0.1f, 0.0f },
-    {  1.0f, -1.0f,        0.0f },
-    {  1.0f, -1.0f - 0.1f, 0.0f },
-    {  0.0f, -1.0f,        0.00001f },
-    {  0.0f, -1.0f - 0.1f, 0.00001f }
+  GLfloat mat2, barcolor[4], vertices[366], normals[366], colors[488];
+  GLfloat vertices1[30] = {
+     -1.0f, -1.0f,        0.0f,
+     -1.0f, -1.0f - 0.1f, 0.0f,
+     -0.5f, -1.0f,        0.0f,
+     -0.5f, -1.0f - 0.1f, 0.0f,
+      0.0f, -1.0f,        0.0f,
+      0.0f, -1.0f - 0.1f, 0.0f,
+      0.5f, -1.0f,        0.0f,
+      0.5f, -1.0f - 0.1f, 0.0f,
+      1.0f, -1.0f,        0.0f,
+      1.0f, -1.0f - 0.1f, 0.0f,
   };
   /**/
   if (fcscl == 1 || fcscl == 2) {
     for (i = 0; i < 10; i++) {
-      for (j = 0; j < 3; j++) vertices[j + i * 3] = colorbar[i][j];
       for (j = 0; j < 2; j++) normals[j + i * 3] = 0.0f;
       normals[j + i * 3] = 1.0f;
     }/*for (i = 0; i < 10; i++)*/
@@ -291,7 +271,7 @@ static void draw_colorbar()
     for (j = 0; j < 4; j++) colors[j + 4 * 7] = yellow[j];
     for (j = 0; j < 4; j++) colors[j + 4 * 8] = red[j];
     for (j = 0; j < 4; j++) colors[j + 4 * 9] = red[j];
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glVertexPointer(3, GL_FLOAT, 0, vertices1);
     glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 10);
@@ -328,29 +308,21 @@ static void draw_colorbar()
         for (j = 0; j<4; ++j) barcolor[j] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
       }
       /**/
-      vertices[0 + 0 * 3] = 0.15f * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f);
-      vertices[1 + 0 * 3] = 0.15f * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f;
-      vertices[0 + 1 * 3] = 0.15f * cosf((GLfloat)i / 60.0f * 6.283185307f);
-      vertices[1 + 1 * 3] = 0.15f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
-      vertices[0 + 2 * 3] = 0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f);
-      vertices[1 + 2 * 3] = 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
-      vertices[0 + 3 * 3] = 0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f);
-      vertices[1 + 3 * 3] = 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
-      vertices[0 + 4 * 3] = 0.2f  * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f);
-      vertices[1 + 4 * 3] = 0.2f  * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f;
-      vertices[0 + 5 * 3] = 0.15f * cosf((GLfloat)(i + 1) / 60.0f * 6.283185307f);
-      vertices[1 + 5 * 3] = 0.15f * sinf((GLfloat)(i + 1) / 60.0f * 6.283185307f) - 1.0f;
-      for (k = 0; k < 6; k++) {
-        vertices[2 + k * 3] = 0.0f;
-        for (j = 0; j < 2; j++) normals[j + k * 3] = 0.0f;
-        normals[j + k * 3] = 1.0f;
-        for (j = 0; j < 4; j++) colors[j + k * 4] = barcolor[j];
+      vertices[0 + 0 * 3 + 6 * i] = 0.15f * cosf((GLfloat)i / 60.0f * 6.283185307f);
+      vertices[1 + 0 * 3 + 6 * i] = 0.15f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
+      vertices[0 + 1 * 3 + 6 * i] = 0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f);
+      vertices[1 + 1 * 3 + 6 * i] = 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
+      for (k = 0; k < 2; k++) {
+        vertices[2 + k * 3 + 6 * i] = 0.0f;
+        for (j = 0; j < 2; j++) normals[j + k * 3 + 6 * i] = 0.0f;
+        normals[2 + k * 3 + 6 * i] = 1.0f;
+        for (j = 0; j < 4; j++) colors[j + k * 4 + 8 * i] = barcolor[j];
       }/*for (i = 0; i < 10; i++)*/
-      glVertexPointer(3, GL_FLOAT, 0, vertices);
-      glNormalPointer(GL_FLOAT, 0, normals);
-      glColorPointer(4, GL_FLOAT, 0, colors);
-      glDrawArrays(GL_TRIANGLES, 0, 6);
     }/*for (i = 0; i <= 60; i++)*/
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glNormalPointer(GL_FLOAT, 0, normals);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 122);
   }/*else if (fcscl == 4)*/
 }/*void draw_colorbar*/
 /**
@@ -393,7 +365,7 @@ static void draw_circles(
  @brief Draw 2D Fermi lines
 */
 static void draw_fermi_line() {
-  int i, j, ib, ibzl, itri;
+  int i, ib, ibzl;
   GLfloat linecolor[4], vertices[60], normals[60], colors[80];
   /*
    Draw 2D BZ lines
@@ -420,18 +392,10 @@ static void draw_fermi_line() {
   glLineWidth(3.0f*scl);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
-      for (itri = 0; itri < n2d[ib]; ++itri) {
-        for (i = 0; i < 2; ++i) {
-          for (j = 0; j < 3; j++) vertices[j + 3 * i] = kv2d[ib][itri][i][j];
-          for (j = 0; j < 4; j++) colors[j + 4 * i] = clr2d[ib][itri][i][j];
-          for (j = 0; j < 2; j++) normals[j + 3 * i] = 0.0f;
-          normals[2 + 3 * i] = 1.0f;
-        }/*for (i = 0; i < 2; ++i)*/
-        glVertexPointer(3, GL_FLOAT, 0, vertices);
-        glNormalPointer(GL_FLOAT, 0, normals);
-        glColorPointer(4, GL_FLOAT, 0, colors);
-        glDrawArrays(GL_LINES, 0, 2);
-      }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
+      glVertexPointer(3, GL_FLOAT, 0, kv2d[ib]);
+      glNormalPointer(GL_FLOAT, 0, nml2d[ib]);
+      glColorPointer(4, GL_FLOAT, 0, clr2d[ib]);
+      glDrawArrays(GL_LINES, 0, 2 * n2d[ib]);
     }/*if (draw_band[ib] == 1)*/
   }/* for (ib = 0; ib < nb; ib++)*/
 }/*void draw_fermi_line*/

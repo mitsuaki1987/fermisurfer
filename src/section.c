@@ -263,13 +263,13 @@ void calc_2dbz() {
  If ::query = 0, actually compute lines and store them.
 */
 void calc_section() {
-  int ib, itri, i, j, ithread;
+  int i, ib, itri, ithread;
 
 #pragma omp parallel default(none) \
   shared(nb,n2d,clr,clr2d,kvp,kv2d,ntri,ntri_th,secvec,secscale,query) \
-  private(ib,itri,i,j,ithread)
+  private(ib,itri,i,ithread)
   {
-    int n2d0, sw[3];
+    int j, n2d0, sw[3];
     GLfloat norm[3], a[3][3];
 
     ithread = get_thread();
@@ -293,34 +293,42 @@ void calc_section() {
         if ((norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]]) || (norm[sw[0]] <= 0.0 && 0.0 < norm[sw[1]])) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) {
-              kv2d[ib][n2d0][0][i] = kvp[ib][itri][sw[1]][i] * a[1][0] + kvp[ib][itri][sw[0]][i] * a[0][1];
-              kv2d[ib][n2d0][1][i] = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
+              kv2d[ib][i + 0 * 3 + 6 * n2d0]
+                = kvp[ib][itri][sw[1]][i] * a[1][0] + kvp[ib][itri][sw[0]][i] * a[0][1];
+              kv2d[ib][i + 1 * 3 + 6 * n2d0]
+                = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
             }/*for (i = 0; i < 3; ++i)*/
             for (i = 0; i < 4; ++i) {
-              clr2d[ib][n2d0][0][i] = clr[ib][itri][sw[1]][i] * a[1][0]
-                                    + clr[ib][itri][sw[0]][i] * a[0][1];
-              clr2d[ib][n2d0][1][i] = clr[ib][itri][sw[2]][i] * a[2][0]
-                                    + clr[ib][itri][sw[0]][i] * a[0][2];
+              clr2d[ib][i + 0 * 4 + 8 * n2d0]
+                = clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][0]
+                + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][1];
+              clr2d[ib][i + 1 * 4 + 8 * n2d0]
+                = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
+                + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
             }/*for (i = 0; i < 4; ++i)*/
-            proj_2d(kv2d[ib][n2d0][0]);
-            proj_2d(kv2d[ib][n2d0][1]);
+            proj_2d(&kv2d[ib][0 * 3 + 6 * n2d0]);
+            proj_2d(&kv2d[ib][1 * 3 + 6 * n2d0]);
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (nprod[0] < 0.00001 && nprod[2] < 0.00001)*/
         else if ((norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]]) || (norm[sw[1]] <= 0.0 && 0.0 < norm[sw[2]])) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) {
-              kv2d[ib][n2d0][0][i] = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
-              kv2d[ib][n2d0][1][i] = kvp[ib][itri][sw[2]][i] * a[2][1] + kvp[ib][itri][sw[1]][i] * a[1][2];
+              kv2d[ib][i + 0 * 3 + 6 * n2d0] 
+                = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
+              kv2d[ib][i + 1 * 3 + 6 * n2d0]
+                = kvp[ib][itri][sw[2]][i] * a[2][1] + kvp[ib][itri][sw[1]][i] * a[1][2];
             }/*for (i = 0; i < 3; ++i)*/
             for (i = 0; i < 4; ++i) {
-              clr2d[ib][n2d0][0][i] = clr[ib][itri][sw[2]][i] * a[2][0]
-                                    + clr[ib][itri][sw[0]][i] * a[0][2];
-              clr2d[ib][n2d0][1][i] = clr[ib][itri][sw[2]][i] * a[2][1]
-                                    + clr[ib][itri][sw[1]][i] * a[1][2];
+              clr2d[ib][i + 0 * 4 + 8 * n2d0]
+                = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
+                + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
+              clr2d[ib][i + 1 * 4 + 8 * n2d0]
+                = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][1]
+                + clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][2];
             }/*for (i = 0; i < 4; ++i)*/
-            proj_2d(kv2d[ib][n2d0][0]);
-            proj_2d(kv2d[ib][n2d0][1]);
+            proj_2d(&kv2d[ib][0 * 3 + 6 * n2d0]);
+            proj_2d(&kv2d[ib][1 * 3 + 6 * n2d0]);
           }/*if (query == 0)*/
           n2d0 += 1;
         }/*else if (nprod[1] < 0.00001 && nprod[0] < 0.00001)*/
@@ -352,19 +360,17 @@ void calc_section() {
     /*
     Allocation of Fermi-lines
     */
-    kv2d = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-    clr2d = (GLfloat****)malloc(nb * sizeof(GLfloat***));
+    kv2d = (GLfloat**)malloc(nb * sizeof(GLfloat*));
+    clr2d = (GLfloat**)malloc(nb * sizeof(GLfloat*));
+    nml2d = (GLfloat**)malloc(nb * sizeof(GLfloat*));
     for (ib = 0; ib < nb; ++ib) {
-      kv2d[ib] = (GLfloat***)malloc(n2d[ib] * sizeof(GLfloat**));
-      clr2d[ib] = (GLfloat***)malloc(n2d[ib] * sizeof(GLfloat**));
-      for (i = 0; i < n2d[ib]; ++i) {
-        kv2d[ib][i] = (GLfloat**)malloc(2 * sizeof(GLfloat*));
-        clr2d[ib][i] = (GLfloat**)malloc(2 * sizeof(GLfloat*));
-        for (j = 0; j < 2; ++j) {
-          kv2d[ib][i][j] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-          clr2d[ib][i][j] = (GLfloat*)malloc(4 * sizeof(GLfloat));
-        }/*for (j = 0; j < 2; ++j)*/
-      }/*for (i = 0; i < n2d[ib]; ++i)*/
+      kv2d[ib] = (GLfloat*)malloc(6 * n2d[ib] * sizeof(GLfloat));
+      nml2d[ib] = (GLfloat*)malloc(6 * n2d[ib] * sizeof(GLfloat));
+      clr2d[ib] = (GLfloat*)malloc(8 * n2d[ib] * sizeof(GLfloat));
+      for (itri = 0; itri < n2d[ib]; itri++) {
+        for (i = 0; i < 6; i++)nml2d[ib][i + itri * 6] = 0.0f;
+        for (i = 0; i < 2; i++)nml2d[ib][2 + i * 3 + itri * 6] = 1.0f;
+      }/*for (itri = 0; itri < n2d[ib]; itri++)*/
     }/*for (ib = 0; ib < nb; ++ib)*/
   }/*if (query == 0)*/
 }/*void calc_nodeline()*/

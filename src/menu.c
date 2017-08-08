@@ -401,19 +401,13 @@ static void menu_section(
      Free variables for Fermi line
     */
     for (ib = 0; ib < nb; ++ib) {
-      for (ii = 0; ii < n2d[ib]; ++ii) {
-        for (jj = 0; jj < 2; ++jj) {
-          free(kv2d[ib][ii][jj]);
-          free(clr2d[ib][ii][jj]);
-        }/*for (jj = 0; jj < 2; ++jj)*/
-        free(kv2d[ib][ii]);
-        free(clr2d[ib][ii]);
-      }/*for (ii = 0; ii < n2d[ib]; ++ii)*/
       free(kv2d[ib]);
       free(clr2d[ib]);
+      free(nml2d[ib]);
     }/*for (ib = 0; ib < nb; ++ib)*/
     free(kv2d);
     free(clr2d);
+    free(nml2d);
 
     calc_2dbz();
     query = 1; calc_section();

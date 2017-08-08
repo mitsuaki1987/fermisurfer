@@ -45,15 +45,10 @@ void free_patch() {
     for (i0 = 0; i0 < ntri[ib]; ++i0) {
       for (i1 = 0; i1 < 3; ++i1) {
         free(kvp[ib][i0][i1]);
-        free(clr[ib][i0][i1]);
-        free(kvp_rot[ib][i0][i1]);
       }
       free(nmlp[ib][i0]);
       free(matp[ib][i0]);
-      free(clr[ib][i0]);
       free(kvp[ib][i0]);
-      free(nmlp_rot[ib][i0]);
-      free(kvp_rot[ib][i0]);
     }
     free(nmlp[ib]);
     free(matp[ib]);
@@ -75,33 +70,29 @@ void free_patch() {
     for (i0 = 0; i0 < nnl[ib]; ++i0) {
       for (i1 = 0; i1 < 2; ++i1) {
         free(kvnl[ib][i0][i1]);
-        free(kvnl_rot[ib][i0][i1]);
       }/*for (i1 = 0; i1 < 2; ++i1)*/
       free(kvnl[ib][i0]);
-      free(kvnl_rot[ib][i0]);
     }/*for (i0 = 0; i0 < nnl[ib]; ++i0)*/
     free(kvnl[ib]);
     free(kvnl_rot[ib]);
+    free(nmlnl[ib]);
+    free(clrnl[ib]);
   }/*for (ib = 0; ib < nb; ++ib)*/
   free(kvnl);
   free(kvnl_rot);
+  free(nmlnl);
+  free(clrnl);
   /*
    2D Fermi line
   */
   for (ib = 0; ib < nb; ++ib) {
-    for (i0 = 0; i0 < n2d[ib]; ++i0) {
-      for (i1 = 0; i1 < 2; ++i1) {
-        free(kv2d[ib][i0][i1]);
-        free(clr2d[ib][i0][i1]);
-      }/*for (i1 = 0; i1 < 2; ++i1)*/
-      free(kv2d[ib][i0]);
-      free(clr2d[ib][i0]);
-    }/*for (i0 = 0; i0 < n2d[ib]; ++i0)*/
     free(kv2d[ib]);
     free(clr2d[ib]);
+    free(nml2d[ib]);
   }/*for (ib = 0; ib < nb; ++ib)*/
   free(kv2d);
   free(clr2d);
+  free(nml2d);
 }/*void free_patch()*/
 /**
  @brief Compute Max. & Min. of matrix elements.
@@ -178,19 +169,19 @@ private(itri)
             mat2 = mat2 * 4.0f;
             /**/
             if (mat2 <= 1.0) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
             }
             else if (mat2 <= 2.0) {
               mat2 = mat2 - 1.0f;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
             }
             else if (mat2 <= 3.0) {
               mat2 = mat2 - 2.0f;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
             }
             else {
               mat2 = mat2 - 3.0f;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -214,27 +205,27 @@ private(itri)
             mat2 = mat2 * 6.0f;
             /**/
             if (mat2 <= 1.0) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + red[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = yellow[j] * mat2 + red[j] * (1.0f - mat2);
             }
             else if (mat2 <= 2.0) {
               mat2 = mat2 - 1.0f;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + yellow[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = green[j] * mat2 + yellow[j] * (1.0f - mat2);
             }
             else if (mat2 <= 3.0) {
               mat2 = mat2 - 2.0f;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + green[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = cyan[j] * mat2 + green[j] * (1.0f - mat2);
             }
             else if (mat2 <= 4.0) {
               mat2 = mat2 - 3.0f;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = blue[j] * mat2 + cyan[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = blue[j] * mat2 + cyan[j] * (1.0f - mat2);
             }
             else if (mat2 <= 5.0) {
               mat2 = mat2 - 4.0f;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = magenta[j] * mat2 + blue[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = magenta[j] * mat2 + blue[j] * (1.0f - mat2);
             }
             else {
               mat2 = mat2 - 5.0f;
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -258,7 +249,7 @@ private(itri)
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
             }
           }
         }
@@ -267,7 +258,7 @@ private(itri)
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
             }
           }
         }
@@ -276,7 +267,7 @@ private(itri)
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
             }
           }
         }
@@ -285,7 +276,7 @@ private(itri)
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][itri][i][j] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
             }
           }
         }

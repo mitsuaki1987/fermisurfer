@@ -92,17 +92,19 @@ int **ntri_th;       //!< The number of triangle patch in each thread [::nb]
 int *draw_band;      //!< Switch for drawn bands [::nb]
 GLfloat ***nmlp;     //!< Normal vector of patchs [::nb][::ntri][3]
 GLfloat ****kvp;     //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
-GLfloat ***nmlp_rot; //!< Normal vector of patchs [::nb][::ntri][3]
-GLfloat ****kvp_rot; //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
+GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
+GLfloat **kvp_rot; //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
 GLfloat ***matp;     //!< Matrix elements of points [::nb][::ntri][3]
-GLfloat ****clr;     //!< Colors of points [::nb][::ntri][3][4]
+GLfloat **clr;     //!< Colors of points [::nb][::ntri*3*4]
 int itet;            //!< Counter for tetrahedron
 /*
   Variables for nodeline
 */
 int *nnl;             //!< The number of nodeline
 GLfloat ****kvnl;     //!< @f$k@f$-vector of nodeline [::nb][::nnl][2][3]
-GLfloat ****kvnl_rot; //!< @f$k@f$-vector of nodeline [::nb][::nnl][2][3]
+GLfloat **kvnl_rot; //!< @f$k@f$-vector of nodeline [::nb][::nnl*2*3]
+GLfloat **nmlnl;//!< Normal vector of nodeline [::nb][::nnl*2*3]
+GLfloat **clrnl;//!< Color of nodeline [::nb][::nnl*2*4]
 /*
  2D Fermi line
 */
@@ -110,8 +112,9 @@ GLfloat secvec[3];         //!< @f$k@f$-vector to define section
 GLfloat secscale;          //!< 0.0 (across @f$\Gamma@f$) or 1.0
 GLfloat axis2d[2][3];      //!< @f$k@f$-vector to define section
 int *n2d;                  //!< Number of line segment
-GLfloat ****kv2d;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d][2][3]
-GLfloat ****clr2d;         //!< Matrix element for 2D plot [::nb][::n2d][2][4]
+GLfloat **kv2d;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
+GLfloat **clr2d;         //!< Matrix element for 2D plot [::nb][::n2d*2*4]
+GLfloat **nml2d;          //!< Normal-vector for 2D plot [::nb][::n2d*2*3]
 int nbzl2d;                //!< The number of Lines of 1st Brillouin zone
 GLfloat bzl2d[26][3];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
 GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
