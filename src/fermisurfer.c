@@ -93,7 +93,7 @@ void init(void)
   glClearColor(0.0, 0.0, 0.0, 0.0);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
-  glLightModeli(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE );
+  glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE );
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
   glEnable(GL_NORMALIZE);
