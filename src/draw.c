@@ -462,7 +462,8 @@ void display(void)
   /*
    Set view point & view line
   */
-  gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+  glTranslatef(0.0, 0.0, -5.0);
+  //gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
   /*
    Set position of light
   */
@@ -499,7 +500,8 @@ void display(void)
   if (lstereo != 1) {
     glPushMatrix();
     glLoadIdentity();
-    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glTranslatef(0.0, 0.0, -5.0);
+    //gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     glLightfv(GL_LIGHT0, GL_POSITION, pos2);
     /**/
     glTranslatef(dx-dx2d, 0.0, 0.0);
@@ -517,7 +519,8 @@ void display(void)
   if (lsection == 1) {
     glPushMatrix();
     glLoadIdentity();
-    gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    glTranslatef(0.0, 0.0, -5.0);
+    //gluLookAt(0.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
     /**/
     if (lstereo == 1) glTranslatef(dx2d, 0.0, 0.0);

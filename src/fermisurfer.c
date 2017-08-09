@@ -62,6 +62,7 @@ with a color-plot of the arbitraly matrix element
 #endif
 #ifdef __ANDROID__
 #include <GLES/gl.h>
+#include <EGL/egl.h>
 #define VERSION 0.0
 #elif __APPLE__
 #include <OpenGLES/ES1/gl.h>

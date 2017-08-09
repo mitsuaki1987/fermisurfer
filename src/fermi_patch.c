@@ -90,11 +90,11 @@ static void triangle(
 )
 {
   int ibr, i, j, sw[3];
-  GLfloat prod[3], thr = 0.0000, mat2[3], kvec2[3][3], a[3][3];
+  GLfloat prod[3], thr = 0.00001f, mat2[3], kvec2[3][3], a[3][3], bshift;
 
   if (fbz == 1) {
     /**/
-    for (ibr = nbr; ibr < 26; ++ibr) {
+    for (ibr = 0; ibr < 26; ++ibr) {
       /**/
       for (i = 0; i < 3; ++i) 
         prod[i] = bragg[ibr][0] * kvec1[i][0]
@@ -106,11 +106,19 @@ static void triangle(
           a[i][j] = (brnrm[ibr] - prod[sw[j]]) / (prod[sw[i]] - prod[sw[j]]);
         }/*for (j = 0; j < 3; ++j)*/
       }/*for (i = 0; i < 3; ++i)*/
+      i = (int)(0.5f * ((prod[sw[2]] / brnrm[ibr]) + 1.0f));
+      bshift = -2.0f *(GLfloat)i;
 
       if (brnrm[ibr] + thr < prod[sw[0]]) {
         /*
          All corners are outside of the Bragg plane
         */
+        for (i = 0; i < 3; ++i) {
+          mat2[i] = mat1[sw[i]];
+          for (j = 0; j < 3; ++j)
+            kvec2[i][j] = kvec1[i][j] + bshift * bragg[ibr][j];
+        }
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2);
         return;
       }
       else if (brnrm[ibr] + thr < prod[sw[1]]) {
@@ -126,12 +134,48 @@ static void triangle(
           kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
         triangle(ib, ntri0, ibr + 1, mat2, kvec2);
+
+        mat2[0] = mat1[sw[0]];
+        mat2[1] = mat1[sw[1]];
+        mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
+        for (i = 0; i < 3; ++i) {
+          kvec2[0][i] = kvec1[sw[0]][i];
+          kvec2[1][i] = kvec1[sw[1]][i];
+          kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
+        }/*for (i = 0; i < 3; ++i)*/
+        for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
+          kvec2[i][j] += bshift * bragg[ibr][j];
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2);
+
+        mat2[0] = mat1[sw[2]];
+        mat2[1] = mat1[sw[1]];
+        mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
+        for (i = 0; i < 3; ++i) {
+          kvec2[0][i] = kvec1[sw[2]][i];
+          kvec2[1][i] = kvec1[sw[1]][i];
+          kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
+        }/*for (i = 0; i < 3; ++i)*/
+        for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
+          kvec2[i][j] += bshift * bragg[ibr][j];
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2);
         return;
       }
       else if (brnrm[ibr] + thr < prod[sw[2]]) {
         /*
         Two corners (#0, #1) are inside of the Bragg plane
         */
+        mat2[0] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
+        mat2[1] = mat1[sw[1]] * a[1][2] + mat1[sw[2]] * a[2][1];
+        mat2[2] = mat1[sw[2]];
+        for (i = 0; i < 3; ++i) {
+          kvec2[0][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
+          kvec2[1][i] = kvec1[sw[1]][i] * a[1][2] + kvec1[sw[2]][i] * a[2][1];
+          kvec2[2][i] = kvec1[sw[2]][i];
+        }/*for (i = 0; i < 3; ++i)*/
+        for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
+          kvec2[i][j] += bshift * bragg[ibr][j];
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2);
+
         mat2[0] = mat1[sw[0]];
         mat2[1] = mat1[sw[1]];
         mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
@@ -141,7 +185,7 @@ static void triangle(
           kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
         triangle(ib, ntri0, ibr + 1, mat2, kvec2);
-        /**/
+
         mat2[0] = mat1[sw[1]] * a[1][2] + mat1[sw[2]] * a[2][1];
         mat2[1] = mat1[sw[1]];
         mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
@@ -289,28 +333,33 @@ static void tetrahedron(
 */
 void fermi_patch()
 {
-  int ib, i0, i1, j0, start[3];
+  int ib, i0, i1, j0, start[3], last[3];
   int ithread;
   /**/
   if (fbz == 1) {
     if (query == 1) {
       printf("\n");
       printf("  ##  First Brillouin zone mode  #######\n");
-      printf("\n");
     }
-    for (i0 = 0; i0 < 3; ++i0) start[i0] = - ng[i0];
+    for (i0 = 0; i0 < 3; ++i0) {
+      start[i0] = ng[i0] / 2 - ng[i0];
+      last[i0] = ng[i0] / 2;
+    }
   }
   else {
     if (query == 1) {
       printf("\n");
       printf("  ##  Premitive Brillouin zone mode  #######\n");
-      printf("\n");
     }
-    for (i0 = 0; i0 < 3; ++i0) start[i0] = 0;
+    for (i0 = 0; i0 < 3; ++i0) {
+      start[i0] = 0;
+      last[i0] = ng[i0];
+    }
   }
+  if (query == 1) printf("    Computing patch ...\n");
   /**/
 #pragma omp parallel default(none) \
-  shared(nb,ntri,ntri_th,start,ng,ng0,eig,EF,mat,shiftk,query) \
+  shared(nb,ntri,ntri_th,start,last,ng,ng0,eig,EF,mat,shiftk,query) \
   private(ib,j0,i0,i1,ithread)
   {
     int ntri0, i, j, i2, j1, j2, ii0, ii1, ii2;
@@ -323,9 +372,9 @@ void fermi_patch()
       else ntri0 = ntri_th[ib][ithread];
 
 #pragma omp for nowait schedule(static, 1)
-      for (j0 = start[0]; j0 < ng[0]; ++j0) {
-        for (j1 = start[1]; j1 < ng[1]; ++j1) {
-          for (j2 = start[2]; j2 < ng[2]; ++j2) {
+      for (j0 = start[0]; j0 < last[0]; ++j0) {
+        for (j1 = start[1]; j1 < last[1]; ++j1) {
+          for (j2 = start[2]; j2 < last[2]; ++j2) {
             /**/
             i0 = j0;
             i1 = j1;
@@ -415,11 +464,10 @@ void fermi_patch()
       ntri_th[ib][0] = 0;
     }
     /**/
-    printf("    band   # of patchs\n");
+    printf("      band   # of patchs\n");
     for (ib = 0; ib < nb; ib++) {
-      printf("    %d       %d\n", ib + 1, ntri[ib]);
+      printf("      %d       %d\n", ib + 1, ntri[ib]);
     }
-    printf("\n");
     /*
      Allocation of triangler patches
     */
@@ -446,4 +494,7 @@ void fermi_patch()
       }/*for (i0 = 0; i0 < ntri[ib]; ++i0)*/
     }/*for (ib = 0; ib < nb; ++ib)*/
   }/*if (query == 1)*/
+  else {
+    printf("    ... Done\n");
+  }
 } /* fermi_patch */

@@ -43,6 +43,7 @@ denser @f$k@f$-grid with French-curve (Kumo) interpolation
 #endif
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "basic_math.h"
 #include "variable.h"
 /**
@@ -71,6 +72,8 @@ static void kumo_coef(
 */
 void interpol_energy() {
   int ib, i0, i1, ii;
+
+  printf("    Interpolating ... ");
   /*
    Reallocate
   */
@@ -174,4 +177,5 @@ void interpol_energy() {
       }/*for (i0 = 0; i0 < ng0[0]; i0++)*/
     }/*for (ib = 0; ib < nb; ib++)*/
   }/*End of parallel region*/
+  printf("Done\n\n");
 }/*void interpol_energy() */
