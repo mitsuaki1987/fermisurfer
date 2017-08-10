@@ -84,19 +84,20 @@ int nbzl;               //!< The number of Lines of 1st Brillouin zone
 GLfloat bzl[676][2][3]; //!< Lines of 1st BZ [nbzl(max:26*26=676)][2][3]
 GLfloat bragg[26][3];   //!< Bragg plane vectors
 GLfloat brnrm[26];      //!< Norms of Bragg plane vectors
+int nbragg;             //!< Number of Bragg plane og 1st BZ
 /*
  Variables for patchs
 */
-int *ntri;           //!< The number of triangle patch [::nb]
-int **ntri_th;       //!< The number of triangle patch in each thread [::nb]
-int *draw_band;      //!< Switch for drawn bands [::nb]
-GLfloat ***nmlp;     //!< Normal vector of patchs [::nb][::ntri][3]
-GLfloat ****kvp;     //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
+int *ntri;          //!< The number of triangle patch [::nb]
+int **ntri_th;      //!< The number of triangle patch in each thread [::nb]
+int *draw_band;     //!< Switch for drawn bands [::nb]
+GLfloat ***nmlp;    //!< Normal vector of patchs [::nb][::ntri][3]
+GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
 GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
-GLfloat **kvp_rot; //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
-GLfloat ***matp;     //!< Matrix elements of points [::nb][::ntri][3]
-GLfloat **clr;     //!< Colors of points [::nb][::ntri*3*4]
-int itet;            //!< Counter for tetrahedron
+GLfloat **kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
+GLfloat ***matp;    //!< Matrix elements of points [::nb][::ntri][3]
+GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
+int itet;           //!< Counter for tetrahedron
 /*
   Variables for nodeline
 */

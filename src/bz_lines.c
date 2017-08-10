@@ -110,6 +110,55 @@ static int bragg_vert(
   return 0;
 }/* bragg_vert */
 /**
+ @brief Compute real number of Bragg plane at 1st BZ
+*/
+static void check_bragg() {
+  int ibr, ibzl, ibzc;
+  int ii, kk, bzflag, nbzcorner, nn;
+  GLfloat thr = (GLfloat)0.0001, prod, bzc[676][3];
+  /*
+  First, compute real number of corners of 1st BZ
+  */
+  nbzcorner = 0;
+  for (ibzl = 0; ibzl < nbzl; ibzl++) {
+    for (ii = 0; ii < 2; ii++) {
+      bzflag = 0;
+      
+      for (ibzc = 0; ibzc < nbzcorner; ibzc++) {
+        prod = 0.0f;
+        for (kk = 0; kk < 3; kk++) prod += (bzl[ibzl][ii][kk] - bzc[ibzc][kk]) * (bzl[ibzl][ii][kk] - bzc[ibzc][kk]);
+        if (prod < thr) bzflag = 1;
+      }
+
+      if (bzflag == 0) {
+        for (kk = 0; kk < 3; kk++) bzc[nbzcorner][kk] = bzl[ibzl][ii][kk];
+        nbzcorner += 1;
+      }
+
+    }/*for (ii = 0; ii < 2; ii++)*/
+  }/*for (ibzl = 0; ibzl < nbzl; ibzl++)*/
+  printf("    Number of corners of 1st BZ : %d\n", nbzcorner);
+  /**@brief
+  Then, compute real number Bragg plane of 1st BZ (::nbragg), 
+  Re-order ::bragg and ::brnrm
+  */
+  nbragg = 0;
+  for (ibr = 0; ibr < 26; ibr++) {
+    nn = 0;
+
+    for (ibzc = 0; ibzc < nbzcorner; ibzc++) {
+      prod = bragg[ibr][0] * bzc[ibzc][0] + bragg[ibr][1] * bzc[ibzc][1] + bragg[ibr][2] * bzc[ibzc][2];
+      if (fabsf(prod - brnrm[ibr]) < thr) nn += 1;
+    }
+    if (nn >= 3) {
+      for (kk = 0; kk < 3; kk++) bragg[nbragg][kk] = bragg[ibr][kk];
+      brnrm[nbragg] = brnrm[ibr];
+      nbragg += 1;
+    }
+  }
+  printf("    Number of plane of 1st BZ : %d\n", nbragg);
+}/*static void check_bragg*/
+/**
  @brief Compute Brillouin zone boundariy lines
 
  Modify : ::nbzl, ::bzl
@@ -135,6 +184,10 @@ void bz_lines() {
       /**/
       for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) bzl[nbzl][i][j] = vert[i][j];
       nbzl = nbzl + 1;
+
     }/*for (jbr = 0; jbr < 26; ++jbr)*/
   }/*for (ibr = 0; ibr < 26; ++ibr)*/
+
+  check_bragg();
+
 }/*bz_lines*/

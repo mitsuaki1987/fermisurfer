@@ -94,7 +94,7 @@ static void triangle(
 
   if (fbz == 1) {
     /**/
-    for (ibr = 0; ibr < 26; ++ibr) {
+    for (ibr = 0; ibr < nbragg; ++ibr) {
       /**/
       for (i = 0; i < 3; ++i) 
         prod[i] = bragg[ibr][0] * kvec1[i][0]
@@ -202,7 +202,7 @@ static void triangle(
         All corners are inside of the Bragg plane
         */
       } /* brnrm[ibr] + thr < prod */
-    } /* for ibr = 1; ibr < 26*/
+    } /* for ibr = 1; ibr < nbragg*/
   } /* if fbz == 1 */
   /*
    If it is not query, store.

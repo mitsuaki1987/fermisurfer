@@ -120,7 +120,7 @@ int bragg_vert2d(
   /**/
   nbr0 = nbr;
   /**/
-  for (kbr = nbr0; kbr < 26; ++kbr) {
+  for (kbr = nbr0; kbr < nbragg; ++kbr) {
     /**/
     for (i = 0; i<3; ++i) bmat[0][i] = secvec[i];
     for (i = 0; i<3; ++i) bmat[1][i] = bragg[jbr][i];
@@ -146,7 +146,7 @@ int bragg_vert2d(
     is corner really in 1st BZ ?
     */
     i = 0;
-    for (lbr = 0; lbr < 26; ++lbr) {
+    for (lbr = 0; lbr < nbragg; ++lbr) {
       prod = bragg[lbr][0] * rhs[0]
            + bragg[lbr][1] * rhs[1]
            + bragg[lbr][2] * rhs[2];
@@ -155,14 +155,14 @@ int bragg_vert2d(
         i = 1;
         break;
       }
-    }/*for (lbr = 0; lbr < 26; ++lbr)*/
+    }/*for (lbr = 0; lbr < nbragg; ++lbr)*/
     if (i == 1) {
     }
     else {
       for (i = 0; i<3; ++i) vert[i] = rhs[i];
       return kbr + 1;
     }
-  }/*for (kbr = nbr0; kbr < 26; ++kbr)*/
+  }/*for (kbr = nbr0; kbr < nbragg; ++kbr)*/
   /*
   this line is not a BZ boundary
   */
@@ -183,7 +183,7 @@ void calc_2dbz() {
 
   nbzl2d = 0;
 
-  for (jbr = 0; jbr < 26; ++jbr) {
+  for (jbr = 0; jbr < nbragg; ++jbr) {
     /**/
     for (i = 0; i < 3; ++i) vert[1][i] = 0.0;
     nbr = 0;
@@ -196,7 +196,7 @@ void calc_2dbz() {
     /**/
     for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) vec[nbzl2d][i][j] = vert[i][j];
     nbzl2d = nbzl2d + 1;
-  }/*for (jbr = 0; jbr < 26; ++jbr)*/
+  }/*for (jbr = 0; jbr < nbragg; ++jbr)*/
   /*
    Order bz lines
   */
