@@ -60,13 +60,6 @@ with a color-plot of the arbitraly matrix element
 #elif defined(HAVE_GLUT_GLUT_H)
 #include <GLUT/glut.h>
 #endif
-#ifdef __ANDROID__
-#include <GLES/gl.h>
-#include <EGL/egl.h>
-#define VERSION 0.0
-#elif __APPLE__
-#include <OpenGLES/ES1/gl.h>
-#endif
 
 #include <stdlib.h>
 #include <stdio.h>

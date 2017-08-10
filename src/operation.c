@@ -32,11 +32,6 @@ THE SOFTWARE.
 #elif defined(HAVE_GLUT_GLUT_H)
 #include <GLUT/glut.h>
 #endif
-#ifdef __ANDROID__
-#include <GLES/gl.h>
-#elif __APPLE__
-#include <OpenGLES/ES1/gl.h>
-#endif
 
 #include <math.h>
 #include "variable.h"
