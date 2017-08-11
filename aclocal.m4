@@ -1,6 +1,6 @@
-# generated automatically by aclocal 1.14.1 -*- Autoconf -*-
+# generated automatically by aclocal 1.15 -*- Autoconf -*-
 
-# Copyright (C) 1996-2013 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -92,7 +92,7 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 15
+#serial 17
 
 m4_define([_AX_CHECK_GL_PROGRAM],
           [AC_LANG_PROGRAM([[
@@ -137,6 +137,12 @@ LIBS="${ax_check_gl_saved_libs}"
 CFLAGS="${ax_check_gl_saved_cflags}"
 CPPFLAGS="${ax_check_gl_saved_cppflags}"
 LDFLAGS="${ax_check_gl_saved_ldflags}"
+])
+
+dnl default switch case failure
+AC_DEFUN([_AX_CHECK_MSG_FAILURE_ORDER],
+[dnl
+ AC_MSG_FAILURE([Order logic in ax_check_gl is buggy])
 ])
 
 # set the varible ax_check_gl_need_x
@@ -235,19 +241,29 @@ AC_DEFUN([_AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX],[
 # check header for darwin
 AC_DEFUN([_AX_CHECK_GL_MANUAL_HEADERS_DARWIN],
 [AC_REQUIRE([_AX_CHECK_GL_NEED_X])dnl
- AS_CASE([$ax_check_gl_need_x],
-         # try to get X libs if possible do not use framework
-         [yes],[_AX_CHECK_GL_MANUAL_HEADERS_DEFAULT()]
-	 [no],[_AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX()]
-	 # per default use framework that will select if possible no_x version
-	 [_AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX()
-	  # if not found set that we need x in order to found the good library
-	  AS_IF([test "X$ax_check_gl_have_headers" = "yes"],
-	        [ax_check_gl_need_x="no"],
-		[ax_check_gl_need_x="yes"
-		 # retry with general test
-	  	 _AX_CHECK_GL_MANUAL_HEADERS_DEFAULT()])
- ])
+ AS_CASE(["$ax_check_gl_order"],
+         # try to use framework
+         ["gl"],[_AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX()],
+	 # try to use framework then mesa (X)
+	 ["gl mesagl"],[
+	   _AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX()
+	   AS_IF([test "X$ax_check_gl_have_headers" = "yes"],
+	         [ax_check_gl_order="gl"
+		  ax_check_gl_need_x="yes"],
+		 [ax_check_gl_order="mesagl gl"
+		  ax_check_gl_need_x="no"]
+		  # retry with general test
+		  _AX_CHECK_GL_MANUAL_HEADERS_DEFAULT()])],
+         ["mesagl gl"],[
+	   _AX_CHECK_GL_MANUAL_HEADERS_DEFAULT()
+	   AS_IF([test "X$ax_check_gl_have_headers" = "yes"],
+	         [ax_check_gl_order="mesagl gl"
+		  ax_check_gl_need_x="no"],
+		 [ax_check_gl_order="gl"
+		  ax_check_gl_need_x="yes"
+		  # retry with framework
+		  _AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX()])],
+        [_AX_CHECK_MSG_FAILURE_ORDER()])
 ])
 
 dnl Check headers manually: subroutine must set ax_check_gl_have_headers={yes,no}
@@ -330,10 +346,18 @@ AC_DEFUN([_AX_CHECK_GL_MANUAL_LIBS],
  AS_CASE([${host}],
          [*-darwin*],[_AX_CHECK_GL_MANUAL_LIBS_DARWIN()],
          # try first cygwin version
-         [*-cygwin*],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl MesaGL opengl32])],
-         # try first native
-	 [*-mingw*],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([opengl32 GL gl MesaGL])],
-	 [_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl MesaGL])])
+         [*-cygwin*|*-mingw*],[
+	   AS_CASE(["$ax_check_gl_order"],
+	           ["gl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([opengl32])],
+		   ["gl mesagl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([opengl32 GL gl MesaGL])],
+		   ["mesagl gl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl MesaGL opengl32])],
+		   [_AX_CHECK_MSG_FAILURE_ORDER()])],
+	 [AS_CASE(["$ax_check_gl_order"],
+                  ["gl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl])],
+		  ["gl mesagl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl MesaGL])],
+		  ["mesagl gl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([MesaGL GL gl])],
+		  [_AX_CHECK_MSG_FAILURE_ORDER()])]
+		  )
 
  AC_CACHE_CHECK([for OpenGL libraries],[ax_cv_check_gl_lib_opengl],
                	[ax_cv_check_gl_lib_opengl="${ax_check_gl_lib_opengl}"])
@@ -371,7 +395,23 @@ AC_DEFUN([_AX_CHECK_GL_PKG_CONFIG],dnl
 [dnl
  AC_REQUIRE([PKG_PROG_PKG_CONFIG])
 
- PKG_CHECK_MODULES([GL],[gl],[ax_check_gl_pkg_config=yes],[ax_check_gl_pkg_config=no])
+ dnl First try mesagl
+ AS_CASE(["$ax_check_gl_order"],
+         ["gl"],[PKG_CHECK_MODULES([GL],[mesagl],
+	                  [ax_check_gl_pkg_config=yes],
+			  [ax_check_gl_pkg_config=no])],
+	 ["gl mesagl"],[PKG_CHECK_MODULES([GL],[gl],
+	                  [ax_check_gl_pkg_config=yes],
+			  [PKG_CHECK_MODULES([GL],[mesagl],
+	                         [ax_check_gl_pkg_config=yes],
+				 [ax_check_gl_pkg_config=no])])],
+	 ["mesagl gl"],[PKG_CHECK_MODULES([GL],[mesagl],
+	                  [ax_check_gl_pkg_config=yes],
+			  [PKG_CHECK_MODULES([GL],[gl],
+	                         [ax_check_gl_pkg_config=yes],
+				 [ax_check_gl_pkg_config=no])])],
+	 [_AX_CHECK_MSG_FAILURE_ORDER])
+
  AS_IF([test "X$ax_check_gl_pkg_config" = "Xyes"],[
         # check headers
         AC_LANG_PUSH([C])
@@ -398,7 +438,7 @@ AC_DEFUN([_AX_CHECK_GL_PKG_CONFIG],dnl
 	_AX_CHECK_GL_LINK_CV()
 	AS_IF([test "X$ax_cv_check_gl_link_opengl" = "Xno"],
               [AC_MSG_ERROR("Pkgconfig detected opengl library could not be used for linking minimal program!")])
-  ])
+  ],[ax_check_gl_pkg_config=no])
 ])
 
 # test if gl link with X
@@ -438,7 +478,6 @@ AC_DEFUN([_AX_CHECK_GL],[dnl
        [_AX_CHECK_GL_MANUAL()],
        [no_gl=no])
 
-
  # test if need to test X compatibility
  AS_IF([test $no_gl = no],
        [# test X compatibility
@@ -455,6 +494,7 @@ AC_DEFUN([_AX_CHECK_GL],[dnl
 # ax_check_gl entry point
 AC_DEFUN([AX_CHECK_GL],
 [AC_REQUIRE([AC_PATH_X])dnl
+ AC_REQUIRE([AC_CANONICAL_HOST])
 
  AC_ARG_WITH([gl],
   [AS_HELP_STRING([--with-gl@<:@=ARG@:>@],
@@ -472,13 +512,49 @@ AC_DEFUN([AX_CHECK_GL],
     ],
     [ax_check_gl_want_gl="yes"])
 
+ dnl compatibility with AX_HAVE_OPENGL
+ AC_ARG_WITH([Mesa],
+    [AS_HELP_STRING([--with-Mesa@<:@=ARG@:>@],
+    [Prefer the Mesa library over a vendors native OpenGL (ARG=yes except on mingw ARG=no),
+     @<:@ARG=yes@:>@ ])],
+    [
+    AS_CASE(["$withval"],
+            ["no"|"NO"],[ax_check_gl_want_mesa="no"],
+	    ["yes"|"YES"],[ax_check_gl_want_mesa="yes"],
+	    [AC_MSG_ERROR([--with-mesa flag is only yes no])])
+    ],
+    [ax_check_gl_want_mesa="default"])
+
  # check consistency of parameters
  AS_IF([test "X$have_x" = "Xdisabled"],
        [AS_IF([test X$ax_check_gl_want_gl = "Xx"],
               [AC_MSG_ERROR([You prefer OpenGL with X and asked for no X support])])])
 
+ AS_IF([test "X$have_x" = "Xdisabled"],
+       [AS_IF([test X$x_check_gl_want_mesa = "Xyes"],
+              [AC_MSG_WARN([You prefer mesa but you disable X. Disable mesa because mesa need X])
+	       ax_check_gl_want_mesa="no"])])
+
+ # mesa default means yes except on mingw
+ AC_MSG_CHECKING([wether we should prefer mesa for opengl implementation])
+ AS_IF([test X$ax_check_gl_want_mesa = "Xdefault"],
+       [AS_CASE([${host}],
+                [*-mingw*],[ax_check_gl_want_mesa=no],
+		[ax_check_gl_want_mesa=yes])])
+ AC_MSG_RESULT($ax_check_gl_want_mesa)
+
+ # set default guess order
+ AC_MSG_CHECKING([for a working OpenGL order detection])
+ AS_IF([test "X$no_x" = "Xyes"],
+       [ax_check_gl_order="gl"],
+       [AS_IF([test X$ax_check_gl_want_mesa = "Xyes"],
+              [ax_check_gl_order="mesagl gl"],
+	      [ax_check_gl_order="gl mesagl"])])
+ AC_MSG_RESULT($ax_check_gl_order)
+
  # set flags
  no_gl="yes"
+ have_GL="no"
 
  # now do the real testing
  AS_IF([test X$ax_check_gl_want_gl != "Xno"],
@@ -486,7 +562,8 @@ AC_DEFUN([AX_CHECK_GL],
 
  AC_MSG_CHECKING([for a working OpenGL implementation])
  AS_IF([test "X$no_gl" = "Xno"],
-       [AC_MSG_RESULT([yes])
+       [have_GL="yes"
+        AC_MSG_RESULT([yes])
         AC_MSG_CHECKING([for CFLAGS needed for OpenGL])
         AC_MSG_RESULT(["${GL_CFLAGS}"])
         AC_MSG_CHECKING([for LIBS needed for OpenGL])
@@ -571,7 +648,7 @@ AC_DEFUN([AX_CHECK_GL],
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 16
+#serial 18
 
 # exemple program
 m4_define([_AX_CHECK_GLU_PROGRAM],
@@ -821,7 +898,7 @@ AC_DEFUN([_AX_CHECK_GLU_PKG_CONFIG],
                          [ax_check_glu_have_headers="yes";break],
                          [ax_check_glu_have_headers_headers="no"],
 			 [_AX_CHECK_GLU_INCLUDES_DEFAULT()])
-        _AX_CHECK_GL_RESTORE_FLAGS()
+        _AX_CHECK_GLU_RESTORE_FLAGS()
 	AC_LANG_POP([C])
 	AC_CACHE_CHECK([for OpenGL Utility (GLU) headers],[ax_cv_check_glu_have_headers],
                	       [ax_cv_check_glu_have_headers="${ax_check_glu_have_headers}"])
@@ -848,6 +925,7 @@ AC_DEFUN([AX_CHECK_GLU],dnl
 
  # set flags
  no_glu="yes"
+ have_GLU="no"
 
  AC_MSG_CHECKING([for a working OpenGL Utility (GLU) implementation by pkg-config])
  # try first pkgconfig
@@ -868,7 +946,8 @@ AC_DEFUN([AX_CHECK_GLU],dnl
 
  AC_MSG_CHECKING([for a working OpenGL Utility (GLU) implementation])
  AS_IF([test "X$no_glu" = "Xno"],
-       [AC_MSG_RESULT([yes])
+       [have_GLU="yes"
+        AC_MSG_RESULT([yes])
         AC_MSG_CHECKING([for CFLAGS needed for OpenGL Utility (GLU)])
         AC_MSG_RESULT(["${GLU_CFLAGS}"])
         AC_MSG_CHECKING([for LIBS needed for OpenGL Utility (GLU)])
@@ -948,7 +1027,7 @@ AC_DEFUN([AX_CHECK_GLU],dnl
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 13
+#serial 14
 
 dnl local save flags
 AC_DEFUN([_AX_CHECK_GLUT_SAVE_FLAGS],
@@ -1134,11 +1213,18 @@ AC_DEFUN([AX_CHECK_GLUT],
  AC_REQUIRE([AX_CHECK_GL])dnl
  AC_REQUIRE([AX_CHECK_GLU])dnl
 
+ # set flags
+ no_glut="yes"
+ have_GLUT="no"
+ have_glut="no"
+
  _AX_CHECK_GLUT_MANUAL
 
  AC_MSG_CHECKING([for a working OpenGL Utility Toolkit (GLUT) implementation])
  AS_IF([test "X$no_glut" = "Xno"],
-       [AC_MSG_RESULT([yes])
+       [have_GLUT="yes"
+        have_glut="yes"
+        AC_MSG_RESULT([yes])
         AC_MSG_CHECKING([for CFLAGS needed for OpenGL Utility Toolkit (GLUT)])
         AC_MSG_RESULT(["${GLUT_CFLAGS}"])
         AC_MSG_CHECKING([for LIBS needed for OpenGL Utility Toolkit (GLUT)])
@@ -1195,6 +1281,7 @@ AC_DEFUN([AX_CHECK_GLUT],
 # LICENSE
 #
 #   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
+#   Copyright (c) 2015 John W. Peterson <jwpeterson@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -1222,10 +1309,10 @@ AC_DEFUN([AX_CHECK_GLUT],
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 9
+#serial 11
 
 AC_DEFUN([AX_OPENMP], [
-AC_PREREQ(2.59) dnl for _AC_LANG_PREFIX
+AC_PREREQ([2.69]) dnl for _AC_LANG_PREFIX
 
 AC_CACHE_CHECK([for OpenMP flag of _AC_LANG compiler], ax_cv_[]_AC_LANG_ABBREV[]_openmp, [save[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
 ax_cv_[]_AC_LANG_ABBREV[]_openmp=unknown
@@ -1240,18 +1327,27 @@ for ax_openmp_flag in $ax_openmp_flags; do
     none) []_AC_LANG_PREFIX[]FLAGS=$save[]_AC_LANG_PREFIX[] ;;
     *) []_AC_LANG_PREFIX[]FLAGS="$save[]_AC_LANG_PREFIX[]FLAGS $ax_openmp_flag" ;;
   esac
-  AC_TRY_LINK([#ifdef __cplusplus
-extern "C"
-#endif
-void omp_set_num_threads(int);], [const int N = 100000;
-  int i, arr[N];
+  AC_LINK_IFELSE([AC_LANG_SOURCE([[
+@%:@include <omp.h>
 
+static void
+parallel_fill(int * data, int n)
+{
+  int i;
+@%:@pragma omp parallel for
+  for (i = 0; i < n; ++i)
+    data[i] = i;
+}
+
+int
+main()
+{
+  int arr[100000];
   omp_set_num_threads(2);
-
-  #pragma omp parallel for
-  for (i = 0; i < N; i++) {
-    arr[i] = i;
-  }], [ax_cv_[]_AC_LANG_ABBREV[]_openmp=$ax_openmp_flag; break])
+  parallel_fill(arr, 100000);
+  return 0;
+}
+]])],[ax_cv_[]_AC_LANG_ABBREV[]_openmp=$ax_openmp_flag; break],[])
 done
 []_AC_LANG_PREFIX[]FLAGS=$save[]_AC_LANG_PREFIX[]FLAGS
 ])
@@ -1265,32 +1361,63 @@ else
 fi
 ])dnl AX_OPENMP
 
-# pkg.m4 - Macros to locate and utilise pkg-config.            -*- Autoconf -*-
-# serial 1 (pkg-config-0.24)
-# 
-# Copyright © 2004 Scott James Remnant <scott@netsplit.com>.
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-# General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-#
-# As a special exception to the GNU General Public License, if you
-# distribute this file as part of a program that contains a
-# configuration script generated by Autoconf, you may include it under
-# the same distribution terms that you use for the rest of that program.
+dnl pkg.m4 - Macros to locate and utilise pkg-config.   -*- Autoconf -*-
+dnl serial 11 (pkg-config-0.29.1)
+dnl
+dnl Copyright © 2004 Scott James Remnant <scott@netsplit.com>.
+dnl Copyright © 2012-2015 Dan Nicholson <dbn.lists@gmail.com>
+dnl
+dnl This program is free software; you can redistribute it and/or modify
+dnl it under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation; either version 2 of the License, or
+dnl (at your option) any later version.
+dnl
+dnl This program is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+dnl General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software
+dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+dnl 02111-1307, USA.
+dnl
+dnl As a special exception to the GNU General Public License, if you
+dnl distribute this file as part of a program that contains a
+dnl configuration script generated by Autoconf, you may include it under
+dnl the same distribution terms that you use for the rest of that
+dnl program.
 
-# PKG_PROG_PKG_CONFIG([MIN-VERSION])
-# ----------------------------------
+dnl PKG_PREREQ(MIN-VERSION)
+dnl -----------------------
+dnl Since: 0.29
+dnl
+dnl Verify that the version of the pkg-config macros are at least
+dnl MIN-VERSION. Unlike PKG_PROG_PKG_CONFIG, which checks the user's
+dnl installed version of pkg-config, this checks the developer's version
+dnl of pkg.m4 when generating configure.
+dnl
+dnl To ensure that this macro is defined, also add:
+dnl m4_ifndef([PKG_PREREQ],
+dnl     [m4_fatal([must install pkg-config 0.29 or later before running autoconf/autogen])])
+dnl
+dnl See the "Since" comment for each macro you use to see what version
+dnl of the macros you require.
+m4_defun([PKG_PREREQ],
+[m4_define([PKG_MACROS_VERSION], [0.29.1])
+m4_if(m4_version_compare(PKG_MACROS_VERSION, [$1]), -1,
+    [m4_fatal([pkg.m4 version $1 or higher is required but ]PKG_MACROS_VERSION[ found])])
+])dnl PKG_PREREQ
+
+dnl PKG_PROG_PKG_CONFIG([MIN-VERSION])
+dnl ----------------------------------
+dnl Since: 0.16
+dnl
+dnl Search for the pkg-config tool and set the PKG_CONFIG variable to
+dnl first found in the path. Checks that the version of pkg-config found
+dnl is at least MIN-VERSION. If MIN-VERSION is not specified, 0.9.0 is
+dnl used since that's the first version where most current features of
+dnl pkg-config existed.
 AC_DEFUN([PKG_PROG_PKG_CONFIG],
 [m4_pattern_forbid([^_?PKG_[A-Z_]+$])
 m4_pattern_allow([^PKG_CONFIG(_(PATH|LIBDIR|SYSROOT_DIR|ALLOW_SYSTEM_(CFLAGS|LIBS)))?$])
@@ -1312,18 +1439,19 @@ if test -n "$PKG_CONFIG"; then
 		PKG_CONFIG=""
 	fi
 fi[]dnl
-])# PKG_PROG_PKG_CONFIG
+])dnl PKG_PROG_PKG_CONFIG
 
-# PKG_CHECK_EXISTS(MODULES, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
-#
-# Check to see whether a particular set of modules exists.  Similar
-# to PKG_CHECK_MODULES(), but does not set variables or print errors.
-#
-# Please remember that m4 expands AC_REQUIRE([PKG_PROG_PKG_CONFIG])
-# only at the first occurence in configure.ac, so if the first place
-# it's called might be skipped (such as if it is within an "if", you
-# have to call PKG_CHECK_EXISTS manually
-# --------------------------------------------------------------
+dnl PKG_CHECK_EXISTS(MODULES, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+dnl -------------------------------------------------------------------
+dnl Since: 0.18
+dnl
+dnl Check to see whether a particular set of modules exists. Similar to
+dnl PKG_CHECK_MODULES(), but does not set variables or print errors.
+dnl
+dnl Please remember that m4 expands AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+dnl only at the first occurence in configure.ac, so if the first place
+dnl it's called might be skipped (such as if it is within an "if", you
+dnl have to call PKG_CHECK_EXISTS manually
 AC_DEFUN([PKG_CHECK_EXISTS],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
 if test -n "$PKG_CONFIG" && \
@@ -1333,8 +1461,10 @@ m4_ifvaln([$3], [else
   $3])dnl
 fi])
 
-# _PKG_CONFIG([VARIABLE], [COMMAND], [MODULES])
-# ---------------------------------------------
+dnl _PKG_CONFIG([VARIABLE], [COMMAND], [MODULES])
+dnl ---------------------------------------------
+dnl Internal wrapper calling pkg-config via PKG_CONFIG and setting
+dnl pkg_failed based on the result.
 m4_define([_PKG_CONFIG],
 [if test -n "$$1"; then
     pkg_cv_[]$1="$$1"
@@ -1346,10 +1476,11 @@ m4_define([_PKG_CONFIG],
  else
     pkg_failed=untried
 fi[]dnl
-])# _PKG_CONFIG
+])dnl _PKG_CONFIG
 
-# _PKG_SHORT_ERRORS_SUPPORTED
-# -----------------------------
+dnl _PKG_SHORT_ERRORS_SUPPORTED
+dnl ---------------------------
+dnl Internal check to see if pkg-config supports short errors.
 AC_DEFUN([_PKG_SHORT_ERRORS_SUPPORTED],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])
 if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
@@ -1357,19 +1488,17 @@ if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
 else
         _pkg_short_errors_supported=no
 fi[]dnl
-])# _PKG_SHORT_ERRORS_SUPPORTED
+])dnl _PKG_SHORT_ERRORS_SUPPORTED
 
 
-# PKG_CHECK_MODULES(VARIABLE-PREFIX, MODULES, [ACTION-IF-FOUND],
-# [ACTION-IF-NOT-FOUND])
-#
-#
-# Note that if there is a possibility the first call to
-# PKG_CHECK_MODULES might not happen, you should be sure to include an
-# explicit call to PKG_PROG_PKG_CONFIG in your configure.ac
-#
-#
-# --------------------------------------------------------------
+dnl PKG_CHECK_MODULES(VARIABLE-PREFIX, MODULES, [ACTION-IF-FOUND],
+dnl   [ACTION-IF-NOT-FOUND])
+dnl --------------------------------------------------------------
+dnl Since: 0.4.0
+dnl
+dnl Note that if there is a possibility the first call to
+dnl PKG_CHECK_MODULES might not happen, you should be sure to include an
+dnl explicit call to PKG_PROG_PKG_CONFIG in your configure.ac
 AC_DEFUN([PKG_CHECK_MODULES],
 [AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
 AC_ARG_VAR([$1][_CFLAGS], [C compiler flags for $1, overriding pkg-config])dnl
@@ -1423,9 +1552,92 @@ else
         AC_MSG_RESULT([yes])
 	$3
 fi[]dnl
-])# PKG_CHECK_MODULES
+])dnl PKG_CHECK_MODULES
 
-# Copyright (C) 2002-2013 Free Software Foundation, Inc.
+
+dnl PKG_CHECK_MODULES_STATIC(VARIABLE-PREFIX, MODULES, [ACTION-IF-FOUND],
+dnl   [ACTION-IF-NOT-FOUND])
+dnl ---------------------------------------------------------------------
+dnl Since: 0.29
+dnl
+dnl Checks for existence of MODULES and gathers its build flags with
+dnl static libraries enabled. Sets VARIABLE-PREFIX_CFLAGS from --cflags
+dnl and VARIABLE-PREFIX_LIBS from --libs.
+dnl
+dnl Note that if there is a possibility the first call to
+dnl PKG_CHECK_MODULES_STATIC might not happen, you should be sure to
+dnl include an explicit call to PKG_PROG_PKG_CONFIG in your
+dnl configure.ac.
+AC_DEFUN([PKG_CHECK_MODULES_STATIC],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+_save_PKG_CONFIG=$PKG_CONFIG
+PKG_CONFIG="$PKG_CONFIG --static"
+PKG_CHECK_MODULES($@)
+PKG_CONFIG=$_save_PKG_CONFIG[]dnl
+])dnl PKG_CHECK_MODULES_STATIC
+
+
+dnl PKG_INSTALLDIR([DIRECTORY])
+dnl -------------------------
+dnl Since: 0.27
+dnl
+dnl Substitutes the variable pkgconfigdir as the location where a module
+dnl should install pkg-config .pc files. By default the directory is
+dnl $libdir/pkgconfig, but the default can be changed by passing
+dnl DIRECTORY. The user can override through the --with-pkgconfigdir
+dnl parameter.
+AC_DEFUN([PKG_INSTALLDIR],
+[m4_pushdef([pkg_default], [m4_default([$1], ['${libdir}/pkgconfig'])])
+m4_pushdef([pkg_description],
+    [pkg-config installation directory @<:@]pkg_default[@:>@])
+AC_ARG_WITH([pkgconfigdir],
+    [AS_HELP_STRING([--with-pkgconfigdir], pkg_description)],,
+    [with_pkgconfigdir=]pkg_default)
+AC_SUBST([pkgconfigdir], [$with_pkgconfigdir])
+m4_popdef([pkg_default])
+m4_popdef([pkg_description])
+])dnl PKG_INSTALLDIR
+
+
+dnl PKG_NOARCH_INSTALLDIR([DIRECTORY])
+dnl --------------------------------
+dnl Since: 0.27
+dnl
+dnl Substitutes the variable noarch_pkgconfigdir as the location where a
+dnl module should install arch-independent pkg-config .pc files. By
+dnl default the directory is $datadir/pkgconfig, but the default can be
+dnl changed by passing DIRECTORY. The user can override through the
+dnl --with-noarch-pkgconfigdir parameter.
+AC_DEFUN([PKG_NOARCH_INSTALLDIR],
+[m4_pushdef([pkg_default], [m4_default([$1], ['${datadir}/pkgconfig'])])
+m4_pushdef([pkg_description],
+    [pkg-config arch-independent installation directory @<:@]pkg_default[@:>@])
+AC_ARG_WITH([noarch-pkgconfigdir],
+    [AS_HELP_STRING([--with-noarch-pkgconfigdir], pkg_description)],,
+    [with_noarch_pkgconfigdir=]pkg_default)
+AC_SUBST([noarch_pkgconfigdir], [$with_noarch_pkgconfigdir])
+m4_popdef([pkg_default])
+m4_popdef([pkg_description])
+])dnl PKG_NOARCH_INSTALLDIR
+
+
+dnl PKG_CHECK_VAR(VARIABLE, MODULE, CONFIG-VARIABLE,
+dnl [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+dnl -------------------------------------------
+dnl Since: 0.28
+dnl
+dnl Retrieves the value of the pkg-config variable for the given module.
+AC_DEFUN([PKG_CHECK_VAR],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+AC_ARG_VAR([$1], [value of $3 for $2, overriding pkg-config])dnl
+
+_PKG_CONFIG([$1], [variable="][$3]["], [$2])
+AS_VAR_COPY([$1], [pkg_cv_][$1])
+
+AS_VAR_IF([$1], [""], [$5], [$4])dnl
+])dnl PKG_CHECK_VAR
+
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1437,10 +1649,10 @@ fi[]dnl
 # generated from the m4 files accompanying Automake X.Y.
 # (This private macro should not be called outside this file.)
 AC_DEFUN([AM_AUTOMAKE_VERSION],
-[am__api_version='1.14'
+[am__api_version='1.15'
 dnl Some users find AM_AUTOMAKE_VERSION and mistake it for a way to
 dnl require some minimum version.  Point them to the right macro.
-m4_if([$1], [1.14.1], [],
+m4_if([$1], [1.15], [],
       [AC_FATAL([Do not call $0, use AM_INIT_AUTOMAKE([$1]).])])dnl
 ])
 
@@ -1456,14 +1668,14 @@ m4_define([_AM_AUTOCONF_VERSION], [])
 # Call AM_AUTOMAKE_VERSION and AM_AUTOMAKE_VERSION so they can be traced.
 # This function is AC_REQUIREd by AM_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-[AM_AUTOMAKE_VERSION([1.14.1])dnl
+[AM_AUTOMAKE_VERSION([1.15])dnl
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
 _AM_AUTOCONF_VERSION(m4_defn([AC_AUTOCONF_VERSION]))])
 
 # AM_AUX_DIR_EXPAND                                         -*- Autoconf -*-
 
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1508,15 +1720,14 @@ _AM_AUTOCONF_VERSION(m4_defn([AC_AUTOCONF_VERSION]))])
 # configured tree to be moved without reconfiguration.
 
 AC_DEFUN([AM_AUX_DIR_EXPAND],
-[dnl Rely on autoconf to set up CDPATH properly.
-AC_PREREQ([2.50])dnl
-# expand $ac_aux_dir to an absolute path
-am_aux_dir=`cd $ac_aux_dir && pwd`
+[AC_REQUIRE([AC_CONFIG_AUX_DIR_DEFAULT])dnl
+# Expand $ac_aux_dir to an absolute path.
+am_aux_dir=`cd "$ac_aux_dir" && pwd`
 ])
 
 # AM_CONDITIONAL                                            -*- Autoconf -*-
 
-# Copyright (C) 1997-2013 Free Software Foundation, Inc.
+# Copyright (C) 1997-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1547,7 +1758,7 @@ AC_CONFIG_COMMANDS_PRE(
 Usually this means the macro was only invoked conditionally.]])
 fi])])
 
-# Copyright (C) 1999-2013 Free Software Foundation, Inc.
+# Copyright (C) 1999-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1738,7 +1949,7 @@ _AM_SUBST_NOTMAKE([am__nodep])dnl
 
 # Generate code to set up dependency tracking.              -*- Autoconf -*-
 
-# Copyright (C) 1999-2013 Free Software Foundation, Inc.
+# Copyright (C) 1999-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1814,7 +2025,7 @@ AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],
 
 # Do all the work for Automake.                             -*- Autoconf -*-
 
-# Copyright (C) 1996-2013 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1904,8 +2115,8 @@ AC_REQUIRE([AC_PROG_MKDIR_P])dnl
 # <http://lists.gnu.org/archive/html/automake/2012-07/msg00001.html>
 # <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
 AC_SUBST([mkdir_p], ['$(MKDIR_P)'])
-# We need awk for the "check" target.  The system "awk" is bad on
-# some platforms.
+# We need awk for the "check" target (and possibly the TAP driver).  The
+# system "awk" is bad on some platforms.
 AC_REQUIRE([AC_PROG_AWK])dnl
 AC_REQUIRE([AC_PROG_MAKE_SET])dnl
 AC_REQUIRE([AM_SET_LEADING_DOT])dnl
@@ -1978,7 +2189,11 @@ to "yes", and re-run configure.
 END
     AC_MSG_ERROR([Your 'rm' program is bad, sorry.])
   fi
-fi])
+fi
+dnl The trailing newline in this macro's definition is deliberate, for
+dnl backward compatibility and to allow trailing 'dnl'-style comments
+dnl after the AM_INIT_AUTOMAKE invocation. See automake bug#16841.
+])
 
 dnl Hook into '_AC_COMPILER_EXEEXT' early to learn its expansion.  Do not
 dnl add the conditional right here, as _AC_COMPILER_EXEEXT may be further
@@ -2007,7 +2222,7 @@ for _am_header in $config_headers :; do
 done
 echo "timestamp for $_am_arg" >`AS_DIRNAME(["$_am_arg"])`/stamp-h[]$_am_stamp_count])
 
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2018,7 +2233,7 @@ echo "timestamp for $_am_arg" >`AS_DIRNAME(["$_am_arg"])`/stamp-h[]$_am_stamp_co
 # Define $install_sh.
 AC_DEFUN([AM_PROG_INSTALL_SH],
 [AC_REQUIRE([AM_AUX_DIR_EXPAND])dnl
-if test x"${install_sh}" != xset; then
+if test x"${install_sh+set}" != xset; then
   case $am_aux_dir in
   *\ * | *\	*)
     install_sh="\${SHELL} '$am_aux_dir/install-sh'" ;;
@@ -2028,7 +2243,7 @@ if test x"${install_sh}" != xset; then
 fi
 AC_SUBST([install_sh])])
 
-# Copyright (C) 2003-2013 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2049,7 +2264,7 @@ AC_SUBST([am__leading_dot])])
 
 # Check to see how 'make' treats includes.	            -*- Autoconf -*-
 
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2099,7 +2314,7 @@ rm -f confinc confmf
 
 # Fake the existence of programs that GNU maintainers use.  -*- Autoconf -*-
 
-# Copyright (C) 1997-2013 Free Software Foundation, Inc.
+# Copyright (C) 1997-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2138,7 +2353,7 @@ fi
 
 # Helper functions for option handling.                     -*- Autoconf -*-
 
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2167,7 +2382,7 @@ AC_DEFUN([_AM_SET_OPTIONS],
 AC_DEFUN([_AM_IF_OPTION],
 [m4_ifset(_AM_MANGLE_OPTION([$1]), [$2], [$3])])
 
-# Copyright (C) 1999-2013 Free Software Foundation, Inc.
+# Copyright (C) 1999-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2214,7 +2429,7 @@ AC_LANG_POP([C])])
 # For backward compatibility.
 AC_DEFUN_ONCE([AM_PROG_CC_C_O], [AC_REQUIRE([AC_PROG_CC])])
 
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2233,7 +2448,7 @@ AC_DEFUN([AM_RUN_LOG],
 
 # Check to make sure that the build environment is sane.    -*- Autoconf -*-
 
-# Copyright (C) 1996-2013 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2314,7 +2529,7 @@ AC_CONFIG_COMMANDS_PRE(
 rm -f conftest.file
 ])
 
-# Copyright (C) 2009-2013 Free Software Foundation, Inc.
+# Copyright (C) 2009-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2374,7 +2589,7 @@ AC_SUBST([AM_BACKSLASH])dnl
 _AM_SUBST_NOTMAKE([AM_BACKSLASH])dnl
 ])
 
-# Copyright (C) 2001-2013 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2402,7 +2617,7 @@ fi
 INSTALL_STRIP_PROGRAM="\$(install_sh) -c -s"
 AC_SUBST([INSTALL_STRIP_PROGRAM])])
 
-# Copyright (C) 2006-2013 Free Software Foundation, Inc.
+# Copyright (C) 2006-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2421,7 +2636,7 @@ AC_DEFUN([AM_SUBST_NOTMAKE], [_AM_SUBST_NOTMAKE($@)])
 
 # Check how to create a tarball.                            -*- Autoconf -*-
 
-# Copyright (C) 2004-2013 Free Software Foundation, Inc.
+# Copyright (C) 2004-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
