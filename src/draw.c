@@ -146,7 +146,7 @@ static void draw_bz_lines() {
   else
     for (i = 0; i<4; i++) linecolor[i] = black[i];
   /**/
-  glLineWidth(3.0f*scl);
+  glLineWidth(linewidth*scl);
   for (i = 0; i < 18; ++i) {
     for (j = 0; j < 4; j++) colors[j + i * 4] = linecolor[j];
     for (j = 0; j < 2; j++) normals[j + i * 3] = 0.0f;
@@ -370,7 +370,7 @@ static void draw_fermi_line() {
   else
     for (i = 0; i<4; i++) linecolor[i] = black[i];
   /**/
-  glLineWidth(3.0f*scl);
+  glLineWidth(linewidth*scl);
   for (ibzl = 0; ibzl < nbzl2d; ++ibzl) {
     for (i = 0; i < 3; i++) vertices[i + 3 * ibzl] = bzl2d_proj[ibzl][i];
     for (i = 0; i < 4; i++) colors[i + 4 * ibzl] = linecolor[i];
@@ -384,7 +384,7 @@ static void draw_fermi_line() {
   /*
    Draw Fermi lines
   */
-  glLineWidth(3.0f*scl);
+  glLineWidth(linewidth*scl);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
       glVertexPointer(3, GL_FLOAT, 0, kv2d[ib]);

@@ -282,6 +282,7 @@ void initialize_val() {
   rot[1][0] = 0.0; rot[1][1] = 1.0; rot[1][2] = 0.0;
   rot[2][0] = 0.0; rot[2][1] = 0.0; rot[2][2] = 1.0;
   thetax = 0.0, thetay = 0.0, thetaz = 0.0;
+  linewidth = 3.0;
   /*
    Colors
   */

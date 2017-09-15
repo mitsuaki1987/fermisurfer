@@ -127,6 +127,7 @@ GLfloat rot[3][3]; //!< Rotation matrix
 GLfloat thetax;    //!< Rotation angle
 GLfloat thetay;    //!< Rotation angle
 GLfloat thetaz;    //!< Rotation angle
+GLfloat linewidth; //!< BZ/nodal-line/Fermiline width
 /*
  Colors
 */

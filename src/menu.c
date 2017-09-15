@@ -427,6 +427,21 @@ static void menu_colorbar(
   }
 } /* menu_colorbar */
 /**
+ @brief Line width (::linewidth)
+*/
+static void menu_linewidth(
+  int value //!<[in] Selected menu
+)
+{
+  int ierr;
+
+  printf("    Current line width : %f\n", linewidth);
+  printf("        New line width : ");
+  ierr = scanf("%f", &linewidth);
+
+  glutPostRedisplay();
+} /* menu_colorbar */
+/**
  @brief Change tetrahedron (::itet)
 */
 static void menu_tetra(
@@ -571,7 +586,7 @@ void FS_ModifyMenu(
 */
 void FS_CreateMenu()
 {
-  int ib, imenu_shiftEF, imenu_view;
+  int ib, imenu_shiftEF, imenu_view, imenu_linewidth;
   char menu_str[20] = { 0 };
   /*
    Mouse drag works as ...
@@ -597,6 +612,11 @@ void FS_CreateMenu()
   */
   imenu_shiftEF = glutCreateMenu(menu_shiftEF);
   glutAddMenuEntry("Shift Fermi energy", 1);
+  /*
+  Line width
+  */
+  imenu_linewidth = glutCreateMenu(menu_linewidth);
+  glutAddMenuEntry("Line width", 1);
   /*
    Modify interpolation ratio
   */
@@ -689,6 +709,7 @@ void FS_CreateMenu()
   glutAddSubMenu("Band", imenu_band);
   glutAddSubMenu("Mouse Drag", imenu_mouse);
   glutAddSubMenu("Shift Fermi energy", imenu_shiftEF);
+  glutAddSubMenu("Line width", imenu_linewidth);
   glutAddSubMenu("Interpolation", imenu_interpol);
   glutAddSubMenu("Set view", imenu_view);
   glutAddSubMenu("Background color", imenu_bgcolor);
