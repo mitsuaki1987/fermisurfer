@@ -46,6 +46,7 @@ int ng0[3];         //!< @f$k@f$-point grid in the input file
 int lshift;         //!< Switch for shifted Brillouin zone
 int shiftk[3];      //!< Wherether @f$k@f$-grid is shifted or not
 int nb;             //!< The number of Bands
+GLfloat avec[3][3]; //!< Direct lattice vector
 GLfloat bvec[3][3]; //!< Reciprocal lattice vector
 GLfloat ****eig0;   //!< Eigenvalues @f$\varepsilon_{n k}@f$[::nb][::ng0[0]][::ng0[1]][::ng0[2]]
 GLfloat ****mat0;   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]]
@@ -55,6 +56,7 @@ GLfloat ****mat0;   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]]
 int ng[3];       //!< @b Interpolated @f$k@f$-grids
 GLfloat ****eig; //!< Eigenvalues @f$\varepsilon_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
 GLfloat ****mat; //!< Matrix element @f$\delta_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
+GLfloat *****vf; //!< Matrix element @f$\{\bf v}_{{\rm f} n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
 int interpol;    //!< Ratio of interpolation
 /*
  Switch for some modes
@@ -67,11 +69,13 @@ int lcolorbar; //!< Switch for colorbar
 int lstereo;   //!< Switch for the stereogram
 int lmouse;    //!< Switch for the mouse function
 int lsection;  //!< Switch for the 2D Fermi lines
+int lside;     //!< Switch for lighting
 /*
  Menu
 */
-int imenu_band, imenu_interpol, imenu_bgcolor, imenu_colorscale, imenu_bzmode, imenu_section, 
-imenu_nodeline, imenu_colorbar, imenu_tetra, imenu_stereo, imenu_mouse, imenu;
+int imenu_band, imenu_interpol, imenu_background, imenu_colorscale, imenu_bzmode, imenu_section, 
+imenu_nodeline, imenu_colorbar, imenu_tetra, imenu_stereo, imenu_mouse, imenu_light, 
+imenu_line, imenu_shift, imenu_view, imenu;
 /*
  Variables for Brillouin zone boundaries
 */
@@ -86,13 +90,14 @@ int nbragg;             //!< Number of Bragg plane og 1st BZ
 int *ntri;          //!< The number of triangle patch [::nb]
 int **ntri_th;      //!< The number of triangle patch in each thread [::nb]
 int *draw_band;     //!< Switch for drawn bands [::nb]
-GLfloat ***nmlp;    //!< Normal vector of patchs [::nb][::ntri][3]
+GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
 GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
 GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
 GLfloat **kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
 GLfloat ***matp;    //!< Matrix elements of points [::nb][::ntri][3]
 GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
 int itet;           //!< Counter for tetrahedron
+GLfloat side;       //!< Which side is lighted
 /*
   Variables for nodeline
 */

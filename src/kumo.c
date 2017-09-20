@@ -66,7 +66,7 @@ static void kumo_coef(
  Modify : ::eig, ::mat
 */
 void interpol_energy() {
-  int ib, i0, i1, ii;
+  int ib, i0, i1, i2, ii;
 
   printf("    Interpolating ... ");
   /*
@@ -75,26 +75,38 @@ void interpol_energy() {
   for (ib = 0; ib < nb; ib++) {
     for (i0 = 0; i0 < ng[0]; i0++) {
       for (i1 = 0; i1 < ng[1]; i1++) {
+        for (i2 = 0; i2 < ng[2]; i2++) {
+          free(vf[ib][i0][i1][i2]);
+        }
         free(eig[ib][i0][i1]);
         free(mat[ib][i0][i1]);
+        free(vf[ib][i0][i1]);
       }/*for (i1 = 0; i1 < ng[1]; i1++)*/
       free(eig[ib][i0]);
       free(mat[ib][i0]);
+      free(vf[ib][i0]);
     }/*for (i0 = 0; i0 < ng[0]; i0++)*/
     free(eig[ib]);
     free(mat[ib]);
+    free(vf[ib]);
   }/*for (ib = 0; ib < nb; ib++)*/
   for (ii = 0; ii < 3; ii++)ng[ii] = ng0[ii] * interpol;
   /**/
   for (ib = 0; ib < nb; ib++) {
     eig[ib] = (GLfloat***)malloc(ng[0] * sizeof(GLfloat**));
     mat[ib] = (GLfloat***)malloc(ng[0] * sizeof(GLfloat**));
+    vf[ib] = (GLfloat****)malloc(ng[0] * sizeof(GLfloat***));
     for (i0 = 0; i0 < ng[0]; i0++) {
       eig[ib][i0] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
       mat[ib][i0] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
+      vf[ib][i0] = (GLfloat***)malloc(ng[1] * sizeof(GLfloat**));
       for (i1 = 0; i1 < ng[1]; i1++) {
         eig[ib][i0][i1] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
         mat[ib][i0][i1] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
+        vf[ib][i0][i1] = (GLfloat**)malloc(ng[2] * sizeof(GLfloat*));
+        for (i2 = 0; i2 < ng[2]; i2++) {
+          vf[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        }
       }/*for (i1 = 0; i1 < ng[1]; i1++)*/
     }/*for (i0 = 0; i0 < ng[0]; i0++)*/
   }/*for (ib = 0; ib < nb; ib++)*/
@@ -103,9 +115,9 @@ void interpol_energy() {
   */
 #pragma omp parallel default(none) \
   shared(nb,ng0,ng,eig,eig0,mat,mat0,interpol) \
-  private (ib,i0,i1,ii)
+  private (ib,i0,i1,i2,ii)
   {
-    int i2, j0, j1, j2;
+    int j0, j1, j2;
     GLfloat coef[4], mat1[4][4][4], eig1[4][4][4], mat2[4][4], eig2[4][4], mat3[4], eig3[4];
 
     for (ib = 0; ib < nb; ib++) {
@@ -170,6 +182,39 @@ void interpol_energy() {
           }/*for (i2 = 0; i2 < ng0[2]; i2++)*/
         }/*for (i1 = 0; i1 < ng0[1]; i1++)*/
       }/*for (i0 = 0; i0 < ng0[0]; i0++)*/
+    }/*for (ib = 0; ib < nb; ib++)*/
+  }/*End of parallel region*/
+  /*
+   Fermi velocity
+  */
+#pragma omp parallel default(none) \
+  shared(nb,ng,eig,vf,avec) \
+  private (ib,i0,i1,i2,ii)
+  {
+    int i0p, i0m, i1p, i1m, i2p, i2m;
+    GLfloat de[3];
+
+    for (ib = 0; ib < nb; ib++) {
+      for (i0 = 0; i0 < ng[0]; i0++) {
+        i0p = modulo(i0 + 1, ng[0]);
+        i0m = modulo(i0 - 1, ng[0]);
+        for (i1 = 0; i1 < ng[1]; i1++) {
+          i1p= modulo(i1 + 1, ng[1]);
+          i1m = modulo(i1 - 1, ng[1]);
+          for (i2 = 0; i2 < ng[2]; i2++) {
+            i2p = modulo(i2 + 1, ng[2]);
+            i2m = modulo(i2 - 1, ng[2]);
+
+            de[0] = eig[ib][i0p][i1][i2] - eig[ib][i0m][i1][i2];
+            de[1] = eig[ib][i0][i1p][i2] - eig[ib][i0][i1m][i2];
+            de[2] = eig[ib][i0][i1][i2p] - eig[ib][i0][i1][i2m];
+            for (ii = 0; ii < 3; ii++)de[ii] *= 0.5f * (GLfloat)ng[ii];
+            for (ii = 0; ii < 3; ii++) vf[ib][i0][i1][i2][ii] =
+              avec[0][ii] * de[0] + avec[1][ii] * de[1] + avec[2][ii] * de[2];
+
+          }/*for (i2 = 0; i2 < ng[2]; i2++)*/
+        }/*for (i1 = 0; i1 < ng[1]; i1++)*/
+      }/*for (i0 = 0; i0 < ng[0]; i0++)*/
     }/*for (ib = 0; ib < nb; ib++)*/
   }/*End of parallel region*/
   printf("Done\n\n");

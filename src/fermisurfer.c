@@ -74,6 +74,7 @@ with a color-plot of the arbitraly matrix element
 #include "bz_lines.h"
 #include "free_patch.h"
 #include "section.h"
+#include "kumo.h"
 
 #if defined(_OPENMP)
 #include <omp.h>
@@ -139,6 +140,7 @@ int main(
   initialize_val();
   /**/
   read_file(argv[1]);
+  interpol_energy();
   init_corner();
   bragg_vector();
   /*

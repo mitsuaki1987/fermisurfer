@@ -35,7 +35,7 @@ void read_file(
   char *fname//!<[in] Input file name
 )
 {
-  int ib, i, i0, i1, i2, ii0, ii1, ii2, ierr;
+  int ib, i, j, i0, i1, i2, ii0, ii1, ii2, ierr;
   FILE *fp;
   /*
    Open input file.
@@ -98,7 +98,16 @@ void read_file(
     ierr = fscanf(fp, "%e%e%e", &bvec[i][0], &bvec[i][1], &bvec[i][2]);
     if (ierr == 0) printf("error ! reading bvec");
     printf("    bvec %d : %f %f %f \n", i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
-  }
+  }/*for (i = 0; i < 3; ++i)*/
+  /*
+   Direct lattice vector
+  */
+  for (i = 0; i < 3; ++i) {
+    for (j = 0; j < 3; ++j) avec[i][j] = 0.0f;
+    avec[i][i] = 1.0f;
+    solve3(bvec, avec[i]);
+    printf("    avec %d : %f %f %f \n", i + 1, avec[i][0], avec[i][1], avec[i][2]);
+  }/*for (i = 0; i < 3; ++i)*/
   for (i = 0; i < 3; ++i) secvec[i] = bvec[2][i];
   secscale = 0.0;
   /*
@@ -108,21 +117,27 @@ void read_file(
   mat0 = (GLfloat****)malloc(nb * sizeof(GLfloat***));
   eig = (GLfloat****)malloc(nb * sizeof(GLfloat***));
   mat = (GLfloat****)malloc(nb * sizeof(GLfloat***));
+  vf = (GLfloat*****)malloc(nb * sizeof(GLfloat****));
   for (ib = 0; ib < nb; ib++) {
     eig0[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
     mat0[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
     eig[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
     mat[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
+    vf[ib] = (GLfloat****)malloc(ng0[0] * sizeof(GLfloat***));
     for (i0 = 0; i0 < ng0[0]; i0++) {
       eig0[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
       mat0[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
       eig[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
       mat[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
+      vf[ib][i0] = (GLfloat***)malloc(ng0[1] * sizeof(GLfloat**));
       for (i1 = 0; i1 < ng0[1]; i1++) {
         eig0[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
         mat0[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
         eig[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
         mat[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
+        vf[ib][i0][i1] = (GLfloat**)malloc(ng0[2] * sizeof(GLfloat*));
+        for (i2 = 0; i2 < ng0[2]; ++i2) 
+          vf[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
       }
     }
   }
@@ -140,7 +155,6 @@ void read_file(
           if (lshift != 0) ii2 = i2;
           else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
           ierr = fscanf(fp, "%e", &eig0[ib][ii0][ii1][ii2]);
-          eig[ib][ii0][ii1][ii2] = eig0[ib][ii0][ii1][ii2];
         }
       }
     }
@@ -159,7 +173,6 @@ void read_file(
           if (lshift != 0) ii2 = i2;
           else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
           ierr = fscanf(fp, "%e", &mat0[ib][ii0][ii1][ii2]);
-          mat[ib][ii0][ii1][ii2] = mat0[ib][ii0][ii1][ii2];
         }
       }
     }

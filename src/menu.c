@@ -60,79 +60,105 @@ static void refresh_patch_segment() {
 }
 
 /**
- @brief handle main menu. Currently, only Exit.
- Othere menus are in submenu.
+ @brief handle main menu. 
 */
 static void main_menu(
   int value //!< [in] Selected menu
 ) {
-  int i0, i1, ib;
-  /**/
-  if (value == 9) {
-    /*
-     Exit
-    */
-    printf("\nExit. \n\n");
-    free_patch();
-    for (ib = 0; ib < nb; ib++) {
-      for (i0 = 0; i0 < ng[0]; i0++) {
-        for (i1 = 0; i1 < ng[1]; i1++) {
-          free(eig[ib][i0][i1]);
-          free(mat[ib][i0][i1]);
-        }
-        free(eig[ib][i0]);
-        free(mat[ib][i0]);
-      }
-      free(eig[ib]);
-      free(mat[ib]);
-    }
-    free(eig);
-    free(mat);
-    free(ntri);
-    free(draw_band);
-    free(nnl);
-    exit(0);
-  }
 }
 /**
- @brief Shift Fermi energy
-
- Modify : ::EF
-
- This menu modify Fermi energy and compute Fermi surfaces, etc.
+@brief Change background color (::blackback)
 */
-static void menu_shiftEF(int value /**< [in] Selected menu*/)
+static void menu_background(
+  int value //!<[in] Selected menu
+)
 {
-  int ib, i0, i1, i2, ierr;
-  GLfloat emin, emax;
-
-  if (value == 1) {
-    emin = 100000.0;
-    emax = -100000.0;
-    for (ib = 0; ib < nb; ++ib) {
-      for (i0 = 0; i0 < ng[0]; ++i0) {
-        for (i1 = 0; i1 < ng[1]; ++i1) {
-          for (i2 = 0; i2 < ng[2]; ++i2) {
-            if (emin > eig[ib][i0][i1][i2]) emin = eig[ib][i0][i1][i2];
-            if (emax < eig[ib][i0][i1][i2]) emax = eig[ib][i0][i1][i2];
-          }
-        }
-      }
-    }
-    printf("    Min  Max  E_F \n");
-    printf("    %f %f %f \n", emin, emax, EF);
-    printf("    New Fermi energy : ");
-    //
-    ierr = scanf("%f", &EF);
-    if (ierr != 1) printf("error ! reading ef");
-    /**/
-    refresh_patch_segment();
-    /**/
+  if (value == 1 && blackback != 1) {
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    blackback = 1;
     glutPostRedisplay();
   }
-}
+  else if (value == 0 && blackback != 0) {
+    glClearColor(1.0, 1.0, 1.0, 0.0);
+    blackback = 0;
+    glutPostRedisplay();
+  }
+}/* bgcolor change*/
+ /**
+ @brief Toggle the appearance of each band (::draw_band)
+*/
+static void menu_band(
+  int value //!< [in] Selected menu
+)
+{
+  if (draw_band[value] == 0) {
+    draw_band[value] = 1;
+  }
+  else {
+    draw_band[value] = 0;
+  }
+  glutPostRedisplay();
+} /* menu_band */
 /**
- @brief Shift Fermi energy
+ @brief Change Brillouin zone (::fbz)
+*/
+static void menu_brillouinzone(
+  int value //!<[in] Selected menu
+)
+{
+  if (value == 1 && fbz != 1) {
+    fbz = 1;
+    refresh_patch_segment();
+    glutPostRedisplay();
+  }
+  else if (value == 2 && fbz != -1) {
+    fbz = -1;
+    lsection = 0;
+    refresh_patch_segment();
+    glutPostRedisplay();
+  }
+} /* menu_brillouinzone */
+/**
+ @brief Toggle Colorbar (::lcolorbar)
+*/
+static void menu_colorbar(
+  int value //!<[in] Selected menu
+)
+{
+  if (lcolorbar != 1)  lcolorbar = 1;
+  else lcolorbar = 0;
+  glutPostRedisplay();
+} /* menu_colorbar */
+/**
+ @brief Change color scale mode (::fcscl)
+*/
+static void menu_colorscale(
+  int value //!<[in] Selected menu
+)
+{
+  if (value == 1 && fcscl != 1) {
+    fcscl = 1;
+    max_and_min();
+    glutPostRedisplay();
+  }
+  else if (value == 2 && fcscl != 2) {
+    fcscl = 2;
+    max_and_min();
+    glutPostRedisplay();
+  }
+  else if (value == 3 && fcscl != 3) {
+    fcscl = 3;
+    max_and_min();
+    glutPostRedisplay();
+  }
+  else if (value == 4 && fcscl != 4) {
+    fcscl = 4;
+    max_and_min();
+    glutPostRedisplay();
+  }
+} /* menu_colorscale */
+/**
+ @brief Modify interpolation ratio
 
  This routine modify interpolation ratio (::interpol) 
  then compute Fermi surfaces, etc.
@@ -157,11 +183,202 @@ static void menu_interpol(
   }
 }/*static void menu_interpol*/
 /**
+ @brief Toggle Lighting (::lside)
+*/
+static void menu_lighting(
+  int value //!<[in] Selected menu
+)
+{
+  if (value == 1 && lside != 1) {
+    lside = 1;
+    side = 1.0;
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    glutPostRedisplay();
+  }
+  if (value == 2 && lside != 2) {
+    lside = 2;
+    side = 1.0;
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+    glutPostRedisplay();
+  }
+  if (value == 3 && lside != 3) {
+    lside = 3;
+    side = -1.0;
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
+    glutPostRedisplay();
+  }
+} /* menu_lighting */
+/**
+ @brief Line width (::lside)
+*/
+static void menu_line(
+  int value //!<[in] Selected menu
+)
+{
+  int ierr;
+  printf("    Current line width : %f\n", linewidth);
+  printf("        New line width : ");
+  ierr = scanf("%f", &linewidth);
+
+  glutPostRedisplay();
+} /* menu_line */
+/**
+ @brief Change the function associated to the mouse movement(::lmouse)
+*/
+static void menu_mouse(
+  int value //!< [in] Selected menu
+) 
+{
+  if (value == 1 && lmouse != 1) {
+    lmouse = 1;
+    glutPostRedisplay();
+  }
+  if (value == 2 && lmouse != 2) {
+    lmouse = 2;
+    glutPostRedisplay();
+  }
+  if (value == 3 && lmouse != 3) {
+    lmouse = 3;
+    glutPostRedisplay();
+  }
+} /* menu_mouse */
+/**
+ @brief Toggle apearance of nodale-line
+*/
+static void menu_nodeline(
+  int value //!<[in] Selected menu
+)
+{
+  if (nodeline != 1) nodeline = 1;
+  else nodeline = 0;
+  glutPostRedisplay();
+}/*menu_nodeline*/
+/**
+ @brief Modify and toggle appearance of 2D Fermi lines (::lsection)
+*/
+static void menu_section(
+  int value //!<[in] Selected menu
+)
+{
+  int ierr, ii, jj, ib;
+  GLfloat vec[3];
+
+  if (value == 1) {
+    if (lsection != 1) {
+      lsection = 1;
+      glutPostRedisplay();
+    }
+    else {
+      lsection = 0;
+      glutPostRedisplay();
+    }
+  }/*if (value == 1)*/
+  else if (value > 1) {
+    if (value == 2) secscale = 1.0;
+    else secscale = 0.0;
+
+    printf("    New Miller index : ");
+    ierr = scanf("%f %f %f", &vec[0], &vec[1], &vec[2]);
+    /*
+     Fractional -> Cartecian
+    */
+    for (ii = 0; ii < 3; ii++) {
+      secvec[ii] = 0.0;
+      for (jj = 0; jj < 3; jj++) {
+        secvec[ii] += vec[jj] * bvec[jj][ii];
+      }/*for (jj = 0; jj < 3; jj++)*/
+    }/*for (ii = 0; ii < 3; ii++)*/
+    /*
+     Free variables for Fermi line
+    */
+    for (ib = 0; ib < nb; ++ib) {
+      free(kv2d[ib]);
+      free(clr2d[ib]);
+      free(nml2d[ib]);
+    }/*for (ib = 0; ib < nb; ++ib)*/
+    free(kv2d);
+    free(clr2d);
+    free(nml2d);
+
+    calc_2dbz();
+    query = 1; calc_section();
+    query = 0; calc_section();
+    glutPostRedisplay();
+  }/*else if (value > 1)*/
+} /*void menu_section*/
+/**
+ @brief Shift Fermi energy
+*/
+static void menu_shift(
+  int value //!<[in] Selected menu
+)
+{
+  int ib, i0, i1, i2, ierr;
+  GLfloat emin, emax;
+
+  emin = 100000.0;
+  emax = -100000.0;
+  for (ib = 0; ib < nb; ++ib) {
+    for (i0 = 0; i0 < ng[0]; ++i0) {
+      for (i1 = 0; i1 < ng[1]; ++i1) {
+        for (i2 = 0; i2 < ng[2]; ++i2) {
+          if (emin > eig[ib][i0][i1][i2]) emin = eig[ib][i0][i1][i2];
+          if (emax < eig[ib][i0][i1][i2]) emax = eig[ib][i0][i1][i2];
+        }
+      }
+    }
+  }
+  printf("    Min  Max  E_F \n");
+  printf("    %f %f %f \n", emin, emax, EF);
+  printf("    New Fermi energy : ");
+  //
+  ierr = scanf("%f", &EF);
+  if (ierr != 1) printf("error ! reading ef");
+  /**/
+  refresh_patch_segment();
+  /**/
+  glutPostRedisplay();
+} /* menu_shift */
+/**
+ @brief Tern stereogram (::lstereo)
+*/
+static void menu_stereo(
+  int value //!<[in] Selected menu
+) {
+  if (value == 1 && lstereo != 1) {
+    lstereo = 1;
+    glutPostRedisplay();
+  }
+  if (value == 2 && lstereo != 2) {
+    lstereo = 2;
+    glutPostRedisplay();
+  }
+  if (value == 3 && lstereo != 3) {
+    lstereo = 3;
+    glutPostRedisplay();
+  }
+} /* menu_stereo */
+/**
+ @brief Change tetrahedron (::itet)
+*/
+static void menu_tetra(
+  int value //!<[in] Selected menu
+)
+{
+  if (value != itet) {
+    printf("    Tetra patern %d \n", value + 1);
+    itet = value;
+    init_corner();
+    refresh_patch_segment();
+    glutPostRedisplay();
+  }
+}/*menu_tetra*/
+ /**
  @brief Setting of view
 
- This modify scale (::scl) & tarnslation (::trans) & 
- rotation (::thetax, ::thetay, ::thetaz, ::rot), 
-*/
+ This modify scale (::scl) & tarnslation (::trans) &
+ rotation (::thetax, ::thetay, ::thetaz, ::rot),
+ */
 static void menu_view(
   int value //!< [in] Selected menu
 )
@@ -223,240 +440,6 @@ static void menu_view(
 
 }
 /**
- @brief Change the function associated to the mouse movement(::lmouse)
-*/
-static void menu_mouse(
-  int value //!< [in] Selected menu
-) 
-{
-  if (value == 1 && lmouse != 1) {
-    lmouse = 1;
-    glutPostRedisplay();
-  }
-  if (value == 2 && lmouse != 2) {
-    lmouse = 2;
-    glutPostRedisplay();
-  }
-  if (value == 3 && lmouse != 3) {
-    lmouse = 3;
-    glutPostRedisplay();
-  }
-} /* menu_band */
-/**
- @brief Toggle the appearance of each band (::draw_band)
-*/
-static void menu_band(
-  int value //!< [in] Selected menu
-)
-{
-  if (draw_band[value] == 0) {
-    draw_band[value] = 1;
-  }
-  else {
-    draw_band[value] = 0;
-  }
-  glutPostRedisplay();
-} /* menu_band */
-/**
- @brief Change background color (::blackback)
-*/
-static void menu_bgcolor(
-  int value //!<[in] Selected menu
-)
-{
-  if (value == 1 && blackback != 1) {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    blackback = 1;
-    glutPostRedisplay();
-  }
-  else if (value == 2 && blackback != 0) {
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    blackback = 0;
-    glutPostRedisplay();
-  }
-}/* bgcolor change*/
-/**
- @brief Change color scale mode (::fcscl)
-*/
-static void menu_colorscale(
-  int value //!<[in] Selected menu
-)
-{
-  if (value == 1 && fcscl != 1) {
-    fcscl = 1;
-    max_and_min();
-    glutPostRedisplay();
-  }
-  else if (value == 2 && fcscl != 2) {
-    fcscl = 2;
-    max_and_min();
-    glutPostRedisplay();
-  }
-  else if (value == 3 && fcscl != 3) {
-    fcscl = 3;
-    max_and_min();
-    glutPostRedisplay();
-  }
-  else if (value == 4 && fcscl != 4) {
-    fcscl = 4;
-    max_and_min();
-    glutPostRedisplay();
-  }
-} /* menu_colorscale */
-/**
- @brief Change Brillouin zone (::fbz)
-*/
-static void menu_bzmode(
-  int value //!<[in] Selected menu
-)
-{
-  if (value == 1 && fbz != 1) {
-    fbz = 1;
-    refresh_patch_segment();
-    glutPostRedisplay();
-  }
-  else if (value == 2 && fbz != -1) {
-    fbz = -1;
-    lsection = 0;
-    refresh_patch_segment();
-    glutPostRedisplay();
-  }
-} /* menu_bzmode */
-/**
- @brief Toggle apearance of nodale-line
-*/
-static void menu_nodeline(
-  int value //!<[in] Selected menu
-)
-{
-  if (value == 1 && nodeline != 1) {
-    nodeline = 1;
-    glutPostRedisplay();
-  }
-  else if (value == 2 && nodeline != 0) {
-    nodeline = 0;
-    glutPostRedisplay();
-  }
-}/*menu_nodeline*/
-/**
- @brief Tern stereogram (::lstereo)
-*/
-static void menu_stereo(
-  int value //!<[in] Selected menu
-) {
-  if (value == 1 && lstereo != 1) {
-    lstereo = 1;
-    glutPostRedisplay();
-  }
-  if (value == 2 && lstereo != 2) {
-    lstereo = 2;
-    glutPostRedisplay();
-  }
-  if (value == 3 && lstereo != 3) {
-    lstereo = 3;
-    glutPostRedisplay();
-  }
-} /* menu_stereo */
-/**
- @brief Modify and toggle appearance of 2D Fermi lines (::lsection)
-*/
-static void menu_section(
-  int value //!<[in] Selected menu
-)
-{
-  int ierr, ii, jj, ib;
-  GLfloat vec[3];
-
-  if (value == 1) {
-    if (lsection != 1) {
-      lsection = 1;
-      glutPostRedisplay();
-    }
-    else {
-      lsection = 0;
-      glutPostRedisplay();
-    }
-  }/*if (value == 1)*/
-  else if (value > 1) {
-    if (value == 2) secscale = 1.0;
-    else secscale = 0.0;
-
-    printf("    New Miller index : ");
-    ierr = scanf("%f %f %f", &vec[0], &vec[1], &vec[2]);
-    /*
-     Fractional -> Cartecian
-    */
-    for (ii = 0; ii < 3; ii++) {
-      secvec[ii] = 0.0;
-      for (jj = 0; jj < 3; jj++) {
-        secvec[ii] += vec[jj] * bvec[jj][ii];
-      }/*for (jj = 0; jj < 3; jj++)*/
-    }/*for (ii = 0; ii < 3; ii++)*/
-    /*
-     Free variables for Fermi line
-    */
-    for (ib = 0; ib < nb; ++ib) {
-      free(kv2d[ib]);
-      free(clr2d[ib]);
-      free(nml2d[ib]);
-    }/*for (ib = 0; ib < nb; ++ib)*/
-    free(kv2d);
-    free(clr2d);
-    free(nml2d);
-
-    calc_2dbz();
-    query = 1; calc_section();
-    query = 0; calc_section();
-    glutPostRedisplay();
-  }/*else if (value > 1)*/
-} /*void menu_section*/
-/**
- @brief Toggle Colorbar (::lcolorbar)
-*/
-static void menu_colorbar(
-  int value //!<[in] Selected menu
-)
-{
-  if (value == 1 && lcolorbar != 1) {
-    lcolorbar = 1;
-    glutPostRedisplay();
-  }
-  if (value == 2 && lcolorbar != 0) {
-    lcolorbar = 0;
-    glutPostRedisplay();
-  }
-} /* menu_colorbar */
-/**
- @brief Line width (::linewidth)
-*/
-static void menu_linewidth(
-  int value //!<[in] Selected menu
-)
-{
-  int ierr;
-
-  printf("    Current line width : %f\n", linewidth);
-  printf("        New line width : ");
-  ierr = scanf("%f", &linewidth);
-
-  glutPostRedisplay();
-} /* menu_colorbar */
-/**
- @brief Change tetrahedron (::itet)
-*/
-static void menu_tetra(
-  int value //!<[in] Selected menu
-)
-{
-  if (value != itet) {
-    printf("    Tetra patern %d \n", value + 1);
-    itet = value;
-    init_corner();
-    refresh_patch_segment();
-    glutPostRedisplay();
-  }
-}/*menu_tetra*/
-/**
  @brief Modify text in the right-click munu
 */
 void FS_ModifyMenu(
@@ -464,25 +447,22 @@ void FS_ModifyMenu(
 )
 {
   int ib;
-  char menu_str[20] = { 0 };
-
+  char menu_str[50] = { 0 };
   if (status == GLUT_MENU_IN_USE) {
     glutPostRedisplay();
   }
   else {
     /*
-     Operation with mouse drag
+    Background color
     */
-    glutSetMenu(imenu_mouse);
-    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
-    if (lmouse == 1) glutAddMenuEntry("[x] Rotate", 1);
-    else glutAddMenuEntry("[ ] Rotate", 1);
-    if (lmouse == 2) glutAddMenuEntry("[x] Scale", 2);
-    else glutAddMenuEntry("[ ] Scale", 2);
-    if (lmouse == 3) glutAddMenuEntry("[x] Translate", 3);
-    else glutAddMenuEntry("[ ] Translate", 3);
+    glutSetMenu(imenu_background);
+    for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
+    if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
+    else glutAddMenuEntry("[ ] Black", 1);
+    if (blackback == 0) glutAddMenuEntry("[x] White", 0);
+    else glutAddMenuEntry("[ ] White", 0);
     /*
-     Band menu
+    Band menu
     */
     glutSetMenu(imenu_band);
     for (ib = 0; ib < nb; ib++) glutRemoveMenuItem(1);
@@ -492,23 +472,23 @@ void FS_ModifyMenu(
       glutAddMenuEntry(menu_str, ib);
     }
     /*
-     Operation with mouse drag
+    Brillouin zone
     */
-    glutSetMenu(imenu_interpol);
-    glutRemoveMenuItem(1);
-    sprintf(menu_str, "Ratio : %d", interpol);
-    glutAddMenuEntry(menu_str, 1);
-    /*
-     Background color
-    */
-    glutSetMenu(imenu_bgcolor);
+    glutSetMenu(imenu_bzmode);
     for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
-    if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
-    else glutAddMenuEntry("[ ] Black", 1);
-    if (blackback == 0) glutAddMenuEntry("[x] White", 2);
-    else glutAddMenuEntry("[ ] White", 2);
+    if (fbz == 1) glutAddMenuEntry("[x] First Brillouin zone", 1);
+    else glutAddMenuEntry("[ ] First Brillouin zone", 1);
+    if (fbz == -1) glutAddMenuEntry("[x] Primitive Brillouin zone", 2);
+    else glutAddMenuEntry("[ ] Primitive Brillouin zone", 2);
     /*
-     Color scale mode
+    Colorbar on/off
+    */
+    glutSetMenu(imenu_colorbar);
+    for (ib = 0; ib < 1; ib++) glutRemoveMenuItem(1);
+    if (lcolorbar == 1) glutAddMenuEntry("[x] Color bar", 0);
+    else glutAddMenuEntry("[ ] Color bar", 0);
+    /*
+    Color scale mode
     */
     glutSetMenu(imenu_colorscale);
     for (ib = 0; ib < 4; ib++) glutRemoveMenuItem(1);
@@ -521,43 +501,48 @@ void FS_ModifyMenu(
     if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
     else glutAddMenuEntry("[ ] Periodic", 4);
     /*
-     Brillouin zone
+    Interpolation ratio
     */
-    glutSetMenu(imenu_bzmode);
-    for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
-    if (fbz == 1) glutAddMenuEntry("[x] First Brillouin zone", 1);
-    else glutAddMenuEntry("[ ] First Brillouin zone", 1);
-    if (fbz == -1) glutAddMenuEntry("[x] Primitive Brillouin zone", 2);
-    else glutAddMenuEntry("[ ] Primitive Brillouin zone", 2);
+    glutSetMenu(imenu_interpol);
+    glutRemoveMenuItem(1);
+    sprintf(menu_str, "Ratio : %d", interpol);
+    glutAddMenuEntry(menu_str, 1);
     /*
-     Nodeline on/off
+    Switch lighting
+    */
+    glutSetMenu(imenu_light);
+    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
+    if (lside == 1) glutAddMenuEntry("[x] Both side", 1);
+    else glutAddMenuEntry("[ ] Both side", 1);
+    if (lside == 2) glutAddMenuEntry("[x] Unoccupied side", 2);
+    else glutAddMenuEntry("[ ] Unoccupied side", 2);
+    if (lside == 3) glutAddMenuEntry("[x] Occupied side", 3);
+    else glutAddMenuEntry("[ ] Occupied side", 3);
+    /*
+    Line width
+    */
+    glutSetMenu(imenu_line);
+    for (ib = 0; ib < 1; ib++) glutRemoveMenuItem(1);
+    sprintf(menu_str, "Line width : %3.1f", linewidth);
+    glutAddMenuEntry(menu_str, 1);
+    /*
+     Operation with mouse drag
+    */
+    glutSetMenu(imenu_mouse);
+    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
+    if (lmouse == 1) glutAddMenuEntry("[x] Rotate", 1);
+    else glutAddMenuEntry("[ ] Rotate", 1);
+    if (lmouse == 2) glutAddMenuEntry("[x] Scale", 2);
+    else glutAddMenuEntry("[ ] Scale", 2);
+    if (lmouse == 3) glutAddMenuEntry("[x] Translate", 3);
+    else glutAddMenuEntry("[ ] Translate", 3);
+    /*
+     Nodal line on/off
     */
     glutSetMenu(imenu_nodeline);
-    for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
-    if (nodeline == 1) glutAddMenuEntry("[x] On", 1);
-    else glutAddMenuEntry("[ ] On", 1);
-    if (nodeline == 0) glutAddMenuEntry("[x] Off", 2);
-    else glutAddMenuEntry("[ ] Off", 2);
-    /*
-     Colorbar on/off
-    */
-    glutSetMenu(imenu_colorbar);
-    for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
-    if (lcolorbar == 1) glutAddMenuEntry("[x] On", 1);
-    else glutAddMenuEntry("[ ] On", 1);
-    if (lcolorbar == 0) glutAddMenuEntry("[x] Off", 2);
-    else glutAddMenuEntry("[ ] Off", 2);
-    /*
-     Stereogram
-    */
-    glutSetMenu(imenu_stereo);
-    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
-    if (lstereo == 1) glutAddMenuEntry("[x] None", 1);
-    else glutAddMenuEntry("[ ] None", 1);
-    if (lstereo == 2) glutAddMenuEntry("[x] Parallel", 2);
-    else glutAddMenuEntry("[ ] Parallel", 2);
-    if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
-    else glutAddMenuEntry("[ ] Cross", 3);
+    for (ib = 0; ib < 1; ib++) glutRemoveMenuItem(1);
+    if (nodeline == 1) glutAddMenuEntry("[x] Nodal line", 0);
+    else glutAddMenuEntry("[ ] Nodal line", 0);
     /*
      2D Fermi lines
     */
@@ -569,6 +554,24 @@ void FS_ModifyMenu(
     glutAddMenuEntry("Modify section", 2);
     glutAddMenuEntry("Modify section (across Gamma)", 3);
     /*
+    Shift Fermi energy
+    */
+    glutSetMenu(imenu_shift);
+    for (ib = 0; ib < 1; ib++) glutRemoveMenuItem(1);
+    sprintf(menu_str, "Fermi energy :%9.5f", EF);
+    glutAddMenuEntry(menu_str, 1);
+    /*
+    Stereogram
+    */
+    glutSetMenu(imenu_stereo);
+    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
+    if (lstereo == 1) glutAddMenuEntry("[x] None", 1);
+    else glutAddMenuEntry("[ ] None", 1);
+    if (lstereo == 2) glutAddMenuEntry("[x] Parallel", 2);
+    else glutAddMenuEntry("[ ] Parallel", 2);
+    if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
+    else glutAddMenuEntry("[ ] Cross", 3);
+    /*
      Tetrahedron
     */
     glutSetMenu(imenu_tetra);
@@ -578,6 +581,18 @@ void FS_ModifyMenu(
       else sprintf(menu_str, "[ ] tetra # %d", ib + 1);
       glutAddMenuEntry(menu_str, ib);
     }
+    /*
+    Set view
+    */
+    glutSetMenu(imenu_view);
+    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
+    sprintf(menu_str, "Scale");// :%6.2f", scl);
+    glutAddMenuEntry(menu_str, 1);
+    sprintf(menu_str, "Position");// :%6.2f %6.2f", trans[0], trans[1]);
+    glutAddMenuEntry(menu_str, 2);
+    sprintf(menu_str, "Rotation");// : %4.0f %4.0f %4.0f", thetax, thetay, thetaz);
+    glutAddMenuEntry(menu_str, 3);
+    
     glutPostRedisplay();
   }
 }/*void FS_ModifyMenu*/
@@ -586,20 +601,18 @@ void FS_ModifyMenu(
 */
 void FS_CreateMenu()
 {
-  int ib, imenu_shiftEF, imenu_view, imenu_linewidth;
-  char menu_str[20] = { 0 };
+  int ib;
+  char menu_str[50] = { 0 };
   /*
-   Mouse drag works as ...
+  Background color
   */
-  imenu_mouse = glutCreateMenu(menu_mouse);
-  if (lmouse == 1) glutAddMenuEntry("[x] Rotate", 1);
-  else glutAddMenuEntry("[ ] Rotate", 1);
-  if (lmouse == 2) glutAddMenuEntry("[x] Scale", 2);
-  else glutAddMenuEntry("[ ] Scale", 2);
-  if (lmouse == 3) glutAddMenuEntry("[x] Translate", 3);
-  else glutAddMenuEntry("[ ] Translate", 3);
+  imenu_background = glutCreateMenu(menu_background);
+  if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
+  else glutAddMenuEntry("[ ] Black", 1);
+  if (blackback == 0) glutAddMenuEntry("[x] White", 0);
+  else glutAddMenuEntry("[ ] White", 0);
   /*
-   On/Off  each band 
+  On/Off  each band
   */
   imenu_band = glutCreateMenu(menu_band);
   for (ib = 0; ib < nb; ib++) {
@@ -608,38 +621,21 @@ void FS_CreateMenu()
     glutAddMenuEntry(menu_str, ib);
   }
   /*
-   Shift Fermi energy
+  Brillouin zone
   */
-  imenu_shiftEF = glutCreateMenu(menu_shiftEF);
-  glutAddMenuEntry("Shift Fermi energy", 1);
+  imenu_bzmode = glutCreateMenu(menu_brillouinzone);
+  if (fbz == 1) glutAddMenuEntry("[x] First Brillouin zone", 1);
+  else glutAddMenuEntry("[ ] First Brillouin zone", 1);
+  if (fbz == -1) glutAddMenuEntry("[x] Primitive Brillouin zone", 2);
+  else glutAddMenuEntry("[ ] Primitive Brillouin zone", 2);
   /*
-  Line width
+  Colorbar on/off
   */
-  imenu_linewidth = glutCreateMenu(menu_linewidth);
-  glutAddMenuEntry("Line width", 1);
+  imenu_colorbar = glutCreateMenu(menu_colorbar);
+  if (lcolorbar == 1) glutAddMenuEntry("[x] Color bar", 1);
+  else glutAddMenuEntry("[ ] Color bar", 1);
   /*
-   Modify interpolation ratio
-  */
-  sprintf(menu_str, "Ratio : %d", interpol);
-  imenu_interpol = glutCreateMenu(menu_interpol);
-  glutAddMenuEntry(menu_str, 1);
-  /*
-   Set view
-  */
-  imenu_view = glutCreateMenu(menu_view);
-  glutAddMenuEntry("Scale", 1);
-  glutAddMenuEntry("Position", 2);
-  glutAddMenuEntry("Rotation", 3);
-  /*
-   Background color
-  */
-  imenu_bgcolor = glutCreateMenu(menu_bgcolor);
-  if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
-  else glutAddMenuEntry("[ ] Black", 1);
-  if (blackback == 0) glutAddMenuEntry("[x] White", 2);
-  else glutAddMenuEntry("[ ] White", 2);
-  /*
-   Color scale mode
+  Color scale mode
   */
   imenu_colorscale = glutCreateMenu(menu_colorscale);
   if (fcscl == 1) glutAddMenuEntry("[x] Auto", 1);
@@ -651,29 +647,58 @@ void FS_CreateMenu()
   if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
   else glutAddMenuEntry("[ ] Periodic", 4);
   /*
-   Brillouin zone
+  Modify interpolation ratio
   */
-  imenu_bzmode = glutCreateMenu(menu_bzmode);
-  if (fbz == 1) glutAddMenuEntry("[x] First Brillouin zone", 1);
-  else glutAddMenuEntry("[ ] First Brillouin zone", 1);
-  if (fbz == -1) glutAddMenuEntry("[x] Primitive Brillouin zone", 2);
-  else glutAddMenuEntry("[ ] Primitive Brillouin zone", 2);
+  sprintf(menu_str, "Ratio : %d", interpol);
+  imenu_interpol = glutCreateMenu(menu_interpol);
+  glutAddMenuEntry(menu_str, 1);
   /*
-   Nodeline on/off
+  Switch lighting
+  */
+  imenu_light = glutCreateMenu(menu_lighting);
+  if (lside == 1) glutAddMenuEntry("[x] Both side", 1);
+  else glutAddMenuEntry("[ ] Both side", 1);
+  if (lside == 2) glutAddMenuEntry("[x] Unoccupied side", 2);
+  else glutAddMenuEntry("[ ] Unoccupied side", 2);
+  if (lside == 3) glutAddMenuEntry("[x] Occupied side", 3);
+  else glutAddMenuEntry("[ ] Occupied side", 3);
+  /*
+  Line width
+  */
+  imenu_line = glutCreateMenu(menu_line);
+  sprintf(menu_str, "Line width : %3.1f", linewidth);
+  glutAddMenuEntry(menu_str, 1);
+  /*
+   Mouse drag works as ...
+  */
+  imenu_mouse = glutCreateMenu(menu_mouse);
+  if (lmouse == 1) glutAddMenuEntry("[x] Rotate", 1);
+  else glutAddMenuEntry("[ ] Rotate", 1);
+  if (lmouse == 2) glutAddMenuEntry("[x] Scale", 2);
+  else glutAddMenuEntry("[ ] Scale", 2);
+  if (lmouse == 3) glutAddMenuEntry("[x] Translate", 3);
+  else glutAddMenuEntry("[ ] Translate", 3);
+  /*
+  Nodeline on/off
   */
   imenu_nodeline = glutCreateMenu(menu_nodeline);
-  if (nodeline == 1) glutAddMenuEntry("[x] On", 1);
-  else glutAddMenuEntry("[ ] On", 1);
-  if (nodeline == 0) glutAddMenuEntry("[x] Off", 2);
-  else glutAddMenuEntry("[ ] Off", 2);
+  if (nodeline == 1) glutAddMenuEntry("[x] Nodal line", 0);
+  else glutAddMenuEntry("[ ] Nodal line", 0);
   /*
-   Colorbar on/off
+  2D Fermi lines
   */
-  imenu_colorbar = glutCreateMenu(menu_colorbar);
-  if (lcolorbar == 1) glutAddMenuEntry("[x] On", 1);
-  else glutAddMenuEntry("[ ] On", 1);
-  if (lcolorbar == 0) glutAddMenuEntry("[x] Off", 2);
-  else glutAddMenuEntry("[ ] Off", 2);
+  imenu_section = glutCreateMenu(menu_section);
+  if (fbz == -1) glutAddMenuEntry("[Cannot] Section", 0);
+  else if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
+  else glutAddMenuEntry("[ ] Section", 1);
+  glutAddMenuEntry("Modify section", 2);
+  glutAddMenuEntry("Modify section (across Gamma)", 3);
+  /*
+  Shift Fermi energy
+  */
+  imenu_shift = glutCreateMenu(menu_shift);
+  sprintf(menu_str, "Fermi energy :%9.5f", EF);
+  glutAddMenuEntry(menu_str, 1);
   /*
    Stereogram
   */
@@ -685,15 +710,6 @@ void FS_CreateMenu()
   if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
   else glutAddMenuEntry("[ ] Cross", 3);
   /*
-   2D Fermi lines
-  */
-  imenu_section = glutCreateMenu(menu_section);
-  if (fbz == -1) glutAddMenuEntry("[Cannot] Section", 0); 
-  else if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
-  else glutAddMenuEntry("[ ] Section", 1);
-  glutAddMenuEntry("Modify section", 2);
-  glutAddMenuEntry("Modify section (across Gamma)", 3);
-  /*
    Tetrahedron 
   */
   imenu_tetra = glutCreateMenu(menu_tetra);
@@ -703,23 +719,33 @@ void FS_CreateMenu()
     glutAddMenuEntry(menu_str, ib);
   }
   /*
+  Set view
+  */
+  imenu_view = glutCreateMenu(menu_view);
+  sprintf(menu_str, "Scale");// :%6.2f", scl);
+  glutAddMenuEntry(menu_str, 1);
+  sprintf(menu_str, "Position");// :%6.2f %6.2f", trans[0], trans[1]);
+  glutAddMenuEntry(menu_str, 2);
+  sprintf(menu_str, "Rotation");// : %4.0f %4.0f %4.0f", thetax, thetay, thetaz);
+  glutAddMenuEntry(menu_str, 3);
+  /*
    Main menu
   */
   imenu = glutCreateMenu(main_menu);
+  glutAddSubMenu("Background color", imenu_background);
   glutAddSubMenu("Band", imenu_band);
-  glutAddSubMenu("Mouse Drag", imenu_mouse);
-  glutAddSubMenu("Shift Fermi energy", imenu_shiftEF);
-  glutAddSubMenu("Line width", imenu_linewidth);
-  glutAddSubMenu("Interpolation", imenu_interpol);
-  glutAddSubMenu("Set view", imenu_view);
-  glutAddSubMenu("Background color", imenu_bgcolor);
-  glutAddSubMenu("Color scale mode", imenu_colorscale);
   glutAddSubMenu("Brillouin zone", imenu_bzmode);
-  glutAddSubMenu("Node lines", imenu_nodeline);
-  glutAddSubMenu("Color bar On/Off", imenu_colorbar);
-  glutAddSubMenu("Stereogram", imenu_stereo);
+  glutAddSubMenu("Color bar", imenu_colorbar);
+  glutAddSubMenu("Color scale mode", imenu_colorscale);
+  glutAddSubMenu("Interpolation", imenu_interpol);
+  glutAddSubMenu("Lighting", imenu_light);
+  glutAddSubMenu("Line width", imenu_line);
+  glutAddSubMenu("Mouse Drag", imenu_mouse);
+  glutAddSubMenu("Nodal line", imenu_nodeline);
   glutAddSubMenu("Section", imenu_section);
+  glutAddSubMenu("Shift Fermi energy", imenu_shift);
+  glutAddSubMenu("Stereogram", imenu_stereo);
   glutAddSubMenu("Tetrahedron", imenu_tetra);
-  glutAddMenuEntry("Exit", 9);
+  glutAddSubMenu("View point", imenu_view);
   glutAttachMenu(GLUT_RIGHT_BUTTON);
 }

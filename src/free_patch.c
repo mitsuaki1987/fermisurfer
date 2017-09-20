@@ -44,6 +44,7 @@ void free_patch() {
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < ntri[ib]; ++i0) {
       for (i1 = 0; i1 < 3; ++i1) {
+        free(nmlp[ib][i0][i1]);
         free(kvp[ib][i0][i1]);
       }
       free(nmlp[ib][i0]);

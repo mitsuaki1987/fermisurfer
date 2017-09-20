@@ -273,6 +273,8 @@ void initialize_val() {
   itet = 0;
   EF = 0.0;
   interpol = 1;
+  side = 1.0;
+  lside = 1;
   /*
    Size & Position & Direction of figure
   */

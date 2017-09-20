@@ -50,7 +50,7 @@ static void draw_fermi() {
    First, rotate k-vector and normal vector
   */
 #pragma omp parallel default(none) \
-  shared(nb,draw_band,ntri,rot,nmlp,nmlp_rot,kvp,kvp_rot,trans) \
+  shared(nb,draw_band,ntri,rot,nmlp,nmlp_rot,kvp,kvp_rot,trans,side) \
   private(ib)
   {
     int i, j, itri;
@@ -67,9 +67,10 @@ static void draw_fermi() {
                 + rot[j][2] * kvp[ib][itri][i][2]
                 + trans[j];
               nmlp_rot[ib][j + 3 * i + 9 * itri]
-                = rot[j][0] * nmlp[ib][itri][0]
-                + rot[j][1] * nmlp[ib][itri][1]
-                + rot[j][2] * nmlp[ib][itri][2];
+                = rot[j][0] * nmlp[ib][itri][i][0]
+                + rot[j][1] * nmlp[ib][itri][i][1]
+                + rot[j][2] * nmlp[ib][itri][i][2];
+              nmlp_rot[ib][j + 3 * i + 9 * itri] *= side;
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -112,7 +113,8 @@ static void draw_fermi() {
                 = rot[j][0] * kvnl[ib][itri][i][0]
                 + rot[j][1] * kvnl[ib][itri][i][1]
                 + rot[j][2] * kvnl[ib][itri][i][2]
-                + trans[j] + 0.001f;
+                + trans[j];
+              kvnl_rot[ib][2 + 3 * i + 6 * itri] += 0.001f;
             }/*for (i = 0; i < 2; ++i)*/
           }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
         }/*if (draw_band[ib] == 1)*/
