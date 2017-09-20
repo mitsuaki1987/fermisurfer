@@ -75,6 +75,7 @@ with a color-plot of the arbitraly matrix element
 #include "free_patch.h"
 #include "section.h"
 #include "kumo.h"
+#include "equator.h"
 
 #if defined(_OPENMP)
 #include <omp.h>

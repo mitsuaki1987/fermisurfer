@@ -89,6 +89,7 @@ void read_file(
   for (ib = 0; ib < nb; ib++) ntri_th[ib] = (int*)malloc(nthreads * sizeof(int));
   nnl = (int*)malloc(nb * sizeof(int));
   n2d = (int*)malloc(nb * sizeof(int));
+  nequator = (int*)malloc(nb * sizeof(int));
   draw_band = (int*)malloc(nb * sizeof(int));
   for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
   /*
@@ -108,7 +109,10 @@ void read_file(
     solve3(bvec, avec[i]);
     printf("    avec %d : %f %f %f \n", i + 1, avec[i][0], avec[i][1], avec[i][2]);
   }/*for (i = 0; i < 3; ++i)*/
-  for (i = 0; i < 3; ++i) secvec[i] = bvec[2][i];
+  for (i = 0; i < 3; ++i) {
+    secvec[i] = bvec[2][i];
+    eqvec[i] = bvec[2][i];
+  }
   secscale = 0.0;
   /*
    Allocation of Kohn-Sham energies $ matrix elements

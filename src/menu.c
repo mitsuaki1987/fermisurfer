@@ -43,6 +43,7 @@ THE SOFTWARE.
 #include "kumo.h"
 #include "initialize.h"
 #include "section.h"
+#include "equator.h"
 
 void compute_patch_segment() {
   query = 1; fermi_patch();
@@ -52,6 +53,8 @@ void compute_patch_segment() {
   query = 0; calc_nodeline();
   query = 1; calc_section();
   query = 0; calc_section();
+  query = 1; equator();
+  query = 0; equator();
 }
 
 static void refresh_patch_segment() {
@@ -157,6 +160,59 @@ static void menu_colorscale(
     glutPostRedisplay();
   }
 } /* menu_colorscale */
+/**
+ @brief Modify and toggle appearance of equator (::lequator)
+*/
+static void menu_equator(
+  int value //!<[in] Selected menu
+)
+{
+  int ierr, ii, jj, ib;
+  GLfloat vec[3];
+
+  if (value == 1) {
+    if (lequator != 1) lequator = 1;
+    else lequator = 0;
+    glutPostRedisplay();
+  }/*if (value == 1)*/
+  else {
+
+    printf("    New Miller index : ");
+    ierr = scanf("%f %f %f", &vec[0], &vec[1], &vec[2]);
+    /*
+     Fractional -> Cartecian
+    */
+    for (ii = 0; ii < 3; ii++) {
+      eqvec[ii] = 0.0;
+      for (jj = 0; jj < 3; jj++) {
+        eqvec[ii] += vec[jj] * bvec[jj][ii];
+      }/*for (jj = 0; jj < 3; jj++)*/
+    }/*for (ii = 0; ii < 3; ii++)*/
+    /*
+     Free variables for equator
+    */
+    for (ib = 0; ib < nb; ++ib) {
+      for (ii = 0; ii < nequator[ib]; ++ii) {
+        for (jj = 0; jj < 2; ++jj) {
+          free(kveq[ib][ii][jj]);
+        }/*for (i1 = 0; i1 < 2; ++i1)*/
+        free(kveq[ib][ii]);
+      }/*for (i0 = 0; i0 < nequator[ib]; ++i0)*/
+      free(kveq[ib]);
+      free(kveq_rot[ib]);
+      free(nmleq[ib]);
+      free(clreq[ib]);
+    }/*for (ib = 0; ib < nb; ++ib)*/
+    free(kveq);
+    free(kveq_rot);
+    free(nmleq);
+    free(clreq);
+
+    query = 1; equator();
+    query = 0; equator();
+    glutPostRedisplay();
+  }/*else if (value > 1)*/
+} /*void menu_equator*/
 /**
  @brief Modify interpolation ratio
 
@@ -501,6 +557,14 @@ void FS_ModifyMenu(
     if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
     else glutAddMenuEntry("[ ] Periodic", 4);
     /*
+    Equator
+    */
+    glutSetMenu(imenu_equator);
+    for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
+    if (lequator == 1) glutAddMenuEntry("[x] Equator", 1);
+    else glutAddMenuEntry("[ ] Equator", 1);
+    glutAddMenuEntry("Modify euqtor", 2);
+    /*
     Interpolation ratio
     */
     glutSetMenu(imenu_interpol);
@@ -647,7 +711,14 @@ void FS_CreateMenu()
   if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
   else glutAddMenuEntry("[ ] Periodic", 4);
   /*
-  Modify interpolation ratio
+  Equator
+  */
+  imenu_equator = glutCreateMenu(menu_equator);
+  if (lequator == 1) glutAddMenuEntry("[x] Equator", 1);
+  else glutAddMenuEntry("[ ] Equator", 1);
+  glutAddMenuEntry("Modify euqtor", 2);
+  /*
+  Interpolation ratio
   */
   sprintf(menu_str, "Ratio : %d", interpol);
   imenu_interpol = glutCreateMenu(menu_interpol);
@@ -737,6 +808,7 @@ void FS_CreateMenu()
   glutAddSubMenu("Brillouin zone", imenu_bzmode);
   glutAddSubMenu("Color bar", imenu_colorbar);
   glutAddSubMenu("Color scale mode", imenu_colorscale);
+  glutAddSubMenu("Equator", imenu_equator);
   glutAddSubMenu("Interpolation", imenu_interpol);
   glutAddSubMenu("Lighting", imenu_light);
   glutAddSubMenu("Line width", imenu_line);

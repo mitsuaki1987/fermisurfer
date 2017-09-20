@@ -105,10 +105,11 @@ am_bxsf2frmsf_OBJECTS = bxsf2frmsf.$(OBJEXT)
 bxsf2frmsf_OBJECTS = $(am_bxsf2frmsf_OBJECTS)
 bxsf2frmsf_LDADD = $(LDADD)
 am_fermisurfer_OBJECTS = basic_math.$(OBJEXT) bz_lines.$(OBJEXT) \
-	calc_nodeline.$(OBJEXT) draw.$(OBJEXT) fermi_patch.$(OBJEXT) \
-	fermisurfer.$(OBJEXT) free_patch.$(OBJEXT) \
-	initialize.$(OBJEXT) kumo.$(OBJEXT) menu.$(OBJEXT) \
-	operation.$(OBJEXT) read_file.$(OBJEXT) section.$(OBJEXT)
+	calc_nodeline.$(OBJEXT) draw.$(OBJEXT) equator.$(OBJEXT) \
+	fermi_patch.$(OBJEXT) fermisurfer.$(OBJEXT) \
+	free_patch.$(OBJEXT) initialize.$(OBJEXT) kumo.$(OBJEXT) \
+	menu.$(OBJEXT) operation.$(OBJEXT) read_file.$(OBJEXT) \
+	section.$(OBJEXT)
 fermisurfer_OBJECTS = $(am_fermisurfer_OBJECTS)
 fermisurfer_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -285,12 +286,12 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MAINTAINERCLEANFILES = Makefile.in
-fermisurfer_SOURCES = basic_math.c bz_lines.c calc_nodeline.c draw.c \
+fermisurfer_SOURCES = basic_math.c bz_lines.c calc_nodeline.c draw.c equator.c \
                       fermi_patch.c fermisurfer.c free_patch.c initialize.c kumo.c \
                       menu.c operation.c read_file.c section.c \
                       basic_math.h bz_lines.h calc_nodeline.h draw.h fermi_patch.h \
                       free_patch.h initialize.h kumo.h menu.h operation.h \
-                      read_file.h section.h variable.h 
+                      read_file.h section.h variable.h equator.h
 
 bxsf2frmsf_SOURCES = bxsf2frmsf.c
 all: all-am
@@ -388,6 +389,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bz_lines.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calc_nodeline.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/draw.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/equator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermi_patch.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fermisurfer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/free_patch.Po@am__quote@

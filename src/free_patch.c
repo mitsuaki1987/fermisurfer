@@ -94,6 +94,26 @@ void free_patch() {
   free(kv2d);
   free(clr2d);
   free(nml2d);
+  /*
+  equator
+  */
+  for (ib = 0; ib < nb; ++ib) {
+    for (i0 = 0; i0 < nequator[ib]; ++i0) {
+      for (i1 = 0; i1 < 2; ++i1) {
+        free(kveq[ib][i0][i1]);
+      }/*for (i1 = 0; i1 < 2; ++i1)*/
+      free(kveq[ib][i0]);
+    }/*for (i0 = 0; i0 < nequator[ib]; ++i0)*/
+    free(kveq[ib]);
+    free(kveq_rot[ib]);
+    free(nmleq[ib]);
+    free(clreq[ib]);
+  }/*for (ib = 0; ib < nb; ++ib)*/
+  free(kveq);
+  free(kveq_rot);
+  free(nmleq);
+  free(clreq);
+
 }/*void free_patch()*/
 /**
  @brief Compute Max. & Min. of matrix elements.

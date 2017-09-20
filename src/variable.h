@@ -70,12 +70,13 @@ int lstereo;   //!< Switch for the stereogram
 int lmouse;    //!< Switch for the mouse function
 int lsection;  //!< Switch for the 2D Fermi lines
 int lside;     //!< Switch for lighting
+int lequator;   //!< Switch for equator
 /*
  Menu
 */
 int imenu_band, imenu_interpol, imenu_background, imenu_colorscale, imenu_bzmode, imenu_section, 
 imenu_nodeline, imenu_colorbar, imenu_tetra, imenu_stereo, imenu_mouse, imenu_light, 
-imenu_line, imenu_shift, imenu_view, imenu;
+imenu_line, imenu_shift, imenu_view, imenu_equator, imenu;
 /*
  Variables for Brillouin zone boundaries
 */
@@ -119,6 +120,15 @@ GLfloat **nml2d;          //!< Normal-vector for 2D plot [::nb][::n2d*2*3]
 int nbzl2d;                //!< The number of Lines of 1st Brillouin zone
 GLfloat bzl2d[26][3];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
 GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
+/*
+ Equator
+*/
+GLfloat eqvec[3]; //!<  @f$k@f$-vector for equator
+int *nequator;             //!< The number of equator
+GLfloat ****kveq;     //!< @f$k@f$-vector of equator [::nb][::nequator][2][3]
+GLfloat **kveq_rot; //!< @f$k@f$-vector of equator [::nb][::nequator*2*3]
+GLfloat **nmleq;//!< Normal vector of equator [::nb][::nequator*2*3]
+GLfloat **clreq;//!< Color of equator [::nb][::nequator*2*4]
 /*
   Variables for mouse  & cursorkey
 */

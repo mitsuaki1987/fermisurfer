@@ -275,6 +275,7 @@ void initialize_val() {
   interpol = 1;
   side = 1.0;
   lside = 1;
+  lequator = 0;
   /*
    Size & Position & Direction of figure
   */

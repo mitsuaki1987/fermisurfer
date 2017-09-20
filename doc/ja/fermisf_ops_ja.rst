@@ -117,95 +117,6 @@ Windowsの場合
 
 次から右クリックで表示されるメニューを説明します.
 
-Band
-----
-
-バンド毎の表示on/offを切り替えます(図 :num:`bandpng`).
-
-.. _bandpng:
-     
-.. figure:: ../figs/band.png
-
-   "Band" メニューで3番目のバンドの表示/非表示を切り替える.
-
-Mouse Drag
-----------
-
-マウスの左ボタンドラッグを行った時の動作を変更します.
-
-Rotate(デフォルト)
-    ドラッグをした方向に図形を回転させます.
-
-Scale
-    上方にドラッグすると図形を拡大,
-    下方にドラッグすると図形を縮小します.
-
-Translate
-    ドラッグした方向に図形を動かします.
-
-Shift Fermi energy
-------------------
-
-Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
-このメニューを選択すると次のようにインプット中の最小のエネルギー,
-最大のエネルギー, 現在のFermiエネルギーが標準出力として表示されます.
-
-::
-
-    Min  Max  E_F 
-    -0.428153 0.497620 0.000000 
-    Fermi energy shift : 
-        
-
-次に新しいFermiエネルギーを入力すると, Fermi面が再描画されます (図 :num:`shiftpng`).
-
-.. _shiftpng:
-     
-.. figure:: ../figs/shift.png
-
-   "Shift Fermi energy"メニューで Fermi エネルギーを0.0 Ryから0.1 Ryに変える.
-
-Interpolation
--------------
-
-補間により図の曲面を滑らかにします (図 :num:`interpolatepng`).
-コンソールの
-
-::
-
-   New interpolation ratio :
-
-の後に分点数を入力してください. ただし分点数を増やすと描画にかかる時間も増えます.
-
-.. _interpolatepng:
-     
-.. figure:: ../figs/interpolate.png
-
-   "Interpolate"メニューで 分点数を1から4に変える.
-   
-Set view
---------
-
-視点を変更します.
-
-Scale
-    図形のサイズを指定します.
-
-Position
-    図形の上下位置を指定します.
-
-Rotation
-    x,y,z軸周りの回転角を指定します.回転操作はz軸-y軸-x軸の順で行われます
-
-それぞれのメニューを選択すると, はじめに現在の値が表示され,
-その後変更後の値を入れるプロンプトが現れます(図 :num:`setviewpng`).
-
-.. _setviewpng:
-     
-.. figure:: ../figs/setview.png
-
-   "Set view"メニューで 視点を変更する.
-
 Background color
 ----------------
 
@@ -217,6 +128,46 @@ Zoneの枠線も白/黒と切り替わります (図 :num:`backgroundpng`).
 .. figure:: ../figs/background.png
 
    "Background color"メニューで背景色を白/黒に切り替える.
+
+Band
+----
+
+バンド毎の表示on/offを切り替えます(図 :num:`bandpng`).
+
+.. _bandpng:
+     
+.. figure:: ../figs/band.png
+
+   "Band" メニューで3番目のバンドの表示/非表示を切り替える.
+
+Brillouin zone
+--------------
+
+描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
+切り替える事が出来ます (図 :num:`brillouinzonepng`).
+
+Fisrst Brillouin Zone
+    :math:`{\rm \Gamma}` 点から一番近いBragg面で囲まれた領域
+
+Primitive Brillouine Zone
+    逆格子ベクトルを辺とする平行6面体領域
+
+.. _brillouinzonepng:
+     
+.. figure:: ../figs/brillouinzone.png
+
+   "Brillouin zone" メニューでBrillouin領域のとり方を変更する.
+
+Color bar
+---------
+
+カラーバーの表示/非表示を切り替えます(図 :num:`colorbarpng`).
+
+.. _colorbarpng:
+     
+.. figure:: ../figs/colorbar.png
+
+   "Color bar On/Off" メニューでカラーバーの表示/非表示を切り替える.
 
 Color scale mode
 ----------------
@@ -247,65 +198,86 @@ Periodic
 
    "Color scale mode" メニュー.
 
-Brillouin zone
---------------
+Equator
+-------
 
-描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
-切り替える事が出来ます (図 :num:`brillouinzonepng`).
+ある :math:`{\bf k}` に対して,
+:math:`{\bf v}_{\rm F} \cdot {\bf k} = 0` となる線を表示します.
+   
+Equator
+   Equatorの表示・非表示を切り替えます.
 
-Fisrst Brillouin Zone
-    :math:`{\rm \Gamma}` 点から一番近いBragg面で囲まれた領域
+Modify equator
+   :math:`{\bf k}` を指定します. コンソールの
 
-Primitive Brillouine Zone
-    逆格子ベクトルを辺とする平行6面体領域
+   ::
 
-.. _brillouinzonepng:
+       New Miller index : 
+
+   の後に :math:`{\bf k}` ベクトル(フラクショナル座標)を入力してください.
+       
+Interpolation
+-------------
+
+補間により図の曲面を滑らかにします (図 :num:`interpolatepng`).
+コンソールの
+
+::
+
+   New interpolation ratio :
+
+の後に分点数を入力してください. ただし分点数を増やすと描画にかかる時間も増えます.
+
+.. _interpolatepng:
      
-.. figure:: ../figs/brillouinzone.png
+.. figure:: ../figs/interpolate.png
 
-   "Brillouin zone" メニューでBrillouin領域のとり方を変更する.
+   "Interpolate"メニューで 分点数を1から4に変える.
 
-Node line
+Lighting
+--------
+
+光を当てる面を変更します.
+
+Both side
+    Fermi面の表裏両面に光を当てます.
+
+Unoccupied side
+    非占有領域側のみに光を当てます.
+   
+Occupied side
+    占有領域側のみに光を当てます.
+
+Line width
+----------
+
+ブリルアンゾーンの境界やノーダルライン等の線幅を変更します.
+   
+Mouse Drag
+----------
+
+マウスの左ボタンドラッグを行った時の動作を変更します.
+
+Rotate(デフォルト)
+    ドラッグをした方向に図形を回転させます.
+
+Scale
+    上方にドラッグすると図形を拡大,
+    下方にドラッグすると図形を縮小します.
+
+Translate
+    ドラッグした方向に図形を動かします.
+
+Nodal line
 ---------
 
-物理量が0となるところに引く線(node line)のOn/Offを切り替えます(図 :num:`nodelinepng`).
+物理量が0となるところに引く線(ノーダルライン)のOn/Offを切り替えます(図 :num:`nodelinepng`).
 
 .. _nodelinepng:
      
 .. figure:: ../figs/nodeline.png
 
-   "Node line" メニューでnode lineの表示/非表示を切り替える.
-
-Color bar On/Off
-----------------
-
-カラーバーの表示/非表示を切り替えます(図 :num:`colorbarpng`).
-
-.. _colorbarpng:
-     
-.. figure:: ../figs/colorbar.png
-
-   "Color bar On/Off" メニューでカラーバーの表示/非表示を切り替える.
-
-Stereogram
-----------
-
-裸眼立体視用の図の表示/非表示を切り替えます(図 :num:`stereogrampng`).
-
-None (デフォルト)
-    立体視を無効にします.
-
-Parallel
-    平行法用の図を表示します.
-
-Cross
-    交差法用の図を表示します.
-
-.. _stereogrampng:
-     
-.. figure:: ../figs/stereogram.png
-
-   "Stereogram" メニューで立体視用画像を表示する.
+   "Nodal line" メニューでnodal lineの表示/非表示を切り替える.
 
 Section
 -------
@@ -342,6 +314,48 @@ Modify Section (across Gamma)
 
    "Section" メニューでFermi面の断面を表示する.
 
+Shift Fermi energy
+------------------
+
+Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
+このメニューを選択すると次のようにインプット中の最小のエネルギー,
+最大のエネルギー, 現在のFermiエネルギーが標準出力として表示されます.
+
+::
+
+    Min  Max  E_F 
+    -0.428153 0.497620 0.000000 
+    Fermi energy shift : 
+        
+
+次に新しいFermiエネルギーを入力すると, Fermi面が再描画されます (図 :num:`shiftpng`).
+
+.. _shiftpng:
+     
+.. figure:: ../figs/shift.png
+
+   "Shift Fermi energy"メニューで Fermi エネルギーを0.0 Ryから0.1 Ryに変える.
+
+Stereogram
+----------
+
+裸眼立体視用の図の表示/非表示を切り替えます(図 :num:`stereogrampng`).
+
+None (デフォルト)
+    立体視を無効にします.
+
+Parallel
+    平行法用の図を表示します.
+
+Cross
+    交差法用の図を表示します.
+
+.. _stereogrampng:
+     
+.. figure:: ../figs/stereogram.png
+
+   "Stereogram" メニューで立体視用画像を表示する.
+
 Tetrahedron
 -----------
 
@@ -349,10 +363,28 @@ Tetrahedron
 図が綺麗になる可能性がありますが,
 多くの場合は逆に図がギザギザして汚くなるようです.
 
-Exit
+View
 ----
 
-Fermi Surferを終了します.
+視点を変更します.
+
+Scale
+    図形のサイズを指定します.
+
+Position
+    図形の上下位置を指定します.
+
+Rotation
+    x,y,z軸周りの回転角を指定します.回転操作はz軸-y軸-x軸の順で行われます
+
+それぞれのメニューを選択すると, はじめに現在の値が表示され,
+その後変更後の値を入れるプロンプトが現れます(図 :num:`setviewpng`).
+
+.. _setviewpng:
+     
+.. figure:: ../figs/setview.png
+
+   "View"メニューで 視点を変更する.
 
 画像の保存方法
 --------------

@@ -132,6 +132,50 @@ static void draw_fermi() {
       }/*if (draw_band[ib] == 1)*/
     }/* for (ib = 0; ib < nb; ib++)*/
   }/*if (nodeline == 1)*/
+  /*
+   Equator
+  */
+  if (lequator == 1) {
+    /*
+    First, rotate k-vector
+    */
+#pragma omp parallel default(none) \
+    shared(nb,draw_band,nequator,rot,trans,kveq,kveq_rot) \
+    private(ib)
+  {
+    int i, j, itri;
+
+    for (ib = 0; ib < nb; ib++) {
+      /**/
+      if (draw_band[ib] == 1) {
+#pragma omp for nowait
+        for (itri = 0; itri < nequator[ib]; ++itri) {
+          for (i = 0; i < 2; ++i) {
+            /**/
+            for (j = 0; j < 3; ++j)
+              kveq_rot[ib][j + 3 * i + 6 * itri]
+              = rot[j][0] * kveq[ib][itri][i][0]
+              + rot[j][1] * kveq[ib][itri][i][1]
+              + rot[j][2] * kveq[ib][itri][i][2]
+              + trans[j];
+            kveq_rot[ib][2 + 3 * i + 6 * itri] += 0.001f;
+          }/*for (i = 0; i < 2; ++i)*/
+        }/*for (itri = 0; itri < nequator[ib]; ++itri)*/
+      }/*if (draw_band[ib] == 1)*/
+    }/*for (ib = 0; ib < nb; ib++)*/
+  }/*End of parallel region*/
+   /*
+   Second, draw each lines
+   */
+  for (ib = 0; ib < nb; ib++) {
+    if (draw_band[ib] == 1) {
+      glVertexPointer(3, GL_FLOAT, 0, kveq_rot[ib]);
+      glNormalPointer(GL_FLOAT, 0, nmleq[ib]);
+      glColorPointer(4, GL_FLOAT, 0, clreq[ib]);
+      glDrawArrays(GL_LINES, 0, 2 * nequator[ib]);
+    }/*if (draw_band[ib] == 1)*/
+  }/* for (ib = 0; ib < nb; ib++)*/
+  }/*if (nodeline == 1)*/
 }/*void draw_fermi*/
 /**
  @brief Draw lines of BZ boundaries
