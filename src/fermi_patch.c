@@ -113,7 +113,7 @@ static void triangle(
         for (i = 0; i < 3; ++i) {
           mat2[i] = mat1[sw[i]];
           for (j = 0; j < 3; ++j) {
-            kvec2[i][j] = kvec1[i][j] + bshift * bragg[ibr][j];
+            kvec2[i][j] = kvec1[sw[i]][j] + bshift * bragg[ibr][j];
             vf2[i][j] = vf1[sw[i]][j];
           }
         }

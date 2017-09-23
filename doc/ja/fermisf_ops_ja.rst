@@ -202,7 +202,8 @@ Equator
 -------
 
 ある :math:`{\bf k}` に対して,
-:math:`{\bf v}_{\rm F} \cdot {\bf k} = 0` となる線を表示します.
+:math:`{\bf v}_{\rm F} \cdot {\bf k} = 0` となる線を表示します
+(図 :num:`equatorpng`).
    
 Equator
    Equatorの表示・非表示を切り替えます.
@@ -216,6 +217,12 @@ Modify equator
 
    の後に :math:`{\bf k}` ベクトル(フラクショナル座標)を入力してください.
        
+.. _equatorpng:
+     
+.. figure:: ../figs/equator.png
+
+   "Equator"メニューで Fermi面の赤道(Equator)を表示する.
+
 Interpolation
 -------------
 
@@ -231,13 +238,14 @@ Interpolation
 .. _interpolatepng:
      
 .. figure:: ../figs/interpolate.png
+   :width: 50%
 
    "Interpolate"メニューで 分点数を1から4に変える.
 
 Lighting
 --------
 
-光を当てる面を変更します.
+光を当てる面を変更します (図 :num:`lightpng`).
 
 Both side
     Fermi面の表裏両面に光を当てます.
@@ -247,6 +255,13 @@ Unoccupied side
    
 Occupied side
     占有領域側のみに光を当てます.
+
+.. _lightpng:
+     
+.. figure:: ../figs/light.png
+   :width: 50%
+
+   "Lighting"メニューで光を当てるFermi面を変更する.
 
 Line width
 ----------
@@ -269,7 +284,7 @@ Translate
     ドラッグした方向に図形を動かします.
 
 Nodal line
----------
+----------
 
 物理量が0となるところに引く線(ノーダルライン)のOn/Offを切り替えます(図 :num:`nodelinepng`).
 
@@ -383,6 +398,7 @@ Rotation
 .. _setviewpng:
      
 .. figure:: ../figs/setview.png
+   :width: 70%
 
    "View"メニューで 視点を変更する.
 

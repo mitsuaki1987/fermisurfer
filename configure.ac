@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([fermisurfer], [1.9.1], [mkawamura@issp.u-tokyo.ac.jp])
+AC_INIT([fermisurfer], [1.10.0], [mkawamura@issp.u-tokyo.ac.jp])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADERS([config.h])
