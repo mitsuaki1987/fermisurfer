@@ -130,83 +130,6 @@ It makes each band enable/disable (Fig. :num:`bandpng`).
 
             You make each band enable/disable with "Band" menu.
 
-Mouse Drag
-----------
-
-It turns the event of the mouse-left-drag.
-
-Rotate(default) : Rotate the figure along the mouse drag.
-
-Scale : Expand/shrink the figure in upward/downward drag.
-
-Translate : Translate the figure along the mouse drag.
-
-Shift Fermi energy
-------------------
-
-It shifts the Fermi energy (= 0 in default) to arbitrary value. When you
-use this menu, first, it displays minimum and maximum energy in the
-input file and the current Fermi energy;
-
-::
-
-    Min  Max  E_F 
-    -0.428153 0.497620 0.000000 
-    Fermi energy shift : 
-        
-
-Then, you should type the new Fermi energy; finally, the new Fermi
-surfaces are depicted (Fig. :num:`shiftpng`).
-
-.. _shiftpng:
-     
-.. figure:: ../figs/shift.png
-
-            The Fermi energy is set from 0 Ry to 0.1 Ry with
-            "Shift Fermi energy" menu
-
-Interpolation
--------------
-
-Smooth the Fermi surface with the interpolation (Fig. :num:`interpolatepng`).
-Please type the number of interpolation points at the prompt
-
-::
-
-   New interpolation ratio :
-
-The time for the plot increases with the interpolation ratio.
-
-.. _interpolatepng:
-     
-.. figure:: ../figs/interpolate.png
-
-   Modify the number of interpolation points from 1 to 4 with "Interpolate" menu.
-            
-Set view
---------
-
-Changing the view point.
-
-Scale
-    Change the size of the figure.
-
-Position
-    Change the xy position of the figure.
-
-Rotation
-    Change angles at x-, y-, z- axis. Rotations are performed as z-y-x
-    axis.
-
-In each menu, first the current value is printed. then a prompt to input
-the new value appears (Fig. :num:`setviewpng`).
-
-.. _setviewpng:
-     
-.. figure:: ../figs/setview.png
-
-            Modify the view point by using "Set view" menu
-
 Background color
 ----------------
 
@@ -219,6 +142,35 @@ Brillouin Zone is also toggled between white and black (Fig. :num:`backgroundpng
 
             The background color is toggled with
             "Background color" menu.
+
+Brillouin zone
+--------------
+
+You choose Brillouin-zone type as follows (Fig. :num:`brillouinzonepng`):
+
+First Brillouin Zone : The region surrounded by Bragg's planes the
+nearest to :math:`{\rm \Gamma}` point.
+
+Primitive Brillouin Zone : A hexahedron whose corner is the reciprocal
+lattice point.
+
+.. _brillouinzonepng:
+     
+.. figure:: ../figs/brillouinzone.png
+
+            You can change the type of the Brillouin zone with
+            "Brillouin zone" menu.
+
+Color bar
+---------
+
+The color bar becomes enable/disable (Fig. :num:`colorbarpng`).
+
+.. _colorbarpng:
+     
+.. figure:: ../figs/colorbar.png
+
+            Toggling the color bar with "Color bar On/Off" menu.
 
 Color scale mode
 ----------------
@@ -248,65 +200,97 @@ the color varies as red :math:`\rightarrow` yellow
 
             "Color scale mode" menu.
 
-Brillouin zone
---------------
+Equator
+-------
 
-You choose Brillouin-zone type as follows (Fig. :num:`brillouinzonepng`):
+We can draw the line where 
+:math:`{\bf v}_{\rm F} \cdot {\bf k} = 0` for a vector :math:`{\bf k}`
+(equator). See fig. :num:`equatorpng`
+   
+Equator
+   Toggle the equator.
 
-First Brillouin Zone : The region surrounded by Bragg's planes the
-nearest to :math:`{\rm \Gamma}` point.
+Modify equator
+   We specify the :math:`{\bf k}` vector.
+   Please type a vector (**fractional coordinate**) at the prompt
 
-Primitive Brillouin Zone : A hexahedron whose corner is the reciprocal
-lattice point.
+   ::
 
-.. _brillouinzonepng:
+       New Miller index : 
+
+.. _equatorpng:
      
-.. figure:: ../figs/brillouinzone.png
+.. figure:: ../figs/equator.png
 
-            You can change the type of the Brillouin zone with
-            "Brillouin zone" menu.
+   Display the equator with the "Equator" menu.
 
-Node line
----------
+Interpolation
+-------------
 
-The line on which the matrix element becomes 0 (we call it node line)
+Smooth the Fermi surface with the interpolation (Fig. :num:`interpolatepng`).
+Please type the number of interpolation points at the prompt
+
+::
+
+   New interpolation ratio :
+
+The time for the plot increases with the interpolation ratio.
+
+.. _interpolatepng:
+     
+.. figure:: ../figs/interpolate.png
+   :width: 50%
+
+   Modify the number of interpolation points from 1 to 4 with "Interpolate" menu.
+            
+Lighting
+--------
+
+We can choose the lighted side of the Fermi surface (Fig. :num:`lightpng`).
+
+Both side
+    Light both sides.
+
+Unoccupied side
+    Light unoccupied side.
+   
+Occupied side
+    Light the occupied side.
+
+.. _lightpng:
+     
+.. figure:: ../figs/light.png
+   :width: 50%
+
+   Change the lighted side by using the "Lighting" menu.
+
+Line width
+----------
+
+Modify the width of the Brillouin-zone boundary, the nodal line, etc.
+   
+Mouse Drag
+----------
+
+It turns the event of the mouse-left-drag.
+
+Rotate(default) : Rotate the figure along the mouse drag.
+
+Scale : Expand/shrink the figure in upward/downward drag.
+
+Translate : Translate the figure along the mouse drag.
+
+Nodal line
+----------
+
+The line on which the matrix element becomes 0 (we call it nodal line)
 becomes enable/disable (Fig. :num:`nodelinepng`).
 
 .. _nodelinepng:
      
 .. figure:: ../figs/nodeline.png
 
-            Toggling the node line with "Node line" menu.
-
-Color bar On/Off
-----------------
-
-The color bar becomes enable/disable (Fig. :num:`colorbarpng`).
-
-.. _colorbarpng:
-     
-.. figure:: ../figs/colorbar.png
-
-            Toggling the color bar with "Color bar On/Off" menu.
-
-Stereogram
-----------
-
-The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
-(Fig. :num:`stereogrampng`).
-
-None (Default)
-
-Parallel : Parallel-eyes stereogram
-
-Cross : Cross-eyes stereogram
-
-.. _stereogrampng:
-     
-.. figure:: ../figs/stereogram.png
-
-            The stereogram becomes enabled/disabled with
-            "Stereogram" menu.
+            Toggling the node line with "Nodal line" menu.
 
 Section
 -------
@@ -341,16 +325,79 @@ Modify Section (across Gamma)
 
    Display 2D plot of the Fermi surface (line) with "Section" menu.
 
+Shift Fermi energy
+------------------
+
+It shifts the Fermi energy (= 0 in default) to arbitrary value. When you
+use this menu, first, it displays minimum and maximum energy in the
+input file and the current Fermi energy;
+
+::
+
+    Min  Max  E_F 
+    -0.428153 0.497620 0.000000 
+    Fermi energy shift : 
+        
+
+Then, you should type the new Fermi energy; finally, the new Fermi
+surfaces are depicted (Fig. :num:`shiftpng`).
+
+.. _shiftpng:
+     
+.. figure:: ../figs/shift.png
+
+            The Fermi energy is set from 0 Ry to 0.1 Ry with
+            "Shift Fermi energy" menu
+
+Stereogram
+----------
+
+The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
+(Fig. :num:`stereogrampng`).
+
+None (Default)
+
+Parallel : Parallel-eyes stereogram
+
+Cross : Cross-eyes stereogram
+
+.. _stereogrampng:
+     
+.. figure:: ../figs/stereogram.png
+
+            The stereogram becomes enabled/disabled with
+            "Stereogram" menu.
+
 Tetrahedron
 -----------
 
 You change the scheme to divide into tetrahedra (``tetra # 1`` as default).
 It is experimental.
 
-Exit
-----
+View point
+----------
 
-This finishes ``fermisurfer``.
+Changing the view point.
+
+Scale
+    Change the size of the figure.
+
+Position
+    Change the xy position of the figure.
+
+Rotation
+    Change angles at x-, y-, z- axis. Rotations are performed as z-y-x
+    axis.
+
+In each menu, first the current value is printed. then a prompt to input
+the new value appears (Fig. :num:`setviewpng`).
+
+.. _setviewpng:
+     
+.. figure:: ../figs/setview.png
+   :width: 70%
+
+            Modify the view point by using "View point" menu
 
 Saving images
 -------------
