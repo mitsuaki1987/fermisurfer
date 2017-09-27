@@ -53,7 +53,7 @@ static int bragg_vert(
 )
 {
   int kbr, i, lbr, nbr0;
-  GLfloat bmat[3][3], rhs[3], prod, thr = (GLfloat)0.0001, det;
+  GLfloat bmat[3][3], rhs[3], prod, thr, det;
   /**/
   nbr0 = nbr;
   /**/
@@ -66,6 +66,7 @@ static int bragg_vert(
     rhs[0] = brnrm[ibr];
     rhs[1] = brnrm[jbr];
     rhs[2] = brnrm[kbr];
+    thr = sqrtf(rhs[0] * rhs[1] * rhs[2]) * 0.001f;
     /*
      if Bragg planes do not cross, roop next kbr
     */

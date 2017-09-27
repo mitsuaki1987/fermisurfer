@@ -87,7 +87,7 @@ void equator() {
             }/*for (i = 0; i < 3; ++i)*/
           }/*if (query == 0)*/
           nequator0 += 1;
-        }/*else if (mprod[2] < 0.00001 && mprod[0] < 0.00001)*/
+        }/*else if (prod[sw[0]] < 0.0 && 0.0 <= prod[sw[1]])*/
         else if ((prod[sw[1]] < 0.0 && 0.0 <= prod[sw[2]])
           || (prod[sw[1]] <= 0.0 && 0.0 < prod[sw[2]])) {
           if (query == 0) {
@@ -97,7 +97,7 @@ void equator() {
             }/*for (i = 0; i < 3; ++i)*/
           }/*if (query == 0)*/
           nequator0 += 1;
-        }/*else if (mprod[1] < 0.00001 && mprod[0] < 0.00001)*/
+        }/*else if (prod[sw[1]] < 0.0 && 0.0 <= prod[sw[2]])*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       if (query == 1) ntri_th[ib][ithread] = nequator0;
     }/*for (ib = 0; ib < nb; ib++)*/

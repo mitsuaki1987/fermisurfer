@@ -132,46 +132,96 @@ void max_and_min() {
   if (fcscl == 1) printf("  ##  Full color scale mode #############\n");
   else if (fcscl == 2) printf("  ##  Manual color scale mode #############\n");
   else if (fcscl == 3) printf("  ##  Uni-color mode #############\n");
-  else printf("  ##  Periodic color scale mode #############\n");
+  else if (fcscl == 4) printf("  ##  Periodic color scale mode #############\n");
+  else if (fcscl == 5 || fcscl == 6) printf("  ##  Color as Fermi velocity #############\n");
   printf("\n");
 
+  if (fcscl == 1 || fcscl == 2) {
 #pragma omp parallel default(none) \
-  shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
-  {
-    int i, ib;
+shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
+    {
+      int i, ib;
 
-    ithread = get_thread();
-    max_th[ithread] = -100000000.0000;
-    min_th[ithread] = 100000000.0000;
+      ithread = get_thread();
+      max_th[ithread] = matp[0][0][0];
+      min_th[ithread] = matp[0][0][0];
 
-    for (ib = 0; ib < nb; ib++) {
+      for (ib = 0; ib < nb; ib++) {
 #pragma omp for
-      for (itri = 0; itri < ntri[ib]; ++itri) {
-        for (i = 0; i < 3; ++i) {
-          if (matp[ib][itri][i] > max_th[ithread]) max_th[ithread] = matp[ib][itri][i];
-          if (matp[ib][itri][i] < min_th[ithread]) min_th[ithread] = matp[ib][itri][i];
-        }
-      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-    }/*for (ib = 0; ib < nb; ib++)*/
-  }/*End of parallel region*/
-  /**/
-  matmax = max_th[0];
-  matmin = min_th[0];
-  for (ithread = 1; ithread < nthreads; ithread++) {
-    if (max_th[ithread] > matmax) matmax = max_th[ithread];
-    if (min_th[ithread] > matmin) matmin = min_th[ithread];
-  }
-  printf("    Max. value : %f\n", matmax);
-  printf("    Min. value : %f\n\n", matmin);
-  /**/
-  if (fcscl == 2) {
-    printf("    Set min. value : ");
-    ierr = scanf("%f", &matmin);
-    if (ierr == 0) printf("error ! reading min");
-    printf("    Set max. value : ");
-    ierr = scanf("%f", &matmax);
-    if (ierr == 0) printf("error ! reading max");
-  }
+        for (itri = 0; itri < ntri[ib]; ++itri) {
+          for (i = 0; i < 3; ++i) {
+            if (matp[ib][itri][i] > max_th[ithread]) max_th[ithread] = matp[ib][itri][i];
+            if (matp[ib][itri][i] < min_th[ithread]) min_th[ithread] = matp[ib][itri][i];
+          }
+        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+      }/*for (ib = 0; ib < nb; ib++)*/
+    }/*End of parallel region*/
+    /**/
+    matmax = max_th[0];
+    matmin = min_th[0];
+    for (ithread = 1; ithread < nthreads; ithread++) {
+      if (max_th[ithread] > matmax) matmax = max_th[ithread];
+      if (min_th[ithread] > matmin) matmin = min_th[ithread];
+    }
+    printf("    Max. value : %f\n", matmax);
+    printf("    Min. value : %f\n\n", matmin);
+    /**/
+    if (fcscl == 2) {
+      printf("    Set min. value : ");
+      ierr = scanf("%f", &matmin);
+      if (ierr == 0) printf("error ! reading min");
+      printf("    Set max. value : ");
+      ierr = scanf("%f", &matmax);
+      if (ierr == 0) printf("error ! reading max");
+    }/*if (fcscl == 2)*/
+  }/*if (fcscl == 1 || fcscl == 2)*/
+  else if (fcscl == 5 || fcscl == 6) {
+#pragma omp parallel default(none) \
+shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
+    {
+      int i, j, ib;
+      GLfloat norm;
+
+      ithread = get_thread();
+      norm = 0.0f;
+      for (j = 0; j < 3; ++j) norm += nmlp[0][0][0][j] * nmlp[0][0][0][j];
+      norm = sqrtf(norm);
+      max_th[ithread] = norm;
+      min_th[ithread] = norm;
+
+      for (ib = 0; ib < nb; ib++) {
+#pragma omp for
+        for (itri = 0; itri < ntri[ib]; ++itri) {
+          for (i = 0; i < 3; ++i) {
+            norm = 0.0f;
+            for (j = 0; j < 3; ++j) norm += nmlp[ib][itri][i][j]*nmlp[ib][itri][i][j];
+            norm = sqrtf(norm);
+
+            if (norm > max_th[ithread]) max_th[ithread] = norm;
+            if (norm < min_th[ithread]) min_th[ithread] = norm;
+          }
+        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+      }/*for (ib = 0; ib < nb; ib++)*/
+    }/*End of parallel region*/
+    /**/
+    matmax = max_th[0];
+    matmin = min_th[0];
+    for (ithread = 1; ithread < nthreads; ithread++) {
+      if (max_th[ithread] > matmax) matmax = max_th[ithread];
+      if (min_th[ithread] > matmin) matmin = min_th[ithread];
+    }
+    printf("    Max. value : %f\n", matmax);
+    printf("    Min. value : %f\n\n", matmin);
+    /**/
+    if (fcscl == 6) {
+      printf("    Set min. value : ");
+      ierr = scanf("%f", &matmin);
+      if (ierr == 0) printf("error ! reading min");
+      printf("    Set max. value : ");
+      ierr = scanf("%f", &matmax);
+      if (ierr == 0) printf("error ! reading max");
+    }/*if (fcscl == 2)*/
+  }/*if (fcscl == 5 || fcscl == 6)*/
   /**/
   if (fcscl == 1 || fcscl == 2) {
 #pragma omp parallel default(none) \
@@ -208,7 +258,59 @@ private(itri)
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
-  }
+  }/*if (fcscl == 1 || fcscl == 2)*/
+  else if (fcscl == 3) {
+#pragma omp parallel default(none) \
+shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red) \
+private(itri)
+    {
+      int i, j, ib;
+      GLfloat mat2;
+
+      for (ib = 0; ib < nb; ib++) {
+        /**/
+        if (nb == 1) mat2 = 0.5f;
+        else mat2 = 1.0f / (GLfloat)(nb - 1) * (GLfloat)ib;
+        mat2 *= 4.0f;
+        /**/
+        if (mat2 <= 1.0) {
+#pragma omp for nowait
+          for (itri = 0; itri < ntri[ib]; ++itri) {
+            for (i = 0; i < 3; ++i) {
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
+            }
+          }
+        }
+        else if (mat2 <= 2.0) {
+          mat2 = mat2 - 1.0f;
+#pragma omp for nowait
+          for (itri = 0; itri < ntri[ib]; ++itri) {
+            for (i = 0; i < 3; ++i) {
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
+            }
+          }
+        }
+        else if (mat2 <= 3.0) {
+          mat2 = mat2 - 2.0f;
+#pragma omp for nowait
+          for (itri = 0; itri < ntri[ib]; ++itri) {
+            for (i = 0; i < 3; ++i) {
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
+            }
+          }
+        }
+        else {
+          mat2 = mat2 - 3.0f;
+#pragma omp for nowait
+          for (itri = 0; itri < ntri[ib]; ++itri) {
+            for (i = 0; i < 3; ++i) {
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
+            }
+          }
+        }
+      }/*for (ib = 0; ib < nb; ib++*/
+    }/*End of parallel region*/
+  }/*if (fcscl == 3)*/
   else if (fcscl == 4) {
 #pragma omp parallel default(none) \
 shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red,magenta) \
@@ -252,58 +354,47 @@ private(itri)
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
-  }
-  else {
+  }/*if (fcscl == 4)*/
+  else if (fcscl == 5 || fcscl == 6) {
 #pragma omp parallel default(none) \
-shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red) \
+shared(nb,ntri,nmlp,clr,cyan,blue,green,yellow,red,matmax,matmin) \
 private(itri)
     {
-    int i, j, ib;
-    GLfloat mat2;
+      int i, j, ib;
+      GLfloat mat2;
 
       for (ib = 0; ib < nb; ib++) {
-        /**/
-        mat2 = 1.0f / (GLfloat)(nb - 1) * (GLfloat)ib;
-        mat2 = mat2 * 4.0f;
-        /**/
-        if (mat2 <= 1.0) {
 #pragma omp for nowait
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
+        for (itri = 0; itri < ntri[ib]; ++itri) {
+          for (i = 0; i < 3; ++i) {
+            /**/
+            mat2 = 0.0f;
+            for (j = 0; j < 3; ++j) mat2 += nmlp[ib][itri][i][j] * nmlp[ib][itri][i][j];
+            mat2 = sqrtf(mat2);
+            mat2 = (mat2 - matmin) / (matmax - matmin);
+            mat2 = mat2 * 4.0f;
+            /**/
+            if (mat2 <= 1.0) {
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
             }
-          }
-        }
-        else if (mat2 <= 2.0) {
-          mat2 = mat2 - 1.0f;
-#pragma omp for nowait
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
+            else if (mat2 <= 2.0) {
+              mat2 = mat2 - 1.0f;
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
             }
-          }
-        }
-        else if (mat2 <= 3.0) {
-          mat2 = mat2 - 2.0f;
-#pragma omp for nowait
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
+            else if (mat2 <= 3.0) {
+              mat2 = mat2 - 2.0f;
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
             }
-          }
-        }
-        else {
-          mat2 = mat2 - 3.0f;
-#pragma omp for nowait
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j+4*i+12*itri] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
+            else {
+              mat2 = mat2 - 3.0f;
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
             }
-          }
-        }
-      }
+          }/*for (i = 0; i < 3; ++i)*/
+        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+      }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
-  }
+  }/*if (fcscl == 5)*/
+
   free(max_th);
   free(min_th);
 }/* max_and_min */

@@ -69,7 +69,7 @@ static void proj_2d(
 */
 static void set2daxis() {
   int ii, jj;
-  GLfloat snorm, norm;
+  GLfloat snorm, norm, thr = 0.001f;
 
   snorm = 0.0;
   for (ii = 0; ii < 3; ii++) snorm += secvec[ii] * secvec[ii];
@@ -84,10 +84,10 @@ static void set2daxis() {
     norm = 0.0;
     for (jj = 0; jj < 3; jj++) norm += axis2d[0][jj] * axis2d[0][jj];
     norm = sqrtf(norm);
-    if (norm > 0.000001) {
+    if (norm > thr) {
       for (jj = 0; jj < 3; jj++) axis2d[0][jj] /= norm;
       break;
-    }/*if (norm > 0.000001)*/
+    }/*if (norm > 0.thr)*/
   }/*for (ii = 0; ii < 3; ii++)*/
   /*
    Define the second axis with outor product
@@ -111,20 +111,23 @@ int bragg_vert2d(
 )
 {
   int kbr, i, lbr, nbr0;
-  GLfloat bmat[3][3], rhs[3], prod, thr = (GLfloat)0.0001, det;
+  GLfloat bmat[3][3], rhs[3], prod, thr, det;
   /**/
   nbr0 = nbr;
   /**/
   for (kbr = nbr0; kbr < nbragg; ++kbr) {
+    /**/
     /**/
     for (i = 0; i<3; ++i) bmat[0][i] = secvec[i];
     for (i = 0; i<3; ++i) bmat[1][i] = bragg[jbr][i];
     for (i = 0; i<3; ++i) bmat[2][i] = bragg[kbr][i];
     /**/
     rhs[0] = 0.0;
-    for (i = 0; i < 3; ++i)rhs[0] += secscale * secvec[i] * secvec[i];
+    for (i = 0; i < 3; ++i)rhs[0] += secvec[i] * secvec[i];
     rhs[1] = brnrm[jbr];
     rhs[2] = brnrm[kbr];
+    thr = sqrtf(rhs[0] * rhs[1] * rhs[2]) * 0.001f;
+    rhs[0] *= secscale;
     /*
     if Bragg planes do not cross, roop next kbr
     */
@@ -170,7 +173,7 @@ int bragg_vert2d(
 */
 void calc_2dbz() {
   int jbr, nbr, i, j, lvert, ibzl;
-  GLfloat vert[2][3], vec[26][2][3], prod;
+  GLfloat vert[2][3], vec[26][2][3], prod, thr;
   /*
    Set Projection axis for 2D plane
   */
@@ -198,25 +201,34 @@ void calc_2dbz() {
   for (i = 0; i < 3; i++) bzl2d[0][i] = vec[0][0][i];
   for (i = 0; i < 3; i++) bzl2d[1][i] = vec[0][1][i];
   for (ibzl = 0; ibzl < nbzl2d; ibzl++) {
+
+    thr = 0.0f;
+    for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) thr += bzl2d[j][i] * bzl2d[j][i];
+    thr *= 0.001f;
+
     prod = 0.0;
     for (j = 0; j < 2; j++) for (i = 0; i < 3; i++)
       prod += (bzl2d[j][i] - vec[ibzl][j][i]) * (bzl2d[j][i] - vec[ibzl][j][i]);
-    if (prod < 0.00001) 
+    if (prod < thr) 
       for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
 
     prod = 0.0;
     for (j = 0; j < 2; j++) for (i = 0; i < 3; i++)
       prod += (bzl2d[1 - j][i] - vec[ibzl][j][i]) * (bzl2d[1 - j][i] - vec[ibzl][j][i]);
-    if (prod < 0.00001)
+    if (prod < thr)
       for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
   }/*for (ibzl = 1; ibzl < nbzl2d; ibzl++)*/
 
   for (jbr = 1; jbr < nbzl2d - 1; jbr++) {
 
+    thr = 0.0f;
+    for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) thr += bzl2d[jbr][i] * bzl2d[jbr][i];
+    thr *= 0.001f;
+
     prod = 0.0;
     for (ibzl = 0; ibzl < nbzl2d; ibzl++) for (i = 0; i < 3; i++)
       prod += vec[ibzl][0][i] * vec[ibzl][0][i];
-    if (prod < 0.00001) {
+    if (prod < thr) {
       nbzl2d = jbr + 1;
       break;
     }
@@ -225,7 +237,7 @@ void calc_2dbz() {
       prod = (bzl2d[jbr][0] - vec[ibzl][0][0]) * (bzl2d[jbr][0] - vec[ibzl][0][0])
            + (bzl2d[jbr][1] - vec[ibzl][0][1]) * (bzl2d[jbr][1] - vec[ibzl][0][1])
            + (bzl2d[jbr][2] - vec[ibzl][0][2]) * (bzl2d[jbr][2] - vec[ibzl][0][2]);
-      if (prod < 0.00001) {
+      if (prod < thr) {
         for (i = 0; i < 3; i++) bzl2d[jbr + 1][i] = vec[ibzl][1][i];
         for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
       }
@@ -233,7 +245,7 @@ void calc_2dbz() {
       prod = (bzl2d[jbr][0] - vec[ibzl][1][0]) * (bzl2d[jbr][0] - vec[ibzl][1][0])
            + (bzl2d[jbr][1] - vec[ibzl][1][1]) * (bzl2d[jbr][1] - vec[ibzl][1][1])
            + (bzl2d[jbr][2] - vec[ibzl][1][2]) * (bzl2d[jbr][2] - vec[ibzl][1][2]);
-      if (prod < 0.00001) {
+      if (prod < thr) {
         for (i = 0; i < 3; i++) bzl2d[jbr + 1][i] = vec[ibzl][0][i];
         for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
       }
@@ -305,7 +317,7 @@ void calc_section() {
             proj_2d(&kv2d[ib][1 * 3 + 6 * n2d0]);
           }/*if (query == 0)*/
           n2d0 += 1;
-        }/*else if (nprod[0] < 0.00001 && nprod[2] < 0.00001)*/
+        }/*else if (norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]])*/
         else if ((norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]]) || (norm[sw[1]] <= 0.0 && 0.0 < norm[sw[2]])) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) {
@@ -326,7 +338,7 @@ void calc_section() {
             proj_2d(&kv2d[ib][1 * 3 + 6 * n2d0]);
           }/*if (query == 0)*/
           n2d0 += 1;
-        }/*else if (nprod[1] < 0.00001 && nprod[0] < 0.00001)*/
+        }/*else if (norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]])*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       if(query == 1) ntri_th[ib][ithread] = n2d0;
     }/*for (ib = 0; ib < nb; ib++)*/

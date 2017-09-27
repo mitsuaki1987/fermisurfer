@@ -159,6 +159,16 @@ static void menu_colorscale(
     max_and_min();
     glutPostRedisplay();
   }
+  else if (value == 5 && fcscl != 5) {
+    fcscl = 5;
+    max_and_min();
+    glutPostRedisplay();
+  }
+  else if (value == 6 && fcscl != 6) {
+    fcscl = 6;
+    max_and_min();
+    glutPostRedisplay();
+  }
 } /* menu_colorscale */
 /**
  @brief Modify and toggle appearance of equator (::lequator)
@@ -547,7 +557,7 @@ void FS_ModifyMenu(
     Color scale mode
     */
     glutSetMenu(imenu_colorscale);
-    for (ib = 0; ib < 4; ib++) glutRemoveMenuItem(1);
+    for (ib = 0; ib < 6; ib++) glutRemoveMenuItem(1);
     if (fcscl == 1) glutAddMenuEntry("[x] Auto", 1);
     else glutAddMenuEntry("[ ] Auto", 1);
     if (fcscl == 2) glutAddMenuEntry("[x] Manual", 2);
@@ -556,6 +566,10 @@ void FS_ModifyMenu(
     else glutAddMenuEntry("[ ] Unicolor", 3);
     if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
     else glutAddMenuEntry("[ ] Periodic", 4);
+    if (fcscl == 5) glutAddMenuEntry("[x] Fermi velocity (Auto)", 5);
+    else glutAddMenuEntry("[ ] Fermi velocity (Auto)", 5);
+    if (fcscl == 6) glutAddMenuEntry("[x] Fermi velocity (Manual)", 6);
+    else glutAddMenuEntry("[ ] Fermi velocity (Manual)", 6);
     /*
     Equator
     */
@@ -710,6 +724,10 @@ void FS_CreateMenu()
   else glutAddMenuEntry("[ ] Unicolor", 3);
   if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
   else glutAddMenuEntry("[ ] Periodic", 4);
+  if (fcscl == 5) glutAddMenuEntry("[x] Fermi velocity (Auto)", 5);
+  else glutAddMenuEntry("[ ] Fermi velocity (Auto)", 5);
+  if (fcscl == 6) glutAddMenuEntry("[x] Fermi velocity (Manual)", 6);
+  else glutAddMenuEntry("[ ] Fermi velocity (Manual)", 6);
   /*
   Equator
   */

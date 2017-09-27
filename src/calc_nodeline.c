@@ -82,7 +82,7 @@ void calc_nodeline() {
             }/*for (i = 0; i < 3; ++i)*/
           }/*if (query == 0)*/
           nnl0 += 1;
-        }/*else if (mprod[2] < 0.00001 && mprod[0] < 0.00001)*/
+        }/*else if (matp[ib][itri][sw[0]] < 0.0 && 0.0 <= matp[ib][itri][sw[1]])*/
         else if ((matp[ib][itri][sw[1]] < 0.0 && 0.0 <= matp[ib][itri][sw[2]])
           || (matp[ib][itri][sw[1]] <= 0.0 && 0.0 < matp[ib][itri][sw[2]])) {
           if (query == 0) {
@@ -92,7 +92,7 @@ void calc_nodeline() {
             }/*for (i = 0; i < 3; ++i)*/
           }/*if (query == 0)*/
           nnl0 += 1;
-        }/*else if (mprod[1] < 0.00001 && mprod[0] < 0.00001)*/
+        }/*else if (matp[ib][itri][sw[1]] < 0.0 && 0.0 <= matp[ib][itri][sw[2]])*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       if (query == 1) ntri_th[ib][ithread] = nnl0;
     }/*for (ib = 0; ib < nb; ib++)*/

@@ -86,12 +86,14 @@ static void triangle(
 )
 {
   int ibr, i, j, sw[3];
-  GLfloat prod[3], thr = 0.00001f, mat2[3], kvec2[3][3],
+  GLfloat prod[3], thr, mat2[3], kvec2[3][3],
     vf2[3][3], a[3][3], bshift, vfave[3], norm[3];
 
   if (fbz == 1) {
     /**/
     for (ibr = 0; ibr < nbragg; ++ibr) {
+
+      thr = brnrm[ibr] * 0.001f;
       /**/
       for (i = 0; i < 3; ++i) 
         prod[i] = bragg[ibr][0] * kvec1[i][0]
@@ -323,7 +325,7 @@ static void tetrahedron(
     /*
      Draw triangle in each cases
     */
-    if (eig2[sw[0]] <= 0.00 && 0.00 < eig2[sw[1]]) {
+    if (eig2[sw[0]] <= 0.0 && 0.0 < eig2[sw[1]]) {
       for (i = 0; i < 3; ++i) {
         kvec3[0][i] = kvec2[sw[0]][i] * a[0][1] + kvec2[sw[1]][i] * a[1][0];
         kvec3[1][i] = kvec2[sw[0]][i] * a[0][2] + kvec2[sw[2]][i] * a[2][0];
@@ -338,7 +340,7 @@ static void tetrahedron(
       mat3[2] = mat2[sw[0]] * a[0][3] + mat2[sw[3]] * a[3][0];
       triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
-    else if (eig2[sw[1]] <= 0.00 && 0.00 < eig2[sw[2]]) {
+    else if (eig2[sw[1]] <= 0.0 && 0.0 < eig2[sw[2]]) {
       for (i = 0; i < 3; ++i) {
         kvec3[0][i] = kvec2[sw[0]][i] * a[0][2] + kvec2[sw[2]][i] * a[2][0];
         kvec3[1][i] = kvec2[sw[0]][i] * a[0][3] + kvec2[sw[3]][i] * a[3][0];
@@ -367,7 +369,7 @@ static void tetrahedron(
       mat3[2] = mat2[sw[1]] * a[1][2] + mat2[sw[2]] * a[2][1];
       triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
-    else if (eig2[sw[2]] <= 0.00 && 0.00 < eig2[sw[3]]) {
+    else if (eig2[sw[2]] <= 0.0 && 0.0 < eig2[sw[3]]) {
       for (i = 0; i < 3; ++i) {
         kvec3[0][i] = kvec2[sw[3]][i] * a[3][0] + kvec2[sw[0]][i] * a[0][3];
         kvec3[1][i] = kvec2[sw[3]][i] * a[3][1] + kvec2[sw[1]][i] * a[1][3];
