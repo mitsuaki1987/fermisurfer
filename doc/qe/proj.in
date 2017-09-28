@@ -1,0 +1,9 @@
+&PROJWFC
+   outdir = './'
+    prefix='mgb2'
+    Emin=-0.3422, 
+    Emax=10.0578, 
+    DeltaE=0.1
+/
+2
+6 10

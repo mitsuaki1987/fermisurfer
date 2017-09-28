@@ -148,11 +148,13 @@ Brillouin zone
 
 You choose Brillouin-zone type as follows (Fig. :num:`brillouinzonepng`):
 
-First Brillouin Zone : The region surrounded by Bragg's planes the
-nearest to :math:`{\rm \Gamma}` point.
+First Brillouin Zone
+   The region surrounded by Bragg's planes the
+   nearest to :math:`{\rm \Gamma}` point.
 
-Primitive Brillouin Zone : A hexahedron whose corner is the reciprocal
-lattice point.
+Primitive Brillouin Zone
+   A hexahedron whose corner is the reciprocal
+   lattice point.
 
 .. _brillouinzonepng:
      
@@ -177,22 +179,39 @@ Color scale mode
 
 It turns color pattern on Fermi surfaces (Fig. :num:`colorscalepng`).
 
-Auto(default) : It makes blue as the minimum on Fermi surfaces and red
-as the maximum on them.
+Auto(default)
+   It makes blue as the minimum on Fermi surfaces and red
+   as the maximum on them.
 
-Manual : You can set manually (from standard input) values corresponding
-to blue and red.
+Manual
+   You can set manually (from standard input) values corresponding
+   to blue and red.
 
-Uni-color : Fermi surfaces of each band are depicted with uni-color
-without relation to the matrix element.
+Unicolor
+   Fermi surfaces of each band are depicted with uni-color
+   without relation to the matrix element.
 
-Periodic : It makes periodic color plot enable. When the matrix element
-varies as :math:`0` :math:`\rightarrow` :math:`\pi/ 3` :math:`\rightarrow` :math:`2\pi/ 3`
-:math:`\rightarrow` :math:`\pi` :math:`\rightarrow` :math:`4\pi/ 3` :math:`\rightarrow`
-:math:`5\pi/3` :math:`\rightarrow` :math:`2\pi`,
-the color varies as red :math:`\rightarrow` yellow
-:math:`\rightarrow` green :math:`\rightarrow` cyan :math:`\rightarrow` blue
-:math:`\rightarrow` magenta :math:`\rightarrow` red.
+Periodic
+   It makes periodic color plot enable. When the matrix element
+   varies as :math:`0` :math:`\rightarrow` :math:`\pi/ 3` :math:`\rightarrow` :math:`2\pi/ 3`
+   :math:`\rightarrow` :math:`\pi` :math:`\rightarrow` :math:`4\pi/ 3` :math:`\rightarrow`
+   :math:`5\pi/3` :math:`\rightarrow` :math:`2\pi`,
+   the color varies as red :math:`\rightarrow` yellow
+   :math:`\rightarrow` green :math:`\rightarrow` cyan :math:`\rightarrow` blue
+   :math:`\rightarrow` magenta :math:`\rightarrow` red.
+
+Fermi velocity (Auto)
+   Compute the Fermi velocity :math:`{\bf v}_{\rm F} = \nabla_k \varepsilon_k`
+   with the numerical differentiation of the energy,
+   and plot the absolute value of that.
+   The color scale spans from the minimum and the maximum of :math:`|{\bf v}_{\rm F}|`
+   on the Fermi surface.
+    
+Fermi velocity (Manual)
+   Compute the Fermi velocity :math:`{\bf v}_{\rm F} = \nabla_k \varepsilon_k`
+   with the numerical differentiation of the energy,
+   and plot the absolute value of that.
+   The range of color scale can be specified manually from the terminal.
 
 .. _colorscalepng:
      
@@ -274,11 +293,14 @@ Mouse Drag
 
 It turns the event of the mouse-left-drag.
 
-Rotate(default) : Rotate the figure along the mouse drag.
+Rotate(default)
+   Rotate the figure along the mouse drag.
 
-Scale : Expand/shrink the figure in upward/downward drag.
+Scale
+   Expand/shrink the figure in upward/downward drag.
 
-Translate : Translate the figure along the mouse drag.
+Translate
+   Translate the figure along the mouse drag.
 
 Nodal line
 ----------
@@ -357,9 +379,11 @@ The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
 
 None (Default)
 
-Parallel : Parallel-eyes stereogram
+Parallel
+   Parallel-eyes stereogram
 
-Cross : Cross-eyes stereogram
+Cross
+   Cross-eyes stereogram
 
 .. _stereogrampng:
      

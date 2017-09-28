@@ -14,6 +14,7 @@ Welcome to FermiSurfer's documentation!
    fermisf_install_ja
    fermisf_input_ja
    fermisf_ops_ja
+   fermisf_qe_ja           
    fermisf_gallery_ja
    fermisf_ack_ja
    fermisf_copy_ja

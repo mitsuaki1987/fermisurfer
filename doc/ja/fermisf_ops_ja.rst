@@ -192,6 +192,17 @@ Periodic
     緑 :math:`\rightarrow` シアン :math:`\rightarrow` 青:math:`\rightarrow`
     マゼンタ :math:`\rightarrow` 赤と変わります.
 
+Fermi velocity (Auto)
+    エネルギーの差分からFermi速度 :math:`{\bf v}_{\rm F} = \nabla_k \varepsilon_k`
+    を計算し, その絶対値をカラープロットする.
+    カラースケールの範囲はFermi面上での :math:`|{\bf v}_{\rm F}|`
+    の最小値から最大値までとする.
+    
+Fermi velocity (Manual)
+    エネルギーの差分からFermi速度 :math:`{\bf v}_{\rm F} = \nabla_k \varepsilon_k`
+    を計算し, その絶対値をカラープロットする.
+    カラースケールの範囲は標準入力から設定する.
+    
 .. _colorscalepng:
      
 .. figure:: ../figs/colorscale.png
