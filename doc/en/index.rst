@@ -14,6 +14,7 @@ Welcome to FermiSurfer's documentation!
    fermisf_install_en
    fermisf_input_en
    fermisf_ops_en
+   fermisf_qe_en
    fermisf_gallery_en
    fermisf_ack_en
    fermisf_copy_en

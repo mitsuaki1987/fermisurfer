@@ -65,6 +65,9 @@ Fermi速度の計算と描画
 
    $ fermisurfer vfermi.frmsf
 
+.. figure:: ../figs/qe_vf.png
+   :width: 30%
+
 なお, コリニアスピン計算では各スピンについてそれぞれ ``vfermi1.frmsf``, ``vfermi2.frmsf``
 の2つのファイルが出力される.
 
@@ -79,8 +82,8 @@ Fermi速度の計算と描画
 
 .. literalinclude:: ../qe/proj.in
 
-``PROJWFC`` ネームリストの終わり(``/``)以降は
-``projwfc.x`` では使われない.
+``PROJWFC`` ネームリストの終わり(``/``)以降は ``projwfc.x`` では使われず,
+後で ``fermi_proj.x`` を実行するときのみ使われる.
 ``projwfc.x`` を実行するときのプロセス数, *k* 点並列数(``npool``)は
 直前の ``pw.x`` の実行時と同じ値にしなければならない.
 
@@ -88,7 +91,7 @@ Fermi速度の計算と描画
 
    $ mpiexec -np 4 projwfc.x -npool 4 -in proj.in
 
-ただし, ``wf_collectb=.true.`` としていたときは除く.
+ただし, ``wf_collect=.true.`` としていたときは除く.
 
 ``projwfc.x`` の標準出力のはじめの方に次のような箇所がある.
 
@@ -140,6 +143,8 @@ Fermi速度の計算と描画
 
    $ fermisurfer proj.frmsf
 
+.. figure:: ../figs/qe_proj_pz.png
+   :width: 30%
 
 また例えば, すべてのB原子の2px, 2py軌道からの寄与を合わせたものをプロットしたい場合には,
 ::
@@ -155,3 +160,7 @@ Fermi速度の計算と描画
    7 8 11 12
 
 のように ``proj.in`` を書き換えて, ``fermi_proj.x`` をもう一度実行すれば良い.
+``projwfc.x`` を再度実行する必要は無い.
+
+.. figure:: ../figs/qe_proj_pxy.png
+   :width: 30%
