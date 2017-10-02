@@ -148,6 +148,8 @@ GLfloat linewidth; //!< BZ/nodal-line/Fermiline width
 */
 GLfloat   black[4]; //!< Black color code
 GLfloat    gray[4]; //!< Gray color code
+GLfloat   wgray[4]; //!< Gray color code
+GLfloat   bgray[4]; //!< Gray color code
 GLfloat   white[4]; //!< White color code
 GLfloat    cyan[4]; //!< Cyan color code
 GLfloat magenta[4]; //!< Magenta color code

@@ -213,6 +213,9 @@ Fermi velocity (Manual)
    and plot the absolute value of that.
    The range of color scale can be specified manually from the terminal.
 
+Gray scale (Manual), Gray scale (Auto)
+   Plot with gray scale.
+
 .. _colorscalepng:
      
 .. figure:: ../figs/colorscale.png

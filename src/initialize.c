@@ -291,6 +291,8 @@ void initialize_val() {
   */
   black[0]   = 0.0; black[1]   = 0.0; black[2]   = 0.0; black[3]   = 1.0;
   gray[0]    = 0.5; gray[1]    = 0.5; gray[2]    = 0.5; gray[3]    = 1.0;
+  wgray[0]   = 0.9f; wgray[1]  = 0.9f; wgray[2]  = 0.9f; wgray[3]   = 1.0;
+  bgray[0]   = 0.1f; bgray[1]  = 0.1f; bgray[2]  = 0.1f; bgray[3]   = 1.0;
   white[0]   = 1.0; white[1]   = 1.0; white[2]   = 1.0; white[3]   = 1.0;
   cyan[0]    = 0.0; cyan[1]    = 1.0; cyan[2]    = 1.0; cyan[3]    = 1.0;
   magenta[0] = 1.0; magenta[1] = 0.0; magenta[2] = 1.0; magenta[3] = 1.0;

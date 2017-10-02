@@ -202,7 +202,10 @@ Fermi velocity (Manual)
     エネルギーの差分からFermi速度 :math:`{\bf v}_{\rm F} = \nabla_k \varepsilon_k`
     を計算し, その絶対値をカラープロットする.
     カラースケールの範囲は標準入力から設定する.
-    
+
+Gray scale (Manual), Gray scale (Auto)
+    黒色の濃淡でプロットする.
+
 .. _colorscalepng:
      
 .. figure:: ../figs/colorscale.png

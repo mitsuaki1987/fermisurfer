@@ -139,33 +139,8 @@ static void menu_colorscale(
   int value //!<[in] Selected menu
 )
 {
-  if (value == 1 && fcscl != 1) {
-    fcscl = 1;
-    max_and_min();
-    glutPostRedisplay();
-  }
-  else if (value == 2 && fcscl != 2) {
-    fcscl = 2;
-    max_and_min();
-    glutPostRedisplay();
-  }
-  else if (value == 3 && fcscl != 3) {
-    fcscl = 3;
-    max_and_min();
-    glutPostRedisplay();
-  }
-  else if (value == 4 && fcscl != 4) {
-    fcscl = 4;
-    max_and_min();
-    glutPostRedisplay();
-  }
-  else if (value == 5 && fcscl != 5) {
-    fcscl = 5;
-    max_and_min();
-    glutPostRedisplay();
-  }
-  else if (value == 6 && fcscl != 6) {
-    fcscl = 6;
+  if (value != fcscl) {
+    fcscl = value;
     max_and_min();
     glutPostRedisplay();
   }
@@ -557,7 +532,7 @@ void FS_ModifyMenu(
     Color scale mode
     */
     glutSetMenu(imenu_colorscale);
-    for (ib = 0; ib < 6; ib++) glutRemoveMenuItem(1);
+    for (ib = 0; ib < 8; ib++) glutRemoveMenuItem(1);
     if (fcscl == 1) glutAddMenuEntry("[x] Auto", 1);
     else glutAddMenuEntry("[ ] Auto", 1);
     if (fcscl == 2) glutAddMenuEntry("[x] Manual", 2);
@@ -570,6 +545,10 @@ void FS_ModifyMenu(
     else glutAddMenuEntry("[ ] Fermi velocity (Auto)", 5);
     if (fcscl == 6) glutAddMenuEntry("[x] Fermi velocity (Manual)", 6);
     else glutAddMenuEntry("[ ] Fermi velocity (Manual)", 6);
+    if (fcscl == 7) glutAddMenuEntry("[x] Gray scale (Auto)", 7);
+    else glutAddMenuEntry("[ ] Gray scale (Auto)", 7);
+    if (fcscl == 8) glutAddMenuEntry("[x] Gray scale (Manual)", 8);
+    else glutAddMenuEntry("[ ] Gray scale (Manual)", 8);
     /*
     Equator
     */
@@ -728,6 +707,10 @@ void FS_CreateMenu()
   else glutAddMenuEntry("[ ] Fermi velocity (Auto)", 5);
   if (fcscl == 6) glutAddMenuEntry("[x] Fermi velocity (Manual)", 6);
   else glutAddMenuEntry("[ ] Fermi velocity (Manual)", 6);
+  if (fcscl == 7) glutAddMenuEntry("[x] Gray scale (Auto)", 7);
+  else glutAddMenuEntry("[ ] Gray scale (Auto)", 7);
+  if (fcscl == 8) glutAddMenuEntry("[x] Gray scale (Manual)", 8);
+  else glutAddMenuEntry("[ ] Gray scale (Manual)", 8);
   /*
   Equator
   */

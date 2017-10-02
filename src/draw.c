@@ -284,35 +284,23 @@ static void draw_colorbar()
 {
   int i, j, k;
   GLfloat mat2, barcolor[4], vertices[366], normals[366], colors[488];
-  GLfloat vertices1[30] = {
-     -1.0f, -1.0f,        0.0f,
-     -1.0f, -1.0f - 0.1f, 0.0f,
-     -0.5f, -1.0f,        0.0f,
-     -0.5f, -1.0f - 0.1f, 0.0f,
-      0.0f, -1.0f,        0.0f,
-      0.0f, -1.0f - 0.1f, 0.0f,
-      0.5f, -1.0f,        0.0f,
-      0.5f, -1.0f - 0.1f, 0.0f,
-      1.0f, -1.0f,        0.0f,
-      1.0f, -1.0f - 0.1f, 0.0f,
-  };
   /**/
   if (fcscl == 1 || fcscl == 2 || fcscl == 5 || fcscl == 6) {
-    for (i = 0; i < 10; i++) {
-      for (j = 0; j < 2; j++) normals[j + i * 3] = 0.0f;
-      normals[j + i * 3] = 1.0f;
+    for (i = 0; i < 5; i++) {
+      for (j = 0; j < 2; j++) {
+        for (k = 0; k < 2; k++) normals[k + j*3 + i * 6] = 0.0f;
+        normals[2 + j * 3 + i * 6] = 1.0f;
+        vertices[0 + j * 3 + i * 6] = -1.0f + 0.5f*(GLfloat)i;
+        vertices[1 + j * 3 + i * 6] = -1.0f - 0.1f*(GLfloat)j;
+        vertices[2 + j * 3 + i * 6] = 0.0f;
+        if (     i == 0) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = blue[k];
+        else if (i == 1) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = cyan[k];
+        else if (i == 2) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = green[k];
+        else if (i == 3) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = yellow[k];
+        else if (i == 4) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = red[k];
+      }
     }/*for (i = 0; i < 10; i++)*/
-    for (j = 0; j < 4; j++) colors[j] = blue[j];
-    for (j = 0; j < 4; j++) colors[j + 4] = blue[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 2] = cyan[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 3] = cyan[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 4] = green[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 5] = green[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 6] = yellow[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 7] = yellow[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 8] = red[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 9] = red[j];
-    glVertexPointer(3, GL_FLOAT, 0, vertices1);
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
     glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 10);
@@ -365,6 +353,24 @@ static void draw_colorbar()
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 122);
   }/*else if (fcscl == 4)*/
+  else  if (fcscl == 7 || fcscl == 8) {
+    for (i = 0; i < 2; i++) {
+      for (j = 0; j < 2; j++) {
+        for (k = 0; k < 2; k++) normals[k + j * 3 + i * 6] = 0.0f;
+        normals[2 + j * 3 + i * 6] = 1.0f;
+        vertices[0 + j * 3 + i * 6] = -1.0f + 2.0f*(GLfloat)i;
+        vertices[1 + j * 3 + i * 6] = -1.0f - 0.1f*(GLfloat)j;
+        vertices[2 + j * 3 + i * 6] = 0.0f;
+        if (i == 0) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = bgray[k];
+        else if (i == 1) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = wgray[k];
+      }
+    }/*for (i = 0; i < 10; i++)*/
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glNormalPointer(GL_FLOAT, 0, normals);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  }/*if (fcscl == 7 || fcscl == 8)*/
+
 }/*void draw_colorbar*/
 /**
  @brief Draw eye-points for the stereogram

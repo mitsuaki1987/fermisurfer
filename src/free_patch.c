@@ -134,9 +134,10 @@ void max_and_min() {
   else if (fcscl == 3) printf("  ##  Uni-color mode #############\n");
   else if (fcscl == 4) printf("  ##  Periodic color scale mode #############\n");
   else if (fcscl == 5 || fcscl == 6) printf("  ##  Color as Fermi velocity #############\n");
+  else if (fcscl == 7 || fcscl == 8) printf("  ##  Gray scale mode #############\n");
   printf("\n");
 
-  if (fcscl == 1 || fcscl == 2) {
+  if (fcscl == 1 || fcscl == 2 || fcscl == 7 || fcscl == 8) {
 #pragma omp parallel default(none) \
 shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
     {
@@ -166,7 +167,7 @@ shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
     printf("    Max. value : %f\n", matmax);
     printf("    Min. value : %f\n\n", matmin);
     /**/
-    if (fcscl == 2) {
+    if (fcscl == 2 || fcscl == 8) {
       printf("    Set min. value : ");
       ierr = scanf("%f", &matmin);
       if (ierr == 0) printf("error ! reading min");
@@ -394,6 +395,27 @@ private(itri)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
   }/*if (fcscl == 5)*/
+  else   if (fcscl == 7 || fcscl == 8) {
+#pragma omp parallel default(none) \
+shared(nb,ntri,matp,clr,bgray,wgray,matmax,matmin) \
+private(itri)
+    {
+    int i, j, ib;
+    GLfloat mat2;
+
+    for (ib = 0; ib < nb; ib++) {
+#pragma omp for nowait
+      for (itri = 0; itri < ntri[ib]; ++itri) {
+        for (i = 0; i < 3; ++i) {
+          /**/
+          mat2 = (matp[ib][itri][i] - matmin) / (matmax - matmin);
+          /**/
+          for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0f - mat2);
+        }/*for (i = 0; i < 3; ++i)*/
+      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+    }/*for (ib = 0; ib < nb; ib++)*/
+    }/*End of parallel region*/
+  }/*if (fcscl == 7 || fcscl == 8)*/
 
   free(max_th);
   free(min_th);
