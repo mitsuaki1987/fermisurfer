@@ -146,7 +146,8 @@ and the 2pz of the first B atom (``10``),
    |\langle \phi_{B_1 2pz} | \psi_{nk} \rangle|^2
    + |\langle \phi_{B_2 2pz} | \psi_{nk} \rangle|^2
 
-is specified.
+is specified. We can display the Fermi surface as
+     
 .. code-block:: sh
 
    $ fermisurfer proj.frmsf

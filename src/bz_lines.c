@@ -149,6 +149,7 @@ static void check_bragg() {
     if (nn >= 3) {
       for (kk = 0; kk < 3; kk++) bragg[nbragg][kk] = bragg[ibr][kk];
       brnrm[nbragg] = brnrm[ibr];
+      printf("debug2 %d %f %f %f\n", nbragg, bragg[nbragg][0], bragg[nbragg][1], bragg[nbragg][2]);
       nbragg += 1;
     }
   }

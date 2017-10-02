@@ -38,6 +38,7 @@ THE SOFTWARE.
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "variable.h"
 #include "basic_math.h"
 /**
@@ -86,7 +87,7 @@ static void triangle(
 )
 {
   int ibr, i, j, sw[3];
-  GLfloat prod[3], thr, mat2[3], kvec2[3][3],
+  GLfloat prod[3], thr, thr2 = 0.001f, mat2[3], kvec2[3][3],
     vf2[3][3], a[3][3], bshift, vfave[3], norm[3];
 
   if (fbz == 1) {
@@ -138,23 +139,25 @@ static void triangle(
           vf2[1][i] = vf1[sw[0]][i] * a[0][1] + vf1[sw[1]][i] * a[1][0];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        if (fabsf(a[1][0] * a[2][0]) > thr2)
+          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
-        mat2[0] = mat1[sw[0]];
+        mat2[0] = mat1[sw[0]] * a[0][1] + mat1[sw[1]] * a[1][0];
         mat2[1] = mat1[sw[1]];
         mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
         for (i = 0; i < 3; ++i) {
-          kvec2[0][i] = kvec1[sw[0]][i];
+          kvec2[0][i] = kvec1[sw[0]][i] * a[0][1] + kvec1[sw[1]][i] * a[1][0];
           kvec2[1][i] = kvec1[sw[1]][i];
           kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
 
-          vf2[0][i] = vf1[sw[0]][i];
+          vf2[0][i] = vf1[sw[0]][i] * a[0][1] + vf1[sw[1]][i] * a[1][0];
           vf2[1][i] = vf1[sw[1]][i];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        if (fabsf(a[2][0] * a[0][1]) > thr2)
+          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
         mat2[0] = mat1[sw[2]];
         mat2[1] = mat1[sw[1]];
@@ -170,7 +173,8 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        if (fabsf(a[0][2]) > thr2)
+          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
         return;
       }
       else if (brnrm[ibr] + thr < prod[sw[2]]) {
@@ -191,7 +195,8 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        if (fabsf(a[0][2] * a[1][2]) > thr2)
+          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
         mat2[0] = mat1[sw[0]];
         mat2[1] = mat1[sw[1]];
@@ -205,7 +210,8 @@ static void triangle(
           vf2[1][i] = vf1[sw[1]][i];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        if (fabsf(a[2][0]) > thr2)
+          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
         mat2[0] = mat1[sw[1]] * a[1][2] + mat1[sw[2]] * a[2][1];
         mat2[1] = mat1[sw[1]];
@@ -219,7 +225,8 @@ static void triangle(
           vf2[1][i] = vf1[sw[1]][i];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        if (fabsf(a[0][2] * a[2][1]) > thr2)
+          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
         return;
       }
       else {
@@ -297,7 +304,8 @@ static void tetrahedron(
 )
 {
   int it, i, j, sw[4];
-  GLfloat eig2[4], mat2[4], kvec2[4][3], vf2[4][3], a[4][4], kvec3[3][3], mat3[3], vf3[3][3];
+  GLfloat eig2[4], mat2[4], kvec2[4][3], vf2[4][3], a[4][4], 
+    kvec3[3][3], mat3[3], vf3[3][3], vol, thr = 0.000f;
 
   for (it = 0; it < 6; ++it) {
     /*
@@ -338,7 +346,10 @@ static void tetrahedron(
       mat3[0] = mat2[sw[0]] * a[0][1] + mat2[sw[1]] * a[1][0];
       mat3[1] = mat2[sw[0]] * a[0][2] + mat2[sw[2]] * a[2][0];
       mat3[2] = mat2[sw[0]] * a[0][3] + mat2[sw[3]] * a[3][0];
-      triangle(ib, ntri0, 0, mat3, kvec3, vf3);
+
+      vol = a[1][0] * a[2][0] * a[3][0];
+      if(fabsf(vol) > thr)
+        triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
     else if (eig2[sw[1]] <= 0.0 && 0.0 < eig2[sw[2]]) {
       for (i = 0; i < 3; ++i) {
@@ -353,7 +364,10 @@ static void tetrahedron(
       mat3[0] = mat2[sw[0]] * a[0][2] + mat2[sw[2]] * a[2][0];
       mat3[1] = mat2[sw[0]] * a[0][3] + mat2[sw[3]] * a[3][0];
       mat3[2] = mat2[sw[1]] * a[1][2] + mat2[sw[2]] * a[2][1];
-      triangle(ib, ntri0, 0, mat3, kvec3, vf3);
+
+      vol = a[1][2] * a[2][0] * a[3][0];
+      if (fabsf(vol) > thr)
+        triangle(ib, ntri0, 0, mat3, kvec3, vf3);
       /**/
       for (i = 0; i < 3; ++i) {
         kvec3[0][i] = kvec2[sw[1]][i] * a[1][3] + kvec2[sw[3]][i] * a[3][1];
@@ -367,7 +381,10 @@ static void tetrahedron(
       mat3[0] = mat2[sw[1]] * a[1][3] + mat2[sw[3]] * a[3][1];
       mat3[1] = mat2[sw[0]] * a[0][3] + mat2[sw[3]] * a[3][0];
       mat3[2] = mat2[sw[1]] * a[1][2] + mat2[sw[2]] * a[2][1];
-      triangle(ib, ntri0, 0, mat3, kvec3, vf3);
+
+      vol = a[1][3] * a[3][0] * a[2][1];
+      if (fabsf(vol) > thr)
+        triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
     else if (eig2[sw[2]] <= 0.0 && 0.0 < eig2[sw[3]]) {
       for (i = 0; i < 3; ++i) {
@@ -382,7 +399,10 @@ static void tetrahedron(
       mat3[0] = mat2[sw[3]] * a[3][0] + mat2[sw[0]] * a[0][3];
       mat3[1] = mat2[sw[3]] * a[3][1] + mat2[sw[1]] * a[1][3];
       mat3[2] = mat2[sw[3]] * a[3][2] + mat2[sw[2]] * a[2][3];
-      triangle(ib, ntri0, 0, mat3, kvec3, vf3);
+
+      vol = a[0][3] * a[1][3] * a[2][3];
+      if (fabsf(vol) > thr)
+        triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
     else {
     }
