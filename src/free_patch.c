@@ -144,8 +144,8 @@ shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
       int i, ib;
 
       ithread = get_thread();
-      max_th[ithread] = matp[0][0][0];
-      min_th[ithread] = matp[0][0][0];
+      max_th[ithread] = -1.0e10f;
+      min_th[ithread] = 1.0e10f;
 
       for (ib = 0; ib < nb; ib++) {
 #pragma omp for
@@ -184,11 +184,8 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
       GLfloat norm;
 
       ithread = get_thread();
-      norm = 0.0f;
-      for (j = 0; j < 3; ++j) norm += nmlp[0][0][0][j] * nmlp[0][0][0][j];
-      norm = sqrtf(norm);
-      max_th[ithread] = norm;
-      min_th[ithread] = norm;
+      max_th[ithread] = -1.0e10f;
+      min_th[ithread] = 1.0e10f;
 
       for (ib = 0; ib < nb; ib++) {
 #pragma omp for
