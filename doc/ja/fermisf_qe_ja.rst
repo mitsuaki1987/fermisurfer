@@ -34,7 +34,7 @@ MgB\ :sub:`2`\ を題材として扱う.
 `PS Library <http://theossrv1.epfl.ch/Main/Pseudopotentials>`_ に含まれているものであり,
 以下のアドレスからダウンロードできる.
 
-* Http://theossrv1.epfl.ch/uploads/Main/NoBackup/Mg.pbe-n-kjpaw_psl.0.3.0.upf
+* http://theossrv1.epfl.ch/uploads/Main/NoBackup/Mg.pbe-n-kjpaw_psl.0.3.0.upf
 * http://theossrv1.epfl.ch/uploads/Main/NoBackup/B.pbe-n-kjpaw_psl.0.1.upf
     
 入力ファイルと擬ポテンシャルファイルを同じディレクトリに置き,
@@ -139,6 +139,7 @@ Fermi速度の計算と描画
    + |\langle \phi_{B_2 2pz} | \psi_{nk} \rangle|^2
 
 が出力される.
+     
 .. code-block:: sh
 
    $ fermisurfer proj.frmsf

@@ -15,7 +15,7 @@ Linuxの場合
         
 
 とコマンド, スペース, 入力ファイル名とタイプします.
-(サンプルファイルの中身はMgB\ :math:`_2`\ のFermi速度の :math:`z` 方向成分です. )
+(サンプルファイルの中身はMgB\ :sub:`2`\ のFermi速度の :math:`z` 方向成分です. )
 
 Windowsの場合
 ~~~~~~~~~~~~~
@@ -189,7 +189,7 @@ Periodic
     :math:`\rightarrow` :math:`2\pi/3` :math:`\rightarrow` :math:`\pi` :math:`\rightarrow`
     :math:`4\pi/3` :math:`\rightarrow` :math:`5\pi/3` :math:`\rightarrow` :math:`2\pi`
     と変化するに連れて 色が赤 :math:`\rightarrow` 黄 :math:`\rightarrow`
-    緑 :math:`\rightarrow` シアン :math:`\rightarrow` 青:math:`\rightarrow`
+    緑 :math:`\rightarrow` シアン :math:`\rightarrow` 青 :math:`\rightarrow`
     マゼンタ :math:`\rightarrow` 赤と変わります.
 
 Fermi velocity (Auto)

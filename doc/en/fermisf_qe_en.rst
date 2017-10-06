@@ -37,7 +37,7 @@ Pseudopotentials used in this example are included in
 `PS Library <http://theossrv1.epfl.ch/Main/Pseudopotentials>`_,
 and they can be downloaded from the following address:
 
-* Http://theossrv1.epfl.ch/uploads/Main/NoBackup/Mg.pbe-n-kjpaw_psl.0.3.0.upf
+* http://theossrv1.epfl.ch/uploads/Main/NoBackup/Mg.pbe-n-kjpaw_psl.0.3.0.upf
 * http://theossrv1.epfl.ch/uploads/Main/NoBackup/B.pbe-n-kjpaw_psl.0.1.upf
     
 We put the input file and the pseudopotential in the same directory,

@@ -15,7 +15,7 @@ You can launch generated executable as follows:
         
 You need a space between the command and input-file name.
 (The sample input file ``mgb2_vfz.fs`` contains :math:`z` element of
-the Fermi velocity in MgB\ :math:`_2`.)
+the Fermi velocity in MgB\ :sub:`2`.)
 
 For Windows
 ~~~~~~~~~~~
