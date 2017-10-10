@@ -13,3 +13,4 @@ config.h
 stamp-h1
 /Makefile
 src/Makefile
+bin/
