@@ -109,7 +109,9 @@ static void triangle(
       i = (int)(0.5f * ((prod[sw[2]] / brnrm[ibr]) + 1.0f));
       bshift = -2.0f *(GLfloat)i;
 
-      if (brnrm[ibr] + thr < prod[sw[0]]) {
+      if (brnrm[ibr] + thr > prod[sw[2]]) continue;
+
+      if (brnrm[ibr] < prod[sw[0]]) {
         /*
          All corners are outside of the Bragg plane
         */
@@ -123,7 +125,7 @@ static void triangle(
         triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
         return;
       }
-      else if (brnrm[ibr] + thr < prod[sw[1]]) {
+      else if (brnrm[ibr] < prod[sw[1]]) {
         /*
          Single corner (#0) is inside of the Bragg plane
         */
@@ -177,7 +179,7 @@ static void triangle(
           triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
         return;
       }
-      else if (brnrm[ibr] + thr < prod[sw[2]]) {
+      else if (brnrm[ibr] < prod[sw[2]]) {
         /*
         Two corners (#0, #1) are inside of the Bragg plane
         */
