@@ -222,6 +222,14 @@ void bragg_vector() {
       }/*for (i2 = -1; i2 <= 1; ++i2)*/
     }/*for (i1 = -1; i1 <= 1; ++i1)*/
   }/*for (i0 = -1; i0 <= 1; ++i0)*/
+  /*
+   Search min. of brnrm
+  */
+  brnrm_min = brnrm[0];
+  for (ibr = 1; ibr < 26; ibr++) {
+    if (brnrm_min > brnrm[ibr]) brnrm_min = brnrm[ibr];
+  }
+  printf("    Minimum Bragg norm : %f\n", brnrm_min);
 }/* bragg_vector */
 /**
  @brief Print max and minimum @f$\varepsilon_{n k}, \Delta_{n k}@f$

@@ -84,6 +84,7 @@ int nbzl;               //!< The number of Lines of 1st Brillouin zone
 GLfloat bzl[676][2][3]; //!< Lines of 1st BZ [nbzl(max:26*26=676)][2][3]
 GLfloat bragg[26][3];   //!< Bragg plane vectors
 GLfloat brnrm[26];      //!< Norms of Bragg plane vectors
+GLfloat brnrm_min;     //!< Minimum scale of the reciplocal space
 int nbragg;             //!< Number of Bragg plane og 1st BZ
 /*
  Variables for patchs

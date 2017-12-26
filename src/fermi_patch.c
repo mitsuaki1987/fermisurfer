@@ -89,7 +89,21 @@ static void triangle(
   int ibr, i, j, sw[3];
   GLfloat prod[3], thr, thr2 = 0.001f, mat2[3], kvec2[3][3],
     vf2[3][3], a[3][3], bshift, vfave[3], norm[3];
-
+  /*
+   If the area is nearly 0, it is ignored.
+  */
+  for (i = 0; i < 3; i++)norm[i] = 0.0f;
+  for (i = 0; i < 3; i++) {
+    norm[0] += (kvec1[1][i] - kvec1[2][i])*(kvec1[1][i] - kvec1[2][i]);
+    norm[1] += (kvec1[2][i] - kvec1[0][i])*(kvec1[2][i] - kvec1[0][i]);
+    norm[2] += (kvec1[0][i] - kvec1[1][i])*(kvec1[0][i] - kvec1[1][i]);
+  }
+  for (i = 0; i < 3; i++) {
+    if (norm[i] < 1.0e-10f*brnrm_min) return;
+  }
+  /*
+   For 1st BZ, it is cut at the BZ boundary.
+  */
   if (fbz == 1) {
     /**/
     for (ibr = 0; ibr < nbragg; ++ibr) {
@@ -141,8 +155,7 @@ static void triangle(
           vf2[1][i] = vf1[sw[0]][i] * a[0][1] + vf1[sw[1]][i] * a[1][0];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        if (fabsf(a[1][0] * a[2][0]) > thr2)
-          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
         mat2[0] = mat1[sw[0]] * a[0][1] + mat1[sw[1]] * a[1][0];
         mat2[1] = mat1[sw[1]];
@@ -158,8 +171,7 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        if (fabsf(a[2][0] * a[0][1]) > thr2)
-          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
         mat2[0] = mat1[sw[2]];
         mat2[1] = mat1[sw[1]];
@@ -175,8 +187,7 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        if (fabsf(a[0][2]) > thr2)
-          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
         return;
       }
       else if (brnrm[ibr] < prod[sw[2]]) {
@@ -197,8 +208,7 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        if (fabsf(a[0][2] * a[1][2]) > thr2)
-          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
         mat2[0] = mat1[sw[0]];
         mat2[1] = mat1[sw[1]];
@@ -212,8 +222,7 @@ static void triangle(
           vf2[1][i] = vf1[sw[1]][i];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        if (fabsf(a[2][0]) > thr2)
-          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
         mat2[0] = mat1[sw[1]] * a[1][2] + mat1[sw[2]] * a[2][1];
         mat2[1] = mat1[sw[1]];
@@ -227,8 +236,7 @@ static void triangle(
           vf2[1][i] = vf1[sw[1]][i];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        if (fabsf(a[0][2] * a[2][1]) > thr2)
-          triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
+        triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
         return;
       }
       else {
@@ -350,8 +358,7 @@ static void tetrahedron(
       mat3[2] = mat2[sw[0]] * a[0][3] + mat2[sw[3]] * a[3][0];
 
       vol = a[1][0] * a[2][0] * a[3][0];
-      if(fabsf(vol) > thr)
-        triangle(ib, ntri0, 0, mat3, kvec3, vf3);
+      triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
     else if (eig2[sw[1]] <= 0.0 && 0.0 < eig2[sw[2]]) {
       for (i = 0; i < 3; ++i) {
@@ -368,8 +375,7 @@ static void tetrahedron(
       mat3[2] = mat2[sw[1]] * a[1][2] + mat2[sw[2]] * a[2][1];
 
       vol = a[1][2] * a[2][0] * a[3][0];
-      if (fabsf(vol) > thr)
-        triangle(ib, ntri0, 0, mat3, kvec3, vf3);
+      triangle(ib, ntri0, 0, mat3, kvec3, vf3);
       /**/
       for (i = 0; i < 3; ++i) {
         kvec3[0][i] = kvec2[sw[1]][i] * a[1][3] + kvec2[sw[3]][i] * a[3][1];
@@ -385,8 +391,7 @@ static void tetrahedron(
       mat3[2] = mat2[sw[1]] * a[1][2] + mat2[sw[2]] * a[2][1];
 
       vol = a[1][3] * a[3][0] * a[2][1];
-      if (fabsf(vol) > thr)
-        triangle(ib, ntri0, 0, mat3, kvec3, vf3);
+      triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
     else if (eig2[sw[2]] <= 0.0 && 0.0 < eig2[sw[3]]) {
       for (i = 0; i < 3; ++i) {
@@ -403,8 +408,7 @@ static void tetrahedron(
       mat3[2] = mat2[sw[3]] * a[3][2] + mat2[sw[2]] * a[2][3];
 
       vol = a[0][3] * a[1][3] * a[2][3];
-      if (fabsf(vol) > thr)
-        triangle(ib, ntri0, 0, mat3, kvec3, vf3);
+      triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
     else {
     }
