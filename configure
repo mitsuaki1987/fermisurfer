@@ -747,6 +747,7 @@ ac_user_opts='
 enable_option_checking
 enable_silent_rules
 enable_dependency_tracking
+with_openmp
 with_x
 with_gl
 with_Mesa
@@ -1414,6 +1415,8 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-openmp           compile with OpenMP (parallelization) support. If
+                          none is found, OpenMP is not used. Default: yes
   --with-x                use the X Window System
   --with-gl[=ARG]         use opengl (ARG=yes), using the specific lib
                           (ARG=<lib>), using the OpenGL lib that link with X
@@ -3830,6 +3833,18 @@ fi
 echo ""
 echo "  Check OpenMP"
 echo ""
+echo ""
+echo "  Check OpenMP"
+echo ""
+
+# Check whether --with-openmp was given.
+if test "${with_openmp+set}" = set; then :
+  withval=$with_openmp;
+else
+  with_openmp=yes
+fi
+
+if test x"$with_openmp" != xno; then
 
 
 
@@ -3887,14 +3902,18 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_c_openmp" >&5
 $as_echo "$ax_cv_c_openmp" >&6; }
 if test "x$ax_cv_c_openmp" = "xunknown"; then
-  :
+
+      { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: OpenMP requested, but couldn't use OpenMP." >&5
+$as_echo "$as_me: WARNING: OpenMP requested, but couldn't use OpenMP." >&2;}
+
 else
   if test "x$ax_cv_c_openmp" != "xnone"; then
     OPENMP_CFLAGS=$ax_cv_c_openmp
   fi
-  CFLAGS="$CFLAGS $OPENMP_CFLAGS"
+  FCFLAGS="$FCFLAGS $OPENMP_CFLAGS";CFLAGS="$CFLAGS $OPENMP_CFLAGS"
 fi
 
+fi
 echo ""
 echo "  Check OpenGL and GLUT"
 echo ""

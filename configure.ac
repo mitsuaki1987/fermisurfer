@@ -11,7 +11,18 @@ AC_PROG_CC
 echo ""
 echo "  Check OpenMP"
 echo ""
-AX_OPENMP([CFLAGS="$CFLAGS $OPENMP_CFLAGS"])
+echo ""
+echo "  Check OpenMP"
+echo ""
+AC_ARG_WITH(openmp, [AS_HELP_STRING([--with-openmp],
+                                 [compile with OpenMP (parallelization) support.
+                                  If none is found, OpenMP is not used. Default: yes])],,
+            [with_openmp=yes])
+if test x"$with_openmp" != xno; then
+  AX_OPENMP([FCFLAGS="$FCFLAGS $OPENMP_CFLAGS";CFLAGS="$CFLAGS $OPENMP_CFLAGS"],[
+      AC_MSG_WARN([OpenMP requested, but couldn't use OpenMP.])
+  ])
+fi
 echo ""
 echo "  Check OpenGL and GLUT"
 echo ""
