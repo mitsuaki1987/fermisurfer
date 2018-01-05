@@ -25,3 +25,4 @@ THE SOFTWARE.
 void compute_patch_segment();
 void FS_CreateMenu();
 void FS_ModifyMenu(int status);
+void refresh_patch_segment();

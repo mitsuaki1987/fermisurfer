@@ -26,8 +26,17 @@ THE SOFTWARE.
 */
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 #include "variable.h"
 #include "basic_math.h"
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GLUT_H)
+#include <GL/glut.h>
+#elif defined(HAVE_GLUT_GLUT_H)
+#include <GLUT/glut.h>
+#endif
 /**
  @brief Input from Fermi surface file
 */
@@ -183,3 +192,58 @@ void read_file(
   }
   fclose(fp);
 } /* read_file */
+
+void read_batch(
+  char *fname//!<[in] Input file name
+)
+{
+  FILE *fp;
+  int ierr, ib;
+
+  printf("  Openning batch file %s ...\n", fname);
+  if ((fp = fopen(fname, "r")) == NULL) {
+    printf("file open error!!\n");
+    printf("  Press any key to exit.\n");
+    getchar();
+    exit(EXIT_FAILURE);
+  }
+  ierr = fscanf(fp, "%d", &blackback);
+  for (ib = 0; ib < nb; ib++) 
+    ierr = fscanf(fp, "%d", &draw_band[ib]);
+  ierr = fscanf(fp, "%d", &lcolorbar);
+  ierr = fscanf(fp, "%d", &fcscl);
+  ierr = fscanf(fp, "%d", &lequator);
+  if (lequator == 1) 
+    ierr = fscanf(fp, "%f %f %f", &eqvec[0], &eqvec[1], &eqvec[2]);
+  ierr = fscanf(fp, "%d", &interpol);
+  ierr = fscanf(fp, "%d", &lside);
+  ierr = fscanf(fp, "%f", &linewidth);
+  ierr = fscanf(fp, "%d", &nodeline);
+  ierr = fscanf(fp, "%d", &lsection);
+  if (lsection == 1) {
+    ierr = fscanf(fp, "%f", &secscale);
+    ierr = fscanf(fp, "%f %f %f", &secvec[0], &secvec[1], &secvec[2]);
+  }
+  ierr = fscanf(fp, "%f", &EF);
+  ierr = fscanf(fp, "%d", &lstereo);
+  ierr = fscanf(fp, "%f", &scl);
+  ierr = fscanf(fp, "%f %f %f", &trans[0], &trans[1], &trans[2]);
+  ierr = fscanf(fp, "%f %f %f", &thetax, &thetay, &thetaz);
+  fclose(fp);
+  if (blackback == 1) glClearColor(0.0, 0.0, 0.0, 0.0);
+  else glClearColor(1.0, 1.0, 1.0, 0.0);
+
+  thetax = 3.14159265f / 180.0f * thetax;
+  thetay = 3.14159265f / 180.0f * thetay;
+  thetaz = 3.14159265f / 180.0f * thetaz;
+
+  rot[0][0] = cosf(thetay)* cosf(thetaz);
+  rot[0][1] = -cosf(thetay)* sinf(thetaz);
+  rot[0][2] = sinf(thetay);
+  rot[1][0] = cosf(thetaz)* sinf(thetax)* sinf(thetay) + cosf(thetax)* sinf(thetaz);
+  rot[1][1] = cosf(thetax) * cosf(thetaz) - sinf(thetax)* sinf(thetay)* sinf(thetaz);
+  rot[1][2] = -cosf(thetay)* sinf(thetax);
+  rot[2][0] = -cosf(thetax)* cosf(thetaz)* sinf(thetay) + sinf(thetax)* sinf(thetaz);
+  rot[2][1] = cosf(thetaz)* sinf(thetax) + cosf(thetax)* sinf(thetay)* sinf(thetaz);
+  rot[2][2] = cosf(thetax)* cosf(thetay);
+}

@@ -57,7 +57,7 @@ void compute_patch_segment() {
   query = 0; equator();
 }
 
-static void refresh_patch_segment() {
+void refresh_patch_segment() {
   free_patch();
   compute_patch_segment();
 }

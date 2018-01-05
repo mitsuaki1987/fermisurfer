@@ -63,6 +63,7 @@ with a color-plot of the arbitraly matrix element
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "variable.h"
 #include "read_file.h"
 #include "menu.h"
@@ -101,6 +102,27 @@ void init(void)
   FS_CreateMenu();
 } /* init */
 /**
+  @brief Glut Display function
+  called by glutDisplayFunc
+*/
+void timer(int it)
+{
+  int ibatch, ierr;
+  char command_name[256];
+
+  printf("\n  Batch mode.\n");
+  for (ibatch = 0; ibatch < nbatch; ibatch++) {
+    read_batch(batch_file[ibatch]);
+    refresh_patch_segment();
+    //glutPostRedisplay();
+    display();
+    glFlush();
+    sprintf(command_name, "import -window \"%s\" %s%d.png", window_name, window_name, ibatch);
+    ierr = system(command_name);
+  }/*for (ibatch = 0; ibatch < nbatch; ibatch++)*/
+  exit(0);
+}
+/**
  @brief Main routine of FermiSurfer
 
  Refer: ::query
@@ -112,6 +134,8 @@ int main(
   char *argv[] //!< [in] Input file name
 )
 {
+  int ibatch;
+
   printf("\n");
   printf("###########################################\n");
   printf("##                                       ##\n");
@@ -119,12 +143,21 @@ int main(
   printf("##                                       ##\n");
   printf("###########################################\n");
   printf("\n");
+  nbatch = argc - 4;
   if (argc < 2) {
     printf("\n");
     printf("  Input file is not specified !\n");
     printf("    Press any key to exit.\n");
     getchar();
     exit(-1);
+  }
+  if (nbatch > 0) {
+    strcpy(window_name, argv[1]);
+    batch_file = (char**)malloc(sizeof(char*) * nbatch);
+    for (ibatch = 0; ibatch < nbatch; ibatch++) {
+      batch_file[ibatch] = (char*)malloc(sizeof(char) * 256);
+      strcpy(batch_file[ibatch], argv[4 + ibatch]);
+    }
   }
   /**/
 #if defined(_OPENMP)
@@ -166,6 +199,7 @@ int main(
   printf("\n");
   /**/
   glutInit(&argc, argv);
+  if (argc >= 4)glutInitWindowSize(atoi(argv[2]), atoi(argv[3]));
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE  | GLUT_DEPTH);
   glutCreateWindow(argv[1]);
   glutDisplayFunc(display);
@@ -175,6 +209,7 @@ int main(
   glutKeyboardFunc(keyboard);
   glutSpecialFunc(special_key);
   glutMenuStateFunc(FS_ModifyMenu);
+  if (nbatch > 0) glutTimerFunc(10, timer, 0);
   init();
   glutMainLoop();
   return 0;
