@@ -45,6 +45,7 @@ void free_patch() {
     for (i0 = 0; i0 < ntri[ib]; ++i0) {
       for (i1 = 0; i1 < 3; ++i1) {
         free(nmlp[ib][i0][i1]);
+        free(matp[ib][i0][i1]);
         free(kvp[ib][i0][i1]);
       }
       free(nmlp[ib][i0]);
@@ -123,10 +124,11 @@ void free_patch() {
 */
 void max_and_min() {
   int itri, ierr, ithread;
-  GLfloat matmax, matmin, *max_th, *min_th;
+  GLfloat matmax, matmin, absmax, *max_th, *min_th, *abs_th;
   
   max_th = (GLfloat*)malloc(nthreads * sizeof(GLfloat));
   min_th = (GLfloat*)malloc(nthreads * sizeof(GLfloat));
+  abs_th = (GLfloat*)malloc(nthreads * sizeof(GLfloat));
 
   printf("\n");
   if (fcscl == 1) printf("  ##  Full color scale mode #############\n");
@@ -139,20 +141,25 @@ void max_and_min() {
 
   if (fcscl == 1 || fcscl == 2 || fcscl == 7 || fcscl == 8) {
 #pragma omp parallel default(none) \
-shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
+shared(nb,ntri,matp,max_th,min_th,abs_th) private(itri,ithread)
     {
       int i, ib;
+      GLfloat abs;
 
       ithread = get_thread();
       max_th[ithread] = -1.0e10f;
       min_th[ithread] = 1.0e10f;
+      abs_th[ithread] = -1.0e10f;
 
       for (ib = 0; ib < nb; ib++) {
 #pragma omp for
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
-            if (matp[ib][itri][i] > max_th[ithread]) max_th[ithread] = matp[ib][itri][i];
-            if (matp[ib][itri][i] < min_th[ithread]) min_th[ithread] = matp[ib][itri][i];
+            abs = sqrtf(matp[ib][itri][i][0] * matp[ib][itri][i][0]
+                      + matp[ib][itri][i][1] * matp[ib][itri][i][1]);
+            if (matp[ib][itri][i][0] > max_th[ithread]) max_th[ithread] = matp[ib][itri][i][0];
+            if (matp[ib][itri][i][0] < min_th[ithread]) min_th[ithread] = matp[ib][itri][i][0];
+            if (abs > abs_th[ithread]) abs_th[ithread] = abs;
           }
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       }/*for (ib = 0; ib < nb; ib++)*/
@@ -160,12 +167,15 @@ shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
     /**/
     matmax = max_th[0];
     matmin = min_th[0];
+    absmax = abs_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
       if (max_th[ithread] > matmax) matmax = max_th[ithread];
-      if (min_th[ithread] > matmin) matmin = min_th[ithread];
+      if (min_th[ithread] < matmin) matmin = min_th[ithread];
+      if (abs_th[ithread] > absmax) absmax = abs_th[ithread];
     }
     printf("    Max. value : %f\n", matmax);
     printf("    Min. value : %f\n\n", matmin);
+    printf("    Max. absolute value : %f\n", absmax);
     /**/
     if (fcscl == 2 || fcscl == 8) {
       printf("    Set min. value : ");
@@ -234,7 +244,7 @@ private(itri)
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             /**/
-            mat2 = (matp[ib][itri][i] - matmin) / (matmax - matmin);
+            mat2 = (matp[ib][itri][i][0] - matmin) / (matmax - matmin);
             mat2 = mat2 * 4.0f;
             /**/
             if (mat2 <= 1.0) {
@@ -321,7 +331,7 @@ private(itri)
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             /**/
-            mat2 = matp[ib][itri][i] / 6.283185307f;
+            mat2 = matp[ib][itri][i][0] / 6.283185307f;
             mat2 = mat2 - floorf(mat2);
             mat2 = mat2 * 6.0f;
             /**/
@@ -405,7 +415,7 @@ private(itri)
       for (itri = 0; itri < ntri[ib]; ++itri) {
         for (i = 0; i < 3; ++i) {
           /**/
-          mat2 = (matp[ib][itri][i] - matmin) / (matmax - matmin);
+          mat2 = (matp[ib][itri][i][0] - matmin) / (matmax - matmin);
           /**/
           for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0f - mat2);
         }/*for (i = 0; i < 3; ++i)*/

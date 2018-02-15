@@ -66,15 +66,16 @@ void calc_nodeline() {
 #pragma omp for
       for (itri = 0; itri < ntri[ib]; ++itri) {
 
-        eigsort(3, matp[ib][itri], sw);
+        eigsort(3, matp[ib][itri][0], sw);
         for (i = 0; i < 3; ++i) {
           for (j = 0; j < 3; ++j) {
-            a[i][j] = (0.f - matp[ib][itri][sw[j]]) / (matp[ib][itri][sw[i]] - matp[ib][itri][sw[j]]);
+            a[i][j] = (0.f - matp[ib][itri][sw[j]][0]) 
+              / (matp[ib][itri][sw[i]][0] - matp[ib][itri][sw[j]][0]);
           }/*for (j = 0; j < 3; ++j)*/
         }/*for (i = 0; i < 3; ++i)*/
 
-        if ((matp[ib][itri][sw[0]] < 0.0 && 0.0 <= matp[ib][itri][sw[1]])
-          || (matp[ib][itri][sw[0]] <= 0.0 && 0.0 < matp[ib][itri][sw[1]])) {
+        if (( matp[ib][itri][sw[0]][0] < 0.0 && 0.0 <= matp[ib][itri][sw[1]][0])
+          || (matp[ib][itri][sw[0]][0] <= 0.0 && 0.0 < matp[ib][itri][sw[1]][0])) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) {
               kvnl[ib][nnl0][0][i] = kvp[ib][itri][sw[0]][i] * a[0][1] + kvp[ib][itri][sw[1]][i] * a[1][0];
@@ -83,8 +84,8 @@ void calc_nodeline() {
           }/*if (query == 0)*/
           nnl0 += 1;
         }/*else if (matp[ib][itri][sw[0]] < 0.0 && 0.0 <= matp[ib][itri][sw[1]])*/
-        else if ((matp[ib][itri][sw[1]] < 0.0 && 0.0 <= matp[ib][itri][sw[2]])
-          || (matp[ib][itri][sw[1]] <= 0.0 && 0.0 < matp[ib][itri][sw[2]])) {
+        else if ((matp[ib][itri][sw[1]][0] < 0.0 && 0.0 <= matp[ib][itri][sw[2]][0])
+          ||     (matp[ib][itri][sw[1]][0] <= 0.0 && 0.0 < matp[ib][itri][sw[2]][0])) {
           if (query == 0) {
             for (i = 0; i < 3; ++i) {
               kvnl[ib][nnl0][0][i] = kvp[ib][itri][sw[0]][i] * a[0][2] + kvp[ib][itri][sw[2]][i] * a[2][0];

@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <ctype.h>
 #include "variable.h"
 #include "basic_math.h"
 #if defined(HAVE_CONFIG_H)
@@ -46,6 +47,8 @@ void read_file(
 {
   int ib, i, j, i0, i1, i2, ii0, ii1, ii2, ierr;
   FILE *fp;
+  char* ctemp1;
+  char ctemp2[256], rc;
   /*
    Open input file.
   */
@@ -62,7 +65,19 @@ void read_file(
   /*
    k-point grid
   */
-  ierr = fscanf(fp, "%d%d%d", &ng0[0], &ng0[1], &ng0[2]);
+  ctemp1 = fgets(ctemp2, 256, fp);
+  ierr = sscanf(ctemp2, "%d%d%d%s", &ng0[0], &ng0[1], &ng0[2], &rc);
+  rc = tolower(rc);
+  if (ierr <= 3) rc = 'r';
+  if (rc == 'r')
+    printf("    Real k-dependent quantity.\n");
+  else if (rc == 'c')
+    printf("    Complex k-dependent quantity.\n");
+  else {
+    printf("    Error! r or c is allowed. Input %c\n", rc);
+    exit(-1);
+  }
+
   if (ierr == 0) printf("error ! reading ng");
   printf("    k point grid : %d %d %d \n", ng0[0], ng0[1], ng0[2]);
   for (i = 0; i < 3; i++) ng[i] = ng0[i];
@@ -127,30 +142,33 @@ void read_file(
    Allocation of Kohn-Sham energies $ matrix elements
   */
   eig0 = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-  mat0 = (GLfloat****)malloc(nb * sizeof(GLfloat***));
   eig = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-  mat = (GLfloat****)malloc(nb * sizeof(GLfloat***));
+  mat0 = (GLfloat*****)malloc(nb * sizeof(GLfloat****));
+  mat = (GLfloat*****)malloc(nb * sizeof(GLfloat****));
   vf = (GLfloat*****)malloc(nb * sizeof(GLfloat****));
   for (ib = 0; ib < nb; ib++) {
     eig0[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
-    mat0[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
     eig[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
-    mat[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
+    mat0[ib] = (GLfloat****)malloc(ng0[0] * sizeof(GLfloat***));
+    mat[ib] = (GLfloat****)malloc(ng0[0] * sizeof(GLfloat***));
     vf[ib] = (GLfloat****)malloc(ng0[0] * sizeof(GLfloat***));
     for (i0 = 0; i0 < ng0[0]; i0++) {
       eig0[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
-      mat0[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
       eig[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
-      mat[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
+      mat0[ib][i0] = (GLfloat***)malloc(ng0[1] * sizeof(GLfloat**));
+      mat[ib][i0] = (GLfloat***)malloc(ng0[1] * sizeof(GLfloat**));
       vf[ib][i0] = (GLfloat***)malloc(ng0[1] * sizeof(GLfloat**));
       for (i1 = 0; i1 < ng0[1]; i1++) {
         eig0[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
-        mat0[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
         eig[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
-        mat[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
+        mat0[ib][i0][i1] = (GLfloat**)malloc(ng0[2] * sizeof(GLfloat*));
+        mat[ib][i0][i1] = (GLfloat**)malloc(ng0[2] * sizeof(GLfloat*));
         vf[ib][i0][i1] = (GLfloat**)malloc(ng0[2] * sizeof(GLfloat*));
-        for (i2 = 0; i2 < ng0[2]; ++i2) 
+        for (i2 = 0; i2 < ng0[2]; ++i2) {
+          mat0[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+          mat[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
           vf[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        }
       }
     }
   }
@@ -185,11 +203,17 @@ void read_file(
         for (i2 = 0; i2 < ng0[2]; ++i2) {
           if (lshift != 0) ii2 = i2;
           else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
-          ierr = fscanf(fp, "%e", &mat0[ib][ii0][ii1][ii2]);
-        }
-      }
-    }
-  }
+          if (rc == 'r') {
+            ierr = fscanf(fp, "%e", &mat0[ib][ii0][ii1][ii2][0]);
+            mat0[ib][ii0][ii1][ii2][1] = 0.0;
+          }
+          else
+            ierr = fscanf(fp, "%e%e", &mat0[ib][ii0][ii1][ii2][0], &mat0[ib][ii0][ii1][ii2][2]);
+          mat0[ib][ii0][ii1][ii2][2] = 0.0;
+        }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
+      }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
+    }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
+  }/*for (ib = 0; ib < nb; ++ib)*/
   fclose(fp);
 } /* read_file */
 

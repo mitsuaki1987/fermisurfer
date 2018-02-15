@@ -81,13 +81,13 @@ static void triangle(
   int ib, //!<[in] The band index
   int *ntri0, //!<[inout] Index of triangle patch
   int nbr, //!<[in] Bragg plane
-  GLfloat mat1[3], //!<[in] The matrix element
+  GLfloat mat1[3][3], //!<[in] The matrix element
   GLfloat kvec1[3][3], //!<[in] @f$k@f$-vector of corners
   GLfloat vf1[3][3] //!<[in] @f$v_f@f$-vector of corners
 )
 {
   int ibr, i, j, sw[3];
-  GLfloat prod[3], thr, thr2 = 0.001f, mat2[3], kvec2[3][3],
+  GLfloat prod[3], thr, thr2 = 0.001f, mat2[3][3], kvec2[3][3],
     vf2[3][3], a[3][3], bshift, vfave[3], norm[3];
   /*
    If the area is nearly 0, it is ignored.
@@ -130,9 +130,9 @@ static void triangle(
          All corners are outside of the Bragg plane
         */
         for (i = 0; i < 3; ++i) {
-          mat2[i] = mat1[sw[i]];
           for (j = 0; j < 3; ++j) {
             kvec2[i][j] = kvec1[sw[i]][j] + bshift * bragg[ibr][j];
+            mat2[i][j] = mat1[sw[i]][j];
             vf2[i][j] = vf1[sw[i]][j];
           }
         }
@@ -143,27 +143,29 @@ static void triangle(
         /*
          Single corner (#0) is inside of the Bragg plane
         */
-        mat2[0] = mat1[sw[0]];
-        mat2[1] = mat1[sw[0]] * a[0][1] + mat1[sw[1]] * a[1][0];
-        mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
-        for (i = 0; i < 3; ++i) {
+       for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[0]][i];
           kvec2[1][i] = kvec1[sw[0]][i] * a[0][1] + kvec1[sw[1]][i] * a[1][0];
           kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
 
+          mat2[0][i] = mat1[sw[0]][i];
+          mat2[1][i] = mat1[sw[0]][i] * a[0][1] + mat1[sw[1]][i] * a[1][0];
+          mat2[2][i] = mat1[sw[0]][i] * a[0][2] + mat1[sw[2]][i] * a[2][0];
+          
           vf2[0][i] = vf1[sw[0]][i];
           vf2[1][i] = vf1[sw[0]][i] * a[0][1] + vf1[sw[1]][i] * a[1][0];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
         triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
-        mat2[0] = mat1[sw[0]] * a[0][1] + mat1[sw[1]] * a[1][0];
-        mat2[1] = mat1[sw[1]];
-        mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[0]][i] * a[0][1] + kvec1[sw[1]][i] * a[1][0];
           kvec2[1][i] = kvec1[sw[1]][i];
           kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
+
+          mat2[0][i] = mat1[sw[0]][i] * a[0][1] + mat1[sw[1]][i] * a[1][0];
+          mat2[1][i] = mat1[sw[1]][i];
+          mat2[2][i] = mat1[sw[0]][i] * a[0][2] + mat1[sw[2]][i] * a[2][0];
 
           vf2[0][i] = vf1[sw[0]][i] * a[0][1] + vf1[sw[1]][i] * a[1][0];
           vf2[1][i] = vf1[sw[1]][i];
@@ -173,13 +175,14 @@ static void triangle(
           kvec2[i][j] += bshift * bragg[ibr][j];
         triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
-        mat2[0] = mat1[sw[2]];
-        mat2[1] = mat1[sw[1]];
-        mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[2]][i];
           kvec2[1][i] = kvec1[sw[1]][i];
           kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
+
+          mat2[0][i] = mat1[sw[2]][i];
+          mat2[1][i] = mat1[sw[1]][i];
+          mat2[2][i] = mat1[sw[0]][i] * a[0][2] + mat1[sw[2]][i] * a[2][0];
 
           vf2[0][i] = vf1[sw[2]][i];
           vf2[1][i] = vf1[sw[1]][i];
@@ -194,13 +197,14 @@ static void triangle(
         /*
         Two corners (#0, #1) are inside of the Bragg plane
         */
-        mat2[0] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
-        mat2[1] = mat1[sw[1]] * a[1][2] + mat1[sw[2]] * a[2][1];
-        mat2[2] = mat1[sw[2]];
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
           kvec2[1][i] = kvec1[sw[1]][i] * a[1][2] + kvec1[sw[2]][i] * a[2][1];
           kvec2[2][i] = kvec1[sw[2]][i];
+
+          mat2[0][i] = mat1[sw[0]][i] * a[0][2] + mat1[sw[2]][i] * a[2][0];
+          mat2[1][i] = mat1[sw[1]][i] * a[1][2] + mat1[sw[2]][i] * a[2][1];
+          mat2[2][i] = mat1[sw[2]][i];
 
           vf2[0][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
           vf2[1][i] = vf1[sw[1]][i] * a[1][2] + vf1[sw[2]][i] * a[2][1];
@@ -210,13 +214,14 @@ static void triangle(
           kvec2[i][j] += bshift * bragg[ibr][j];
         triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
-        mat2[0] = mat1[sw[0]];
-        mat2[1] = mat1[sw[1]];
-        mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[0]][i];
           kvec2[1][i] = kvec1[sw[1]][i];
           kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
+
+          mat2[0][i] = mat1[sw[0]][i];
+          mat2[1][i] = mat1[sw[1]][i];
+          mat2[2][i] = mat1[sw[0]][i] * a[0][2] + mat1[sw[2]][i] * a[2][0];
 
           vf2[0][i] = vf1[sw[0]][i];
           vf2[1][i] = vf1[sw[1]][i];
@@ -224,13 +229,14 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         triangle(ib, ntri0, ibr + 1, mat2, kvec2, vf2);
 
-        mat2[0] = mat1[sw[1]] * a[1][2] + mat1[sw[2]] * a[2][1];
-        mat2[1] = mat1[sw[1]];
-        mat2[2] = mat1[sw[0]] * a[0][2] + mat1[sw[2]] * a[2][0];
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[1]][i] * a[1][2] + kvec1[sw[2]][i] * a[2][1];
           kvec2[1][i] = kvec1[sw[1]][i];
           kvec2[2][i] = kvec1[sw[0]][i] * a[0][2] + kvec1[sw[2]][i] * a[2][0];
+
+          mat2[0][i] = mat1[sw[1]][i] * a[1][2] + mat1[sw[2]][i] * a[2][1];
+          mat2[1][i] = mat1[sw[1]][i];
+          mat2[2][i] = mat1[sw[0]][i] * a[0][2] + mat1[sw[2]][i] * a[2][0];
 
           vf2[0][i] = vf1[sw[1]][i] * a[1][2] + vf1[sw[2]][i] * a[2][1];
           vf2[1][i] = vf1[sw[1]][i];
@@ -261,18 +267,18 @@ static void triangle(
 
     if (prod[0] < 0.0f) {
       for (i = 0; i < 3; ++i) {
-        matp[ib][*ntri0][i] = mat1[2-i];
         for (j = 0; j < 3; ++j) {
           kvp[ib][*ntri0][i][j] = kvec1[2-i][j];
+          matp[ib][*ntri0][i][j] = mat1[2 - i][j];
           nmlp[ib][*ntri0][i][j] = vf1[2-i][j];
         }
       }/*for (i = 0; i < 3; ++i)*/
     }
     else {
       for (i = 0; i < 3; ++i) {
-        matp[ib][*ntri0][i] = mat1[i];
         for (j = 0; j < 3; ++j) {
           kvp[ib][*ntri0][i][j] = kvec1[i][j];
+          matp[ib][*ntri0][i][j] = mat1[i][j];
           nmlp[ib][*ntri0][i][j] = vf1[i][j];
         }
       }/*for (i = 0; i < 3; ++i)*/
@@ -308,14 +314,14 @@ static void tetrahedron(
   int ib, //!< [in] The band index
   int *ntri0, //!< [in,out] Counter of trixngle
   GLfloat eig1[8], //!< [in] Orbital energies @f$\varepsilon_{n k}@f$
-  GLfloat mat1[8], //!< [in] Matrix elements @f$\Delta_{n k}@f$
+  GLfloat mat1[8][3], //!< [in] Matrix elements @f$\Delta_{n k}@f$
   GLfloat kvec1[8][3], //!< [in] @f$k@f$-vectors
   GLfloat vf1[8][3] //!< [in] @f$v_f@f$-vectors
 )
 {
   int it, i, j, sw[4];
-  GLfloat eig2[4], mat2[4], kvec2[4][3], vf2[4][3], a[4][4], 
-    kvec3[3][3], mat3[3], vf3[3][3], vol, thr = 0.000f;
+  GLfloat eig2[4], mat2[4][3], kvec2[4][3], vf2[4][3], a[4][4], 
+    kvec3[3][3], mat3[3][3], vf3[3][3], vol, thr = 0.000f;
 
   for (it = 0; it < 6; ++it) {
     /*
@@ -323,8 +329,10 @@ static void tetrahedron(
     */
     for (i = 0; i < 4; ++i) {
       eig2[i] = eig1[corner[it][i]];
-      mat2[i] = mat1[corner[it][i]];
-      for (j = 0; j < 3; ++j) vf2[i][j] = vf1[corner[it][i]][j];
+      for (j = 0; j < 3; ++j) {
+        mat2[i][j] = mat1[corner[it][i]][j];
+        vf2[i][j] = vf1[corner[it][i]][j];
+      }
       /*
        Fractional -> Cartecian
       */
@@ -349,14 +357,15 @@ static void tetrahedron(
         kvec3[1][i] = kvec2[sw[0]][i] * a[0][2] + kvec2[sw[2]][i] * a[2][0];
         kvec3[2][i] = kvec2[sw[0]][i] * a[0][3] + kvec2[sw[3]][i] * a[3][0];
 
+        mat3[0][i] = mat2[sw[0]][i] * a[0][1] + mat2[sw[1]][i] * a[1][0];
+        mat3[1][i] = mat2[sw[0]][i] * a[0][2] + mat2[sw[2]][i] * a[2][0];
+        mat3[2][i] = mat2[sw[0]][i] * a[0][3] + mat2[sw[3]][i] * a[3][0];
+
         vf3[0][i] = vf2[sw[0]][i] * a[0][1] + vf2[sw[1]][i] * a[1][0];
         vf3[1][i] = vf2[sw[0]][i] * a[0][2] + vf2[sw[2]][i] * a[2][0];
         vf3[2][i] = vf2[sw[0]][i] * a[0][3] + vf2[sw[3]][i] * a[3][0];
       }
-      mat3[0] = mat2[sw[0]] * a[0][1] + mat2[sw[1]] * a[1][0];
-      mat3[1] = mat2[sw[0]] * a[0][2] + mat2[sw[2]] * a[2][0];
-      mat3[2] = mat2[sw[0]] * a[0][3] + mat2[sw[3]] * a[3][0];
-
+      
       vol = a[1][0] * a[2][0] * a[3][0];
       triangle(ib, ntri0, 0, mat3, kvec3, vf3);
     }
@@ -366,14 +375,15 @@ static void tetrahedron(
         kvec3[1][i] = kvec2[sw[0]][i] * a[0][3] + kvec2[sw[3]][i] * a[3][0];
         kvec3[2][i] = kvec2[sw[1]][i] * a[1][2] + kvec2[sw[2]][i] * a[2][1];
 
+        mat3[0][i] = mat2[sw[0]][i] * a[0][2] + mat2[sw[2]][i] * a[2][0];
+        mat3[1][i] = mat2[sw[0]][i] * a[0][3] + mat2[sw[3]][i] * a[3][0];
+        mat3[2][i] = mat2[sw[1]][i] * a[1][2] + mat2[sw[2]][i] * a[2][1];
+
         vf3[0][i] = vf2[sw[0]][i] * a[0][2] + vf2[sw[2]][i] * a[2][0];
         vf3[1][i] = vf2[sw[0]][i] * a[0][3] + vf2[sw[3]][i] * a[3][0];
         vf3[2][i] = vf2[sw[1]][i] * a[1][2] + vf2[sw[2]][i] * a[2][1];
       }
-      mat3[0] = mat2[sw[0]] * a[0][2] + mat2[sw[2]] * a[2][0];
-      mat3[1] = mat2[sw[0]] * a[0][3] + mat2[sw[3]] * a[3][0];
-      mat3[2] = mat2[sw[1]] * a[1][2] + mat2[sw[2]] * a[2][1];
-
+      
       vol = a[1][2] * a[2][0] * a[3][0];
       triangle(ib, ntri0, 0, mat3, kvec3, vf3);
       /**/
@@ -382,13 +392,14 @@ static void tetrahedron(
         kvec3[1][i] = kvec2[sw[0]][i] * a[0][3] + kvec2[sw[3]][i] * a[3][0];
         kvec3[2][i] = kvec2[sw[1]][i] * a[1][2] + kvec2[sw[2]][i] * a[2][1];
 
+        mat3[0][i] = mat2[sw[1]][i] * a[1][3] + mat2[sw[3]][i] * a[3][1];
+        mat3[1][i] = mat2[sw[0]][i] * a[0][3] + mat2[sw[3]][i] * a[3][0];
+        mat3[2][i] = mat2[sw[1]][i] * a[1][2] + mat2[sw[2]][i] * a[2][1];
+
         vf3[0][i] = vf2[sw[1]][i] * a[1][3] + vf2[sw[3]][i] * a[3][1];
         vf3[1][i] = vf2[sw[0]][i] * a[0][3] + vf2[sw[3]][i] * a[3][0];
         vf3[2][i] = vf2[sw[1]][i] * a[1][2] + vf2[sw[2]][i] * a[2][1];
       }
-      mat3[0] = mat2[sw[1]] * a[1][3] + mat2[sw[3]] * a[3][1];
-      mat3[1] = mat2[sw[0]] * a[0][3] + mat2[sw[3]] * a[3][0];
-      mat3[2] = mat2[sw[1]] * a[1][2] + mat2[sw[2]] * a[2][1];
 
       vol = a[1][3] * a[3][0] * a[2][1];
       triangle(ib, ntri0, 0, mat3, kvec3, vf3);
@@ -399,13 +410,14 @@ static void tetrahedron(
         kvec3[1][i] = kvec2[sw[3]][i] * a[3][1] + kvec2[sw[1]][i] * a[1][3];
         kvec3[2][i] = kvec2[sw[3]][i] * a[3][2] + kvec2[sw[2]][i] * a[2][3];
 
+        mat3[0][i] = mat2[sw[3]][i] * a[3][0] + mat2[sw[0]][i] * a[0][3];
+        mat3[1][i] = mat2[sw[3]][i] * a[3][1] + mat2[sw[1]][i] * a[1][3];
+        mat3[2][i] = mat2[sw[3]][i] * a[3][2] + mat2[sw[2]][i] * a[2][3];
+
         vf3[0][i] = vf2[sw[3]][i] * a[3][0] + vf2[sw[0]][i] * a[0][3];
         vf3[1][i] = vf2[sw[3]][i] * a[3][1] + vf2[sw[1]][i] * a[1][3];
         vf3[2][i] = vf2[sw[3]][i] * a[3][2] + vf2[sw[2]][i] * a[2][3];
       }
-      mat3[0] = mat2[sw[3]] * a[3][0] + mat2[sw[0]] * a[0][3];
-      mat3[1] = mat2[sw[3]] * a[3][1] + mat2[sw[1]] * a[1][3];
-      mat3[2] = mat2[sw[3]] * a[3][2] + mat2[sw[2]] * a[2][3];
 
       vol = a[0][3] * a[1][3] * a[2][3];
       triangle(ib, ntri0, 0, mat3, kvec3, vf3);
@@ -452,7 +464,7 @@ void fermi_patch()
   private(ib,j0,i0,i1,ithread)
   {
     int ntri0, i, j, i2, j1, j2, ii0, ii1, ii2;
-    GLfloat kvec1[8][3], mat1[8], eig1[8], vf1[8][3];
+    GLfloat kvec1[8][3], mat1[8][3], eig1[8], vf1[8][3];
 
     ithread = get_thread();
     for (ib = 0; ib < nb; ++ib) {
@@ -519,16 +531,16 @@ void fermi_patch()
             eig1[6] = eig[ib][ii0][ii1][i2] - EF;
             eig1[7] = eig[ib][ii0][ii1][ii2] - EF;
             /**/
-            mat1[0] = mat[ib][i0][i1][i2];
-            mat1[1] = mat[ib][i0][i1][ii2];
-            mat1[2] = mat[ib][i0][ii1][i2];
-            mat1[3] = mat[ib][i0][ii1][ii2];
-            mat1[4] = mat[ib][ii0][i1][i2];
-            mat1[5] = mat[ib][ii0][i1][ii2];
-            mat1[6] = mat[ib][ii0][ii1][i2];
-            mat1[7] = mat[ib][ii0][ii1][ii2];
-            /**/
             for (j = 0; j < 3; j++) {
+              mat1[0][j] = mat[ib][i0][i1][i2][j];
+              mat1[1][j] = mat[ib][i0][i1][ii2][j];
+              mat1[2][j] = mat[ib][i0][ii1][i2][j];
+              mat1[3][j] = mat[ib][i0][ii1][ii2][j];
+              mat1[4][j] = mat[ib][ii0][i1][i2][j];
+              mat1[5][j] = mat[ib][ii0][i1][ii2][j];
+              mat1[6][j] = mat[ib][ii0][ii1][i2][j];
+              mat1[7][j] = mat[ib][ii0][ii1][ii2][j];
+              /**/
               vf1[0][j] = vf[ib][i0][i1][i2][j];
               vf1[1][j] = vf[ib][i0][i1][ii2][j];
               vf1[2][j] = vf[ib][i0][ii1][i2][j];
@@ -571,24 +583,25 @@ void fermi_patch()
     /*
      Allocation of triangler patches
     */
-    matp = (GLfloat***)malloc(nb * sizeof(GLfloat**));
+    matp = (GLfloat****)malloc(nb * sizeof(GLfloat***));
     clr = (GLfloat**)malloc(nb * sizeof(GLfloat*));
     kvp = (GLfloat****)malloc(nb * sizeof(GLfloat***));
     nmlp = (GLfloat****)malloc(nb * sizeof(GLfloat***));
     kvp_rot = (GLfloat**)malloc(nb * sizeof(GLfloat*));
     nmlp_rot = (GLfloat**)malloc(nb * sizeof(GLfloat*));
     for (ib = 0; ib < nb; ++ib) {
-      matp[ib] = (GLfloat**)malloc(ntri[ib] * sizeof(GLfloat*));
+      matp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
       clr[ib] = (GLfloat*)malloc(12 * ntri[ib] * sizeof(GLfloat));
       kvp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
       nmlp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
       kvp_rot[ib] = (GLfloat*)malloc(9 * ntri[ib] * sizeof(GLfloat));
       nmlp_rot[ib] = (GLfloat*)malloc(9 * ntri[ib] * sizeof(GLfloat));
       for (i0 = 0; i0 < ntri[ib]; ++i0) {
-        matp[ib][i0] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+        matp[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
         kvp[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
         nmlp[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
         for (i1 = 0; i1 < 3; ++i1) {
+          matp[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
           kvp[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
           nmlp[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
         }/*for (i1 = 0; i1 < 3; ++i1)*/

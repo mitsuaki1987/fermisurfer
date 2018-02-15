@@ -49,13 +49,13 @@ int nb;             //!< The number of Bands
 GLfloat avec[3][3]; //!< Direct lattice vector
 GLfloat bvec[3][3]; //!< Reciprocal lattice vector
 GLfloat ****eig0;   //!< Eigenvalues @f$\varepsilon_{n k}@f$[::nb][::ng0[0]][::ng0[1]][::ng0[2]]
-GLfloat ****mat0;   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]]
+GLfloat *****mat0;   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]][3]
 /*
  Interpolation
 */
 int ng[3];       //!< @b Interpolated @f$k@f$-grids
 GLfloat ****eig; //!< Eigenvalues @f$\varepsilon_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
-GLfloat ****mat; //!< Matrix element @f$\delta_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
+GLfloat *****mat; //!< Matrix element @f$\delta_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
 GLfloat *****vf; //!< Matrix element @f$\{\bf v}_{{\rm f} n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
 int interpol;    //!< Ratio of interpolation
 /*
@@ -96,7 +96,7 @@ GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
 GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
 GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
 GLfloat **kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
-GLfloat ***matp;    //!< Matrix elements of points [::nb][::ntri][3]
+GLfloat ****matp;    //!< Matrix elements of points [::nb][::ntri][3][3]
 GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
 int itet;           //!< Counter for tetrahedron
 GLfloat side;       //!< Which side is lighted
