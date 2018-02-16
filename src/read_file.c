@@ -208,7 +208,7 @@ void read_file(
             mat0[ib][ii0][ii1][ii2][1] = 0.0;
           }
           else
-            ierr = fscanf(fp, "%e%e", &mat0[ib][ii0][ii1][ii2][0], &mat0[ib][ii0][ii1][ii2][2]);
+            ierr = fscanf(fp, "%e%e", &mat0[ib][ii0][ii1][ii2][0], &mat0[ib][ii0][ii1][ii2][1]);
           mat0[ib][ii0][ii1][ii2][2] = 0.0;
         }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
       }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
@@ -235,7 +235,7 @@ void read_batch(
   for (ib = 0; ib < nb; ib++) 
     ierr = fscanf(fp, "%d", &draw_band[ib]);
   ierr = fscanf(fp, "%d", &lcolorbar);
-  ierr = fscanf(fp, "%d", &fcscl);
+  ierr = fscanf(fp, "%d", &color_scale);
   ierr = fscanf(fp, "%d", &lequator);
   if (lequator == 1) 
     ierr = fscanf(fp, "%f %f %f", &eqvec[0], &eqvec[1], &eqvec[2]);

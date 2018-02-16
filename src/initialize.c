@@ -264,14 +264,14 @@ void max_and_min_bz() {
 /**
  @brief Initialize global variables
 
- Modify : ::blackback, ::fcscl, ::fbz, ::nodeline, ::lcolorbar, ::lstereo, ::lmouse, 
+ Modify : ::blackback, ::color_scale, ::fbz, ::nodeline, ::lcolorbar, ::lstereo, ::lmouse, 
           ::lsection, ::itet, ::scl, ::trans, ::rot, ::thetax, ::thetay, ::thetaz,
           ::black, ::gray, ::white, ::cyan, ::magenta, ::yellow, ::red, ::green, ::blue,
           ::EF, ::interpol
 */
 void initialize_val() {
   blackback = 1;
-  fcscl = 1;
+  color_scale = 1;
   fbz = 1;
   nodeline = 0;
   lcolorbar = 1;

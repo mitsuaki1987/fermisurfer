@@ -285,7 +285,7 @@ static void draw_colorbar()
   int i, j, k;
   GLfloat mat2, barcolor[4], vertices[366], normals[366], colors[488];
   /**/
-  if (fcscl == 1 || fcscl == 2 || fcscl == 5 || fcscl == 6) {
+  if (color_scale == 1 || color_scale == 3) {
     for (i = 0; i < 5; i++) {
       for (j = 0; j < 2; j++) {
         for (k = 0; k < 2; k++) normals[k + j*3 + i * 6] = 0.0f;
@@ -304,11 +304,19 @@ static void draw_colorbar()
     glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 10);
-  }/*if (fcscl == 1 || fcscl == 2)*/
-  else if (fcscl == 4) {
+  }/*if (color_scale == 1 || color_scale == 3)*/
+  else if (color_scale == 2) {
     /*
      Periodic color scale
     */
+    vertices[0] = 0.0f;
+    vertices[1] = -1.0f;
+    vertices[2] = 0.0f;
+    normals[0] = 0.0f;
+    normals[1] = 0.0f;
+    normals[2] = 1.0f;
+    for (j = 0; j < 4; j++) colors[j] = white[j];
+    /**/
     for (i = 0; i <= 60; i++) {
       /**/
       mat2 = (GLfloat)i / 60.0f * 6.0f;
@@ -337,23 +345,19 @@ static void draw_colorbar()
         for (j = 0; j<4; ++j) barcolor[j] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
       }
       /**/
-      vertices[0 + 0 * 3 + 6 * i] = 0.15f * cosf((GLfloat)i / 60.0f * 6.283185307f);
-      vertices[1 + 0 * 3 + 6 * i] = 0.15f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
-      vertices[0 + 1 * 3 + 6 * i] = 0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f);
-      vertices[1 + 1 * 3 + 6 * i] = 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
-      for (k = 0; k < 2; k++) {
-        vertices[2 + k * 3 + 6 * i] = 0.0f;
-        for (j = 0; j < 2; j++) normals[j + k * 3 + 6 * i] = 0.0f;
-        normals[2 + k * 3 + 6 * i] = 1.0f;
-        for (j = 0; j < 4; j++) colors[j + k * 4 + 8 * i] = barcolor[j];
-      }/*for (i = 0; i < 10; i++)*/
+      vertices[0 + 3 * (i + 1)] = 0.2f * cosf((GLfloat)i / 60.0f * 6.283185307f);
+      vertices[1 + 3 * (i + 1)] = 0.2f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
+      vertices[2 + 3 * (i + 1)] = 0.0f;
+      for (j = 0; j < 2; j++) normals[j + 3 * (i + 1)] = 0.0f;
+      normals[2 + 3 * (i + 1)] = 1.0f;
+      for (j = 0; j < 4; j++) colors[j + 4 * (i + 1)] = barcolor[j];
     }/*for (i = 0; i <= 60; i++)*/
     glVertexPointer(3, GL_FLOAT, 0, vertices);
     glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 122);
-  }/*else if (fcscl == 4)*/
-  else  if (fcscl == 7 || fcscl == 8) {
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 62);
+  }/*else if (color_scale == 2)*/
+  else  if (color_scale == 5 || color_scale == 6) {
     for (i = 0; i < 2; i++) {
       for (j = 0; j < 2; j++) {
         for (k = 0; k < 2; k++) normals[k + j * 3 + i * 6] = 0.0f;
@@ -369,7 +373,7 @@ static void draw_colorbar()
     glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-  }/*if (fcscl == 7 || fcscl == 8)*/
+  }/*if (color_scale == 7 || color_scale == 8)*/
 
 }/*void draw_colorbar*/
 /**

@@ -24,3 +24,5 @@ THE SOFTWARE.
 
 void free_patch();
 void max_and_min();
+void paint();
+
