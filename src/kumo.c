@@ -121,7 +121,7 @@ void interpol_energy() {
   {
     int j0, j1, j2, jj;
     GLfloat coef[4], 
-      mat1[4][4][4][2], mat2[4][4][2], mat3[4][2],
+      mat1[4][4][4][3], mat2[4][4][3], mat3[4][3],
       eig1[4][4][4], eig2[4][4], eig3[4];
 
     for (ib = 0; ib < nb; ib++) {
@@ -136,7 +136,7 @@ void interpol_energy() {
                   eig1[j0][j1][j2] = eig0[ib][modulo(i0 + j0 - 1, ng0[0])]
                                              [modulo(i1 + j1 - 1, ng0[1])]
                                              [modulo(i2 + j2 - 1, ng0[2])];
-                  for (jj = 0; jj < 2; jj++) {
+                  for (jj = 0; jj < 3; jj++) {
                     mat1[j0][j1][j2][jj] = mat0[ib][modulo(i0 + j0 - 1, ng0[0])]
                                                    [modulo(i1 + j1 - 1, ng0[1])]
                                                    [modulo(i2 + j2 - 1, ng0[2])][jj];
@@ -149,10 +149,10 @@ void interpol_energy() {
               for (j1 = 0; j1 < 4; j1++) {
                 for (j2 = 0; j2 < 4; j2++) {
                   eig2[j1][j2] = 0.0;
-                  for (jj = 0; jj < 2; jj++) mat2[j1][j2][jj] = 0.0;
+                  for (jj = 0; jj < 3; jj++) mat2[j1][j2][jj] = 0.0;
                   for (ii = 0; ii < 4; ii++) {
                     eig2[j1][j2] += coef[ii] * eig1[ii][j1][j2];
-                    for (jj = 0; jj < 2; jj++) 
+                    for (jj = 0; jj < 3; jj++) 
                       mat2[j1][j2][jj] += coef[ii] * mat1[ii][j1][j2][jj];
                   }/*for (ii = 0; ii < 4; ii++)*/
                 }/*for (j2 = 0; j2 < 4; j2++)*/
@@ -161,10 +161,10 @@ void interpol_energy() {
                 kumo_coef(j1, &coef[0]);
                 for (j2 = 0; j2 < 4; j2++) {
                   eig3[j2] = 0.0;
-                  for (jj = 0; jj < 2; jj++) mat3[j2][jj] = 0.0;
+                  for (jj = 0; jj < 3; jj++) mat3[j2][jj] = 0.0;
                   for (ii = 0; ii < 4; ii++) {
                     eig3[j2] += coef[ii] * eig2[ii][j2];
-                    for (jj = 0; jj < 2; jj++)
+                    for (jj = 0; jj < 3; jj++)
                       mat3[j2][jj] += coef[ii] * mat2[ii][j2][jj];
                   }/*for (ii = 0; ii < 4; ii++)*/
                 }/*for (j2 = 0; j2 < 4; j2++)*/
@@ -173,7 +173,7 @@ void interpol_energy() {
                   eig[ib][i0*interpol + j0]
                          [i1*interpol + j1]
                          [i2*interpol + j2] = 0.0;
-                  for (jj = 0; jj < 2; jj++)
+                  for (jj = 0; jj < 3; jj++)
                     mat[ib][i0*interpol + j0]
                            [i1*interpol + j1]
                            [i2*interpol + j2][jj] = 0.0;
@@ -181,7 +181,7 @@ void interpol_energy() {
                     eig[ib][i0*interpol + j0]
                            [i1*interpol + j1]
                            [i2*interpol + j2] += coef[ii] * eig3[ii];
-                    for (jj = 0; jj < 2; jj++)
+                    for (jj = 0; jj < 3; jj++)
                       mat[ib][i0*interpol + j0]
                              [i1*interpol + j1]
                              [i2*interpol + j2][jj] += coef[ii] * mat3[ii][jj];

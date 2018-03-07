@@ -80,13 +80,13 @@ static void menu_background(
   if (value == 1 && blackback != 1) {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     blackback = 1;
-    if (color_scale == 4) paint();
+    if (color_scale == 2 || color_scale == 3) paint();
     glutPostRedisplay();
   }
   else if (value == 0 && blackback != 0) {
     glClearColor(1.0, 1.0, 1.0, 0.0);
     blackback = 0;
-    if (color_scale == 4) paint();
+    if (color_scale == 2 || color_scale == 3) paint();
     glutPostRedisplay();
   }
 }/* bgcolor change*/
@@ -142,23 +142,27 @@ static void menu_colorscale(
   int value //!<[in] Selected menu
 )
 {
-  int ierr;
+  int ierr, ii;
 
   if (value == 0) {
     max_and_min();
-    if (color_scale == 1 || color_scale == 3
-      || color_scale == 5 || color_scale == 3) {
-      printf("    Set min. value for scale : ");
-      ierr = scanf("%f", &patch_min);
-      if (ierr == 0) printf("error ! reading min");
-      printf("    Set max. value for scale : ");
-      ierr = scanf("%f", &patch_max);
-      if (ierr == 0) printf("error ! reading max");
+    if (color_scale == 1 || color_scale == 4
+      || color_scale == 6 || color_scale == 7) {
+      printf("    Set min. and max. value for scale : ");
+      ierr = scanf("%f%f", &patch_min[0], &patch_max[0]);
+      if (ierr == 0) printf("error ! reading min or max");
     }
     else if (color_scale == 2) {
       printf("    Set max. value for scale: ");
-      ierr = scanf("%f", &patch_max);
+      ierr = scanf("%f", &patch_max[0]);
       if (ierr == 0) printf("error ! reading max");
+    }
+    else if (color_scale == 3) {
+      for (ii = 0; ii < 3; ii++) {
+        printf("    Set min. and max. value for scale %d : ", ii);
+        ierr = scanf("%f%f", &patch_min[ii], &patch_max[ii]);
+        if (ierr == 0) printf("error ! reading min or max");
+      }
     }
     else {
       printf("  No color scale in this case.\n");
@@ -560,20 +564,22 @@ void FS_ModifyMenu(
     Color scale mode
     */
     glutSetMenu(imenu_colorscale);
-    for (ib = 0; ib < 7; ib++) glutRemoveMenuItem(1);
+    for (ib = 0; ib < 8; ib++) glutRemoveMenuItem(1);
     glutAddMenuEntry("Max/Min of Scale", 0);
     if (color_scale == 1) glutAddMenuEntry("[x] Input (Real)", 1);
     else glutAddMenuEntry("[ ] Input (Real)", 1);
     if (color_scale == 2) glutAddMenuEntry("[x] Input (Complex)", 2);
     else glutAddMenuEntry("[ ] Input (Complex)", 2);
-    if (color_scale == 3) glutAddMenuEntry("[x] Fermi Velocity", 3);
-    else glutAddMenuEntry("[ ] Fermi Velocity", 3);
-    if (color_scale == 4) glutAddMenuEntry("[x] Band Index", 4);
-    else glutAddMenuEntry("[ ] Band Index", 4);
-    if (color_scale == 5) glutAddMenuEntry("[x] Input (Real, Gray Scale)", 5);
-    else glutAddMenuEntry("[ ] Input (Real, Gray Scale)", 5);
-    if (color_scale == 6) glutAddMenuEntry("[x] Fermi Velocity (Gray Scale)", 6);
-    else glutAddMenuEntry("[ ] Fermi Velocity (Gray Scale)", 6);
+    if (color_scale == 3) glutAddMenuEntry("[x] Input (Tri-number)", 3);
+    else glutAddMenuEntry("[ ] Input (Tri-number)", 3);
+    if (color_scale == 4) glutAddMenuEntry("[x] Fermi Velocity", 4);
+    else glutAddMenuEntry("[ ] Fermi Velocity", 4);
+    if (color_scale == 5) glutAddMenuEntry("[x] Band Index", 5);
+    else glutAddMenuEntry("[ ] Band Index", 5);
+    if (color_scale == 6) glutAddMenuEntry("[x] Input (Real, Gray Scale)", 6);
+    else glutAddMenuEntry("[ ] Input (Real, Gray Scale)", 6);
+    if (color_scale == 7) glutAddMenuEntry("[x] Fermi Velocity (Gray Scale)", 7);
+    else glutAddMenuEntry("[ ] Fermi Velocity (Gray Scale)", 7);
     /*
     Equator
     */
@@ -725,14 +731,16 @@ void FS_CreateMenu()
   else glutAddMenuEntry("[ ] Input (Real)", 1);
   if (color_scale == 2) glutAddMenuEntry("[x] Input (Complex)", 2);
   else glutAddMenuEntry("[ ] Input (Complex)", 2);
-  if (color_scale == 3) glutAddMenuEntry("[x] Fermi Velocity", 3);
-  else glutAddMenuEntry("[ ] Fermi Velocity", 3);
-  if (color_scale == 4) glutAddMenuEntry("[x] Band Index", 4);
-  else glutAddMenuEntry("[ ] Band Index", 4);
-  if (color_scale == 5) glutAddMenuEntry("[x] Input (Real, Gray Scale)", 5);
-  else glutAddMenuEntry("[ ] Input (Real, Gray Scale)", 5);
-  if (color_scale == 6) glutAddMenuEntry("[x] Fermi Velocity (Gray Scale)", 6);
-  else glutAddMenuEntry("[ ] Fermi Velocity (Gray Scale)", 6);
+  if (color_scale == 3) glutAddMenuEntry("[x] Input (Tri-number)", 3);
+  else glutAddMenuEntry("[ ] Input (Tri-number)", 3);
+  if (color_scale == 4) glutAddMenuEntry("[x] Fermi Velocity", 4);
+  else glutAddMenuEntry("[ ] Fermi Velocity", 4);
+  if (color_scale == 5) glutAddMenuEntry("[x] Band Index", 5);
+  else glutAddMenuEntry("[ ] Band Index", 5);
+  if (color_scale == 6) glutAddMenuEntry("[x] Input (Real, Gray Scale)", 6);
+  else glutAddMenuEntry("[ ] Input (Real, Gray Scale)", 6);
+  if (color_scale == 7) glutAddMenuEntry("[x] Fermi Velocity (Gray Scale)", 7);
+  else glutAddMenuEntry("[ ] Fermi Velocity (Gray Scale)", 7);
   /*
   Equator
   */

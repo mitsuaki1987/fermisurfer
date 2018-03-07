@@ -100,8 +100,8 @@ GLfloat ****matp;    //!< Matrix elements of points [::nb][::ntri][3][3]
 GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
 int itet;           //!< Counter for tetrahedron
 GLfloat side;       //!< Which side is lighted
-GLfloat patch_max;  //!< Max value across patch
-GLfloat patch_min;  //!< Max value across patch
+GLfloat patch_max[3];  //!< Max value across patch
+GLfloat patch_min[3];  //!< Max value across patch
 /*
   Variables for nodeline
 */
