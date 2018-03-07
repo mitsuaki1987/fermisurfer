@@ -1,5 +1,17 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Defined if a valid OpenGL implementation is found. */
+#undef HAVE_GL
+
+/* Defined if a valid GLU implementation is found. */
+#undef HAVE_GLU
+
+/* Defined if a valid GLUT implementation is found */
+#undef HAVE_GLUT
+
+/* Define to 1 if you have the <GLUT/glut.h> header file. */
+#undef HAVE_GLUT_GLUT_H
+
 /* Define to 1 if you have the <GL/glut.h> header file. */
 #undef HAVE_GL_GLUT_H
 
@@ -14,9 +26,6 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* Define to 1 if you have the <OpenGL/glut.h> header file. */
-#undef HAVE_OPENGL_GLUT_H
 
 /* Define to 1 if you have the <OpenGL/glu.h> header file. */
 #undef HAVE_OPENGL_GLU_H
@@ -77,6 +86,3 @@
 
 /* Version number of package */
 #undef VERSION
-
-/* Define to 1 if the X Window System is missing or not being used. */
-#undef X_DISPLAY_MISSING
