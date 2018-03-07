@@ -3833,9 +3833,6 @@ fi
 echo ""
 echo "  Check OpenMP"
 echo ""
-echo ""
-echo "  Check OpenMP"
-echo ""
 
 # Check whether --with-openmp was given.
 if test "${with_openmp+set}" = set; then :
@@ -8976,8 +8973,8 @@ fi
 
 
 
-CFLAGS="$CFLAGS $GLUT_CFLAGS"
-LIBS="$LIBS $GLUT_LIBS -lm"
+CFLAGS="$CFLAGS $GL_CFLAGS $GLU_CFLAGS $GLUT_CFLAGS"
+LIBS="$LIBS $GLUT_LIBS $GLU_LIBS $GL_LIBS -lm"
 echo ""
 echo "  Output files"
 echo ""

@@ -11,9 +11,6 @@ AC_PROG_CC
 echo ""
 echo "  Check OpenMP"
 echo ""
-echo ""
-echo "  Check OpenMP"
-echo ""
 AC_ARG_WITH(openmp, [AS_HELP_STRING([--with-openmp],
                                  [compile with OpenMP (parallelization) support.
                                   If none is found, OpenMP is not used. Default: yes])],,
@@ -26,9 +23,11 @@ fi
 echo ""
 echo "  Check OpenGL and GLUT"
 echo ""
+AX_CHECK_GL
+AX_CHECK_GLU
 AX_CHECK_GLUT
-CFLAGS="$CFLAGS $GLUT_CFLAGS"
-LIBS="$LIBS $GLUT_LIBS -lm"
+CFLAGS="$CFLAGS $GL_CFLAGS $GLU_CFLAGS $GLUT_CFLAGS"
+LIBS="$LIBS $GLUT_LIBS $GLU_LIBS $GL_LIBS -lm"
 echo ""
 echo "  Output files"
 echo ""
