@@ -32,36 +32,14 @@
         <h2>News</h2>
         <ul>
           <li>
-            <h3><a href="https://ja.osdn.net/projects/fermisurfer/releases/68420">
-                2017/10/10 バージョン1.10.0をリリースしました !</a></h3>
-            <h4>いくつかの機能追加とバグフィックスと描画のなめらかさの改善を行いました。
+            <h3><a href="https://ja.osdn.net/projects/fermisurfer/releases/69171">
+                2018/3/8 FermiSurfer 1.10.1 をリリースしました !</a></h3>
+            <h4>描画に関するバグフィックスとインストール方法の改善を行いました。
               詳しくはリリースノートをご覧ください。</h4>
-          </li>
-          <li>
-            <h3>2017/8/16 バージョン1.9.1をリリースしました !</h3>
-            <h4>バグフィックスや速度向上を行いました。詳しくはリリースノートをご覧ください。</h4>
           </li>
           <li>
             <h3>2017 <a href="">株式会社クロスアビリティ</a>製プログラムスイート
               <a href="https://winmostar.com/jp/">Winmostar</a>内でもFermiSurferが使えます.</h3>
-          </li>
-          <li>
-            <h3>2017/3/19 QuantumESPRESSO-6.1用インターフェースをリリースしました !</h3>
-            <h4>
-              QuantumESPRESSOの出力を利用して以下の量をFermi面上にカラープロットすることが出来ます。
-              <ul>
-                <li>Fermi速度の絶対値</li>
-                <li>各原子軌道のプロジェクション</li>
-              </ul>
-              <p>
-                以下のサイトからダウンロードしたファイルを QE6.0のディレクトリ内で展開し、ビルドすることにより使えます。
-              </p>
-              <p><a href="http://qe-forge.org/gf/project/dfpttetra/frs/">
-                  http://qe-forge.org/gf/project/dfpttetra/frs/
-              </a></p>
-              <p>Fermisurfer-QEインターフェイスはDFPT-tetraプロジェクトに含まれています。 
-                サンプル例は展開したパッチの中の <code>PP/example/fermisurf_example/</code> にあります。</p>
-            </h4>
           </li>
         </ul>
         <hr>
