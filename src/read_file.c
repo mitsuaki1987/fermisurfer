@@ -308,6 +308,10 @@ void read_batch(
         exit(-1);
       }
     }
+    else if (strcmp(keyword, "minmax") == 0) {
+      ierr = fscanf(fp, "%f%f%f", &eqvec[0], &eqvec[1], &eqvec[2]);
+      lequator = 1;
+    }
     else if (strcmp(keyword, "equator") == 0) {
       ierr = fscanf(fp, "%f%f%f", &eqvec[0], &eqvec[1], &eqvec[2]);
       lequator = 1;

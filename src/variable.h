@@ -172,9 +172,3 @@ enum
   MOUSE_SCROLL_DOWN = 4 //!< Mouse wheel down
 };
 int nthreads;//!< Number of OpenMP threads
-/*
- Batch mode
-*/
-int nbatch;
-char **batch_file;
-char window_name[256];
