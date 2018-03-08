@@ -1,5 +1,5 @@
 AC_PREREQ([2.69])
-AC_INIT([fermisurfer], [1.10.0], [mkawamura@issp.u-tokyo.ac.jp])
+AC_INIT([fermisurfer], [1.10.1], [mkawamura@issp.u-tokyo.ac.jp])
 AC_CONFIG_AUX_DIR([config])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_HEADERS([config.h])
@@ -8,9 +8,6 @@ echo ""
 echo "  Check compiler"
 echo ""
 AC_PROG_CC
-echo ""
-echo "  Check OpenMP"
-echo ""
 echo ""
 echo "  Check OpenMP"
 echo ""
@@ -26,9 +23,11 @@ fi
 echo ""
 echo "  Check OpenGL and GLUT"
 echo ""
+AX_CHECK_GL
+AX_CHECK_GLU
 AX_CHECK_GLUT
-CFLAGS="$CFLAGS $GLUT_CFLAGS"
-LIBS="$LIBS $GLUT_LIBS -lm"
+CFLAGS="$CFLAGS $GL_CFLAGS $GLU_CFLAGS $GLUT_CFLAGS"
+LIBS="$LIBS $GLUT_LIBS $GLU_LIBS $GL_LIBS -lm"
 echo ""
 echo "  Output files"
 echo ""
