@@ -1,0 +1,19 @@
+   background  black
+         band  0 0 1
+#brillouinzone  primitive
+     colorbar  1
+   colorscale  fermivelocity
+       minmax  -22 22
+#      equator  1.0 0.0 0.0
+     interpol  4
+    linewidth  3.0
+     lighting  both 
+    nodalline  0
+#      section  1.0 0.0 0.0
+  acrossgamma  1
+     position  0.0 0.0 0.0
+        scale  1.0
+     rotation  120.0 40.0 0.0
+  fermienergy  0.0
+   stereogram  normal
+  tetrahedron  1

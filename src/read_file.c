@@ -28,6 +28,7 @@ THE SOFTWARE.
 #include <stdio.h>
 #include <math.h>
 #include <ctype.h>
+#include <string.h>
 #include "variable.h"
 #include "basic_math.h"
 #if defined(HAVE_CONFIG_H)
@@ -243,30 +244,36 @@ static void Text2Lower(char *value //!<[inout] @brief Keyword or value
     value[ii] = value2;
   }
 }/*static void Text2Lower*/
-void read_batch(
-  char *fname//!<[in] Input file name
+int read_batch(
+  GLfloat minmax[3][2]
 )
 {
   char keyword[256], value[256];
   FILE *fp;
-  int ierr, ib, itmp;
+  char *ctmp;
+  int ierr, ib, iminmax;
 
-  printf("  Openning batch file %s ...\n", fname);
-  if ((fp = fopen(fname, "r")) == NULL) {
+  printf("  Openning batch file %s ...\n", batch_name);
+  if ((fp = fopen(batch_name, "r")) == NULL) {
     printf("file open error!!\n");
     printf("  Press any key to exit.\n");
     getchar();
     exit(EXIT_FAILURE);
   }
 
+  iminmax = 0;
   printf("  Reading...\n");
   while (fscanf(fp, "%s", keyword) != EOF) {
 
     Text2Lower(keyword);
     printf("%s\n", keyword);
-    
+    if (keyword[0] == '#') {
+      ctmp = fgets(keyword, 256, fp);
+      continue;
+    }
+
     if (strcmp(keyword, "background") == 0) {
-      ierr = fscanf(fp, "%s", &value);
+      ierr = fscanf(fp, "%s", value);
       Text2Lower(value);
       if (strcmp(value, "black") == 0) blackback = 1;
       else if (strcmp(value, "white") == 0) blackback = 0;
@@ -280,7 +287,7 @@ void read_batch(
         ierr = fscanf(fp, "%d", &draw_band[ib]);
     }
     else if (strcmp(keyword, "brillouinzone") == 0) {
-      ierr = fscanf(fp, "%s", &value);
+      ierr = fscanf(fp, "%s", value);
       Text2Lower(value);
       if (strcmp(value, "first") == 0) fbz = 1;
       else if (strcmp(value, "primitive") == 0) fbz = -1;
@@ -293,7 +300,7 @@ void read_batch(
       ierr = fscanf(fp, "%d", &lcolorbar);
     }
     else if (strcmp(keyword, "colorscale") == 0) {
-      ierr = fscanf(fp, "%s", &value);
+      ierr = fscanf(fp, "%s", value);
       Text2Lower(value);
       if (strcmp(value, "inputreal") == 0) color_scale = 1;
       else if (strcmp(value, "inputcomplex") == 0) color_scale = 2;
@@ -309,8 +316,17 @@ void read_batch(
       }
     }
     else if (strcmp(keyword, "minmax") == 0) {
-      ierr = fscanf(fp, "%f%f%f", &eqvec[0], &eqvec[1], &eqvec[2]);
-      lequator = 1;
+      iminmax = 1;
+      if(color_scale == 3)
+        ierr = fscanf(fp, "%f%f%f%f%f%f", 
+          &minmax[0][0], &minmax[0][1], 
+          &minmax[1][0], &minmax[1][1], 
+          &minmax[2][0], &minmax[2][1]);
+      else if (color_scale == 2)
+        ierr = fscanf(fp, "%f%f%f%f", 
+          &minmax[0][0], &minmax[0][1], &minmax[1][0], &minmax[1][1]);
+      else
+        ierr = fscanf(fp, "%f%f", &minmax[0][0], &minmax[0][1]);
     }
     else if (strcmp(keyword, "equator") == 0) {
       ierr = fscanf(fp, "%f%f%f", &eqvec[0], &eqvec[1], &eqvec[2]);
@@ -323,7 +339,7 @@ void read_batch(
       ierr = fscanf(fp, "%f", &linewidth);
     }
     else if (strcmp(keyword, "lighting") == 0) {
-      ierr = fscanf(fp, "%s", &value);
+      ierr = fscanf(fp, "%s", value);
       Text2Lower(value);
       if (strcmp(value, "both") == 0) {
         lside = 1;
@@ -366,7 +382,7 @@ void read_batch(
       ierr = fscanf(fp, "%f", &EF);
     }
     else if (strcmp(keyword, "stereogram") == 0) {
-      ierr = fscanf(fp, "%s", &value);
+      ierr = fscanf(fp, "%s", value);
       Text2Lower(value);
       if (strcmp(value, "normal") == 0) lstereo = 1;
       else if (strcmp(value, "parallel") == 0) lstereo = 2;
@@ -402,4 +418,6 @@ void read_batch(
   rot[2][0] = -cosf(thetax)* cosf(thetaz)* sinf(thetay) + sinf(thetax)* sinf(thetaz);
   rot[2][1] = cosf(thetaz)* sinf(thetax) + cosf(thetax)* sinf(thetay)* sinf(thetaz);
   rot[2][2] = cosf(thetax)* cosf(thetay);
+
+  return iminmax;
 }

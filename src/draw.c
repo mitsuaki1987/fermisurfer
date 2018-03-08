@@ -493,6 +493,8 @@ void display(void)
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
   GLfloat dx, dx2d, theta, posz, phi;
   GLfloat pos1[4], pos2[4];
+  int ierr;
+  char command_name[256];
 
   if (lstereo == 2) {
     /*
@@ -616,4 +618,10 @@ void display(void)
     glPopMatrix();
   }/*if (lsection == 1)*/
   glutSwapBuffers();
+  if (lbatch == 1) {
+    glFlush();
+    sprintf(command_name, "import -window \"%s\" %s.png", window_name, batch_name);
+    ierr = system(command_name);
+    exit(0);
+  }
 }/*void display*/

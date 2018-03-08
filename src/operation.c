@@ -35,6 +35,7 @@ THE SOFTWARE.
 
 #include <math.h>
 #include "variable.h"
+#include "draw.h"
 /**
  @brief Window resize
 
@@ -65,7 +66,7 @@ void resize(
 */
 void idle(void)
 {
-  glutPostRedisplay();
+  display();
 } /* idle */
 /**
  @brief Glut mouse function
@@ -107,7 +108,7 @@ void mouse(
     switch (state) {
     case GLUT_DOWN:
       scl = scl * 1.1f;
-      glutPostRedisplay();
+      display();
       break;
     case GLUT_UP:
       break;
@@ -122,7 +123,7 @@ void mouse(
     switch (state) {
     case GLUT_DOWN:
       scl = scl * 0.9f;
-      glutPostRedisplay();
+      display();
       break;
     case GLUT_UP:
       break;
@@ -227,22 +228,22 @@ void special_key(
   switch (key) {
   case GLUT_KEY_UP:
     trans[1] = trans[1] + 0.1f;
-    glutPostRedisplay();
+    display();
     break;
   case GLUT_KEY_DOWN:
     trans[1] = trans[1] - 0.1f;
-    glutPostRedisplay();
+    display();
     break;
   case GLUT_KEY_RIGHT:
     /**/
     trans[0] = trans[0] + 0.1f;
-    glutPostRedisplay();
+    display();
     break;
     /**/
   case GLUT_KEY_LEFT:
     /**/
     trans[0] = trans[0] - 0.1f;
-    glutPostRedisplay();
+    display();
     break;
     /**/
   }
