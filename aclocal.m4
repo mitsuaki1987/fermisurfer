@@ -1,6 +1,6 @@
-# generated automatically by aclocal 1.16 -*- Autoconf -*-
+# generated automatically by aclocal 1.15 -*- Autoconf -*-
 
-# Copyright (C) 1996-2018 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -21,41 +21,34 @@ If you have problems, you may need to regenerate the build system entirely.
 To do so, use the procedure documented by the package, typically 'autoreconf'.])])
 
 # ===========================================================================
-#       https://www.gnu.org/software/autoconf-archive/ax_check_gl.html
+#        http://www.gnu.org/software/autoconf-archive/ax_check_gl.html
 # ===========================================================================
 #
 # SYNOPSIS
 #
-#   AX_CHECK_GL([ACTION-IF-FOUND],[ACTION-IF-NOT-FOUND])
+#   AX_CHECK_GL
 #
 # DESCRIPTION
 #
-#   Checks for an OpenGL implementation. If a valid OpenGL implementation is
-#   found, this macro would set C preprocessor symbol HAVE_GL to 1.
+#   Check for an OpenGL implementation. If GL is found, the required
+#   compiler and linker flags are included in the output variables
+#   "GL_CFLAGS", "GL_LIBS", "GL_LDFLAGS", respectively. If no usable GL
+#   implementation is found, "no_gl" is set to "yes".
 #
-#   If either a valid OpenGL header or library was not found, by default the
-#   configuration would exits on error. This behavior can be overwritten by
-#   providing a custom "ACTION-IF-NOT-FOUND" hook.
+#   You could disable OpenGL using --with-gl=no
 #
-#   If the header, library was found, and been tested for compiling and
-#   linking the configuration would export the required compiler flags to
-#   "GL_CFLAGS" and "GL_LIBS". These two variables can also be overwritten
-#   by user from the command line if they want to link against the library
-#   they specified instead of having the configuration script to detect the
-#   flags automatically. Note that having "GL_CFLAGS" or "GL_LIBS" set
-#   doesn't mean it can compile or link with the flags, since it could be
-#   overwritten by user. However the "HAVE_GL" symbol and "ACTION-IF-FOUND"
-#   hook is always guaranteed to reflect a valid OpenGL implementation.
+#   You could choose a specific OpenGL libs using --with-gl=lib_name
 #
-#   If user didn't specify the "ACTION-IF-FOUND" hook, the configuration
-#   would prepend "GL_CFLAGS" and "GL_LIBS" to "CFLAGS" and "LIBS", like
-#   many other autoconf macros do.
+#   Under darwin, cygwin and mingw target you could prefer the OpenGL
+#   implementation that link with X setting --with-gl=x or without X support
+#   with --with-gl=nox. Notes that this script try to guess the right
+#   implementation.
 #
-#   OpenGL is one of the libraries that has different header names on
-#   different platforms. This macro does the header detection, and will
-#   export the following symbol: "HAVE_GL_GL_H" for having "GL/gl.h" or
-#   "HAVE_OPENGL_GL_H" for having "OpenGL/gl.h". To write a portable OpenGL
-#   code, you should include OpenGL header like so:
+#   If the header "GL/gl.h" is found, "HAVE_GL_GL_H" is defined. If the
+#   header "OpenGL/gl.h" is found, HAVE_OPENGL_GL_H is defined. These
+#   preprocessor definitions may not be mutually exclusive.
+#
+#   You should use something like this in your headers:
 #
 #     #if defined(HAVE_WINDOWS_H) && defined(_WIN32)
 #     # include <windows.h>
@@ -68,18 +61,10 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #     # error no gl.h
 #     #endif
 #
-#   On the OSX platform, there's two possible OpenGL implementation. One is
-#   the OpenGL that ships with OSX, the other comes with X11/XQuartz
-#   (http://www.xquartz.org). To use the xquartz variant, user can use the
-#   option --with-xquartz-gl[=path to xquartz root]. By default the
-#   configuration will check "/opt/X11", which is the default X11 install
-#   location on OSX.
-#
 # LICENSE
 #
 #   Copyright (c) 2009 Braden McDaniel <braden@endoframe.com>
 #   Copyright (c) 2012 Bastien Roucaries <roucaries.bastien+autoconf@gmail.com>
-#   Copyright (c) 2016 Felix Chern <idryman@gmail.com>
 #
 #   This program is free software; you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -92,7 +77,7 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #   Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <https://www.gnu.org/licenses/>.
+#   with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #   As a special exception, the respective Autoconf Macro's copyright owner
 #   gives unlimited permission to copy, distribute and modify the configure
@@ -107,9 +92,8 @@ To do so, use the procedure documented by the package, typically 'autoreconf'.])
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 22
+#serial 17
 
-# example gl program
 m4_define([_AX_CHECK_GL_PROGRAM],
           [AC_LANG_PROGRAM([[
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
@@ -137,44 +121,59 @@ AC_DEFUN([_AX_CHECK_GL_INCLUDES_DEFAULT],dnl
   ]
 ])
 
-
-# _AX_CHECK_GL_SAVE_FLAGS(LIST-OF-FLAGS)
-# Use this macro before you modify the flags.
-# Restore the flags by _AX_CHECK_GL_RESTORE_FLAGS
-#
-# Example: _AX_CHECK_GL_SAVE_FLAGS([[CFLAGS],[LIBS]]) expands to
-# gl_saved_flag_cflags=$CFLAGS
-# gl_saved_flag_libs=$LIBS
-# CFLAGS="$GL_CFLAGS $CFLAGS"
-# LIBS="$GL_LIBS $LIBS"
-AC_DEFUN([_AX_CHECK_GL_SAVE_FLAGS], [
- AX_SAVE_FLAGS_WITH_PREFIX([GL],[$1])
- AC_LANG_PUSH([C])
+dnl local save flags
+AC_DEFUN([_AX_CHECK_GL_SAVE_FLAGS],
+[dnl
+ax_check_gl_saved_libs="${LIBS}"
+ax_check_gl_saved_cflags="${CFLAGS}"
+ax_check_gl_saved_cppflags="${CPPFLAGS}"
+ax_check_gl_saved_ldflags="${LDFLAGS}"
 ])
 
-# _AX_CHECK_GL_RESTORE_FLAGS(LIST-OF-FLAGS)
-# Use this marcro to restore the flags you saved using
-# _AX_CHECK_GL_SAVE_FLAGS
-#
-# Example: _AX_CHECK_GL_RESTORE_FLAGS([[CFLAGS],[LIBS]]) expands to
-# CFLAGS="$gl_saved_flag_cflags"
-# LIBS="$gl_saved_flag_libs"
-AC_DEFUN([_AX_CHECK_GL_RESTORE_FLAGS], [
- AX_RESTORE_FLAGS_WITH_PREFIX([GL],[$1])
- AC_LANG_POP([C])
+dnl local restore flags
+AC_DEFUN([_AX_CHECK_GL_RESTORE_FLAGS],
+[dnl
+LIBS="${ax_check_gl_saved_libs}"
+CFLAGS="${ax_check_gl_saved_cflags}"
+CPPFLAGS="${ax_check_gl_saved_cppflags}"
+LDFLAGS="${ax_check_gl_saved_ldflags}"
 ])
 
-# Check if the program compiles
+dnl default switch case failure
+AC_DEFUN([_AX_CHECK_MSG_FAILURE_ORDER],
+[dnl
+ AC_MSG_FAILURE([Order logic in ax_check_gl is buggy])
+])
+
+# set the varible ax_check_gl_need_x
+# this variable determine if we need opengl that link with X
+# value are default aka try the first library wether if it link or not with x
+# yes that means we need a opengl with x
+# no that means we do not need an opengl with x
+AC_DEFUN([_AX_CHECK_GL_NEED_X],
+[dnl
+ # do not check if empty : allow a subroutine to modify the choice
+ AS_IF([test "X$ax_check_gl_need_x" = "X"],
+       [ax_check_gl_need_x="default"
+        AS_IF([test "X$no_x" = "Xyes"],[ax_check_gl_need_x="no"])
+        AS_IF([test "X$ax_check_gl_want_gl" = "Xnox"],[ax_check_gl_need_x="no"])
+        AS_IF([test "X$ax_check_gl_want_gl" = "Xx"],[ax_check_gl_need_x="yes"])])
+])
+
+# compile the example program
 AC_DEFUN([_AX_CHECK_GL_COMPILE],
 [dnl
- _AX_CHECK_GL_SAVE_FLAGS([CFLAGS])
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GL_SAVE_FLAGS()
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
  AC_COMPILE_IFELSE([_AX_CHECK_GL_PROGRAM],
                    [ax_check_gl_compile_opengl="yes"],
                    [ax_check_gl_compile_opengl="no"])
- _AX_CHECK_GL_RESTORE_FLAGS([CFLAGS])
+ _AX_CHECK_GL_RESTORE_FLAGS()
+ AC_LANG_POP([C])
 ])
 
-# Compile the example program (cache)
+# compile the example program (cache)
 AC_DEFUN([_AX_CHECK_GL_COMPILE_CV],
 [dnl
  AC_CACHE_CHECK([for compiling a minimal OpenGL program],[ax_cv_check_gl_compile_opengl],
@@ -183,17 +182,22 @@ AC_DEFUN([_AX_CHECK_GL_COMPILE_CV],
  ax_check_gl_compile_opengl="${ax_cv_check_gl_compile_opengl}"
 ])
 
-# Link the example program
+# link the example program
 AC_DEFUN([_AX_CHECK_GL_LINK],
 [dnl
- _AX_CHECK_GL_SAVE_FLAGS([[CFLAGS],[LIBS],[LDFLAGS]])
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GL_SAVE_FLAGS()
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ LDFLAGS="${GL_LDFLAGS} ${LDFLAGS}"
  AC_LINK_IFELSE([_AX_CHECK_GL_PROGRAM],
                 [ax_check_gl_link_opengl="yes"],
                 [ax_check_gl_link_opengl="no"])
- _AX_CHECK_GL_RESTORE_FLAGS([[CFLAGS],[LIBS],[LDFLAGS]])
+ _AX_CHECK_GL_RESTORE_FLAGS()
+ AC_LANG_POP([C])
 ])
 
-# Link the example program (cache)
+# link the example program (cache)
 AC_DEFUN([_AX_CHECK_GL_LINK_CV],
 [dnl
  AC_CACHE_CHECK([for linking a minimal OpenGL program],[ax_cv_check_gl_link_opengl],
@@ -202,155 +206,398 @@ AC_DEFUN([_AX_CHECK_GL_LINK_CV],
  ax_check_gl_link_opengl="${ax_cv_check_gl_link_opengl}"
 ])
 
-
-# _AX_CHECK_GL_MANUAL_LIBS_GENERIC(LIBRARIES-TO-SEARCH)
-# Searches library provided in $1, and output the flag
-# $ax_check_gl_lib_opengl
-AC_DEFUN([_AX_CHECK_GL_MANUAL_LIBS_GENERIC], [
-  AS_IF([test -n "$GL_LIBS"],[], [
-    ax_check_gl_manual_libs_generic_extra_libs="$1"
-    AS_IF([test "X$ax_check_gl_manual_libs_generic_extra_libs" = "X"],
-          [AC_MSG_ERROR([AX_CHECK_GL_MANUAL_LIBS_GENERIC argument must no be empty])])
-
-    _AX_CHECK_GL_SAVE_FLAGS([CFLAGS])
-    AC_SEARCH_LIBS([glBegin],[$ax_check_gl_manual_libs_generic_extra_libs], [
-                   ax_check_gl_lib_opengl="yes"
-                   break
-                   ])
-    AS_IF([test "X$ax_check_gl_lib_opengl"="Xyes"],
-          [GL_LIBS="${ac_cv_search_glBegin}"])
-    _AX_CHECK_GL_RESTORE_FLAGS([CFLAGS])
- ])
+dnl Check headers manually (default case)
+AC_DEFUN([_AX_CHECK_GL_MANUAL_HEADERS_DEFAULT],
+[AC_REQUIRE([AC_PATH_XTRA])
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GL_SAVE_FLAGS()
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ # see comment in _AX_CHECK_GL_INCLUDES_DEFAULT
+ AC_CHECK_HEADERS([windows.h],[],[],[AC_INCLUDES_DEFAULT])
+ # FIXME: use extra cflags
+ AC_CHECK_HEADERS([GL/gl.h],[ax_check_gl_have_headers="yes"],
+                            [ax_check_gl_have_headers_headers="no"],
+			    [_AX_CHECK_GL_INCLUDES_DEFAULT()])
+ # do not try darwin specific OpenGl/gl.h
+ _AX_CHECK_GL_RESTORE_FLAGS()
+ AC_LANG_POP([C])
 ])
 
-# _WITH_XQUARTZ_GL
-# ----------------
-# Provides an option in command line to specify the XQuartz installation
-# path on OSX, so that user can link to it instead of using the default
-# OSX OpenGL framework. (Mac OSX only)
-AC_DEFUN_ONCE([_WITH_XQUARTZ_GL],[
-  AC_ARG_WITH([xquartz-gl],
-   [AS_HELP_STRING([--with-xquartz-gl@<:@=DIR@:>@],
-                   [On Mac OSX, use opengl provided by X11/XQuartz instead of the built-in framework.
-                    If enabled, the default location is @<:@DIR=/opt/X11@:>@.
-                    This option is default to false.])],
-   [AS_IF([test "X$with_xquartz_gl"="Xyes"],
-          [with_xquartz_gl="/opt/X11"])],
-   [with_xquartz_gl=no])
-  AS_IF([test "X$with_xquartz_gl" != "Xno"],
-        [AC_MSG_CHECKING([OSX X11 path])
-         AS_IF([test -e "$with_xquartz_gl"],
-               [AC_MSG_RESULT(["$with_xquartz_gl"])
-                CFLAGS="-I$with_xquartz_gl/include $CFLAGS"
-                LIBS="-L$with_xquartz_gl/lib $LIBS"
-               ],
-               [with_xquartz_gl=no
-                AC_MSG_RESULT([no])
-                AC_MSG_WARN([--with-xquartz-gl was given, but test for X11 failed. Fallback to system framework])
-               ])
-        ])
+# darwin headers without X
+AC_DEFUN([_AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX],[
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GL_SAVE_FLAGS()
+ # FIXME: use -framework opengl as an extra cflags
+ CFLAGS="-framework opengl ${GL_CFLAGS} ${CFLAGS}"
+ AC_CHECK_HEADERS([OpenGL/gl.h],[ax_check_gl_have_headers="yes"],
+                                [ax_check_gl_have_headers_headers="no"],
+			        [_AX_CHECK_GL_INCLUDES_DEFAULT()])
+ AS_IF([test "X$ax_check_gl_have_headers" = "yes"],
+       [GL_CFLAGS="-framework opengl ${GL_CFLAGS}"])
+ _AX_CHECK_GL_SAVE_FLAGS()
+ AC_LANG_POP([C])
 ])
 
-# OSX specific setup for OpenGL check
-AC_DEFUN([_AX_CHECK_DARWIN_GL], [
- AC_REQUIRE([_WITH_XQUARTZ_GL])
- AS_IF([test "x$with_xquartz_gl" != "xno"],
-       [GL_LIBS="${GL_LIBS:--lGL}"],
-       [GL_LIBS="${GL_LIBS:--framework OpenGL}"])
+# check header for darwin
+AC_DEFUN([_AX_CHECK_GL_MANUAL_HEADERS_DARWIN],
+[AC_REQUIRE([_AX_CHECK_GL_NEED_X])dnl
+ AS_CASE(["$ax_check_gl_order"],
+         # try to use framework
+         ["gl"],[_AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX()],
+	 # try to use framework then mesa (X)
+	 ["gl mesagl"],[
+	   _AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX()
+	   AS_IF([test "X$ax_check_gl_have_headers" = "yes"],
+	         [ax_check_gl_order="gl"
+		  ax_check_gl_need_x="yes"],
+		 [ax_check_gl_order="mesagl gl"
+		  ax_check_gl_need_x="no"]
+		  # retry with general test
+		  _AX_CHECK_GL_MANUAL_HEADERS_DEFAULT()])],
+         ["mesagl gl"],[
+	   _AX_CHECK_GL_MANUAL_HEADERS_DEFAULT()
+	   AS_IF([test "X$ax_check_gl_have_headers" = "yes"],
+	         [ax_check_gl_order="mesagl gl"
+		  ax_check_gl_need_x="no"],
+		 [ax_check_gl_order="gl"
+		  ax_check_gl_need_x="yes"
+		  # retry with framework
+		  _AX_CHECK_GL_MANUAL_HEADERS_DARWIN_NOX()])],
+        [_AX_CHECK_MSG_FAILURE_ORDER()])
 ])
 
-
-# AX_CHECK_GL_LIB([ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
-# ---------------------------------------------------------
-# Checks OpenGL headers and library and provides hooks for success and failures.
-# When $1 is not set, this macro would modify CFLAGS and LIBS environment variables.
-# However, user can override this behavior by providing their own hooks.
-# The CFLAGS and LIBS flags required by OpenGL is always exported in
-# GL_CFLAGS and GL_LIBS environment variable.
-#
-# In other words, the default behavior of AX_CHECK_GL_LIB() is equivalent to
-# AX_CHECK_GL_LIB(
-#   [CFLAGS="$GL_CFLAGS $CFLAGS"
-#    LIBS="$GL_LIBS $LIBS"]
-# )
-AC_DEFUN([AX_CHECK_GL],
+dnl Check headers manually: subroutine must set ax_check_gl_have_headers={yes,no}
+AC_DEFUN([_AX_CHECK_GL_MANUAL_HEADERS],
 [AC_REQUIRE([AC_CANONICAL_HOST])
- AC_REQUIRE([PKG_PROG_PKG_CONFIG])
- AC_ARG_VAR([GL_CFLAGS],[C compiler flags for GL, overriding configure script defaults])
- AC_ARG_VAR([GL_LIBS],[Linker flags for GL, overriding configure script defaults])
-
- dnl --with-gl or not can be implemented outside of check-gl
  AS_CASE([${host}],
-         [*-darwin*],[_AX_CHECK_DARWIN_GL],
-         dnl some windows may support X11 opengl, and should be able to linked
-         dnl by -lGL. However I have no machine to test it.
+         [*-darwin*],[_AX_CHECK_GL_MANUAL_HEADERS_DARWIN],
+	 [_AX_CHECK_GL_MANUAL_HEADERS_DEFAULT()])
+ AC_CACHE_CHECK([for OpenGL headers],[ax_cv_check_gl_have_headers],
+               	[ax_cv_check_gl_have_headers="${ax_check_gl_have_headers}"])
+])
+
+# dnl try to found library (generic case)
+# dnl $1 is set to the library to found
+AC_DEFUN([_AX_CHECK_GL_MANUAL_LIBS_GENERIC],
+[dnl
+ ax_check_gl_manual_libs_generic_extra_libs="$1"
+ AS_IF([test "X$ax_check_gl_manual_libs_generic_extra_libs" = "X"],
+       [AC_MSG_ERROR([AX_CHECK_GL_MANUAL_LIBS_GENERIC argument must no be empty])])
+
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GL_SAVE_FLAGS()
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ AC_SEARCH_LIBS([glBegin],[$ax_check_gl_manual_libs_generic_extra_libs],
+                [ax_check_gl_lib_opengl="yes"],
+                [ax_check_gl_lib_opengl="no"])
+ AS_CASE([$ac_cv_search_glBegin],
+         ["none required"],[],
+ 	 [no],[],
+ 	 [GL_LIBS="${ac_cv_search_glBegin} ${GL_LIBS}"])
+  _AX_CHECK_GL_RESTORE_FLAGS()
+  AC_LANG_PUSH([C])
+])
+
+# dnl try to found lib under darwin
+# darwin opengl hack
+# see http://web.archive.org/web/20090410052741/http://developer.apple.com/qa/qa2007/qa1567.html
+# and http://web.eecs.umich.edu/~sugih/courses/eecs487/glut-howto/
+AC_DEFUN([_AX_CHECK_GL_MANUAL_LIBS_DARWIN],
+[# ldhack list
+ ldhack1 = "-Wl,-framework,OpenGL"
+ ldhack2 = "-Wl,-dylib_file,/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib"
+ ldhack3 = "$ldhack1,$ldhack2"
+
+ # select hack
+ AS_IF([test "X$ax_check_gl_need_x" = "Xyes"],
+       [# libs already set by -framework cflag
+        darwinlibs=""
+        ldhacks="$ldhack1 $ldhack2 $ldhack3"],
+       [# do not use framework ldflags in case of x version
+        darwinlibs="GL gl MesaGL"
+        ldhack="$ldhack2"])
+
+ ax_check_gl_link_opengl="no"
+ for extralibs in " " $darwinlibs; do
+   for extraldflags in " " ldhacks; do
+       AC_LANG_PUSH([C])
+        _AX_CHECK_GL_SAVE_FLAGS()
+       CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+       LIBS="$extralibs ${GL_LIBS} ${LIBS}"
+       LDFLAGS="$extraldflags ${GL_LDFLAGS} ${LDFLAGS}"
+       AC_LINK_IFELSE([_AX_CHECK_GL_PROGRAM],
+                      [ax_check_gl_link_opengl="yes"],
+                      [ax_check_gl_link_opengl="no"])
+       _AX_CHECK_GL_RESTORE_FLAGS()
+       AC_LANG_POP([C])
+       AS_IF([test "X$ax_check_gl_link_opengl" = "Xyes"],[break])
+   done;
+   AS_IF([test "X$ax_check_gl_link_opengl" = "Xyes"],[break])
+ done;
+ GL_LIBS="$extralibs ${GL_LIBS}"
+ GL_LDFLAGS="$extraldflags ${GL_LDFLAGS}"
+])
+
+dnl Check library manually: subroutine must set
+dnl $ax_check_gl_lib_opengl={yes,no}
+AC_DEFUN([_AX_CHECK_GL_MANUAL_LIBS],
+[AC_REQUIRE([AC_CANONICAL_HOST])
+ AS_CASE([${host}],
+         [*-darwin*],[_AX_CHECK_GL_MANUAL_LIBS_DARWIN()],
+         # try first cygwin version
          [*-cygwin*|*-mingw*],[
-          _AX_CHECK_GL_MANUAL_LIBS_GENERIC([opengl32 GL gl])
-          AC_CHECK_HEADERS([windows.h])
-          ],
-         [PKG_PROG_PKG_CONFIG
-          PKG_CHECK_MODULES([GL],[gl],
-          [],
-          [_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl])])
-         ]) dnl host specific checks
+	   AS_CASE(["$ax_check_gl_order"],
+	           ["gl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([opengl32])],
+		   ["gl mesagl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([opengl32 GL gl MesaGL])],
+		   ["mesagl gl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl MesaGL opengl32])],
+		   [_AX_CHECK_MSG_FAILURE_ORDER()])],
+	 [AS_CASE(["$ax_check_gl_order"],
+                  ["gl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl])],
+		  ["gl mesagl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([GL gl MesaGL])],
+		  ["mesagl gl"],[_AX_CHECK_GL_MANUAL_LIBS_GENERIC([MesaGL GL gl])],
+		  [_AX_CHECK_MSG_FAILURE_ORDER()])]
+		  )
 
- dnl this was cache
- _AX_CHECK_GL_SAVE_FLAGS([CFLAGS])
- AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h],
-   [ax_check_gl_have_headers="yes";break])
- _AX_CHECK_GL_RESTORE_FLAGS([CFLAGS])
+ AC_CACHE_CHECK([for OpenGL libraries],[ax_cv_check_gl_lib_opengl],
+               	[ax_cv_check_gl_lib_opengl="${ax_check_gl_lib_opengl}"])
+ ax_check_gl_lib_opengl="${ax_cv_check_gl_lib_opengl}"
+])
 
+# manually check aka old way
+AC_DEFUN([_AX_CHECK_GL_MANUAL],
+[AC_REQUIRE([AC_CANONICAL_HOST])dnl
+ AC_REQUIRE([AC_PATH_XTRA])dnl
+
+ no_gl="yes"
+
+ _AX_CHECK_GL_MANUAL_HEADERS()
  AS_IF([test "X$ax_check_gl_have_headers" = "Xyes"],
        [_AX_CHECK_GL_COMPILE_CV()],
-       [no_gl=yes])
+       [ax_check_gl_compile_opengl=no])
+
  AS_IF([test "X$ax_check_gl_compile_opengl" = "Xyes"],
+       [_AX_CHECK_GL_MANUAL_LIBS],
+       [ax_check_gl_lib_opengl=no])
+
+ AS_IF([test "X$ax_check_gl_lib_opengl" = "Xyes"],
        [_AX_CHECK_GL_LINK_CV()],
-       [no_gl=yes])
- AS_IF([test "X$no_gl" = "X"],
-   [AC_DEFINE([HAVE_GL], [1], [Defined if a valid OpenGL implementation is found.])
-    m4_ifval([$1],
-      [$1],
-      [CFLAGS="$GL_CFLAGS $CFLAGS"
-       LIBS="$GL_LIBS $LIBS"])
-   ],
-   [m4_ifval([$2],
-     [$2],
-     [AC_MSG_ERROR([Could not find a valid OpenGL implementation])])
-   ])
+       [ax_check_gl_link_opengl=no])
+
+ AS_IF([test "X$ax_check_gl_link_opengl" = "Xyes"],
+       [no_gl="no"],
+       [no_gl="yes"])
+])dnl
+
+
+# try to test using pkgconfig: set ax_check_gl_pkg_config=no if not found
+AC_DEFUN([_AX_CHECK_GL_PKG_CONFIG],dnl
+[dnl
+ AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+
+ dnl First try mesagl
+ AS_CASE(["$ax_check_gl_order"],
+         ["gl"],[PKG_CHECK_MODULES([GL],[mesagl],
+	                  [ax_check_gl_pkg_config=yes],
+			  [ax_check_gl_pkg_config=no])],
+	 ["gl mesagl"],[PKG_CHECK_MODULES([GL],[gl],
+	                  [ax_check_gl_pkg_config=yes],
+			  [PKG_CHECK_MODULES([GL],[mesagl],
+	                         [ax_check_gl_pkg_config=yes],
+				 [ax_check_gl_pkg_config=no])])],
+	 ["mesagl gl"],[PKG_CHECK_MODULES([GL],[mesagl],
+	                  [ax_check_gl_pkg_config=yes],
+			  [PKG_CHECK_MODULES([GL],[gl],
+	                         [ax_check_gl_pkg_config=yes],
+				 [ax_check_gl_pkg_config=no])])],
+	 [_AX_CHECK_MSG_FAILURE_ORDER])
+
+ AS_IF([test "X$ax_check_gl_pkg_config" = "Xyes"],[
+        # check headers
+        AC_LANG_PUSH([C])
+ 	_AX_CHECK_GL_SAVE_FLAGS()
+        CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+        AC_CHECK_HEADERS([windows.h],[],[],[AC_INCLUDES_DEFAULT])
+        AC_CHECK_HEADERS([GL/gl.h OpenGL/gl.h],
+                         [ax_check_gl_have_headers="yes";break],
+                         [ax_check_gl_have_headers_headers="no"],
+			 [_AX_CHECK_GL_INCLUDES_DEFAULT()])
+        _AX_CHECK_GL_RESTORE_FLAGS()
+	AC_LANG_POP([C])
+	AC_CACHE_CHECK([for OpenGL headers],[ax_cv_check_gl_have_headers],
+               	       [ax_cv_check_gl_have_headers="${ax_check_gl_have_headers}"])
+
+        # pkgconfig library are suposed to work ...
+        AS_IF([test "X$ax_cv_check_gl_have_headers" = "Xno"],
+              [AC_MSG_ERROR("Pkgconfig detected OpenGL library has no headers!")])
+
+	_AX_CHECK_GL_COMPILE_CV()
+	AS_IF([test "X$ax_cv_check_gl_compile_opengl" = "Xno"],
+              [AC_MSG_ERROR("Pkgconfig detected opengl library could not be used for compiling minimal program!")])
+
+	_AX_CHECK_GL_LINK_CV()
+	AS_IF([test "X$ax_cv_check_gl_link_opengl" = "Xno"],
+              [AC_MSG_ERROR("Pkgconfig detected opengl library could not be used for linking minimal program!")])
+  ],[ax_check_gl_pkg_config=no])
+])
+
+# test if gl link with X
+AC_DEFUN([_AX_CHECK_GL_WITH_X],
+[
+ # try if opengl need X
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GL_SAVE_FLAGS()
+ CFLAGS="${GL_CFLAGS} ${CFLAGS}"
+ LIBS="${GL_LIBS} ${LIBS}"
+ LDFLAGS="${GL_LDFLAGS} ${LDFLAGS}"
+ AC_LINK_IFELSE([AC_LANG_CALL([], [glXQueryVersion])],
+                [ax_check_gl_link_implicitly_with_x="yes"],
+   	        [ax_check_gl_link_implicitly_with_x="no"])
+ _AX_CHECK_GL_RESTORE_FLAGS()
+ AC_LANG_POP([C])
+])
+
+# internal routine: entry point if gl not disable
+AC_DEFUN([_AX_CHECK_GL],[dnl
+ AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+ AC_REQUIRE([AC_PATH_X])dnl
+
+ # does we need X or not
+ _AX_CHECK_GL_NEED_X()
+
+ # try first pkgconfig
+ AC_MSG_CHECKING([for a working OpenGL implementation by pkg-config])
+ AS_IF([test "X${PKG_CONFIG}" = "X"],
+       [ AC_MSG_RESULT([no])
+         ax_check_gl_pkg_config=no],
+       [ AC_MSG_RESULT([yes])
+         _AX_CHECK_GL_PKG_CONFIG()])
+
+ # if no pkgconfig or pkgconfig fail try manual way
+ AS_IF([test "X$ax_check_gl_pkg_config" = "Xno"],
+       [_AX_CHECK_GL_MANUAL()],
+       [no_gl=no])
+
+ # test if need to test X compatibility
+ AS_IF([test $no_gl = no],
+       [# test X compatibility
+ 	AS_IF([test X$ax_check_gl_need_x != "Xdefault"],
+       	      [AC_CACHE_CHECK([wether OpenGL link implictly with X],[ax_cv_check_gl_link_with_x],
+                              [_AX_CHECK_GL_WITH_X()
+                               ax_cv_check_gl_link_with_x="${ax_check_gl_link_implicitly_with_x}"])
+                               AS_IF([test "X${ax_cv_check_gl_link_with_x}" = "X${ax_check_gl_need_x}"],
+                                     [no_gl="no"],
+                                     [no_gl=yes])])
+	     ])
+])
+
+# ax_check_gl entry point
+AC_DEFUN([AX_CHECK_GL],
+[AC_REQUIRE([AC_PATH_X])dnl
+ AC_REQUIRE([AC_CANONICAL_HOST])
+
+ AC_ARG_WITH([gl],
+  [AS_HELP_STRING([--with-gl@<:@=ARG@:>@],
+    [use opengl (ARG=yes),
+     using the specific lib (ARG=<lib>),
+     using the OpenGL lib that link with X (ARG=x),
+     using the OpenGL lib that link without X (ARG=nox),
+     or disable it (ARG=no)
+     @<:@ARG=yes@:>@ ])],
+    [
+    AS_CASE(["$withval"],
+            ["no"|"NO"],[ax_check_gl_want_gl="no"],
+	    ["yes"|"YES"],[ax_check_gl_want_gl="yes"],
+	    [ax_check_gl_want_gl="$withval"])
+    ],
+    [ax_check_gl_want_gl="yes"])
+
+ dnl compatibility with AX_HAVE_OPENGL
+ AC_ARG_WITH([Mesa],
+    [AS_HELP_STRING([--with-Mesa@<:@=ARG@:>@],
+    [Prefer the Mesa library over a vendors native OpenGL (ARG=yes except on mingw ARG=no),
+     @<:@ARG=yes@:>@ ])],
+    [
+    AS_CASE(["$withval"],
+            ["no"|"NO"],[ax_check_gl_want_mesa="no"],
+	    ["yes"|"YES"],[ax_check_gl_want_mesa="yes"],
+	    [AC_MSG_ERROR([--with-mesa flag is only yes no])])
+    ],
+    [ax_check_gl_want_mesa="default"])
+
+ # check consistency of parameters
+ AS_IF([test "X$have_x" = "Xdisabled"],
+       [AS_IF([test X$ax_check_gl_want_gl = "Xx"],
+              [AC_MSG_ERROR([You prefer OpenGL with X and asked for no X support])])])
+
+ AS_IF([test "X$have_x" = "Xdisabled"],
+       [AS_IF([test X$x_check_gl_want_mesa = "Xyes"],
+              [AC_MSG_WARN([You prefer mesa but you disable X. Disable mesa because mesa need X])
+	       ax_check_gl_want_mesa="no"])])
+
+ # mesa default means yes except on mingw
+ AC_MSG_CHECKING([wether we should prefer mesa for opengl implementation])
+ AS_IF([test X$ax_check_gl_want_mesa = "Xdefault"],
+       [AS_CASE([${host}],
+                [*-mingw*],[ax_check_gl_want_mesa=no],
+		[ax_check_gl_want_mesa=yes])])
+ AC_MSG_RESULT($ax_check_gl_want_mesa)
+
+ # set default guess order
+ AC_MSG_CHECKING([for a working OpenGL order detection])
+ AS_IF([test "X$no_x" = "Xyes"],
+       [ax_check_gl_order="gl"],
+       [AS_IF([test X$ax_check_gl_want_mesa = "Xyes"],
+              [ax_check_gl_order="mesagl gl"],
+	      [ax_check_gl_order="gl mesagl"])])
+ AC_MSG_RESULT($ax_check_gl_order)
+
+ # set flags
+ no_gl="yes"
+ have_GL="no"
+
+ # now do the real testing
+ AS_IF([test X$ax_check_gl_want_gl != "Xno"],
+       [_AX_CHECK_GL()])
+
+ AC_MSG_CHECKING([for a working OpenGL implementation])
+ AS_IF([test "X$no_gl" = "Xno"],
+       [have_GL="yes"
+        AC_MSG_RESULT([yes])
+        AC_MSG_CHECKING([for CFLAGS needed for OpenGL])
+        AC_MSG_RESULT(["${GL_CFLAGS}"])
+        AC_MSG_CHECKING([for LIBS needed for OpenGL])
+        AC_MSG_RESULT(["${GL_LIBS}"])
+        AC_MSG_CHECKING([for LDFLAGS needed for OpenGL])
+        AC_MSG_RESULT(["${GL_LDFLAGS}"])],
+       [AC_MSG_RESULT([no])
+        GL_CFLAGS=""
+        GL_LIBS=""
+        GL_LDFLAGS=""])
+
+ AC_SUBST([GL_CFLAGS])
+ AC_SUBST([GL_LIBS])
+ AC_SUBST([GL_LDFLAGS])
 ])
 
 # ===========================================================================
-#       https://www.gnu.org/software/autoconf-archive/ax_check_glu.html
+#       http://www.gnu.org/software/autoconf-archive/ax_check_glu.html
 # ===========================================================================
 #
 # SYNOPSIS
 #
-#   AX_CHECK_GLU([ACTION-IF-FOUND],[ACTION-IF-NOT-FOUND])
+#   AX_CHECK_GLU
 #
 # DESCRIPTION
 #
-#   Checks for GLUT. If a valid GLU implementation is found, the configure
-#   script would export the C preprocessor symbol "HAVE_GLU=1".
-#
-#   If either a valid GLU header or library was not found, by default the
-#   configure script would exit on error. This behavior can be overwritten
-#   by providing a custom "ACTION-IF-NOT-FOUND" hook.
-#
-#   If the header, library was found, and been tested for compiling and
-#   linking the configuration would export the required compiler flags to
-#   "GLU_CFLAGS" and "GLU_LIBS" environment variables. These two variables
-#   can also be overwritten by defining the environment variables before
-#   executing the configure program. If it was predefined, configure would
-#   not try to overwrite it, but it would still perform the compile and link
-#   test. Only when the tests succeeded does the configure script to export
-#   "HAVE_GLU=1" and to run "ACTION-IF-FOUND" hook.
-#
-#   If user didn't specify the "ACTION-IF-FOUND" hook, the configuration
-#   would prepend "GLU_CFLAGS" and "GLU_LIBS" to "CFLAGS" and "LIBS", like
-#   many other autoconf macros do.
+#   Check for GLU. If GLU is found, the required preprocessor and linker
+#   flags are included in the output variables "GLU_CFLAGS" and "GLU_LIBS",
+#   respectively. If no GLU implementation is found, "no_glu" is set to
+#   "yes".
 #
 #   If the header "GL/glu.h" is found, "HAVE_GL_GLU_H" is defined. If the
-#   header "OpenGL/glu.h" is found, HAVE_OPENGL_GLU_H is defined.
+#   header "OpenGL/glu.h" is found, HAVE_OPENGL_GLU_H is defined. These
+#   preprocessor definitions may not be mutually exclusive.
 #
 #   You should use something like this in your headers:
 #
@@ -365,10 +612,6 @@ AC_DEFUN([AX_CHECK_GL],
 #     #  error no glu.h
 #     # endif
 #
-#   On the OSX platform, you can use the option --with-xquartz-gl to use
-#   X11/Xquartz GLU implementation instead of the system built in GLU
-#   framework.
-#
 #   Some implementations (in particular, some versions of Mac OS X) are
 #   known to treat the GLU tesselator callback function type as "GLvoid
 #   (*)(...)" rather than the standard "GLvoid (*)()". If the former
@@ -378,7 +621,6 @@ AC_DEFUN([AX_CHECK_GL],
 #
 #   Copyright (c) 2009 Braden McDaniel <braden@endoframe.com>
 #   Copyright (c) 2013 Bastien Roucaries <roucaries.bastien+autoconf@gmail.com>
-#   Copyright (c) 2016 Felix Chern <idryman@gmail.com>
 #
 #   This program is free software; you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -391,7 +633,7 @@ AC_DEFUN([AX_CHECK_GL],
 #   Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <https://www.gnu.org/licenses/>.
+#   with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #   As a special exception, the respective Autoconf Macro's copyright owner
 #   gives unlimited permission to copy, distribute and modify the configure
@@ -406,9 +648,9 @@ AC_DEFUN([AX_CHECK_GL],
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 23
+#serial 18
 
-# example program
+# exemple program
 m4_define([_AX_CHECK_GLU_PROGRAM],
           [AC_LANG_PROGRAM([[
 # if defined(HAVE_WINDOWS_H) && defined(_WIN32)
@@ -437,6 +679,88 @@ AC_DEFUN([_AX_CHECK_GLU_INCLUDES_DEFAULT],dnl
   ]
 ])
 
+dnl local save flags
+AC_DEFUN([_AX_CHECK_GLU_SAVE_FLAGS],
+[dnl
+ax_check_glu_saved_libs="${LIBS}"
+ax_check_glu_saved_cflags="${CFLAGS}"
+ax_check_glu_saved_cppflags="${CPPFLAGS}"
+ax_check_glu_saved_ldflags="${LDFLAGS}"
+])
+
+
+dnl local restore flags
+AC_DEFUN([_AX_CHECK_GLU_RESTORE_FLAGS],
+[dnl
+LIBS="${ax_check_glu_saved_libs}"
+CFLAGS="${ax_check_glu_saved_cflags}"
+CPPFLAGS="${ax_check_glu_saved_cppflags}"
+LDFLAGS="${ax_check_glu_saved_ldflags}"
+])
+
+
+# compile the example program
+AC_DEFUN([_AX_CHECK_GLU_COMPILE],
+[dnl
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GLU_SAVE_FLAGS()
+ CFLAGS="${GLU_CFLAGS} ${CFLAGS}"
+ AC_COMPILE_IFELSE([_AX_CHECK_GLU_PROGRAM],
+                   [ax_check_glu_compile_opengl="yes"],
+                   [ax_check_glu_compile_opengl="no"])
+ _AX_CHECK_GLU_RESTORE_FLAGS()
+ AC_LANG_POP([C])
+])
+
+# compile the example program (cache)
+AC_DEFUN([_AX_CHECK_GLU_COMPILE_CV],
+[dnl
+ AC_CACHE_CHECK([for compiling a minimal OpenGL Utility (GLU) program],[ax_cv_check_glu_compile_opengl],
+                [_AX_CHECK_GLU_COMPILE()
+                 ax_cv_check_glu_compile_opengl="${ax_check_glu_compile_opengl}"])
+ ax_check_glu_compile_opengl="${ax_cv_check_glu_compile_opengl}"
+])
+
+# link the example program
+AC_DEFUN([_AX_CHECK_GLU_LINK],
+[dnl
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GLU_SAVE_FLAGS()
+ CFLAGS="${GLU_CFLAGS} ${CFLAGS}"
+ LIBS="${GLU_LIBS} ${LIBS}"
+ LDFLAGS="${GLU_LDFLAGS} ${LDFLAGS}"
+ AC_LINK_IFELSE([_AX_CHECK_GLU_PROGRAM],
+                [ax_check_glu_link_opengl="yes"],
+                [ax_check_glu_link_opengl="no"])
+ _AX_CHECK_GLU_RESTORE_FLAGS()
+ AC_LANG_POP([C])
+])
+
+# link the example program (cache)
+AC_DEFUN([_AX_CHECK_GLU_LINK_CV],
+[dnl
+ AC_CACHE_CHECK([for linking a minimal OpenGL Utility (GLU) program],[ax_cv_check_glu_link_opengl],
+                [_AX_CHECK_GLU_LINK()
+                 ax_cv_check_glu_link_opengl="${ax_check_glu_link_opengl}"])
+ ax_check_glu_link_opengl="${ax_cv_check_glu_link_opengl}"
+])
+
+dnl Check headers manually (default case)
+AC_DEFUN([_AX_CHECK_GLU_HEADERS],
+[AC_LANG_PUSH([C])
+ _AX_CHECK_GLU_SAVE_FLAGS()
+ CFLAGS="${GLU_CFLAGS} ${CFLAGS}"
+ # see comment in _AX_CHECK_GL_INCLUDES_DEFAULT
+ AC_CHECK_HEADERS([windows.h],[],[],[AC_INCLUDES_DEFAULT])
+ AC_CHECK_HEADERS([GL/glu.h OpenGL/glu.h],
+                         [ax_check_glu_have_headers="yes";break],
+                         [ax_check_glu_have_headers_headers="no"],
+			 [_AX_CHECK_GLU_INCLUDES_DEFAULT()])
+ # do not try darwin specific OpenGl/gl.h
+ _AX_CHECK_GLU_RESTORE_FLAGS()
+ AC_LANG_POP([C])
+])
+
 # check tesselation callback function signature.
 m4_define([_AX_CHECK_GLU_VARARGS_TESSVB_PROGRAM],
 [AC_LANG_PROGRAM([[
@@ -454,186 +778,210 @@ m4_define([_AX_CHECK_GLU_VARARGS_TESSVB_PROGRAM],
 [[GLvoid (*func)(...); gluTessCallback(0, 0, func)]])
 ])
 
+# compile the tesselation callback function program
+# test with c++
+AC_DEFUN([_AX_CHECK_GLU_COMPILE_VARARGS_TESSVB_PROGRAM],
+[AC_REQUIRE([AC_PROG_CXX])dnl
 
-# _AX_CHECK_GLU_SAVE_FLAGS(LIST-OF-FLAGS,[LANG])
-# ----------------------------------------------
-# Save the flags to shell variables.
-# Example: _AX_CHECK_GLU_SAVE_FLAGS([[CFLAGS],[LIBS]]) expands to
-# AC_LANG_PUSH([C])
-# glu_saved_flag_cflags=$CFLAGS
-# glu_saved_flag_libs=$LIBS
-# CFLAGS="$GLU_CFLAGS $CFLAGS"
-# LIBS="$GLU_LIBS $LIBS"
-#
-# Can optionally support other LANG by specifying $2
-AC_DEFUN([_AX_CHECK_GLU_SAVE_FLAGS], [
- m4_ifval([$2],
-          [AC_LANG_PUSH([$2])],
-          [AC_LANG_PUSH([C])])
- AX_SAVE_FLAGS_WITH_PREFIX([GLU],[$1]) dnl defined in ax_check_gl
+ AC_LANG_PUSH([C++])
+ _AX_CHECK_GLU_SAVE_FLAGS()
+ CFLAGS="${GLU_CFLAGS} ${CFLAGS}"
+ AC_COMPILE_IFELSE([_AX_CHECK_GLU_VARARGS_TESSVB_PROGRAM],
+                   [ax_check_glu_compile_varargs_tessvb_program="yes"],
+                   [ax_check_glu_compile_varargs_tessvb_program="no"])
+ _AX_CHECK_GLU_RESTORE_FLAGS()
+ AC_LANG_POP([C++])
 ])
 
-# _AX_CHECK_GLU_RESTORE_FLAGS(LIST-OF-FLAGS)
-# Use this marcro to restore the flags you saved using
-# _AX_CHECK_GLU_SAVE_FLAGS
-#
-# Example: _AX_CHECK_GLU_RESTORE_FLAGS([[CFLAGS],[LIBS]]) expands to
-# CFLAGS="$glu_saved_flag_cflags"
-# LIBS="$glu_saved_flag_libs"
-# AC_LANG_POP([C])
-AC_DEFUN([_AX_CHECK_GLU_RESTORE_FLAGS], [
- AX_RESTORE_FLAGS_WITH_PREFIX([GLU],[$1]) dnl defined in ax_check_gl
- m4_ifval([$2],
-          [AC_LANG_POP([$2])],
-          [AC_LANG_POP([C])])
-])
-
-
-# Search headers and export $ax_check_glu_have_headers
-AC_DEFUN([_AX_CHECK_GLU_HEADERS], [
-  _AX_CHECK_GLU_SAVE_FLAGS([CFLAGS])
-  AC_CHECK_HEADERS([$1],
-                   [ax_check_glu_have_headers="yes";],
-                   [],
-                   [_AX_CHECK_GLU_INCLUDES_DEFAULT()])
-  _AX_CHECK_GLU_RESTORE_FLAGS([CFLAGS])
-])
-
-
-# _AX_CHECK_GLU_SEARCH_LIBS(LIBS)
-# -------------------------------
-# Search for a valid GLU lib from $1 and set
-# GLU_LIBS respectively
-AC_DEFUN([_AX_CHECK_GLU_SEARCH_LIBS], [
- _AX_CHECK_GLU_SAVE_FLAGS([[CFLAGS],[LIBS]])
- AC_SEARCH_LIBS([gluBeginCurve],[$1],
- 	        [GLU_LIBS="${GLU_LIBS:-$ac_cv_search_gluBeginCurve}"])
-  _AX_CHECK_GLU_RESTORE_FLAGS([[CFLAGS],[LIBS]])
-])
-
-# OSX specific GLU checks
-AC_DEFUN([_AX_CHECK_DARWIN_GLU], [
-  AC_REQUIRE([_WITH_XQUARTZ_GL])
-  AS_IF([test "x$with_xquartz_gl" != "xno"],
-        [GLU_LIBS="${GLU_LIBS:--lGLU}"],
-        [GLU_LIBS="${GLU_LIBS:--framework OpenGL}"])
-])
-
-# AX_CHECK_GLU([ACTION-IF-FOUND],[ACTION-IF-NOT-FOUND])
-# -----------------------------------------------------
-# Checks GLU and provides hooks for success and failures
-AC_DEFUN([AX_CHECK_GLU],[
-  AC_REQUIRE([AC_CANONICAL_HOST])
-  AC_REQUIRE([_WITH_XQUARTZ_GL])
-  AC_REQUIRE([PKG_PROG_PKG_CONFIG])
-  AC_ARG_VAR([GLU_CFLAGS],[C compiler flags for GLU, overriding system check])
-  AC_ARG_VAR([GLU_LIBS],[Linker flags for GLU, overriding system check])
-
-  dnl Setup GLU_CFLAGS and GLU_LIBS
-  AS_CASE([${host}],
-          [*-darwin*],[_AX_CHECK_DARWIN_GLU],
-          [*-cygwin*],[_AX_CHECK_GLU_SEARCH_LIBS([GLU glu MesaGLU glu32])
-                       AC_CHECK_HEADERS([windows.h])],
-          # try first native
- 	  [*-mingw*],[_AX_CHECK_GLU_SEARCH_LIBS([glu32 GLU glu MesaGLU])
-                      AC_CHECK_HEADERS([windows.h])],
-          [PKG_PROG_PKG_CONFIG
-           PKG_CHECK_MODULES([GLU],[glu],
-           [],
-           [_AX_CHECK_GLU_SEARCH_LIBS([GLU glu MesaGLU])])
-          ])
-
-  AS_CASE([$host],
-          [*-darwin*],
-            [AS_IF([test "X$with_xquartz_gl" = "Xno"],
-                   [_AX_CHECK_GLU_HEADERS([OpenGL/glu.h])],
-                   [_AX_CHECK_GLU_HEADERS([GL/glu.h])]
-                   )],
-          [_AX_CHECK_GLU_HEADERS([GL/glu.h])])
-
-  dnl compile test
-  AS_IF([test "X$ax_check_glu_have_headers" = "Xyes"],
-        [AC_CACHE_CHECK([for compiling a minimal OpenGL Utility (GLU) program],
-                        [ax_cv_check_glu_compile],
-                        [_AX_CHECK_GLU_SAVE_FLAGS([CFLAGS])
-                         AC_COMPILE_IFELSE([_AX_CHECK_GLU_PROGRAM],
-                                           [ax_cv_check_glu_compile="yes"],
-                                           [ax_cv_check_glu_compile="no"])
-                         _AX_CHECK_GLU_RESTORE_FLAGS([CFLAGS])])
-         ])
-
-  dnl link test
-  AS_IF([test "X$ax_cv_check_glu_compile" = "Xyes"],
-        [AC_CACHE_CHECK([for linking a minimal GLU program],
-                        [ax_cv_check_glu_link],
-                        [_AX_CHECK_GLU_SAVE_FLAGS([[CFLAGS],[LIBS]])
-                         AC_LINK_IFELSE([_AX_CHECK_GLU_PROGRAM],
-                                        [ax_cv_check_glu_link="yes"],
-                                        [ax_cv_check_glu_link="no"])
-                         _AX_CHECK_GLU_RESTORE_FLAGS([[CFLAGS],[LIBS]])])
-        ])
 
 #
 # Some versions of Mac OS X include a broken interpretation of the GLU
 # tesselation callback function signature.
-  AS_IF([test "X$ax_cv_check_glu_link" = "Xyes"],
-        [AC_CACHE_CHECK([if GLU varargs tesselator is using non-standard form],
-                        [ax_cv_varargs_glu_tesscb],
-                        [_AX_CHECK_GLU_SAVE_FLAGS([CFLAGS],[C++])
-                         AC_COMPILE_IFELSE([_AX_CHECK_GLU_VARARGS_TESSVB_PROGRAM],
-                                           [ax_cv_varargs_glu_tesscb="yes"],
-                                           [ax_cv_varargs_glu_tesscb="no"])
-                         _AX_CHECK_GLU_RESTORE_FLAGS([CFLAGS],[C++])])
-        AS_IF([test "X$ax_cv_varargs_glu_tesscb" = "yes"],
-              [AC_DEFINE([HAVE_VARARGS_GLU_TESSCB], [1],
-                         [Use nonstandard varargs form for the GLU tesselator callback])])
-        ])
+#
+AC_DEFUN([_AX_CHECK_GLU_VARARGS_TESSVB],
+[
+AC_CACHE_CHECK([for varargs OpenGL Utility (GLU) tesselator callback function type],
+                [ax_cv_varargs_glu_tesscb],
+		[_AX_CHECK_GLU_COMPILE_VARARGS_TESSVB_PROGRAM
+		 ax_cv_varargs_glu_tesscb="${ax_check_glu_compile_varargs_tessvb_program}"])
+ax_check_glu_compile_varargs_tessvb_program="${ax_cv_varargs_glu_tesscb}"
 
-  dnl hook
-  AS_IF([test "X$ax_cv_check_glu_link" = "Xyes"],
-        [AC_DEFINE([HAVE_GLU],[1],[Defined if a valid GLU implementation is found.])
-         m4_ifval([$1],
-                  [$1],
-                  [CFLAGS="$GLU_CFLAGS $CFLAGS"
-                   LIBS="$GLU_LIBS $LIBS"])],
-        [m4_ifval([$2],
-                  [$2],
-                  [AC_MSG_ERROR([Could not find a valid GLU implementation])])
-        ])
+AS_IF([test X$ax_cv_varargs_glu_tesscb = Xyes],
+      [AC_DEFINE([HAVE_VARARGS_GLU_TESSCB], [1],
+                 [Use nonstandard varargs form for the GLU tesselator callback])])
+])
+
+
+# dnl try to found library (generic case)
+# dnl $1 is set to the library to found
+AC_DEFUN([_AX_CHECK_GLU_MANUAL_LIBS_GENERIC],
+[dnl
+ ax_check_glu_manual_libs_generic_extra_libs="$1"
+ AS_IF([test "X$ax_check_glu_manual_libs_generic_extra_libs" = "X"],
+       [AC_MSG_ERROR([AX_CHECK_GLU_MANUAL_LIBS_GENERIC argument must no be empty])])
+
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GLU_SAVE_FLAGS()
+ CFLAGS="${GLU_CFLAGS} ${CFLAGS}"
+ LIBS="${GLU_LIBS} ${LIBS}"
+ AC_SEARCH_LIBS([gluBeginCurve],[$ax_check_glu_manual_libs_generic_extra_libs],
+                [ax_check_glu_lib_opengl="yes"],
+                [ax_check_glu_lib_opengl="no"])
+ AS_CASE([$ac_cv_search_gluBeginCurve],
+         ["none required"],[],
+ 	 [no],[],
+ 	 [GLU_LIBS="${ac_cv_search_gluBeginCurve} ${GLU_LIBS}"])
+  _AX_CHECK_GLU_RESTORE_FLAGS()
+  AC_LANG_PUSH([C])
+])
+
+
+dnl Check library manually: subroutine must set
+dnl $ax_check_gl_lib_opengl={yes,no}
+AC_DEFUN([_AX_CHECK_GLU_MANUAL_LIBS],
+[AC_REQUIRE([AC_CANONICAL_HOST])
+ GLU_LIBS="${GLU_LIBS} ${GL_LIBS}"
+ AS_CASE([${host}],
+         # try first cygwin version
+         [*-cygwin*],[_AX_CHECK_GLU_MANUAL_LIBS_GENERIC([GLU glu MesaGLU glu32])],
+         # try first native
+	 [*-mingw*],[_AX_CHECK_GLU_MANUAL_LIBS_GENERIC([glu32 GLU glu MesaGLU])],
+	 [_AX_CHECK_GLU_MANUAL_LIBS_GENERIC([GLU glu MesaGLU])])
+
+ AC_CACHE_CHECK([for OpenGL Utility (GLU) libraries],[ax_cv_check_glu_lib_opengl],
+               	[ax_cv_check_glu_lib_opengl="${ax_check_glu_lib_opengl}"])
+ ax_check_glu_lib_opengl="${ax_cv_check_glu_lib_opengl}"
+])
+
+
+dnl Manual way to detect GLU
+AC_DEFUN([_AX_CHECK_GLU_MANUAL],
+[dnl
+
+# inherit cflags
+GLU_CFLAGS="${GLU_CFLAGS} ${GL_CFLAGS}"
+
+# check headers
+_AX_CHECK_GLU_HEADERS
+
+AS_IF([test "X$ax_check_glu_have_headers" = "Xyes"],
+      [_AX_CHECK_GLU_MANUAL_LIBS],
+      [ax_check_glu_lib_opengl="no"])
+
+AS_IF([test "X$ax_check_glu_lib_opengl" = "Xyes"],
+      [_AX_CHECK_GLU_COMPILE_CV()],
+      [ax_cv_check_glu_compile_opengl="no"])
+
+AS_IF([test "X$ax_cv_check_glu_compile_opengl" = "Xyes"],
+      [_AX_CHECK_GLU_LINK_CV()],
+      [ax_cv_check_glu_link_opengl="no"])
+
+AS_IF([test "X$ax_cv_check_glu_link_opengl" = "Xyes"],
+      [no_glu="no"],
+      [no_glu="yes"])
+])
+
+# detect using pkgconfig
+AC_DEFUN([_AX_CHECK_GLU_PKG_CONFIG],
+[
+ AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+
+ PKG_CHECK_MODULES([GLU],[glu],[ax_check_glu_pkg_config=yes],[ax_check_glu_pkg_config=no])
+
+ AS_IF([test "X$ax_check_glu_pkg_config" = "Xyes"],[
+        # check headers
+        AC_LANG_PUSH([C])
+ 	_AX_CHECK_GLU_SAVE_FLAGS()
+        CFLAGS="${GLU_CFLAGS} ${CFLAGS}"
+        AC_CHECK_HEADERS([windows.h],[],[],[AC_INCLUDES_DEFAULT])
+        AC_CHECK_HEADERS([GL/glu.h OpenGL/glu.h],
+                         [ax_check_glu_have_headers="yes";break],
+                         [ax_check_glu_have_headers_headers="no"],
+			 [_AX_CHECK_GLU_INCLUDES_DEFAULT()])
+        _AX_CHECK_GLU_RESTORE_FLAGS()
+	AC_LANG_POP([C])
+	AC_CACHE_CHECK([for OpenGL Utility (GLU) headers],[ax_cv_check_glu_have_headers],
+               	       [ax_cv_check_glu_have_headers="${ax_check_glu_have_headers}"])
+
+        # pkgconfig library are suposed to work ...
+        AS_IF([test "X$ax_cv_check_glu_have_headers" = "Xno"],
+              [AC_MSG_ERROR("Pkgconfig detected OpenGL Utility (GLU) library has no headers!")])
+
+	_AX_CHECK_GLU_COMPILE_CV()
+	AS_IF([test "X$ax_cv_check_glu_compile_opengl" = "Xno"],
+              [AC_MSG_ERROR("Pkgconfig detected OpenGL Utility (GLU) library could not be used for compiling minimal program!")])
+
+	_AX_CHECK_GLU_LINK_CV()
+	AS_IF([test "X$ax_cv_check_glu_link_opengl" = "Xno"],
+              [AC_MSG_ERROR("Pkgconfig detected OpenGL Utility (GLU) library could not be used for linking minimal program!")])
+  ])
+])
+
+# entry point
+AC_DEFUN([AX_CHECK_GLU],dnl
+[
+ AC_REQUIRE([AX_CHECK_GL])
+ AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+
+ # set flags
+ no_glu="yes"
+ have_GLU="no"
+
+ AC_MSG_CHECKING([for a working OpenGL Utility (GLU) implementation by pkg-config])
+ # try first pkgconfig
+ AS_IF([test "X${PKG_CONFIG}" = "X"],
+       [AC_MSG_RESULT([no])
+        ax_check_glu_pkg_config=no],
+       [AC_MSG_RESULT([yes])
+        _AX_CHECK_GLU_PKG_CONFIG()])
+
+ # if no pkg-config or pkg-config fail try manual way
+ AS_IF([test "X$ax_check_glu_pkg_config" = "Xno"],
+       [_AX_CHECK_GLU_MANUAL()],
+       [no_glu=no])
+
+ # check broken implementation
+ AS_IF([test "X$no_glu" = "Xno"],
+       [_AX_CHECK_GLU_VARARGS_TESSVB],[])
+
+ AC_MSG_CHECKING([for a working OpenGL Utility (GLU) implementation])
+ AS_IF([test "X$no_glu" = "Xno"],
+       [have_GLU="yes"
+        AC_MSG_RESULT([yes])
+        AC_MSG_CHECKING([for CFLAGS needed for OpenGL Utility (GLU)])
+        AC_MSG_RESULT(["${GLU_CFLAGS}"])
+        AC_MSG_CHECKING([for LIBS needed for OpenGL Utility (GLU)])
+        AC_MSG_RESULT(["${GLU_LIBS}"])
+        AC_MSG_CHECKING([for LDFLAGS needed for OpenGL Utility (GLU)])
+        AC_MSG_RESULT(["${GLU_LDFLAGS}"])],
+       [AC_MSG_RESULT([no])
+        GLU_CFLAGS=""
+        GLU_LIBS=""
+        GLU_LDFLAGS=""])
+
+ AC_SUBST([GLU_CFLAGS])
+ AC_SUBST([GLU_LIBS])
+ AC_SUBST([GLU_LDFLAGS])
+
 ])
 
 # ===========================================================================
-#      https://www.gnu.org/software/autoconf-archive/ax_check_glut.html
+#       http://www.gnu.org/software/autoconf-archive/ax_check_glut.html
 # ===========================================================================
 #
 # SYNOPSIS
 #
-#   AX_CHECK_GLUT([ACTION-IF-FOUND],[ACTION-IF-NOT-FOUND])
+#   AX_CHECK_GLUT
 #
 # DESCRIPTION
 #
-#   Checks for GLUT. If a valid GLUT implementation is found, the configure
-#   script would export the C preprocessor symbol "HAVE_GLUT=1".
-#
-#   If either a valid GLUT header or library was not found, by default the
-#   configure script would exit on error. This behavior can be overwritten
-#   by providing a custom "ACTION-IF-NOT-FOUND" hook.
-#
-#   If the header, library was found, and been tested for compiling and
-#   linking the configuration would export the required compiler flags to
-#   "GLUT_CFLAGS" and "GLUT_LIBS" environment variables. These two variables
-#   can also be overwritten by defining the environment variables before
-#   executing the configure program. If it was predefined, configure would
-#   not try to overwrite it, but it would still perform the compile and link
-#   test. Only when the tests succeeded does the configure script to export
-#   "HAVE_GLUT=1" and to run "ACTION-IF-FOUND" hook.
-#
-#   If user didn't specify the "ACTION-IF-FOUND" hook, the configuration
-#   would prepend "GLUT_CFLAGS" and "GLUT_LIBS" to "CFLAGS" and "LIBS", like
-#   many other autoconf macros do.
+#   Check for GLUT. If GLUT is found, the required compiler and linker flags
+#   are included in the output variables "GLUT_CFLAGS" and "GLUT_LIBS",
+#   respectively. If GLUT is not found, "no_glut" is set to "yes".
 #
 #   If the header "GL/glut.h" is found, "HAVE_GL_GLUT_H" is defined. If the
-#   header "GLUT/glut.h" is found, HAVE_GLUT_GLUT_H is defined.
+#   header "GLUT/glut.h" is found, HAVE_GLUT_GLUT_H is defined. These
+#   preprocessor definitions may not be mutually exclusive.
 #
 #   You should use something like this in your headers:
 #
@@ -648,15 +996,10 @@ AC_DEFUN([AX_CHECK_GLU],[
 #     #  error no glut.h
 #     # endif
 #
-#   On the OSX platform, you can use the option --with-xquartz-gl to use
-#   X11/Xquartz GLUT implementation instead of the system built in GLUT
-#   framework.
-#
 # LICENSE
 #
 #   Copyright (c) 2009 Braden McDaniel <braden@endoframe.com>
 #   Copyright (c) 2013 Bastien Roucaries <roucaries.bastien+autoconf@gmail.com>
-#   Copyright (c) 2016 Felix Chern <idryman@gmail.com>
 #
 #   This program is free software; you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -669,7 +1012,7 @@ AC_DEFUN([AX_CHECK_GLU],[
 #   Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <https://www.gnu.org/licenses/>.
+#   with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #   As a special exception, the respective Autoconf Macro's copyright owner
 #   gives unlimited permission to copy, distribute and modify the configure
@@ -684,16 +1027,25 @@ AC_DEFUN([AX_CHECK_GLU],[
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 17
+#serial 14
 
-AC_DEFUN([_AX_CHECK_GLUT_SAVE_FLAGS], [
- AX_SAVE_FLAGS_WITH_PREFIX([GLUT],[$1]) dnl defined in ax_check_gl
- AC_LANG_PUSH([C])
+dnl local save flags
+AC_DEFUN([_AX_CHECK_GLUT_SAVE_FLAGS],
+[dnl
+ax_check_glut_saved_libs="${LIBS}"
+ax_check_glut_saved_cflags="${CFLAGS}"
+ax_check_glut_saved_cppflags="${CPPFLAGS}"
+ax_check_glut_saved_ldflags="${LDFLAGS}"
 ])
 
-AC_DEFUN([_AX_CHECK_GLUT_RESTORE_FLAGS], [
- AX_RESTORE_FLAGS_WITH_PREFIX([GLUT],[$1]) dnl defined in ax_check_gl
- AC_LANG_POP([C])
+
+dnl local restore flags
+AC_DEFUN([_AX_CHECK_GLUT_RESTORE_FLAGS],
+[dnl
+LIBS="${ax_check_glut_saved_libs}"
+CFLAGS="${ax_check_glut_saved_cflags}"
+CPPFLAGS="${ax_check_glut_saved_cppflags}"
+LDFLAGS="${ax_check_glut_saved_ldflags}"
 ])
 
 dnl Default include : add windows.h
@@ -724,97 +1076,173 @@ m4_define([_AX_CHECK_GLUT_PROGRAM],
 [[glutMainLoop()]])])
 
 
-# _AX_CHECK_GLUT_MANUAL_LIBS_GENERIC(LIST-OF-LIBS)
-# ------------------------------------------------
-# Searches libraries provided in $1, and export variable
-# $ax_check_glut_lib_glut
+dnl Check headers manually (default case)
+AC_DEFUN([_AX_CHECK_GLUT_HEADERS],
+[AC_LANG_PUSH([C])
+ _AX_CHECK_GLUT_SAVE_FLAGS()
+ CFLAGS="${GLUT_CFLAGS} ${CFLAGS}"
+ # see comment in _AX_CHECK_GL_INCLUDES_DEFAULT
+ AC_CHECK_HEADERS([windows.h],[],[],[AC_INCLUDES_DEFAULT])
+ AC_CHECK_HEADERS([GL/glut.h OpenGL/glut.h],
+                         [ax_check_glut_have_headers="yes";break],
+                         [ax_check_glut_have_headers_headers="no"],
+			 [_AX_CHECK_GLUT_INCLUDES_DEFAULT()])
+ # do not try darwin specific OpenGl/gl.h
+ _AX_CHECK_GLUT_RESTORE_FLAGS()
+ AC_LANG_POP([C])
+])
+
+# dnl try to found library (generic case)
+# dnl $1 is set to the library to found
 AC_DEFUN([_AX_CHECK_GLUT_MANUAL_LIBS_GENERIC],
-[
- _AX_CHECK_GLUT_SAVE_FLAGS([[CFLAGS],[LIBS]])
- AC_SEARCH_LIBS([glutMainLoop],[$1],
-                [GLUT_LIBS="${GLUT_LIBS:-$ac_cv_search_glutMainLoop}"])
- _AX_CHECK_GLUT_RESTORE_FLAGS([[CFLAGS],[LIBS]])
+[dnl
+ ax_check_glut_manual_libs_generic_extra_libs="$1"
+ AS_IF([test "X$ax_check_glut_manual_libs_generic_extra_libs" = "X"],
+       [AC_MSG_ERROR([AX_CHECK_GLUT_MANUAL_LIBS_GENERIC argument must no be empty])])
+
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GLUT_SAVE_FLAGS()
+ CFLAGS="${GLUT_CFLAGS} ${CFLAGS}"
+ LIBS="${GLUT_LIBS} ${LIBS}"
+ AC_SEARCH_LIBS([glutMainLoop],[$ax_check_glut_manual_libs_generic_extra_libs],
+                [ax_check_glut_lib_opengl="yes"],
+                [ax_check_glut_lib_opengl="no"])
+ AS_CASE([$ac_cv_search_glutMainLoop],
+         ["none required"],[],
+ 	 [no],[],
+ 	 [GLUT_LIBS="${ac_cv_search_glutMainLoop} ${GLU_LIBS}"])
+  _AX_CHECK_GLUT_RESTORE_FLAGS()
+  AC_LANG_PUSH([C])
 ])
 
-# Wrapper macro to check GLUT header
-AC_DEFUN([_AX_CHECK_GLUT_HEADER],[
-  _AX_CHECK_GLUT_SAVE_FLAGS([CFLAGS])
-  AC_CHECK_HEADERS([$1],
-                   [ax_check_glut_have_headers=yes])
-  _AX_CHECK_GLUT_RESTORE_FLAGS([CFLAGS])
-])
 
-
-# AX_CHECK_GLUT_LIB([ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
-# ---------------------------------------------------------
-# Checks GLUT headers and library and provides hooks for success and failures.
-AC_DEFUN([AX_CHECK_GLUT],
+dnl Check library manually: subroutine must set
+dnl $ax_check_glut_lib_opengl={yes,no}
+dnl for windows part see
+dnl   - http://www.transmissionzero.co.uk/computing/using-glut-with-mingw/
+dnl   - http://user.xmission.com/~nate/glut.html
+AC_DEFUN([_AX_CHECK_GLUT_MANUAL_LIBS],
 [AC_REQUIRE([AC_CANONICAL_HOST])
- AC_REQUIRE([_WITH_XQUARTZ_GL])
- AC_ARG_VAR([GLUT_CFLAGS],[C compiler flags for GLUT, overriding configure script defaults])
- AC_ARG_VAR([GLUT_LIBS],[Linker flags for GLUT, overriding configure script defaults])
-
+ GLUT_LIBS="${GLUT_LIBS} ${GLU_LIBS}"
  AS_CASE([${host}],
-         [*-darwin*],[AS_IF([test "x$with_xquartz_gl" != "xno"],
-                            [GLUT_LIBS="${GLUT_LIBS:--lGLUT}"],
-                            [GLUT_LIBS="${GLUT_LIBS:--framework GLUT}"])],
-         [*-cygwin*|*-mingw*],[
-            _AX_CHECK_GLUT_MANUAL_LIBS_GENERIC([glut32 glut])
-            AC_CHECK_HEADERS([windows.h])
-          ],
-         [_AX_CHECK_GLUT_MANUAL_LIBS_GENERIC([glut])
-         ]) dnl host specific checks
+         # try first cygwin version
+         [*-cygwin*],[_AX_CHECK_GLUT_MANUAL_LIBS_GENERIC([GLUT glut MesaGLUT freeglut freeglut32 glut32])],
+         # try first native
+	 [*-mingw*],[_AX_CHECK_GLUT_MANUAL_LIBS_GENERIC([glut32 GLUT glut MesaGLUT freeglut freeglut32])],
+	 [_AX_CHECK_GLUT_MANUAL_LIBS_GENERIC([GLUT glut freeglut MesaGLUT])])
 
- dnl checks header
- AS_CASE([${host}],
-   [*-darwin*],[AS_IF([test "x$with_xquartz_gl" = "xno"],
-                      [_AX_CHECK_GLUT_HEADER([GLUT/glut.h])],
-                      [_AX_CHECK_GLUT_HEADER([GL/glut.h])]
-                      )],
-   [_AX_CHECK_GLUT_HEADER([GL/glut.h])])
+ AC_CACHE_CHECK([for OpenGL Utility Toolkit (GLUT) libraries],[ax_cv_check_glut_lib_opengl],
+               	[ax_cv_check_glut_lib_opengl="${ax_check_glut_lib_opengl}"])
+ ax_check_glut_lib_opengl="${ax_cv_check_glut_lib_opengl}"
+])
 
- dnl compile
- AS_IF([test "X$ax_check_glut_have_headers" = "Xyes"],
-       [AC_CACHE_CHECK([for compiling a minimal GLUT program],
-                       [ax_cv_check_glut_compile],
-                       [_AX_CHECK_GLUT_SAVE_FLAGS([CFLAGS])
-                        AC_COMPILE_IFELSE([_AX_CHECK_GLUT_PROGRAM],
-                                          [ax_cv_check_glut_compile="yes"],
-                                          [ax_cv_check_glut_compile="no"])
-                        _AX_CHECK_GLUT_RESTORE_FLAGS([CFLAGS])
-                       ])
-      ])
+# compile the example program
+AC_DEFUN([_AX_CHECK_GLUT_COMPILE],
+[dnl
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GLUT_SAVE_FLAGS()
+ CFLAGS="${GLUT_CFLAGS} ${CFLAGS}"
+ AC_COMPILE_IFELSE([_AX_CHECK_GLUT_PROGRAM],
+                   [ax_check_glut_compile_opengl="yes"],
+                   [ax_check_glut_compile_opengl="no"])
+ _AX_CHECK_GLUT_RESTORE_FLAGS()
+ AC_LANG_POP([C])
+])
 
- dnl link
- AS_IF([test "X$ax_cv_check_glut_compile" = "Xyes"],
-       [AC_CACHE_CHECK([for linking a minimal GLUT program],
-                       [ax_cv_check_glut_link],
-                       [_AX_CHECK_GLUT_SAVE_FLAGS([[CFLAGS],[LIBS]])
-                        AC_LINK_IFELSE([_AX_CHECK_GLUT_PROGRAM],
-                                       [ax_cv_check_glut_link="yes"],
-                                       [ax_cv_check_glut_link="no"])
-                        _AX_CHECK_GLUT_RESTORE_FLAGS([[CFLAGS],[LIBS]])
-                       ])
-       ])
+# compile the example program (cache)
+AC_DEFUN([_AX_CHECK_GLUT_COMPILE_CV],
+[dnl
+ AC_CACHE_CHECK([for compiling a minimal OpenGL Utility Toolkit (GLUT) program],[ax_cv_check_glut_compile_opengl],
+                [_AX_CHECK_GLUT_COMPILE()
+                 ax_cv_check_glut_compile_opengl="${ax_check_glut_compile_opengl}"])
+ ax_check_glut_compile_opengl="${ax_cv_check_glut_compile_opengl}"
+])
 
- dnl hook
- AS_IF([test "X$ax_cv_check_glut_link" = "Xyes"],
-   [AC_DEFINE([HAVE_GLUT], [1], [Defined if a valid GLUT implementation is found])
-    m4_ifval([$1],
-     [$1],
-     [CFLAGS="$GLUT_CFLAGS $CFLAGS"
-      LIBS="$GLUT_LIBS $LIBS"])
-   ],
-   [m4_ifval([$2],
-     [$2],
-     [AC_MSG_ERROR([Could not find a valid GLUT implementation])]
-     )
-   ])
+# link the example program
+AC_DEFUN([_AX_CHECK_GLUT_LINK],
+[dnl
+ AC_LANG_PUSH([C])
+ _AX_CHECK_GLUT_SAVE_FLAGS()
+ CFLAGS="${GLUT_CFLAGS} ${CFLAGS}"
+ LIBS="${GLUT_LIBS} ${LIBS}"
+ LDFLAGS="${GLUT_LDFLAGS} ${LDFLAGS}"
+ AC_LINK_IFELSE([_AX_CHECK_GLUT_PROGRAM],
+                [ax_check_glut_link_opengl="yes"],
+                [ax_check_glut_link_opengl="no"])
+ _AX_CHECK_GLUT_RESTORE_FLAGS()
+ AC_LANG_POP([C])
+])
 
+# link the example program (cache)
+AC_DEFUN([_AX_CHECK_GLUT_LINK_CV],
+[dnl
+ AC_CACHE_CHECK([for linking a minimal OpenGL Utility Toolkit (GLUT) program],[ax_cv_check_glut_link_opengl],
+                [_AX_CHECK_GLUT_LINK()
+                 ax_cv_check_glut_link_opengl="${ax_check_glut_link_opengl}"])
+ ax_check_glut_link_opengl="${ax_cv_check_glut_link_opengl}"
+])
+
+
+# manually check GLUT
+AC_DEFUN([_AX_CHECK_GLUT_MANUAL],dnl
+[
+GLUT_CFLAGS="${GLUT_CFLAGS} ${GLU_CFLAGS}"
+_AX_CHECK_GLUT_HEADERS
+
+AS_IF([test "X$ax_check_glut_have_headers" = "Xyes"],
+      [_AX_CHECK_GLUT_MANUAL_LIBS],
+      [ax_check_glut_lib="no"])
+
+AS_IF([test "X$ax_check_glut_lib_opengl" = "Xyes"],
+      [_AX_CHECK_GLUT_COMPILE_CV()],
+      [ax_cv_check_glut_compile_opengl="no"])
+
+AS_IF([test "X$ax_cv_check_glut_compile_opengl" = "Xyes"],
+      [_AX_CHECK_GLUT_LINK_CV()],
+      [ax_cv_check_glut_link_opengl="no"])
+
+AS_IF([test "X$ax_cv_check_glut_link_opengl" = "Xyes"],
+       [no_glut="no"],
+       [no_glut="yes"])
+])
+
+
+# main entry point
+AC_DEFUN([AX_CHECK_GLUT],
+[dnl
+ AC_REQUIRE([AX_CHECK_GL])dnl
+ AC_REQUIRE([AX_CHECK_GLU])dnl
+
+ # set flags
+ no_glut="yes"
+ have_GLUT="no"
+ have_glut="no"
+
+ _AX_CHECK_GLUT_MANUAL
+
+ AC_MSG_CHECKING([for a working OpenGL Utility Toolkit (GLUT) implementation])
+ AS_IF([test "X$no_glut" = "Xno"],
+       [have_GLUT="yes"
+        have_glut="yes"
+        AC_MSG_RESULT([yes])
+        AC_MSG_CHECKING([for CFLAGS needed for OpenGL Utility Toolkit (GLUT)])
+        AC_MSG_RESULT(["${GLUT_CFLAGS}"])
+        AC_MSG_CHECKING([for LIBS needed for OpenGL Utility Toolkit (GLUT)])
+        AC_MSG_RESULT(["${GLUT_LIBS}"])
+        AC_MSG_CHECKING([for LDFLAGS needed for OpenGL Utility Toolkit (GLUT)])
+        AC_MSG_RESULT(["${GLUT_LDFLAGS}"])],
+       [AC_MSG_RESULT([no])
+        GLUT_CFLAGS=""
+        GLUT_LIBS=""
+        GLUT_LDFLAGS=""])
+
+ AC_SUBST([GLUT_CFLAGS])
+ AC_SUBST([GLUT_LIBS])
+ AC_SUBST([GLUT_LDFLAGS])
 ])
 
 # ===========================================================================
-#        https://www.gnu.org/software/autoconf-archive/ax_openmp.html
+#         http://www.gnu.org/software/autoconf-archive/ax_openmp.html
 # ===========================================================================
 #
 # SYNOPSIS
@@ -854,7 +1282,6 @@ AC_DEFUN([AX_CHECK_GLUT],
 #
 #   Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
 #   Copyright (c) 2015 John W. Peterson <jwpeterson@gmail.com>
-#   Copyright (c) 2016 Nick R. Papior <nickpapior@gmail.com>
 #
 #   This program is free software: you can redistribute it and/or modify it
 #   under the terms of the GNU General Public License as published by the
@@ -867,7 +1294,7 @@ AC_DEFUN([AX_CHECK_GLUT],
 #   Public License for more details.
 #
 #   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <https://www.gnu.org/licenses/>.
+#   with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #   As a special exception, the respective Autoconf Macro's copyright owner
 #   gives unlimited permission to copy, distribute and modify the configure
@@ -882,19 +1309,16 @@ AC_DEFUN([AX_CHECK_GLUT],
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 13
+#serial 11
 
 AC_DEFUN([AX_OPENMP], [
 AC_PREREQ([2.69]) dnl for _AC_LANG_PREFIX
 
 AC_CACHE_CHECK([for OpenMP flag of _AC_LANG compiler], ax_cv_[]_AC_LANG_ABBREV[]_openmp, [save[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
 ax_cv_[]_AC_LANG_ABBREV[]_openmp=unknown
-# Flags to try:  -fopenmp (gcc), -mp (SGI & PGI),
-#                -qopenmp (icc>=15), -openmp (icc),
-#                -xopenmp (Sun), -omp (Tru64),
-#                -qsmp=omp (AIX),
-#                none
-ax_openmp_flags="-fopenmp -openmp -qopenmp -mp -xopenmp -omp -qsmp=omp none"
+# Flags to try:  -fopenmp (gcc), -openmp (icc), -mp (SGI & PGI),
+#                -xopenmp (Sun), -omp (Tru64), -qsmp=omp (AIX), none
+ax_openmp_flags="-fopenmp -openmp -mp -xopenmp -omp -qsmp=omp none"
 if test "x$OPENMP_[]_AC_LANG_PREFIX[]FLAGS" != x; then
   ax_openmp_flags="$OPENMP_[]_AC_LANG_PREFIX[]FLAGS $ax_openmp_flags"
 fi
@@ -937,149 +1361,9 @@ else
 fi
 ])dnl AX_OPENMP
 
-# =================================================================================
-#  https://www.gnu.org/software/autoconf-archive/ax_restore_flags_with_prefix.html
-# =================================================================================
-#
-# SYNOPSIS
-#
-#   AX_RESTORE_FLAGS_WITH_PREFIX(PREFIX, LIST-OF-FLAGS)
-#
-# DESCRIPTION
-#
-#   Restore the flags saved by AX_SAVE_FLAGS_WITH_PREFIX.
-#
-#   Expansion example: AX_RESTORE_FLAGS_WITH_PREFIX([GL], [[CFLAGS],[LIBS]])
-#   expands to
-#
-#     CFLAGS="$gl_saved_flag_cflags"
-#     LIBS="$gl_saved_flag_libs"
-#
-#   One common use case is to define a package specific wrapper macro around
-#   this one, and also restore other variables if needed. For example:
-#
-#     AC_DEFUN([_AX_CHECK_GL_RESTORE_FLAGS], [
-#       AX_RESTORE_FLAGS_WITH_PREFIX([GL],[$1])
-#       AC_LANG_POP([C])
-#     ])
-#
-#     # Restores CFLAGS, LIBS and language state
-#     _AX_CHECK_GL_RESTORE_FLAGS([[CFLAGS],[LIBS]])
-#
-# LICENSE
-#
-#   Copyright (c) 2016 Felix Chern <idryman@gmail.com>
-#
-#   This program is free software; you can redistribute it and/or modify it
-#   under the terms of the GNU General Public License as published by the
-#   Free Software Foundation; either version 2 of the License, or (at your
-#   option) any later version.
-#
-#   This program is distributed in the hope that it will be useful, but
-#   WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-#   Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <https://www.gnu.org/licenses/>.
-#
-#   As a special exception, the respective Autoconf Macro's copyright owner
-#   gives unlimited permission to copy, distribute and modify the configure
-#   scripts that are the output of Autoconf when processing the Macro. You
-#   need not follow the terms of the GNU General Public License when using
-#   or distributing such scripts, even though portions of the text of the
-#   Macro appear in them. The GNU General Public License (GPL) does govern
-#   all other use of the material that constitutes the Autoconf Macro.
-#
-#   This special exception to the GPL applies to versions of the Autoconf
-#   Macro released by the Autoconf Archive. When you make and distribute a
-#   modified version of the Autoconf Macro, you may extend this special
-#   exception to the GPL to apply to your modified version as well.
-
-#serial 3
-
-AC_DEFUN([AX_RESTORE_FLAGS_WITH_PREFIX],[
-m4_ifval([$2], [
-m4_car($2)="$_ax_[]m4_tolower($1)_saved_flag_[]m4_tolower(m4_car($2))"
-$0($1, m4_cdr($2))])
-])
-
-# ==============================================================================
-#  https://www.gnu.org/software/autoconf-archive/ax_save_flags_with_prefix.html
-# ==============================================================================
-#
-# SYNOPSIS
-#
-#   AX_SAVE_FLAGS_WITH_PREFIX(PREFIX, LIST-OF-FLAGS)
-#
-# DESCRIPTION
-#
-#   For each flag in LIST-OF-FLAGS, it expands to lower-cased shell variable
-#   with the prefix holding the flag original value.  The saved variables
-#   can be restored by AX_RESTORE_FLAGS_WITH_PREFIX
-#
-#   As an example: AX_SAVE_FLAGS_WITH_PREFIX([GL], [[CFLAGS],[LIBS]])
-#   expands to
-#
-#     gl_saved_flag_cflags="$CFLAGS"
-#     gl_saved_flag_libs="$LIBS"
-#     CFLAGS="$GL_CFLAGS $CFLAGS"
-#     LIBS="$GL_LIBS $LIBS"
-#
-#   One common use case is to define a package specific wrapper macro around
-#   this one, and also setup other variables if needed. For example:
-#
-#     AC_DEFUN([_AX_CHECK_GL_SAVE_FLAGS], [
-#       AX_SAVE_FLAGS_WITH_PREFIX([GL],[$1])
-#       AC_LANG_PUSH([C])
-#     ])
-#
-#     # pushes GL_CFLAGS and GL_LIBS to CFLAGS and LIBS
-#     # also set the current language to test to C
-#     _AX_CHECK_GL_SAVE_FLAGS([[CFLAGS],[LIBS]])
-#
-# LICENSE
-#
-#   Copyright (c) 2016 Felix Chern <idryman@gmail.com>
-#
-#   This program is free software; you can redistribute it and/or modify it
-#   under the terms of the GNU General Public License as published by the
-#   Free Software Foundation; either version 2 of the License, or (at your
-#   option) any later version.
-#
-#   This program is distributed in the hope that it will be useful, but
-#   WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-#   Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License along
-#   with this program. If not, see <https://www.gnu.org/licenses/>.
-#
-#   As a special exception, the respective Autoconf Macro's copyright owner
-#   gives unlimited permission to copy, distribute and modify the configure
-#   scripts that are the output of Autoconf when processing the Macro. You
-#   need not follow the terms of the GNU General Public License when using
-#   or distributing such scripts, even though portions of the text of the
-#   Macro appear in them. The GNU General Public License (GPL) does govern
-#   all other use of the material that constitutes the Autoconf Macro.
-#
-#   This special exception to the GPL applies to versions of the Autoconf
-#   Macro released by the Autoconf Archive. When you make and distribute a
-#   modified version of the Autoconf Macro, you may extend this special
-#   exception to the GPL to apply to your modified version as well.
-
-#serial 3
-
-AC_DEFUN([AX_SAVE_FLAGS_WITH_PREFIX],[
-m4_ifval([$2], [
-_ax_[]m4_tolower($1)_saved_flag_[]m4_tolower(m4_car($2))="$m4_car($2)"
-m4_car($2)="$$1_[]m4_car($2) $m4_car($2)"
-$0($1, m4_cdr($2))
-])])
-
-# pkg.m4 - Macros to locate and utilise pkg-config.   -*- Autoconf -*-
-# serial 12 (pkg-config-0.29.2)
-
+dnl pkg.m4 - Macros to locate and utilise pkg-config.   -*- Autoconf -*-
+dnl serial 11 (pkg-config-0.29.1)
+dnl
 dnl Copyright © 2004 Scott James Remnant <scott@netsplit.com>.
 dnl Copyright © 2012-2015 Dan Nicholson <dbn.lists@gmail.com>
 dnl
@@ -1120,7 +1404,7 @@ dnl
 dnl See the "Since" comment for each macro you use to see what version
 dnl of the macros you require.
 m4_defun([PKG_PREREQ],
-[m4_define([PKG_MACROS_VERSION], [0.29.2])
+[m4_define([PKG_MACROS_VERSION], [0.29.1])
 m4_if(m4_version_compare(PKG_MACROS_VERSION, [$1]), -1,
     [m4_fatal([pkg.m4 version $1 or higher is required but ]PKG_MACROS_VERSION[ found])])
 ])dnl PKG_PREREQ
@@ -1221,7 +1505,7 @@ AC_ARG_VAR([$1][_CFLAGS], [C compiler flags for $1, overriding pkg-config])dnl
 AC_ARG_VAR([$1][_LIBS], [linker flags for $1, overriding pkg-config])dnl
 
 pkg_failed=no
-AC_MSG_CHECKING([for $2])
+AC_MSG_CHECKING([for $1])
 
 _PKG_CONFIG([$1][_CFLAGS], [cflags], [$2])
 _PKG_CONFIG([$1][_LIBS], [libs], [$2])
@@ -1231,11 +1515,11 @@ and $1[]_LIBS to avoid the need to call pkg-config.
 See the pkg-config man page for more details.])
 
 if test $pkg_failed = yes; then
-        AC_MSG_RESULT([no])
+   	AC_MSG_RESULT([no])
         _PKG_SHORT_ERRORS_SUPPORTED
         if test $_pkg_short_errors_supported = yes; then
 	        $1[]_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "$2" 2>&1`
-        else
+        else 
 	        $1[]_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "$2" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
@@ -1252,7 +1536,7 @@ installed software in a non-standard prefix.
 _PKG_TEXT])[]dnl
         ])
 elif test $pkg_failed = untried; then
-        AC_MSG_RESULT([no])
+     	AC_MSG_RESULT([no])
 	m4_default([$4], [AC_MSG_FAILURE(
 [The pkg-config script could not be found or is too old.  Make sure it
 is in your PATH or set the PKG_CONFIG environment variable to the full
@@ -1353,7 +1637,7 @@ AS_VAR_COPY([$1], [pkg_cv_][$1])
 AS_VAR_IF([$1], [""], [$5], [$4])dnl
 ])dnl PKG_CHECK_VAR
 
-# Copyright (C) 2002-2018 Free Software Foundation, Inc.
+# Copyright (C) 2002-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1365,10 +1649,10 @@ AS_VAR_IF([$1], [""], [$5], [$4])dnl
 # generated from the m4 files accompanying Automake X.Y.
 # (This private macro should not be called outside this file.)
 AC_DEFUN([AM_AUTOMAKE_VERSION],
-[am__api_version='1.16'
+[am__api_version='1.15'
 dnl Some users find AM_AUTOMAKE_VERSION and mistake it for a way to
 dnl require some minimum version.  Point them to the right macro.
-m4_if([$1], [1.16], [],
+m4_if([$1], [1.15], [],
       [AC_FATAL([Do not call $0, use AM_INIT_AUTOMAKE([$1]).])])dnl
 ])
 
@@ -1384,14 +1668,14 @@ m4_define([_AM_AUTOCONF_VERSION], [])
 # Call AM_AUTOMAKE_VERSION and AM_AUTOMAKE_VERSION so they can be traced.
 # This function is AC_REQUIREd by AM_INIT_AUTOMAKE.
 AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION],
-[AM_AUTOMAKE_VERSION([1.16])dnl
+[AM_AUTOMAKE_VERSION([1.15])dnl
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
 _AM_AUTOCONF_VERSION(m4_defn([AC_AUTOCONF_VERSION]))])
 
 # AM_AUX_DIR_EXPAND                                         -*- Autoconf -*-
 
-# Copyright (C) 2001-2018 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1443,7 +1727,7 @@ am_aux_dir=`cd "$ac_aux_dir" && pwd`
 
 # AM_CONDITIONAL                                            -*- Autoconf -*-
 
-# Copyright (C) 1997-2018 Free Software Foundation, Inc.
+# Copyright (C) 1997-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1474,7 +1758,7 @@ AC_CONFIG_COMMANDS_PRE(
 Usually this means the macro was only invoked conditionally.]])
 fi])])
 
-# Copyright (C) 1999-2018 Free Software Foundation, Inc.
+# Copyright (C) 1999-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1665,11 +1949,12 @@ _AM_SUBST_NOTMAKE([am__nodep])dnl
 
 # Generate code to set up dependency tracking.              -*- Autoconf -*-
 
-# Copyright (C) 1999-2018 Free Software Foundation, Inc.
+# Copyright (C) 1999-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
+
 
 # _AM_OUTPUT_DEPENDENCY_COMMANDS
 # ------------------------------
@@ -1678,41 +1963,49 @@ AC_DEFUN([_AM_OUTPUT_DEPENDENCY_COMMANDS],
   # Older Autoconf quotes --file arguments for eval, but not when files
   # are listed without --file.  Let's play safe and only enable the eval
   # if we detect the quoting.
-  # TODO: see whether this extra hack can be removed once we start
-  # requiring Autoconf 2.70 or later.
-  AS_CASE([$CONFIG_FILES],
-          [*\'*], [eval set x "$CONFIG_FILES"],
-          [*], [set x $CONFIG_FILES])
+  case $CONFIG_FILES in
+  *\'*) eval set x "$CONFIG_FILES" ;;
+  *)   set x $CONFIG_FILES ;;
+  esac
   shift
-  # Used to flag and report bootstrapping failures.
-  am_rc=0
-  for am_mf
+  for mf
   do
     # Strip MF so we end up with the name of the file.
-    am_mf=`AS_ECHO(["$am_mf"]) | sed -e 's/:.*$//'`
-    # Check whether this is an Automake generated Makefile which includes
-    # dependency-tracking related rules and includes.
-    # Grep'ing the whole file directly is not great: AIX grep has a line
+    mf=`echo "$mf" | sed -e 's/:.*$//'`
+    # Check whether this is an Automake generated Makefile or not.
+    # We used to match only the files named 'Makefile.in', but
+    # some people rename them; so instead we look at the file content.
+    # Grep'ing the first line is not enough: some people post-process
+    # each Makefile.in and add a new line on top of each file to say so.
+    # Grep'ing the whole file is not good either: AIX grep has a line
     # limit of 2048, but all sed's we know have understand at least 4000.
-    sed -n 's,^am--depfiles:.*,X,p' "$am_mf" | grep X >/dev/null 2>&1 \
-      || continue
-    am_dirpart=`AS_DIRNAME(["$am_mf"])`
-    am_filepart=`AS_BASENAME(["$am_mf"])`
-    AM_RUN_LOG([cd "$am_dirpart" \
-      && sed -e '/# am--include-marker/d' "$am_filepart" \
-        | $MAKE -f - am--depfiles]) || am_rc=$?
+    if sed -n 's,^#.*generated by automake.*,X,p' "$mf" | grep X >/dev/null 2>&1; then
+      dirpart=`AS_DIRNAME("$mf")`
+    else
+      continue
+    fi
+    # Extract the definition of DEPDIR, am__include, and am__quote
+    # from the Makefile without running 'make'.
+    DEPDIR=`sed -n 's/^DEPDIR = //p' < "$mf"`
+    test -z "$DEPDIR" && continue
+    am__include=`sed -n 's/^am__include = //p' < "$mf"`
+    test -z "$am__include" && continue
+    am__quote=`sed -n 's/^am__quote = //p' < "$mf"`
+    # Find all dependency output files, they are included files with
+    # $(DEPDIR) in their names.  We invoke sed twice because it is the
+    # simplest approach to changing $(DEPDIR) to its actual value in the
+    # expansion.
+    for file in `sed -n "
+      s/^$am__include $am__quote\(.*(DEPDIR).*\)$am__quote"'$/\1/p' <"$mf" | \
+	 sed -e 's/\$(DEPDIR)/'"$DEPDIR"'/g'`; do
+      # Make sure the directory exists.
+      test -f "$dirpart/$file" && continue
+      fdir=`AS_DIRNAME(["$file"])`
+      AS_MKDIR_P([$dirpart/$fdir])
+      # echo "creating $dirpart/$file"
+      echo '# dummy' > "$dirpart/$file"
+    done
   done
-  if test $am_rc -ne 0; then
-    AC_MSG_FAILURE([Something went wrong bootstrapping makefile fragments
-    for automatic dependency tracking.  Try re-running configure with the
-    '--disable-dependency-tracking' option to at least be able to build
-    the package (albeit without support for automatic dependency tracking).])
-  fi
-  AS_UNSET([am_dirpart])
-  AS_UNSET([am_filepart])
-  AS_UNSET([am_mf])
-  AS_UNSET([am_rc])
-  rm -f conftest-deps.mk
 }
 ])# _AM_OUTPUT_DEPENDENCY_COMMANDS
 
@@ -1721,17 +2014,18 @@ AC_DEFUN([_AM_OUTPUT_DEPENDENCY_COMMANDS],
 # -----------------------------
 # This macro should only be invoked once -- use via AC_REQUIRE.
 #
-# This code is only required when automatic dependency tracking is enabled.
-# This creates each '.Po' and '.Plo' makefile fragment that we'll need in
-# order to bootstrap the dependency handling code.
+# This code is only required when automatic dependency tracking
+# is enabled.  FIXME.  This creates each '.P' file that we will
+# need in order to bootstrap the dependency handling code.
 AC_DEFUN([AM_OUTPUT_DEPENDENCY_COMMANDS],
 [AC_CONFIG_COMMANDS([depfiles],
      [test x"$AMDEP_TRUE" != x"" || _AM_OUTPUT_DEPENDENCY_COMMANDS],
-     [AMDEP_TRUE="$AMDEP_TRUE" MAKE="${MAKE-make}"])])
+     [AMDEP_TRUE="$AMDEP_TRUE" ac_aux_dir="$ac_aux_dir"])
+])
 
 # Do all the work for Automake.                             -*- Autoconf -*-
 
-# Copyright (C) 1996-2018 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1818,8 +2112,8 @@ AC_REQUIRE([AM_PROG_INSTALL_STRIP])dnl
 AC_REQUIRE([AC_PROG_MKDIR_P])dnl
 # For better backward compatibility.  To be removed once Automake 1.9.x
 # dies out for good.  For more background, see:
-# <https://lists.gnu.org/archive/html/automake/2012-07/msg00001.html>
-# <https://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
+# <http://lists.gnu.org/archive/html/automake/2012-07/msg00001.html>
+# <http://lists.gnu.org/archive/html/automake/2012-07/msg00014.html>
 AC_SUBST([mkdir_p], ['$(MKDIR_P)'])
 # We need awk for the "check" target (and possibly the TAP driver).  The
 # system "awk" is bad on some platforms.
@@ -1886,7 +2180,7 @@ END
 Aborting the configuration process, to ensure you take notice of the issue.
 
 You can download and install GNU coreutils to get an 'rm' implementation
-that behaves properly: <https://www.gnu.org/software/coreutils/>.
+that behaves properly: <http://www.gnu.org/software/coreutils/>.
 
 If you want to complete the configuration process using your problematic
 'rm' anyway, export the environment variable ACCEPT_INFERIOR_RM_PROGRAM
@@ -1928,7 +2222,7 @@ for _am_header in $config_headers :; do
 done
 echo "timestamp for $_am_arg" >`AS_DIRNAME(["$_am_arg"])`/stamp-h[]$_am_stamp_count])
 
-# Copyright (C) 2001-2018 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1949,7 +2243,7 @@ if test x"${install_sh+set}" != xset; then
 fi
 AC_SUBST([install_sh])])
 
-# Copyright (C) 2003-2018 Free Software Foundation, Inc.
+# Copyright (C) 2003-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1970,7 +2264,7 @@ AC_SUBST([am__leading_dot])])
 
 # Check to see how 'make' treats includes.	            -*- Autoconf -*-
 
-# Copyright (C) 2001-2018 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -1978,42 +2272,49 @@ AC_SUBST([am__leading_dot])])
 
 # AM_MAKE_INCLUDE()
 # -----------------
-# Check whether make has an 'include' directive that can support all
-# the idioms we need for our automatic dependency tracking code.
+# Check to see how make treats includes.
 AC_DEFUN([AM_MAKE_INCLUDE],
-[AC_MSG_CHECKING([whether ${MAKE-make} supports the include directive])
-cat > confinc.mk << 'END'
+[am_make=${MAKE-make}
+cat > confinc << 'END'
 am__doit:
-	@echo this is the am__doit target >confinc.out
+	@echo this is the am__doit target
 .PHONY: am__doit
 END
+# If we don't find an include directive, just comment out the code.
+AC_MSG_CHECKING([for style of include used by $am_make])
 am__include="#"
 am__quote=
-# BSD make does it like this.
-echo '.include "confinc.mk" # ignored' > confmf.BSD
-# Other make implementations (GNU, Solaris 10, AIX) do it like this.
-echo 'include confinc.mk # ignored' > confmf.GNU
-_am_result=no
-for s in GNU BSD; do
-  AM_RUN_LOG([${MAKE-make} -f confmf.$s && cat confinc.out])
-  AS_CASE([$?:`cat confinc.out 2>/dev/null`],
-      ['0:this is the am__doit target'],
-      [AS_CASE([$s],
-          [BSD], [am__include='.include' am__quote='"'],
-          [am__include='include' am__quote=''])])
-  if test "$am__include" != "#"; then
-    _am_result="yes ($s style)"
-    break
-  fi
-done
-rm -f confinc.* confmf.*
-AC_MSG_RESULT([${_am_result}])
-AC_SUBST([am__include])])
-AC_SUBST([am__quote])])
+_am_result=none
+# First try GNU make style include.
+echo "include confinc" > confmf
+# Ignore all kinds of additional output from 'make'.
+case `$am_make -s -f confmf 2> /dev/null` in #(
+*the\ am__doit\ target*)
+  am__include=include
+  am__quote=
+  _am_result=GNU
+  ;;
+esac
+# Now try BSD make style include.
+if test "$am__include" = "#"; then
+   echo '.include "confinc"' > confmf
+   case `$am_make -s -f confmf 2> /dev/null` in #(
+   *the\ am__doit\ target*)
+     am__include=.include
+     am__quote="\""
+     _am_result=BSD
+     ;;
+   esac
+fi
+AC_SUBST([am__include])
+AC_SUBST([am__quote])
+AC_MSG_RESULT([$_am_result])
+rm -f confinc confmf
+])
 
 # Fake the existence of programs that GNU maintainers use.  -*- Autoconf -*-
 
-# Copyright (C) 1997-2018 Free Software Foundation, Inc.
+# Copyright (C) 1997-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2052,7 +2353,7 @@ fi
 
 # Helper functions for option handling.                     -*- Autoconf -*-
 
-# Copyright (C) 2001-2018 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2081,7 +2382,7 @@ AC_DEFUN([_AM_SET_OPTIONS],
 AC_DEFUN([_AM_IF_OPTION],
 [m4_ifset(_AM_MANGLE_OPTION([$1]), [$2], [$3])])
 
-# Copyright (C) 1999-2018 Free Software Foundation, Inc.
+# Copyright (C) 1999-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2128,7 +2429,7 @@ AC_LANG_POP([C])])
 # For backward compatibility.
 AC_DEFUN_ONCE([AM_PROG_CC_C_O], [AC_REQUIRE([AC_PROG_CC])])
 
-# Copyright (C) 2001-2018 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2147,7 +2448,7 @@ AC_DEFUN([AM_RUN_LOG],
 
 # Check to make sure that the build environment is sane.    -*- Autoconf -*-
 
-# Copyright (C) 1996-2018 Free Software Foundation, Inc.
+# Copyright (C) 1996-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2228,7 +2529,7 @@ AC_CONFIG_COMMANDS_PRE(
 rm -f conftest.file
 ])
 
-# Copyright (C) 2009-2018 Free Software Foundation, Inc.
+# Copyright (C) 2009-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2288,7 +2589,7 @@ AC_SUBST([AM_BACKSLASH])dnl
 _AM_SUBST_NOTMAKE([AM_BACKSLASH])dnl
 ])
 
-# Copyright (C) 2001-2018 Free Software Foundation, Inc.
+# Copyright (C) 2001-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2316,7 +2617,7 @@ fi
 INSTALL_STRIP_PROGRAM="\$(install_sh) -c -s"
 AC_SUBST([INSTALL_STRIP_PROGRAM])])
 
-# Copyright (C) 2006-2018 Free Software Foundation, Inc.
+# Copyright (C) 2006-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
@@ -2335,7 +2636,7 @@ AC_DEFUN([AM_SUBST_NOTMAKE], [_AM_SUBST_NOTMAKE($@)])
 
 # Check how to create a tarball.                            -*- Autoconf -*-
 
-# Copyright (C) 2004-2018 Free Software Foundation, Inc.
+# Copyright (C) 2004-2014 Free Software Foundation, Inc.
 #
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
