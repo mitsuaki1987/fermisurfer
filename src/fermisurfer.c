@@ -63,6 +63,7 @@ with a color-plot of the arbitraly matrix element
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "variable.h"
 #include "read_file.h"
 #include "menu.h"
@@ -100,6 +101,41 @@ void init(void)
   /* Menu */
   FS_CreateMenu();
 } /* init */
+/**
+  @brief Glut Display function
+  called by glutDisplayFunc
+*/
+void batch_draw()
+{
+  int iminmax;
+  GLfloat minmax[3][2];
+
+  printf("\n  Batch mode.\n");
+
+  iminmax = read_batch(minmax);
+  refresh_patch_segment();
+  if (iminmax == 1) {
+    if (color_scale == 3) {
+      patch_min[0] = minmax[0][0];
+      patch_max[0] = minmax[0][1];
+      patch_min[1] = minmax[1][0];
+      patch_max[1] = minmax[1][1];
+      patch_min[2] = minmax[2][0];
+      patch_max[2] = minmax[2][1];
+    }
+    else if (color_scale == 2) {
+      patch_min[0] = minmax[0][0];
+      patch_max[0] = minmax[0][1];
+      patch_min[1] = minmax[1][0];
+      patch_max[1] = minmax[1][1];
+    }
+    else {
+      patch_min[0] = minmax[0][0];
+      patch_max[0] = minmax[0][1];
+    }
+    paint();
+  }
+}
 /**
  @brief Main routine of FermiSurfer
 
@@ -166,6 +202,7 @@ int main(
   printf("\n");
   /**/
   glutInit(&argc, argv);
+  if (argc > 4)glutInitWindowSize(atoi(argv[3]), atoi(argv[4]));
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE  | GLUT_DEPTH);
   glutCreateWindow(argv[1]);
   glutDisplayFunc(display);
@@ -176,6 +213,13 @@ int main(
   glutSpecialFunc(special_key);
   glutMenuStateFunc(FS_ModifyMenu);
   init();
+  lbatch = 0;
+  if (argc > 2) {
+    lbatch = 1;
+    window_name = argv[1];
+    batch_name = argv[2];
+    batch_draw();
+  }
   glutMainLoop();
   return 0;
 } /* main */

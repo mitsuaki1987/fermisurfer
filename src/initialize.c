@@ -246,15 +246,15 @@ void max_and_min_bz() {
   for (ib = 0; ib < nb; ib++) {
     eigmax = eig0[0][0][0][0];
     eigmin = eig0[0][0][0][0];
-    matmax = mat0[0][0][0][0];
-    matmin = mat0[0][0][0][0];
+    matmax = mat0[0][0][0][0][0];
+    matmin = mat0[0][0][0][0][0];
     for (i0 = 0; i0 < ng0[0]; ++i0) {
       for (i1 = 0; i1 < ng0[1]; ++i1) {
         for (i2 = 0; i2 < ng0[2]; ++i2) {
           if (eig0[ib][i0][i1][i2] > eigmax) eigmax = eig0[ib][i0][i1][i2];
           if (eig0[ib][i0][i1][i2] < eigmin) eigmin = eig0[ib][i0][i1][i2];
-          if (mat0[ib][i0][i1][i2] > matmax) matmax = mat0[ib][i0][i1][i2];
-          if (mat0[ib][i0][i1][i2] < matmin) matmin = mat0[ib][i0][i1][i2];
+          if (mat0[ib][i0][i1][i2][0] > matmax) matmax = mat0[ib][i0][i1][i2][0];
+          if (mat0[ib][i0][i1][i2][0] < matmin) matmin = mat0[ib][i0][i1][i2][0];
         }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
       }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
     }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
@@ -264,14 +264,14 @@ void max_and_min_bz() {
 /**
  @brief Initialize global variables
 
- Modify : ::blackback, ::fcscl, ::fbz, ::nodeline, ::lcolorbar, ::lstereo, ::lmouse, 
+ Modify : ::blackback, ::color_scale, ::fbz, ::nodeline, ::lcolorbar, ::lstereo, ::lmouse, 
           ::lsection, ::itet, ::scl, ::trans, ::rot, ::thetax, ::thetay, ::thetaz,
           ::black, ::gray, ::white, ::cyan, ::magenta, ::yellow, ::red, ::green, ::blue,
           ::EF, ::interpol
 */
 void initialize_val() {
   blackback = 1;
-  fcscl = 1;
+  color_scale = 1;
   fbz = 1;
   nodeline = 0;
   lcolorbar = 1;

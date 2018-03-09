@@ -49,28 +49,28 @@ int nb;             //!< The number of Bands
 GLfloat avec[3][3]; //!< Direct lattice vector
 GLfloat bvec[3][3]; //!< Reciprocal lattice vector
 GLfloat ****eig0;   //!< Eigenvalues @f$\varepsilon_{n k}@f$[::nb][::ng0[0]][::ng0[1]][::ng0[2]]
-GLfloat ****mat0;   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]]
+GLfloat *****mat0;   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]][3]
 /*
  Interpolation
 */
-int ng[3];       //!< @b Interpolated @f$k@f$-grids
-GLfloat ****eig; //!< Eigenvalues @f$\varepsilon_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
-GLfloat ****mat; //!< Matrix element @f$\delta_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
-GLfloat *****vf; //!< Matrix element @f$\{\bf v}_{{\rm f} n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
-int interpol;    //!< Ratio of interpolation
+int ng[3];        //!< @b Interpolated @f$k@f$-grids
+GLfloat ****eig;  //!< Eigenvalues @f$\varepsilon_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
+GLfloat *****mat; //!< Matrix element @f$\delta_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
+GLfloat *****vf;  //!< Matrix element @f$\{\bf v}_{{\rm f} n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
+int interpol;     //!< Ratio of interpolation
 /*
  Switch for some modes
 */
-int blackback; //!< Switch for black background
-int fcscl;     //!< Switch for full color scale mode
-int fbz;       //!< Switch for 1st Brillouin zone mode
-int nodeline;  //!< Switch for node lines
-int lcolorbar; //!< Switch for colorbar
-int lstereo;   //!< Switch for the stereogram
-int lmouse;    //!< Switch for the mouse function
-int lsection;  //!< Switch for the 2D Fermi lines
-int lside;     //!< Switch for lighting
-int lequator;   //!< Switch for equator
+int blackback;   //!< Switch for black background
+int color_scale; //!< Switch for full color scale mode
+int fbz;         //!< Switch for 1st Brillouin zone mode
+int nodeline;    //!< Switch for node lines
+int lcolorbar;   //!< Switch for colorbar
+int lstereo;     //!< Switch for the stereogram
+int lmouse;      //!< Switch for the mouse function
+int lsection;    //!< Switch for the 2D Fermi lines
+int lside;       //!< Switch for lighting
+int lequator;    //!< Switch for equator
 /*
  Menu
 */
@@ -96,10 +96,12 @@ GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
 GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
 GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
 GLfloat **kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
-GLfloat ***matp;    //!< Matrix elements of points [::nb][::ntri][3]
+GLfloat ****matp;    //!< Matrix elements of points [::nb][::ntri][3][3]
 GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
 int itet;           //!< Counter for tetrahedron
 GLfloat side;       //!< Which side is lighted
+GLfloat patch_max[3];  //!< Max value across patch
+GLfloat patch_min[3];  //!< Max value across patch
 /*
   Variables for nodeline
 */
@@ -170,3 +172,9 @@ enum
   MOUSE_SCROLL_DOWN = 4 //!< Mouse wheel down
 };
 int nthreads;//!< Number of OpenMP threads
+/*
+Batch mode
+*/
+char *window_name;
+char *batch_name;
+int lbatch;

@@ -23,3 +23,4 @@ THE SOFTWARE.
 */
 
 void read_file(char *fname/**<[in] fname  Input file name*/);
+int read_batch(GLfloat minmax[3][2]);

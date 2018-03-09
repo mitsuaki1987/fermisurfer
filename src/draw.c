@@ -283,9 +283,9 @@ static void draw_bz_lines() {
 static void draw_colorbar()
 {
   int i, j, k;
-  GLfloat mat2, barcolor[4], vertices[366], normals[366], colors[488];
+  GLfloat mat2, vertices[366], normals[366], colors[488];
   /**/
-  if (fcscl == 1 || fcscl == 2 || fcscl == 5 || fcscl == 6) {
+  if (color_scale == 1 || color_scale == 4) {
     for (i = 0; i < 5; i++) {
       for (j = 0; j < 2; j++) {
         for (k = 0; k < 2; k++) normals[k + j*3 + i * 6] = 0.0f;
@@ -304,56 +304,93 @@ static void draw_colorbar()
     glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 10);
-  }/*if (fcscl == 1 || fcscl == 2)*/
-  else if (fcscl == 4) {
+  }/*if (color_scale == 1 || color_scale == 4)*/
+  else if (color_scale == 2) {
     /*
      Periodic color scale
     */
+    vertices[0] = 0.0f;
+    vertices[1] = -1.0f;
+    vertices[2] = 0.0f;
+    normals[0] = 0.0f;
+    normals[1] = 0.0f;
+    normals[2] = 1.0f;
+    if (blackback == 1)
+      for (j = 0; j < 4; j++) colors[j] = wgray[j];
+    else
+      for (j = 0; j < 4; j++) colors[j] = bgray[j];
+    /**/
     for (i = 0; i <= 60; i++) {
       /**/
       mat2 = (GLfloat)i / 60.0f * 6.0f;
       /**/
       if (mat2 <= 1.0) {
-        for (j = 0; j<4; ++j) barcolor[j] = yellow[j] * mat2 + red[j] * (1.0f - mat2);
+        for (j = 0; j<4; ++j) colors[j + 4 * (i + 1)] = yellow[j] * mat2 + red[j] * (1.0f - mat2);
       }
       else if (mat2 <= 2.0) {
         mat2 = mat2 - 1.0f;
-        for (j = 0; j<4; ++j) barcolor[j] = green[j] * mat2 + yellow[j] * (1.0f - mat2);
+        for (j = 0; j<4; ++j) colors[j + 4 * (i + 1)] = green[j] * mat2 + yellow[j] * (1.0f - mat2);
       }
       else if (mat2 <= 3.0) {
         mat2 = mat2 - 2.0f;
-        for (j = 0; j<4; ++j) barcolor[j] = cyan[j] * mat2 + green[j] * (1.0f - mat2);
+        for (j = 0; j<4; ++j) colors[j + 4 * (i + 1)] = cyan[j] * mat2 + green[j] * (1.0f - mat2);
       }
       else if (mat2 <= 4.0) {
         mat2 = mat2 - 3.0f;
-        for (j = 0; j<4; ++j) barcolor[j] = blue[j] * mat2 + cyan[j] * (1.0f - mat2);
+        for (j = 0; j<4; ++j) colors[j + 4 * (i + 1)] = blue[j] * mat2 + cyan[j] * (1.0f - mat2);
       }
       else if (mat2 <= 5.0) {
         mat2 = mat2 - 4.0f;
-        for (j = 0; j<4; ++j) barcolor[j] = magenta[j] * mat2 + blue[j] * (1.0f - mat2);
+        for (j = 0; j<4; ++j) colors[j + 4 * (i + 1)] = magenta[j] * mat2 + blue[j] * (1.0f - mat2);
       }
       else {
         mat2 = mat2 - 5.0f;
-        for (j = 0; j<4; ++j) barcolor[j] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
+        for (j = 0; j<4; ++j) colors[j + 4 * (i + 1)] = red[j] * mat2 + magenta[j] * (1.0f - mat2);
       }
       /**/
-      vertices[0 + 0 * 3 + 6 * i] = 0.15f * cosf((GLfloat)i / 60.0f * 6.283185307f);
-      vertices[1 + 0 * 3 + 6 * i] = 0.15f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
-      vertices[0 + 1 * 3 + 6 * i] = 0.2f  * cosf((GLfloat)i / 60.0f * 6.283185307f);
-      vertices[1 + 1 * 3 + 6 * i] = 0.2f  * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
-      for (k = 0; k < 2; k++) {
-        vertices[2 + k * 3 + 6 * i] = 0.0f;
-        for (j = 0; j < 2; j++) normals[j + k * 3 + 6 * i] = 0.0f;
-        normals[2 + k * 3 + 6 * i] = 1.0f;
-        for (j = 0; j < 4; j++) colors[j + k * 4 + 8 * i] = barcolor[j];
-      }/*for (i = 0; i < 10; i++)*/
+      vertices[0 + 3 * (i + 1)] = 0.2f * cosf((GLfloat)i / 60.0f * 6.283185307f);
+      vertices[1 + 3 * (i + 1)] = 0.2f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
+      vertices[2 + 3 * (i + 1)] = 0.0f;
+      for (j = 0; j < 2; j++) normals[j + 3 * (i + 1)] = 0.0f;
+      normals[2 + 3 * (i + 1)] = 1.0f;
     }/*for (i = 0; i <= 60; i++)*/
     glVertexPointer(3, GL_FLOAT, 0, vertices);
     glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 122);
-  }/*else if (fcscl == 4)*/
-  else  if (fcscl == 7 || fcscl == 8) {
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 62);
+  }/*else if (color_scale == 2)*/
+  else if (color_scale == 3) {
+    /*
+    Periodic color scale
+    */
+    vertices[0] = 0.0f;
+    vertices[1] = -1.0f;
+    vertices[2] = 0.0f;
+    normals[0] = 0.0f;
+    normals[1] = 0.0f;
+    normals[2] = 1.0f;
+    for (j = 0; j < 4; j++) colors[j] = bgray[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 1] = red[j] * 0.8f + bgray[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 2] = yellow[j] * 0.8f + bgray[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 3] = green[j] * 0.8f + bgray[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 4] = cyan[j] * 0.8f + bgray[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 5] = blue[j] * 0.8f + bgray[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 6] = magenta[j] * 0.8f + bgray[j];
+    for (j = 0; j < 4; j++) colors[j + 4 * 7] = red[j] * 0.8f + bgray[j];
+    /**/
+    for (i = 0; i <= 6; i++) {
+      vertices[0 + 3 * (i + 1)] = 0.2f * cosf((GLfloat)i / 6.0f * 6.283185307f);
+      vertices[1 + 3 * (i + 1)] = 0.2f * sinf((GLfloat)i / 6.0f * 6.283185307f) - 1.0f;
+      vertices[2 + 3 * (i + 1)] = 0.0f;
+      for (j = 0; j < 2; j++) normals[j + 3 * (i + 1)] = 0.0f;
+      normals[2 + 3 * (i + 1)] = 1.0f;
+    }/*for (i = 0; i <= 60; i++)*/
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glNormalPointer(GL_FLOAT, 0, normals);
+    glColorPointer(4, GL_FLOAT, 0, colors);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+  }/*else if (color_scale == 3)*/
+  else  if (color_scale == 6 || color_scale == 7) {
     for (i = 0; i < 2; i++) {
       for (j = 0; j < 2; j++) {
         for (k = 0; k < 2; k++) normals[k + j * 3 + i * 6] = 0.0f;
@@ -369,7 +406,7 @@ static void draw_colorbar()
     glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-  }/*if (fcscl == 7 || fcscl == 8)*/
+  }/*if (color_scale == 6 || color_scale == 7)*/
 
 }/*void draw_colorbar*/
 /**
@@ -456,6 +493,8 @@ void display(void)
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
   GLfloat dx, dx2d, theta, posz, phi;
   GLfloat pos1[4], pos2[4];
+  int ierr;
+  char command_name[256];
 
   if (lstereo == 2) {
     /*
@@ -579,4 +618,10 @@ void display(void)
     glPopMatrix();
   }/*if (lsection == 1)*/
   glutSwapBuffers();
+  if (lbatch == 1) {
+    glFlush();
+    sprintf(command_name, "import -window \"%s\" %s.png", window_name, batch_name);
+    ierr = system(command_name);
+    exit(0);
+  }
 }/*void display*/

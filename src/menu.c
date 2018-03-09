@@ -44,11 +44,13 @@ THE SOFTWARE.
 #include "initialize.h"
 #include "section.h"
 #include "equator.h"
+#include "draw.h"
 
 void compute_patch_segment() {
   query = 1; fermi_patch();
   query = 0; fermi_patch();
   max_and_min();
+  paint();
   query = 1; calc_nodeline();
   query = 0; calc_nodeline();
   query = 1; calc_section();
@@ -57,7 +59,7 @@ void compute_patch_segment() {
   query = 0; equator();
 }
 
-static void refresh_patch_segment() {
+void refresh_patch_segment() {
   free_patch();
   compute_patch_segment();
 }
@@ -79,12 +81,14 @@ static void menu_background(
   if (value == 1 && blackback != 1) {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     blackback = 1;
-    glutPostRedisplay();
+    if (color_scale == 2 || color_scale == 3) paint();
+    display();
   }
   else if (value == 0 && blackback != 0) {
     glClearColor(1.0, 1.0, 1.0, 0.0);
     blackback = 0;
-    glutPostRedisplay();
+    if (color_scale == 2 || color_scale == 3) paint();
+    display();
   }
 }/* bgcolor change*/
  /**
@@ -100,7 +104,7 @@ static void menu_band(
   else {
     draw_band[value] = 0;
   }
-  glutPostRedisplay();
+  display();
 } /* menu_band */
 /**
  @brief Change Brillouin zone (::fbz)
@@ -112,13 +116,13 @@ static void menu_brillouinzone(
   if (value == 1 && fbz != 1) {
     fbz = 1;
     refresh_patch_segment();
-    glutPostRedisplay();
+    display();
   }
   else if (value == 2 && fbz != -1) {
     fbz = -1;
     lsection = 0;
     refresh_patch_segment();
-    glutPostRedisplay();
+    display();
   }
 } /* menu_brillouinzone */
 /**
@@ -130,19 +134,48 @@ static void menu_colorbar(
 {
   if (lcolorbar != 1)  lcolorbar = 1;
   else lcolorbar = 0;
-  glutPostRedisplay();
+  display();
 } /* menu_colorbar */
 /**
- @brief Change color scale mode (::fcscl)
+ @brief Change color scale mode (::color_scale)
 */
 static void menu_colorscale(
   int value //!<[in] Selected menu
 )
 {
-  if (value != fcscl) {
-    fcscl = value;
+  int ierr, ii;
+
+  if (value == 0) {
     max_and_min();
-    glutPostRedisplay();
+    if (color_scale == 1 || color_scale == 4
+      || color_scale == 6 || color_scale == 7) {
+      printf("    Set min. and max. value for scale : ");
+      ierr = scanf("%f%f", &patch_min[0], &patch_max[0]);
+      if (ierr == 0) printf("error ! reading min or max");
+    }
+    else if (color_scale == 2) {
+      printf("    Set max. value for scale: ");
+      ierr = scanf("%f", &patch_max[0]);
+      if (ierr == 0) printf("error ! reading max");
+    }
+    else if (color_scale == 3) {
+      for (ii = 0; ii < 3; ii++) {
+        printf("    Set min. and max. value for scale %d : ", ii);
+        ierr = scanf("%f%f", &patch_min[ii], &patch_max[ii]);
+        if (ierr == 0) printf("error ! reading min or max");
+      }
+    }
+    else {
+      printf("  No color scale in this case.\n");
+    }
+    paint();
+    display();
+  }
+  else if (value != color_scale) {
+    color_scale = value;
+    max_and_min();
+    paint();
+    display();
   }
 } /* menu_colorscale */
 /**
@@ -158,7 +191,7 @@ static void menu_equator(
   if (value == 1) {
     if (lequator != 1) lequator = 1;
     else lequator = 0;
-    glutPostRedisplay();
+    display();
   }/*if (value == 1)*/
   else {
 
@@ -195,7 +228,7 @@ static void menu_equator(
 
     query = 1; equator();
     query = 0; equator();
-    glutPostRedisplay();
+    display();
   }/*else if (value > 1)*/
 } /*void menu_equator*/
 /**
@@ -220,7 +253,7 @@ static void menu_interpol(
     interpol_energy();
     refresh_patch_segment();
     /**/
-    glutPostRedisplay();
+    display();
   }
 }/*static void menu_interpol*/
 /**
@@ -234,19 +267,19 @@ static void menu_lighting(
     lside = 1;
     side = 1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-    glutPostRedisplay();
+    display();
   }
   if (value == 2 && lside != 2) {
     lside = 2;
     side = 1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-    glutPostRedisplay();
+    display();
   }
   if (value == 3 && lside != 3) {
     lside = 3;
     side = -1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-    glutPostRedisplay();
+    display();
   }
 } /* menu_lighting */
 /**
@@ -261,7 +294,7 @@ static void menu_line(
   printf("        New line width : ");
   ierr = scanf("%f", &linewidth);
 
-  glutPostRedisplay();
+  display();
 } /* menu_line */
 /**
  @brief Change the function associated to the mouse movement(::lmouse)
@@ -272,15 +305,15 @@ static void menu_mouse(
 {
   if (value == 1 && lmouse != 1) {
     lmouse = 1;
-    glutPostRedisplay();
+    display();
   }
   if (value == 2 && lmouse != 2) {
     lmouse = 2;
-    glutPostRedisplay();
+    display();
   }
   if (value == 3 && lmouse != 3) {
     lmouse = 3;
-    glutPostRedisplay();
+    display();
   }
 } /* menu_mouse */
 /**
@@ -292,7 +325,7 @@ static void menu_nodeline(
 {
   if (nodeline != 1) nodeline = 1;
   else nodeline = 0;
-  glutPostRedisplay();
+  display();
 }/*menu_nodeline*/
 /**
  @brief Modify and toggle appearance of 2D Fermi lines (::lsection)
@@ -307,11 +340,11 @@ static void menu_section(
   if (value == 1) {
     if (lsection != 1) {
       lsection = 1;
-      glutPostRedisplay();
+      display();
     }
     else {
       lsection = 0;
-      glutPostRedisplay();
+      display();
     }
   }/*if (value == 1)*/
   else if (value > 1) {
@@ -344,7 +377,7 @@ static void menu_section(
     calc_2dbz();
     query = 1; calc_section();
     query = 0; calc_section();
-    glutPostRedisplay();
+    display();
   }/*else if (value > 1)*/
 } /*void menu_section*/
 /**
@@ -378,7 +411,7 @@ static void menu_shift(
   /**/
   refresh_patch_segment();
   /**/
-  glutPostRedisplay();
+  display();
 } /* menu_shift */
 /**
  @brief Tern stereogram (::lstereo)
@@ -388,15 +421,15 @@ static void menu_stereo(
 ) {
   if (value == 1 && lstereo != 1) {
     lstereo = 1;
-    glutPostRedisplay();
+    display();
   }
   if (value == 2 && lstereo != 2) {
     lstereo = 2;
-    glutPostRedisplay();
+    display();
   }
   if (value == 3 && lstereo != 3) {
     lstereo = 3;
-    glutPostRedisplay();
+    display();
   }
 } /* menu_stereo */
 /**
@@ -411,7 +444,7 @@ static void menu_tetra(
     itet = value;
     init_corner();
     refresh_patch_segment();
-    glutPostRedisplay();
+    display();
   }
 }/*menu_tetra*/
  /**
@@ -477,7 +510,7 @@ static void menu_view(
 
   }
 
-  glutPostRedisplay();
+  display();
 
 }
 /**
@@ -490,7 +523,7 @@ void FS_ModifyMenu(
   int ib;
   char menu_str[50] = { 0 };
   if (status == GLUT_MENU_IN_USE) {
-    glutPostRedisplay();
+    display();
   }
   else {
     /*
@@ -533,22 +566,21 @@ void FS_ModifyMenu(
     */
     glutSetMenu(imenu_colorscale);
     for (ib = 0; ib < 8; ib++) glutRemoveMenuItem(1);
-    if (fcscl == 1) glutAddMenuEntry("[x] Auto", 1);
-    else glutAddMenuEntry("[ ] Auto", 1);
-    if (fcscl == 2) glutAddMenuEntry("[x] Manual", 2);
-    else glutAddMenuEntry("[ ] Manual", 2);
-    if (fcscl == 3) glutAddMenuEntry("[x] Unicolor", 3);
-    else glutAddMenuEntry("[ ] Unicolor", 3);
-    if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
-    else glutAddMenuEntry("[ ] Periodic", 4);
-    if (fcscl == 5) glutAddMenuEntry("[x] Fermi velocity (Auto)", 5);
-    else glutAddMenuEntry("[ ] Fermi velocity (Auto)", 5);
-    if (fcscl == 6) glutAddMenuEntry("[x] Fermi velocity (Manual)", 6);
-    else glutAddMenuEntry("[ ] Fermi velocity (Manual)", 6);
-    if (fcscl == 7) glutAddMenuEntry("[x] Gray scale (Auto)", 7);
-    else glutAddMenuEntry("[ ] Gray scale (Auto)", 7);
-    if (fcscl == 8) glutAddMenuEntry("[x] Gray scale (Manual)", 8);
-    else glutAddMenuEntry("[ ] Gray scale (Manual)", 8);
+    glutAddMenuEntry("Max/Min of Scale", 0);
+    if (color_scale == 1) glutAddMenuEntry("[x] Input (Real)", 1);
+    else glutAddMenuEntry("[ ] Input (Real)", 1);
+    if (color_scale == 2) glutAddMenuEntry("[x] Input (Complex)", 2);
+    else glutAddMenuEntry("[ ] Input (Complex)", 2);
+    if (color_scale == 3) glutAddMenuEntry("[x] Input (Tri-number)", 3);
+    else glutAddMenuEntry("[ ] Input (Tri-number)", 3);
+    if (color_scale == 4) glutAddMenuEntry("[x] Fermi Velocity", 4);
+    else glutAddMenuEntry("[ ] Fermi Velocity", 4);
+    if (color_scale == 5) glutAddMenuEntry("[x] Band Index", 5);
+    else glutAddMenuEntry("[ ] Band Index", 5);
+    if (color_scale == 6) glutAddMenuEntry("[x] Input (Real, Gray Scale)", 6);
+    else glutAddMenuEntry("[ ] Input (Real, Gray Scale)", 6);
+    if (color_scale == 7) glutAddMenuEntry("[x] Fermi Velocity (Gray Scale)", 7);
+    else glutAddMenuEntry("[ ] Fermi Velocity (Gray Scale)", 7);
     /*
     Equator
     */
@@ -650,7 +682,7 @@ void FS_ModifyMenu(
     sprintf(menu_str, "Rotation");// : %4.0f %4.0f %4.0f", thetax, thetay, thetaz);
     glutAddMenuEntry(menu_str, 3);
     
-    glutPostRedisplay();
+    display();
   }
 }/*void FS_ModifyMenu*/
 /**
@@ -695,22 +727,21 @@ void FS_CreateMenu()
   Color scale mode
   */
   imenu_colorscale = glutCreateMenu(menu_colorscale);
-  if (fcscl == 1) glutAddMenuEntry("[x] Auto", 1);
-  else glutAddMenuEntry("[ ] Auto", 1);
-  if (fcscl == 2) glutAddMenuEntry("[x] Manual", 2);
-  else glutAddMenuEntry("[ ] Manual", 2);
-  if (fcscl == 3) glutAddMenuEntry("[x] Unicolor", 3);
-  else glutAddMenuEntry("[ ] Unicolor", 3);
-  if (fcscl == 4) glutAddMenuEntry("[x] Periodic", 4);
-  else glutAddMenuEntry("[ ] Periodic", 4);
-  if (fcscl == 5) glutAddMenuEntry("[x] Fermi velocity (Auto)", 5);
-  else glutAddMenuEntry("[ ] Fermi velocity (Auto)", 5);
-  if (fcscl == 6) glutAddMenuEntry("[x] Fermi velocity (Manual)", 6);
-  else glutAddMenuEntry("[ ] Fermi velocity (Manual)", 6);
-  if (fcscl == 7) glutAddMenuEntry("[x] Gray scale (Auto)", 7);
-  else glutAddMenuEntry("[ ] Gray scale (Auto)", 7);
-  if (fcscl == 8) glutAddMenuEntry("[x] Gray scale (Manual)", 8);
-  else glutAddMenuEntry("[ ] Gray scale (Manual)", 8);
+  glutAddMenuEntry("Max/Min of Scale", 0);
+  if (color_scale == 1) glutAddMenuEntry("[x] Input (Real)", 1);
+  else glutAddMenuEntry("[ ] Input (Real)", 1);
+  if (color_scale == 2) glutAddMenuEntry("[x] Input (Complex)", 2);
+  else glutAddMenuEntry("[ ] Input (Complex)", 2);
+  if (color_scale == 3) glutAddMenuEntry("[x] Input (Tri-number)", 3);
+  else glutAddMenuEntry("[ ] Input (Tri-number)", 3);
+  if (color_scale == 4) glutAddMenuEntry("[x] Fermi Velocity", 4);
+  else glutAddMenuEntry("[ ] Fermi Velocity", 4);
+  if (color_scale == 5) glutAddMenuEntry("[x] Band Index", 5);
+  else glutAddMenuEntry("[ ] Band Index", 5);
+  if (color_scale == 6) glutAddMenuEntry("[x] Input (Real, Gray Scale)", 6);
+  else glutAddMenuEntry("[ ] Input (Real, Gray Scale)", 6);
+  if (color_scale == 7) glutAddMenuEntry("[x] Fermi Velocity (Gray Scale)", 7);
+  else glutAddMenuEntry("[ ] Fermi Velocity (Gray Scale)", 7);
   /*
   Equator
   */
