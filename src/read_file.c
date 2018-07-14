@@ -133,6 +133,8 @@ void read_file(
     if (ierr == 0) printf("error ! reading bvec");
     printf("    bvec %d : %f %f %f \n", i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
   }/*for (i = 0; i < 3; ++i)*/
+  scl /= sqrtf(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
+  linewidth /= scl;
   /*
    Direct lattice vector
   */
