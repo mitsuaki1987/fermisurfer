@@ -29,6 +29,15 @@
         <img src="figs/stereogram.png" height="200">
         <img src="figs/interpolate.png" height="200">
         <hr>
+        <h2>引用につきまして</h2>
+        <h4>
+          Fermisurferを使った研究におきまして, 下記の論文を適宜引用していただけましたら幸いです.
+          <p><a href="https://arxiv.org/abs/1811.06177" target="_blank">
+              &quot;FermiSurfer: Expressive Fermi-surface viewer&quot;,
+              M. Kawamura, arXiv:1811.06177.
+          </a></p>
+        </h4>
+        <hr>
         <h2>News</h2>
         <ul>
           <li>
