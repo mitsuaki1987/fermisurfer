@@ -25,7 +25,7 @@ THE SOFTWARE.
 @brief Functions that initilize variables.
 */
 #include <stdio.h>
-#include "variable.h"
+#include "variable.hpp"
 
 /**
  @brief Specify corners of tetrahedron
@@ -261,51 +261,3 @@ void max_and_min_bz() {
     printf("    %d     %f     %f     %f     %f\n", ib + 1, eigmin, eigmax, matmin, matmax);
   }/*for (ib = 0; ib < nb; ib++)*/
 }/* max_and_min_bz */
-/**
- @brief Initialize global variables
-
- Modify : ::blackback, ::color_scale, ::fbz, ::nodeline, ::lcolorbar, ::lstereo, ::lmouse, 
-          ::lsection, ::itet, ::scl, ::trans, ::rot, ::thetax, ::thetay, ::thetaz,
-          ::black, ::gray, ::white, ::cyan, ::magenta, ::yellow, ::red, ::green, ::blue,
-          ::EF, ::interpol
-*/
-void initialize_val() {
-  blackback = 1;
-  color_scale = 1;
-  fbz = 1;
-  nodeline = 0;
-  lcolorbar = 1;
-  lstereo = 1;
-  lmouse = 1;
-  lsection = 0;
-  itet = 0;
-  EF = 0.0;
-  interpol = 1;
-  side = 1.0;
-  lside = 1;
-  lequator = 0;
-  /*
-   Size & Position & Direction of figure
-  */
-  scl = 1.0;
-  trans[0] = 0.0; trans[1] = 0.0; trans[2] = 0.0;
-  rot[0][0] = 1.0; rot[0][1] = 0.0; rot[0][2] = 0.0;
-  rot[1][0] = 0.0; rot[1][1] = 1.0; rot[1][2] = 0.0;
-  rot[2][0] = 0.0; rot[2][1] = 0.0; rot[2][2] = 1.0;
-  thetax = 0.0, thetay = 0.0, thetaz = 0.0;
-  linewidth = 3.0;
-  /*
-   Colors
-  */
-  black[0]   = 0.0; black[1]   = 0.0; black[2]   = 0.0; black[3]   = 1.0;
-  gray[0]    = 0.5; gray[1]    = 0.5; gray[2]    = 0.5; gray[3]    = 1.0;
-  wgray[0]   = 0.9f; wgray[1]  = 0.9f; wgray[2]  = 0.9f; wgray[3]   = 1.0;
-  bgray[0]   = 0.1f; bgray[1]  = 0.1f; bgray[2]  = 0.1f; bgray[3]   = 1.0;
-  white[0]   = 1.0; white[1]   = 1.0; white[2]   = 1.0; white[3]   = 1.0;
-  cyan[0]    = 0.0; cyan[1]    = 1.0; cyan[2]    = 1.0; cyan[3]    = 1.0;
-  magenta[0] = 1.0; magenta[1] = 0.0; magenta[2] = 1.0; magenta[3] = 1.0;
-  yellow[0]  = 1.0; yellow[1]  = 1.0; yellow[2]  = 0.0; yellow[3]  = 1.0;
-  red[0]     = 1.0; red[1]     = 0.0; red[2]     = 0.0; red[3]     = 1.0;
-  green[0]   = 0.0; green[1]   = 1.0; green[2]   = 0.0; green[3]   = 1.0;
-  blue[0]    = 0.0; blue[1]    = 0.0; blue[2]    = 1.0; blue[3]    = 1.0;
-}/*void initialize_val*/

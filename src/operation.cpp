@@ -34,8 +34,8 @@ THE SOFTWARE.
 #endif
 
 #include <math.h>
-#include "variable.h"
-#include "draw.h"
+#include "draw.hpp"
+#include "variable.hpp"
 /**
  @brief Window resize
 
@@ -202,18 +202,6 @@ void motion(
   cx = x;
   cy = y;
 } /* motion */
-/**
- @brief Glut keyboard function
-*/
-void keyboard(
-  unsigned char key, //!< [in] Typed key
-  int x, //!< [in]
-  int y //!< [in]
-)
-{
-  switch (key) {
-  }
-} /* keyboard */
 /**
  @brief Glut special key function
 

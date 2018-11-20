@@ -36,15 +36,19 @@ THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "variable.h"
-#include "free_patch.h"
-#include "fermi_patch.h"
-#include "calc_nodeline.h"
-#include "kumo.h"
-#include "initialize.h"
-#include "section.h"
-#include "equator.h"
-#include "draw.h"
+#include "free_patch.hpp"
+#include "fermi_patch.hpp"
+#include "calc_nodeline.hpp"
+#include "kumo.hpp"
+#include "initialize.hpp"
+#include "section.hpp"
+#include "equator.hpp"
+#include "draw.hpp"
+#include "variable.hpp"
+
+int imenu_band, imenu_interpol, imenu_background, imenu_colorscale, imenu_bzmode, imenu_section,
+imenu_nodeline, imenu_colorbar, imenu_tetra, imenu_stereo, imenu_mouse, imenu_light,
+imenu_line, imenu_shift, imenu_view, imenu_equator, imenu;
 
 void compute_patch_segment() {
   query = 1; fermi_patch();

@@ -39,8 +39,8 @@ denser @f$k@f$-grid with French-curve (Kumo) interpolation
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "basic_math.h"
-#include "variable.h"
+#include "basic_math.hpp"
+#include "variable.hpp"
 /**
  @brief Compute coefficient for the French-curve (Kumo) interpolation
  @f[

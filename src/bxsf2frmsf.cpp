@@ -213,7 +213,7 @@ static void fvel() {
 */
 static void write_file(
   char *fname1, //!< [in] File name without 
-  char *ext, //!< [in] File tail
+  const char *ext, //!< [in] File tail
   int component //!< [in] Component of the Fermi velocity
 ) 
 {

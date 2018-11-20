@@ -34,8 +34,8 @@ THE SOFTWARE.
 #endif
 
 #include <math.h>
-#include "variable.h"
 #include <stdio.h>
+#include "variable.hpp"
 /**
  @brief Draw Fermi surfaces
 

@@ -39,8 +39,9 @@ THE SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-#include "variable.h"
-#include "basic_math.h"
+#include "basic_math.hpp"
+#include "variable.hpp"
+
 /**
  @brief Judge wheser this line is the edge of 1st BZ
 */

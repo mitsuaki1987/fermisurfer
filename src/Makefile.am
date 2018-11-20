@@ -2,11 +2,11 @@ MAINTAINERCLEANFILES = Makefile.in
 
 bin_PROGRAMS = fermisurfer bxsf2frmsf
 
-fermisurfer_SOURCES = basic_math.c bz_lines.c calc_nodeline.c draw.c equator.c \
-                      fermi_patch.c fermisurfer.c free_patch.c initialize.c kumo.c \
-                      menu.c operation.c read_file.c section.c \
-                      basic_math.h bz_lines.h calc_nodeline.h draw.h fermi_patch.h \
-                      free_patch.h initialize.h kumo.h menu.h operation.h \
-                      read_file.h section.h variable.h equator.h
+fermisurfer_SOURCES = basic_math.cpp bz_lines.cpp calc_nodeline.cpp draw.cpp equator.cpp \
+                      fermi_patch.cpp fermisurfer.cpp free_patch.cpp initialize.cpp kumo.cpp \
+                      menu.cpp operation.cpp read_file.cpp section.cpp \
+                      basic_math.hpp bz_lines.hpp calc_nodeline.hpp draw.hpp fermi_patch.hpp \
+                      free_patch.hpp initialize.hpp kumo.hpp menu.hpp operation.hpp \
+                      read_file.hpp section.hpp variable.hpp equator.hpp
 
-bxsf2frmsf_SOURCES = bxsf2frmsf.c
+bxsf2frmsf_SOURCES = bxsf2frmsf.cpp

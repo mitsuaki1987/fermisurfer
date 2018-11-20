@@ -7,7 +7,7 @@ AC_CONFIG_HEADERS([config.h])
 echo ""
 echo "  Check compiler"
 echo ""
-AC_PROG_CC
+AC_PROG_CXX
 echo ""
 echo "  Check OpenMP"
 echo ""
@@ -16,7 +16,7 @@ AC_ARG_WITH(openmp, [AS_HELP_STRING([--with-openmp],
                                   If none is found, OpenMP is not used. Default: yes])],,
             [with_openmp=yes])
 if test x"$with_openmp" != xno; then
-  AX_OPENMP([FCFLAGS="$FCFLAGS $OPENMP_CFLAGS";CFLAGS="$CFLAGS $OPENMP_CFLAGS"],[
+  AX_OPENMP([CXXFLAGS="$CXXFLAGS $OPENMP_CFLAGS"],[
       AC_MSG_WARN([OpenMP requested, but couldn't use OpenMP.])
   ])
 fi
@@ -26,7 +26,7 @@ echo ""
 AX_CHECK_GL
 AX_CHECK_GLU
 AX_CHECK_GLUT
-CFLAGS="$CFLAGS $GL_CFLAGS $GLU_CFLAGS $GLUT_CFLAGS"
+CXXFLAGS="$CXXFLAGS $GL_CFLAGS $GLU_CFLAGS $GLUT_CFLAGS"
 LIBS="$LIBS $GLUT_LIBS $GLU_LIBS $GL_LIBS -lm"
 echo ""
 echo "  Output files"
@@ -41,8 +41,8 @@ AC_OUTPUT
 echo ""
 echo "  SUMMARY"
 echo ""
-echo "        CC = ${CC}"
-echo "    CFLAGS = ${CFLAGS}"
+echo "       CXX = ${CXX}"
+echo "  CXXFLAGS = ${CXXFLAGS}"
 echo "      LIBS = ${LIBS}"
 echo ""
 echo "  Configure done."

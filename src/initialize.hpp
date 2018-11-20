@@ -22,22 +22,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-void resize(
-  int w /**<[in] Window width*/,
-  int h /**<[in] Window height*/);
-void mouse(
-  int button /**< [in] pushed button*/,
-  int state /**< [in] down or up or ?*/,
-  int x /**< [in] position of mouse cursor*/,
-  int y /**< [in] position of mouse cursor*/);
-void motion(
-  int x /**< [in] position of cursor*/,
-  int y /**< [in] position of cursor*/);
-void keyboard(
-  unsigned char key /**< [in] Typed key*/,
-  int x /**< [in]*/,
-  int y /**< [in]*/);
-void special_key(
-  int key /**< [in] typed special key*/,
-  int x /**< [in]*/,
-  int y /**< [in]*/);
+void init_corner();
+void bragg_vector();
+void max_and_min_bz();

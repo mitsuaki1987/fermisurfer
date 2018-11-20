@@ -40,8 +40,8 @@ THE SOFTWARE.
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "variable.h"
-#include "basic_math.h"
+#include "basic_math.hpp"
+#include "variable.hpp"
 /**
  @brief Project 3D \f$k\f$-vector into 2D plane. 
 

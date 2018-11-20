@@ -29,8 +29,8 @@ THE SOFTWARE.
 #include <math.h>
 #include <ctype.h>
 #include <string.h>
-#include "variable.h"
-#include "basic_math.h"
+#include "basic_math.hpp"
+#include "variable.hpp"
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
@@ -39,6 +39,7 @@ THE SOFTWARE.
 #elif defined(HAVE_GLUT_GLUT_H)
 #include <GLUT/glut.h>
 #endif
+
 /**
  @brief Input from Fermi surface file
 */
@@ -50,6 +51,7 @@ void read_file(
   FILE *fp;
   char* ctemp1;
   char ctemp2[256], rct;
+  int lshift; //!< Switch for shifted Brillouin zone
   /*
    Open input file.
   */
