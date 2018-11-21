@@ -109,7 +109,6 @@ int lmouse = 1;      //!< Switch for the mouse function
 int lsection = 0;    //!< Switch for the 2D Fermi lines
 int lside = 1;      //!< Switch for lighting
 int lequator = 0;    //!< Switch for equator
-
 /*
  Variables for Brillouin zone boundaries
 */

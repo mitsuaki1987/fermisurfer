@@ -32,9 +32,9 @@ THE SOFTWARE.
 #elif defined(HAVE_GLUT_GLUT_H)
 #include <GLUT/glut.h>
 #endif
-
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "variable.hpp"
 /**
  @brief Draw Fermi surfaces
