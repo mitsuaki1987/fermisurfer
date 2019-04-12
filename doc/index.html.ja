@@ -32,17 +32,23 @@
         <h2>引用につきまして</h2>
         <h4>
           Fermisurferを使った研究におきまして, 下記の論文を適宜引用していただけましたら幸いです.
-          <p><a href="https://arxiv.org/abs/1811.06177" target="_blank">
-              &quot;FermiSurfer: Expressive Fermi-surface viewer&quot;,
-              M. Kawamura, arXiv:1811.06177.
-          </a></p>
+          <p><a href="https://doi.org/10.1016/j.cpc.2019.01.017" target="_blank">
+              &quot;FermiSurfer: Fermi-surface viewer providing multiple representation schemes&quot;,
+              M. Kawamura, Comp. Phys. Commun <b>239</b>, 197 (2019)
+            </a>
+            (<a href="https://arxiv.org/abs/1811.06177" target="_top">arXiv:1811.06177</a>).
+          </p>
         </h4>
         <hr>
         <h2>News</h2>
         <ul>
           <li>
-            <h3><a href="https://ja.osdn.net/projects/fermisurfer/releases/69171">
-                2018/3/8 FermiSurfer 1.10.1 をリリースしました !</a></h3>
+            <h3>2019/4/12 論文がComputer Physics Communication誌に掲載されました。</h3>
+          </li>
+          <li>
+            <h3>2018/3/8
+              <a href="https://ja.osdn.net/projects/fermisurfer/releases/69171">
+                FermiSurfer 1.10.1 をリリースしました !</a></h3>
             <h4>描画に関するバグフィックスとインストール方法の改善を行いました。
               詳しくはリリースノートをご覧ください。</h4>
           </li>
