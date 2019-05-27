@@ -278,6 +278,8 @@ int main(
   char *argv[] //!< [in] Input file name
 )
 {
+  int ierr;
+
   printf("\n");
   printf("###########################################\n");
   printf("##                                       ##\n");
@@ -289,7 +291,7 @@ int main(
     printf("\n");
     printf("  Input file is not specified !\n");
     printf("    Press any key to exit.\n");
-    getchar();
+    ierr = getchar();
     exit(-1);
   }
   /**/
@@ -305,7 +307,9 @@ int main(
   printf("  Initialize variables ...\n");
   printf("\n");
   /**/
-  read_file(argv[1]);
+  color_scale = read_file(argv[1]);
+  if (color_scale == 0)color_scale = 4;
+  printf("debug %d\n", color_scale);
   interpol_energy();
   init_corner();
   bragg_vector();

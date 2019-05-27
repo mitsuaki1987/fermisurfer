@@ -44,76 +44,76 @@ void free_patch() {
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < ntri[ib]; ++i0) {
       for (i1 = 0; i1 < 3; ++i1) {
-        free(nmlp[ib][i0][i1]);
-        free(matp[ib][i0][i1]);
-        free(kvp[ib][i0][i1]);
+        delete[] nmlp[ib][i0][i1];
+        delete[] matp[ib][i0][i1];
+        delete[] kvp[ib][i0][i1];
       }
-      free(nmlp[ib][i0]);
-      free(matp[ib][i0]);
-      free(kvp[ib][i0]);
+      delete[] nmlp[ib][i0];
+      delete[] matp[ib][i0];
+      delete[] kvp[ib][i0];
     }
-    free(nmlp[ib]);
-    free(matp[ib]);
-    free(clr[ib]);
-    free(kvp[ib]);
-    free(nmlp_rot[ib]);
-    free(kvp_rot[ib]);
+    delete[] nmlp[ib];
+    delete[] matp[ib];
+    delete[] clr[ib];
+    delete[] kvp[ib];
+    delete[] nmlp_rot[ib];
+    delete[] kvp_rot[ib];
   }
-  free(nmlp);
-  free(matp);
-  free(clr);
-  free(kvp);
-  free(nmlp_rot);
-  free(kvp_rot);
+  delete[] nmlp;
+  delete[] matp;
+  delete[] clr;
+  delete[] kvp;
+  delete[] nmlp_rot;
+  delete[] kvp_rot;
   /*
    Nodal line
   */
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < nnl[ib]; ++i0) {
       for (i1 = 0; i1 < 2; ++i1) {
-        free(kvnl[ib][i0][i1]);
+        delete[] kvnl[ib][i0][i1];
       }/*for (i1 = 0; i1 < 2; ++i1)*/
-      free(kvnl[ib][i0]);
+      delete[] kvnl[ib][i0];
     }/*for (i0 = 0; i0 < nnl[ib]; ++i0)*/
-    free(kvnl[ib]);
-    free(kvnl_rot[ib]);
-    free(nmlnl[ib]);
-    free(clrnl[ib]);
+    delete[] kvnl[ib];
+    delete[] kvnl_rot[ib];
+    delete[] nmlnl[ib];
+    delete[] clrnl[ib];
   }/*for (ib = 0; ib < nb; ++ib)*/
-  free(kvnl);
-  free(kvnl_rot);
-  free(nmlnl);
-  free(clrnl);
+  delete[] kvnl;
+  delete[] kvnl_rot;
+  delete[] nmlnl;
+  delete[] clrnl;
   /*
    2D Fermi line
   */
   for (ib = 0; ib < nb; ++ib) {
-    free(kv2d[ib]);
-    free(clr2d[ib]);
-    free(nml2d[ib]);
+    delete[] kv2d[ib];
+    delete[] clr2d[ib];
+    delete[] nml2d[ib];
   }/*for (ib = 0; ib < nb; ++ib)*/
-  free(kv2d);
-  free(clr2d);
-  free(nml2d);
+  delete[] kv2d;
+  delete[] clr2d;
+  delete[] nml2d;
   /*
   equator
   */
   for (ib = 0; ib < nb; ++ib) {
     for (i0 = 0; i0 < nequator[ib]; ++i0) {
       for (i1 = 0; i1 < 2; ++i1) {
-        free(kveq[ib][i0][i1]);
+        delete[] kveq[ib][i0][i1];
       }/*for (i1 = 0; i1 < 2; ++i1)*/
-      free(kveq[ib][i0]);
+      delete[] kveq[ib][i0];
     }/*for (i0 = 0; i0 < nequator[ib]; ++i0)*/
-    free(kveq[ib]);
-    free(kveq_rot[ib]);
-    free(nmleq[ib]);
-    free(clreq[ib]);
+    delete[] kveq[ib];
+    delete[] kveq_rot[ib];
+    delete[] nmleq[ib];
+    delete[] clreq[ib];
   }/*for (ib = 0; ib < nb; ++ib)*/
-  free(kveq);
-  free(kveq_rot);
-  free(nmleq);
-  free(clreq);
+  delete[] kveq;
+  delete[] kveq_rot;
+  delete[] nmleq;
+  delete[] clreq;
 
 }/*void free_patch()*/
 /**
@@ -127,11 +127,11 @@ void max_and_min()
   int itri, ithread;
   GLfloat **max_th, **min_th;
   
-  max_th = (GLfloat**)malloc(nthreads * sizeof(GLfloat*));
-  min_th = (GLfloat**)malloc(nthreads * sizeof(GLfloat*));
+  max_th = new GLfloat*[nthreads];
+  min_th = new GLfloat*[nthreads];
   for (ithread = 0; ithread < nthreads; ithread++) {
-    max_th[ithread] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-    min_th[ithread] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+    max_th[ithread] = new GLfloat[3];
+    min_th[ithread] = new GLfloat[3];
   }
 
   printf("\n");
@@ -268,8 +268,8 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
     }    
   }/*if (color_scale == 5 || color_scale == 6)*/
 
-  free(max_th);
-  free(min_th);
+  delete[] max_th;
+  delete[] min_th;
 
   if (color_scale == 1 || color_scale == 4
     || color_scale == 6 || color_scale == 7) {

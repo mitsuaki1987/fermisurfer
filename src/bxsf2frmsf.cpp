@@ -51,7 +51,7 @@ static void read_dat(
   if ((fp = fopen(fname, "r")) == NULL) {
     printf("file open error!!\n");
     printf("  Press any key to exit.\n");
-    getchar();
+    ierr = getchar();
     exit(EXIT_FAILURE);
   }
   printf("\n#####  Reading BXSF file %s  #####\n\n", fname);
@@ -85,13 +85,13 @@ static void read_dat(
     printf("  Bvec %d : %f %f %f \n", ii + 1, Bvec[0][ii], Bvec[1][ii], Bvec[2][ii]);
   }
   
-  Eig = (double****)malloc(Nb * sizeof(double***));
+  Eig = new double***[Nb];
   for (ib = 0; ib < Nb; ib++) {
-    Eig[ib] = (double***)malloc((Ng[0] + 1) * sizeof(double**));
+    Eig[ib] = new double**[Ng[0] + 1];
     for (ik0 = 0; ik0 <= Ng[0]; ik0++) {
-      Eig[ib][ik0] = (double**)malloc((Ng[1] + 1) * sizeof(double*));
+      Eig[ib][ik0] = new double*[Ng[1] + 1];
       for (ik1 = 0; ik1 <= Ng[1]; ik1++) {
-        Eig[ib][ik0][ik1] = (double*)malloc((Ng[2] + 1) * sizeof(double));
+        Eig[ib][ik0][ik1] = new double[Ng[2] + 1];
       }/*for (ik1 = 0; ik1 < Ng[1]; ik1++)*/
     }/*for (ik0 = 0; ik0 < Ng[0]; ik0++)*/
   }/*for (ib = 0; ib < Nb; ib++)*/
@@ -154,15 +154,15 @@ static void fvel() {
   /*
    malloc fermi velocity
   */
-  vf = (double*****)malloc(Nb * sizeof(double****));
+  vf = new double****[Nb];
   for (ib = 0; ib < Nb; ib++) {
-    vf[ib] = (double****)malloc(Ng[0] * sizeof(double***));
+    vf[ib] = new double***[Ng[0]];
     for (ik0 = 0; ik0 < Ng[0]; ik0++) {
-      vf[ib][ik0] = (double***)malloc(Ng[1] * sizeof(double**));
+      vf[ib][ik0] = new double**[Ng[1]];
       for (ik1 = 0; ik1 < Ng[1]; ik1++) {
-        vf[ib][ik0][ik1] = (double**)malloc(Ng[2] * sizeof(double*));
+        vf[ib][ik0][ik1] = new double*[Ng[2]];
         for (ik2 = 0; ik2 < Ng[2]; ik2++) {
-          vf[ib][ik0][ik1][ik2] = (double*)malloc(7 * sizeof(double));
+          vf[ib][ik0][ik1][ik2] = new double[7];
         }
       }/*for (ik1 = 0; ik1 < Ng[1]; ik1++)*/
     }/*for (ik0 = 0; ik0 < Ng[0]; ik0++)*/
@@ -235,7 +235,7 @@ static void write_file(
   else {
     printf("ERROR! Extension shoud be .bxsf, .BXSF, or .Bxsf !\n");
     printf("  Press any key to exit.\n");
-    getchar();
+    ierr = getchar();
     exit(-1);
   }
   sprintf(&fname2[ii], "%s", ext);
@@ -279,10 +279,12 @@ int main(
   char *argv[] //!< [in] Input file name
 )
 {
+  int ierr;
+
   if (argc < 2) {
     printf("\n\nInput file is not specified !\n");
     printf("  Press any key to exit.\n");
-    getchar();
+    ierr = getchar();
     exit(-1);
   }
 
@@ -302,5 +304,5 @@ int main(
 
   printf("\n#####  DONE  #####\n");
   printf("  Press any key to exit.\n");
-  getchar();
+  ierr = getchar();
 }

@@ -43,14 +43,14 @@ THE SOFTWARE.
 /**
  @brief Input from Fermi surface file
 */
-void read_file(
+int read_file(
   char *fname//!<[in] Input file name
 )
 {
-  int ib, i, j, i0, i1, i2, ii0, ii1, ii2, ierr;
+  int ib, i, j, i0, i1, i2, ii0, ii1, ii2, ierr, iaxis;
   FILE *fp;
   char* ctemp1;
-  char ctemp2[256], rct;
+  char ctemp2[256];
   int lshift; //!< Switch for shifted Brillouin zone
   /*
    Open input file.
@@ -59,7 +59,7 @@ void read_file(
   if ((fp = fopen(fname, "r")) == NULL) {
     printf("file open error!!\n");
     printf("  Press any key to exit.\n");
-    getchar();
+    ierr = getchar();
     exit(EXIT_FAILURE);
   }
   printf("\n");
@@ -69,25 +69,7 @@ void read_file(
    k-point grid
   */
   ctemp1 = fgets(ctemp2, 256, fp);
-  ierr = sscanf(ctemp2, "%d%d%d%s", &ng0[0], &ng0[1], &ng0[2], &rct);
-  rct = tolower(rct);
-  if (ierr <= 3) rct = 'r';
-  if (rct == 'r') {
-    printf("    Real k-dependent quantity.\n");
-    color_scale = 1;
-  }
-  else if (rct == 'c') {
-    printf("    Complex k-dependent quantity.\n");
-    color_scale = 2;
-  }
-  else if (rct == 't') {
-    printf("    Tri-number k-dependent quantity.\n");
-    color_scale = 3;
-  }
-  else {
-    printf("    Error! r or c is allowed. Input %c\n", rct);
-    exit(-1);
-  }
+  ierr = sscanf(ctemp2, "%d%d%d", &ng0[0], &ng0[1], &ng0[2]);
 
   if (ierr == 0) printf("error ! reading ng");
   printf("    k point grid : %d %d %d \n", ng0[0], ng0[1], ng0[2]);
@@ -119,13 +101,13 @@ void read_file(
   ierr = fscanf(fp, "%d", &nb);
   if (ierr == 0) printf("error ! reading nb");
   printf("    # of bands : %d\n", nb);
-  ntri = (int*)malloc(nb * sizeof(int));
-  ntri_th = (int**)malloc(nb * sizeof(int*));
-  for (ib = 0; ib < nb; ib++) ntri_th[ib] = (int*)malloc(nthreads * sizeof(int));
-  nnl = (int*)malloc(nb * sizeof(int));
-  n2d = (int*)malloc(nb * sizeof(int));
-  nequator = (int*)malloc(nb * sizeof(int));
-  draw_band = (int*)malloc(nb * sizeof(int));
+  ntri = new int[nb];
+  ntri_th = new int*[nb];
+  for (ib = 0; ib < nb; ib++) ntri_th[ib] = new int[nthreads];
+  nnl = new int[nb];
+  n2d = new int[nb];
+  nequator = new int[nb];
+  draw_band = new int[nb];
   for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
   /*
    Reciplocal lattice vectors
@@ -154,33 +136,33 @@ void read_file(
   /*
    Allocation of Kohn-Sham energies $ matrix elements
   */
-  eig0 = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-  eig = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-  mat0 = (GLfloat*****)malloc(nb * sizeof(GLfloat****));
-  mat = (GLfloat*****)malloc(nb * sizeof(GLfloat****));
-  vf = (GLfloat*****)malloc(nb * sizeof(GLfloat****));
+  eig0 = new GLfloat * **[nb];
+  eig = new GLfloat * **[nb];
+  mat0 = new GLfloat * ***[nb];
+  mat = new GLfloat * ***[nb];
+  vf = new GLfloat * ***[nb];
   for (ib = 0; ib < nb; ib++) {
-    eig0[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
-    eig[ib] = (GLfloat***)malloc(ng0[0] * sizeof(GLfloat**));
-    mat0[ib] = (GLfloat****)malloc(ng0[0] * sizeof(GLfloat***));
-    mat[ib] = (GLfloat****)malloc(ng0[0] * sizeof(GLfloat***));
-    vf[ib] = (GLfloat****)malloc(ng0[0] * sizeof(GLfloat***));
+    eig0[ib] = new GLfloat**[ng0[0]];
+    eig[ib] = new GLfloat**[ng0[0]];
+    mat0[ib] = new GLfloat***[ng0[0]];
+    mat[ib] = new GLfloat***[ng0[0]];
+    vf[ib] = new GLfloat***[ng0[0]];
     for (i0 = 0; i0 < ng0[0]; i0++) {
-      eig0[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
-      eig[ib][i0] = (GLfloat**)malloc(ng0[1] * sizeof(GLfloat*));
-      mat0[ib][i0] = (GLfloat***)malloc(ng0[1] * sizeof(GLfloat**));
-      mat[ib][i0] = (GLfloat***)malloc(ng0[1] * sizeof(GLfloat**));
-      vf[ib][i0] = (GLfloat***)malloc(ng0[1] * sizeof(GLfloat**));
+      eig0[ib][i0] = new GLfloat*[ng0[1]];
+      eig[ib][i0] = new GLfloat*[ng0[1]];
+      mat0[ib][i0] = new GLfloat**[ng0[1]];
+      mat[ib][i0] = new GLfloat**[ng0[1]];
+      vf[ib][i0] = new GLfloat**[ng0[1]];
       for (i1 = 0; i1 < ng0[1]; i1++) {
-        eig0[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
-        eig[ib][i0][i1] = (GLfloat*)malloc(ng0[2] * sizeof(GLfloat));
-        mat0[ib][i0][i1] = (GLfloat**)malloc(ng0[2] * sizeof(GLfloat*));
-        mat[ib][i0][i1] = (GLfloat**)malloc(ng0[2] * sizeof(GLfloat*));
-        vf[ib][i0][i1] = (GLfloat**)malloc(ng0[2] * sizeof(GLfloat*));
+        eig0[ib][i0][i1] = new GLfloat[ng0[2]];
+        eig[ib][i0][i1] = new GLfloat[ng0[2]];
+        mat0[ib][i0][i1] = new GLfloat*[ng0[2]];
+        mat[ib][i0][i1] = new GLfloat*[ng0[2]];
+        vf[ib][i0][i1] = new GLfloat*[ng0[2]];
         for (i2 = 0; i2 < ng0[2]; ++i2) {
-          mat0[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-          mat[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-          vf[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+          mat0[ib][i0][i1][i2] = new GLfloat[3];
+          mat[ib][i0][i1][i2] = new GLfloat[3];
+          vf[ib][i0][i1][i2] = new GLfloat[3];
         }
       }
     }
@@ -206,33 +188,29 @@ void read_file(
   /*
    Matrix elements
   */
-  for (ib = 0; ib < nb; ++ib) {
-    for (i0 = 0; i0 < ng0[0]; ++i0) {
-      if (lshift != 0) ii0 = i0;
-      else ii0 = modulo(i0 + (ng0[0] + 1) / 2, ng0[0]);
-      for (i1 = 0; i1 < ng0[1]; ++i1) {
-        if (lshift != 0) ii1 = i1;
-        else ii1 = modulo(i1 + (ng0[1] + 1) / 2, ng0[1]);
-        for (i2 = 0; i2 < ng0[2]; ++i2) {
-          if (lshift != 0) ii2 = i2;
-          else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
-          if (rct == 'r') {
-            ierr = fscanf(fp, "%e", &mat0[ib][ii0][ii1][ii2][0]);
-            mat0[ib][ii0][ii1][ii2][1] = 0.0;
-            mat0[ib][ii0][ii1][ii2][2] = 0.0;
-          }
-          else if (rct == 'c') {
-            ierr = fscanf(fp, "%e%e", &mat0[ib][ii0][ii1][ii2][0], &mat0[ib][ii0][ii1][ii2][1]);
-            mat0[ib][ii0][ii1][ii2][2] = 0.0;
-          }
-          else
-            ierr = fscanf(fp, "%e%e%e", 
-              &mat0[ib][ii0][ii1][ii2][0], &mat0[ib][ii0][ii1][ii2][1], &mat0[ib][ii0][ii1][ii2][2]);
-        }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
-      }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
-    }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
-  }/*for (ib = 0; ib < nb; ++ib)*/
+  for (iaxis = 0; iaxis < 3; iaxis++) {
+    for (ib = 0; ib < nb; ++ib) {
+      for (i0 = 0; i0 < ng0[0]; ++i0) {
+        if (lshift != 0) ii0 = i0;
+        else ii0 = modulo(i0 + (ng0[0] + 1) / 2, ng0[0]);
+        for (i1 = 0; i1 < ng0[1]; ++i1) {
+          if (lshift != 0) ii1 = i1;
+          else ii1 = modulo(i1 + (ng0[1] + 1) / 2, ng0[1]);
+          for (i2 = 0; i2 < ng0[2]; ++i2) {
+            if (lshift != 0) ii2 = i2;
+            else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
+            ierr = fscanf(fp, "%e", &mat0[ib][ii0][ii1][ii2][iaxis]);
+            if (ierr == EOF) {
+              fclose(fp);
+              return iaxis;
+            }
+          }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
+        }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
+      }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
+    }/*for (ib = 0; ib < nb; ++ib)*/
+  }
   fclose(fp);
+  return 3;
 } /* read_file */
 /*
   @brief Make all characters lower
@@ -261,7 +239,7 @@ int read_batch(
   if ((fp = fopen(batch_name, "r")) == NULL) {
     printf("file open error!!\n");
     printf("  Press any key to exit.\n");
-    getchar();
+    ierr = getchar();
     exit(EXIT_FAILURE);
   }
 

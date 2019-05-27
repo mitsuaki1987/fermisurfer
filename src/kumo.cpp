@@ -76,38 +76,38 @@ void interpol_energy() {
     for (i0 = 0; i0 < ng[0]; i0++) {
       for (i1 = 0; i1 < ng[1]; i1++) {
         for (i2 = 0; i2 < ng[2]; i2++) {
-          free(vf[ib][i0][i1][i2]);
-          free(mat[ib][i0][i1][i2]);
+          delete[] vf[ib][i0][i1][i2];
+          delete[] mat[ib][i0][i1][i2];
         }
-        free(eig[ib][i0][i1]);
-        free(mat[ib][i0][i1]);
-        free(vf[ib][i0][i1]);
+        delete[] eig[ib][i0][i1];
+        delete[] mat[ib][i0][i1];
+        delete[] vf[ib][i0][i1];
       }/*for (i1 = 0; i1 < ng[1]; i1++)*/
-      free(eig[ib][i0]);
-      free(mat[ib][i0]);
-      free(vf[ib][i0]);
+      delete[] eig[ib][i0];
+      delete[] mat[ib][i0];
+      delete[] vf[ib][i0];
     }/*for (i0 = 0; i0 < ng[0]; i0++)*/
-    free(eig[ib]);
-    free(mat[ib]);
-    free(vf[ib]);
+    delete[] eig[ib];
+    delete[] mat[ib];
+    delete[] vf[ib];
   }/*for (ib = 0; ib < nb; ib++)*/
   for (ii = 0; ii < 3; ii++)ng[ii] = ng0[ii] * interpol;
   /**/
   for (ib = 0; ib < nb; ib++) {
-    eig[ib] = (GLfloat***)malloc(ng[0] * sizeof(GLfloat**));
-    mat[ib] = (GLfloat****)malloc(ng[0] * sizeof(GLfloat***));
-    vf[ib] = (GLfloat****)malloc(ng[0] * sizeof(GLfloat***));
+    eig[ib] = new GLfloat**[ng[0]];
+    mat[ib] = new GLfloat***[ng[0]];
+    vf[ib] = new GLfloat***[ng[0]];
     for (i0 = 0; i0 < ng[0]; i0++) {
-      eig[ib][i0] = (GLfloat**)malloc(ng[1] * sizeof(GLfloat*));
-      mat[ib][i0] = (GLfloat***)malloc(ng[1] * sizeof(GLfloat**));
-      vf[ib][i0] = (GLfloat***)malloc(ng[1] * sizeof(GLfloat**));
+      eig[ib][i0] = new GLfloat*[ng[1]];
+      mat[ib][i0] = new GLfloat**[ng[1]];
+      vf[ib][i0] = new GLfloat**[ng[1]];
       for (i1 = 0; i1 < ng[1]; i1++) {
-        eig[ib][i0][i1] = (GLfloat*)malloc(ng[2] * sizeof(GLfloat));
-        mat[ib][i0][i1] = (GLfloat**)malloc(ng[2] * sizeof(GLfloat*));
-        vf[ib][i0][i1] = (GLfloat**)malloc(ng[2] * sizeof(GLfloat*));
+        eig[ib][i0][i1] = new GLfloat[ng[2]];
+        mat[ib][i0][i1] = new GLfloat*[ng[2]];
+        vf[ib][i0][i1] = new GLfloat*[ng[2]];
         for (i2 = 0; i2 < ng[2]; i2++) {
-          mat[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-          vf[ib][i0][i1][i2] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+          mat[ib][i0][i1][i2] = new GLfloat[3];
+          vf[ib][i0][i1][i2] = new GLfloat[3];
         }
       }/*for (i1 = 0; i1 < ng[1]; i1++)*/
     }/*for (i0 = 0; i0 < ng[0]; i0++)*/

@@ -216,19 +216,19 @@ static void menu_equator(
     for (ib = 0; ib < nb; ++ib) {
       for (ii = 0; ii < nequator[ib]; ++ii) {
         for (jj = 0; jj < 2; ++jj) {
-          free(kveq[ib][ii][jj]);
+          delete[] kveq[ib][ii][jj];
         }/*for (i1 = 0; i1 < 2; ++i1)*/
-        free(kveq[ib][ii]);
+        delete[] kveq[ib][ii];
       }/*for (i0 = 0; i0 < nequator[ib]; ++i0)*/
-      free(kveq[ib]);
-      free(kveq_rot[ib]);
-      free(nmleq[ib]);
-      free(clreq[ib]);
+      delete[] kveq[ib];
+      delete[] kveq_rot[ib];
+      delete[] nmleq[ib];
+      delete[] clreq[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
-    free(kveq);
-    free(kveq_rot);
-    free(nmleq);
-    free(clreq);
+    delete[] kveq;
+    delete[] kveq_rot;
+    delete[] nmleq;
+    delete[] clreq;
 
     query = 1; equator();
     query = 0; equator();
@@ -370,13 +370,13 @@ static void menu_section(
      Free variables for Fermi line
     */
     for (ib = 0; ib < nb; ++ib) {
-      free(kv2d[ib]);
-      free(clr2d[ib]);
-      free(nml2d[ib]);
+      delete[] kv2d[ib];
+      delete[] clr2d[ib];
+      delete[] nml2d[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
-    free(kv2d);
-    free(clr2d);
-    free(nml2d);
+    delete[] kv2d;
+    delete[] clr2d;
+    delete[] nml2d;
 
     calc_2dbz();
     query = 1; calc_section();

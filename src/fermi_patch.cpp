@@ -583,27 +583,27 @@ void fermi_patch()
     /*
      Allocation of triangler patches
     */
-    matp = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-    clr = (GLfloat**)malloc(nb * sizeof(GLfloat*));
-    kvp = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-    nmlp = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-    kvp_rot = (GLfloat**)malloc(nb * sizeof(GLfloat*));
-    nmlp_rot = (GLfloat**)malloc(nb * sizeof(GLfloat*));
+    matp = new GLfloat***[nb];
+    clr = new GLfloat*[nb];
+    kvp = new GLfloat***[nb];
+    nmlp = new GLfloat***[nb];
+    kvp_rot = new GLfloat*[nb];
+    nmlp_rot = new GLfloat*[nb];
     for (ib = 0; ib < nb; ++ib) {
-      matp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
-      clr[ib] = (GLfloat*)malloc(12 * ntri[ib] * sizeof(GLfloat));
-      kvp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
-      nmlp[ib] = (GLfloat***)malloc(ntri[ib] * sizeof(GLfloat**));
-      kvp_rot[ib] = (GLfloat*)malloc(9 * ntri[ib] * sizeof(GLfloat));
-      nmlp_rot[ib] = (GLfloat*)malloc(9 * ntri[ib] * sizeof(GLfloat));
+      matp[ib] = new GLfloat**[ntri[ib]];
+      clr[ib] = new GLfloat[12 * ntri[ib]];
+      kvp[ib] = new GLfloat**[ntri[ib]];
+      nmlp[ib] = new GLfloat**[ntri[ib]];
+      kvp_rot[ib] = new GLfloat[9 * ntri[ib]];
+      nmlp_rot[ib] = new GLfloat[9 * ntri[ib]];
       for (i0 = 0; i0 < ntri[ib]; ++i0) {
-        matp[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
-        kvp[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
-        nmlp[ib][i0] = (GLfloat**)malloc(3 * sizeof(GLfloat*));
+        matp[ib][i0] = new GLfloat*[3];
+        kvp[ib][i0] = new GLfloat*[3];
+        nmlp[ib][i0] = new GLfloat*[3];
         for (i1 = 0; i1 < 3; ++i1) {
-          matp[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-          kvp[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
-          nmlp[ib][i0][i1] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+          matp[ib][i0][i1] = new GLfloat[3];
+          kvp[ib][i0][i1] = new GLfloat[3];
+          nmlp[ib][i0][i1] = new GLfloat[3];
         }/*for (i1 = 0; i1 < 3; ++i1)*/
       }/*for (i0 = 0; i0 < ntri[ib]; ++i0)*/
     }/*for (ib = 0; ib < nb; ++ib)*/

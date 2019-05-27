@@ -33,5 +33,5 @@ THE SOFTWARE.
 #include <OpenGL/gl.h>
 #endif
 
-void read_file(char *fname/**<[in] fname  Input file name*/);
+int read_file(char *fname/**<[in] fname  Input file name*/);
 int read_batch(GLfloat minmax[3][2]);

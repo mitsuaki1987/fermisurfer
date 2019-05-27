@@ -123,19 +123,19 @@ void calc_nodeline() {
     /*
      Allocation of nodeline
     */
-    kvnl = (GLfloat****)malloc(nb * sizeof(GLfloat***));
-    kvnl_rot = (GLfloat**)malloc(nb * sizeof(GLfloat*));
-    nmlnl = (GLfloat**)malloc(nb * sizeof(GLfloat*));
-    clrnl = (GLfloat**)malloc(nb * sizeof(GLfloat*));
+    kvnl = new GLfloat***[nb];
+    kvnl_rot = new GLfloat*[nb];
+    nmlnl = new GLfloat*[nb];
+    clrnl = new GLfloat*[nb];
     for (ib = 0; ib < nb; ++ib) {
-      kvnl[ib] = (GLfloat***)malloc(nnl[ib] * sizeof(GLfloat**));
-      kvnl_rot[ib] = (GLfloat*)malloc(6 * nnl[ib] * sizeof(GLfloat));
-      nmlnl[ib] = (GLfloat*)malloc(6 * nnl[ib] * sizeof(GLfloat));
-      clrnl[ib] = (GLfloat*)malloc(8 * nnl[ib] * sizeof(GLfloat));
+      kvnl[ib] = new GLfloat**[nnl[ib]];
+      kvnl_rot[ib] = new GLfloat[6*nnl[ib]];
+      nmlnl[ib] = new GLfloat[6*nnl[ib]];
+      clrnl[ib] = new GLfloat[8 * nnl[ib]];
       for (itri = 0; itri < nnl[ib]; ++itri) {
-        kvnl[ib][itri] = (GLfloat**)malloc(2 * sizeof(GLfloat*));
+        kvnl[ib][itri] = new GLfloat * [2];
         for (i = 0; i < 2; ++i) {
-          kvnl[ib][itri][i] = (GLfloat*)malloc(3 * sizeof(GLfloat));
+          kvnl[ib][itri][i] = new GLfloat[3];
           for (j = 0; j < 2; ++j)nmlnl[ib][j + 3 * i + 6 * itri] = 0.0f;
           nmlnl[ib][2 + 3 * i + 6 * itri] = 1.0f;
           for (j = 0; j < 4; ++j)clrnl[ib][j + 4 * i + 8 * itri] = black[j];
