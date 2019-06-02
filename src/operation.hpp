@@ -21,19 +21,32 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#ifndef _OPERATOR_H_
+#define _OPERATOR_H_
 
-void resize(
-  int w /**<[in] Window width*/,
-  int h /**<[in] Window height*/);
-void mouse(
-  int button /**< [in] pushed button*/,
-  int state /**< [in] down or up or ?*/,
-  int x /**< [in] position of mouse cursor*/,
-  int y /**< [in] position of mouse cursor*/);
-void motion(
-  int x /**< [in] position of cursor*/,
-  int y /**< [in] position of cursor*/);
-void special_key(
-  int key /**< [in] typed special key*/,
-  int x /**< [in]*/,
-  int y /**< [in]*/);
+#include "wx/glcanvas.h"
+
+// The OpenGL-enabled canvas
+class TestGLCanvas : public wxGLCanvas
+{
+public:
+  TestGLCanvas(wxWindow* parent,
+    wxWindowID id = wxID_ANY,
+    int* gl_attrib = NULL);
+
+  virtual ~TestGLCanvas();
+
+  void OnPaint(wxPaintEvent& event);
+  void OnSize(wxSizeEvent& event);
+  void OnChar(wxKeyEvent& event);
+  void OnMouseEvent(wxMouseEvent& event);
+  void InitGL();
+
+private:
+  wxGLContext* m_glRC;
+
+  wxDECLARE_NO_COPY_CLASS(TestGLCanvas);
+  wxDECLARE_EVENT_TABLE();
+};
+
+#endif // _OPERATOR_H_

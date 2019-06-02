@@ -24,14 +24,12 @@ THE SOFTWARE.
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
-#if defined(WIN32)
-#include <Windows.h>
-#endif
 #if defined(HAVE_GL_GL_H)
 #include <GL/gl.h>
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
+#include <wx/wx.h>
 
-int read_file(char *fname/**<[in] fname  Input file name*/);
+int read_file();
 int read_batch(GLfloat minmax[3][2]);

@@ -34,18 +34,17 @@ THE SOFTWARE.
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
-#if defined(HAVE_GL_GLUT_H)
-#include <GL/glut.h>
-#elif defined(HAVE_GLUT_GLUT_H)
-#include <GLUT/glut.h>
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
 #endif
+#include <wx/wx.h>
 
 /**
  @brief Input from Fermi surface file
 */
-int read_file(
-  char *fname//!<[in] Input file name
-)
+int read_file()
 {
   int ib, i, j, i0, i1, i2, ii0, ii1, ii2, ierr, iaxis;
   FILE *fp;
@@ -55,8 +54,8 @@ int read_file(
   /*
    Open input file.
   */
-  printf("  Openning %s ...\n", fname);
-  if ((fp = fopen(fname, "r")) == NULL) {
+  printf("  Openning %s ...\n", frmsf_file_name.mb_str());
+  if ((fp = fopen(frmsf_file_name.mb_str(), "r")) == NULL) {
     printf("file open error!!\n");
     printf("  Press any key to exit.\n");
     ierr = getchar();
@@ -235,8 +234,8 @@ int read_batch(
   char *ctmp;
   int ierr, ib, iminmax;
 
-  printf("  Openning batch file %s ...\n", batch_name);
-  if ((fp = fopen(batch_name, "r")) == NULL) {
+  printf("  Openning batch file %s ...\n", batch_name.mb_str());
+  if ((fp = fopen(batch_name.mb_str(), "r")) == NULL) {
     printf("file open error!!\n");
     printf("  Press any key to exit.\n");
     ierr = getchar();

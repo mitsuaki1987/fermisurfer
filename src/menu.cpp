@@ -27,10 +27,10 @@ THE SOFTWARE.
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
-#if defined(HAVE_GL_GLUT_H)
-#include <GL/glut.h>
-#elif defined(HAVE_GLUT_GLUT_H)
-#include <GLUT/glut.h>
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
 #endif
 
 #include <stdlib.h>
@@ -45,10 +45,8 @@ THE SOFTWARE.
 #include "equator.hpp"
 #include "draw.hpp"
 #include "variable.hpp"
-
-int imenu_band, imenu_interpol, imenu_background, imenu_colorscale, imenu_bzmode, imenu_section,
-imenu_nodeline, imenu_colorbar, imenu_tetra, imenu_stereo, imenu_mouse, imenu_light,
-imenu_line, imenu_shift, imenu_view, imenu_equator, imenu;
+#include "menu.hpp"
+#include "operation.hpp"
 
 void compute_patch_segment() {
   query = 1; fermi_patch();
@@ -68,88 +66,213 @@ void refresh_patch_segment() {
   compute_patch_segment();
 }
 
-/**
- @brief handle main menu. 
-*/
-static void main_menu(
-  int value //!< [in] Selected menu
-) {
-}
+enum
+{
+  menu_bz_radio1,
+  menu_bz_radio2,
+  menu_background_radio1,
+  menu_background_radio2,
+  menu_lighting_radio1,
+  menu_lighting_radio2,
+  menu_lighting_radio3,
+  menu_mouse_radio1,
+  menu_mouse_radio2,
+  menu_mouse_radio3,
+  menu_stereo_radio1,
+  menu_stereo_radio2,
+  menu_stereo_radio3,
+  menu_tetra_radio1,
+  menu_tetra_radio2,
+  menu_tetra_radio3,
+  menu_tetra_radio4,
+  menu_tetra_radio5,
+  menu_tetra_radio6,
+  menu_tetra_radio7,
+  menu_tetra_radio8,
+  menu_tetra_radio9,
+  menu_tetra_radio10,
+  menu_tetra_radio11,
+  menu_tetra_radio12,
+  menu_tetra_radio13,
+  menu_tetra_radio14,
+  menu_tetra_radio15,
+  menu_tetra_radio16,
+  menu_view_radio1,
+  menu_view_radio2,
+  menu_view_radio3,
+  menu_nodeline_check,
+  menu_colorbar_check,
+  imenu_line,
+  imenu_shift,
+  colorscale_maxmin,
+  colorscale_radio1,
+  colorscale_radio2,
+  colorscale_radio3,
+  colorscale_radio4,
+  colorscale_radio5,
+  colorscale_radio6,
+  colorscale_radio7,
+  equator_check,
+  equator_modify,
+  menu_section_check,
+  menu_section_modify,
+  menu_section_gamma,
+  menu_view_scale,
+  menu_view_position,
+  menu_view_rotation,
+  menu_band_check1,
+  menu_band_check2,
+  menu_band_check3,
+  menu_band_check4,
+  menu_band_check5,
+  menu_band_check6,
+  menu_band_check7,
+  menu_band_check8,
+  menu_band_check9,
+  imenu_interpol
+};
+wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
+EVT_MENU(menu_bz_radio1, MyFrame::menu_brillouinzone)
+EVT_MENU(menu_bz_radio2, MyFrame::menu_brillouinzone)
+EVT_MENU(menu_background_radio1, MyFrame::menu_background)
+EVT_MENU(menu_background_radio2, MyFrame::menu_background)
+EVT_MENU(menu_lighting_radio1, MyFrame::menu_lighting)
+EVT_MENU(menu_lighting_radio2, MyFrame::menu_lighting)
+EVT_MENU(menu_lighting_radio3, MyFrame::menu_lighting)
+EVT_MENU(menu_mouse_radio1, MyFrame::menu_mouse)
+EVT_MENU(menu_mouse_radio2, MyFrame::menu_mouse)
+EVT_MENU(menu_mouse_radio3, MyFrame::menu_mouse)
+EVT_MENU(menu_stereo_radio1, MyFrame::menu_stereo)
+EVT_MENU(menu_stereo_radio2, MyFrame::menu_stereo)
+EVT_MENU(menu_stereo_radio3, MyFrame::menu_stereo)
+EVT_MENU(menu_tetra_radio1, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio2, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio3, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio4, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio5, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio6, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio7, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio8, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio9, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio10, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio11, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio12, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio13, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio14, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio15, MyFrame::menu_tetra)
+EVT_MENU(menu_tetra_radio16, MyFrame::menu_tetra)
+EVT_MENU(menu_view_radio1, MyFrame::menu_view)
+EVT_MENU(menu_view_radio2, MyFrame::menu_view)
+EVT_MENU(menu_view_radio3, MyFrame::menu_view)
+EVT_MENU(menu_colorbar_check, MyFrame::menu_colorbar)
+EVT_MENU(menu_nodeline_check, MyFrame::menu_nodeline)
+EVT_MENU(imenu_line, MyFrame::menu_line)
+EVT_MENU(imenu_shift, MyFrame::menu_shift)
+EVT_MENU(colorscale_maxmin, MyFrame::menu_colorscale)
+EVT_MENU(colorscale_radio1, MyFrame::menu_colorscale)
+EVT_MENU(colorscale_radio2, MyFrame::menu_colorscale)
+EVT_MENU(colorscale_radio3, MyFrame::menu_colorscale)
+EVT_MENU(colorscale_radio4, MyFrame::menu_colorscale)
+EVT_MENU(colorscale_radio5, MyFrame::menu_colorscale)
+EVT_MENU(colorscale_radio6, MyFrame::menu_colorscale)
+EVT_MENU(colorscale_radio7, MyFrame::menu_colorscale)
+EVT_MENU(equator_check, MyFrame::menu_equator)
+EVT_MENU(equator_modify, MyFrame::menu_equator)
+EVT_MENU(menu_section_check, MyFrame::menu_section)
+EVT_MENU(menu_section_modify, MyFrame::menu_section)
+EVT_MENU(menu_section_gamma, MyFrame::menu_section)
+EVT_MENU(menu_view_scale, MyFrame::menu_view)
+EVT_MENU(menu_view_position, MyFrame::menu_view)
+EVT_MENU(menu_view_rotation, MyFrame::menu_view)
+EVT_MENU(menu_band_check1, MyFrame::menu_band)
+EVT_MENU(menu_band_check1, MyFrame::menu_band)
+EVT_MENU(menu_band_check2, MyFrame::menu_band)
+EVT_MENU(menu_band_check3, MyFrame::menu_band)
+EVT_MENU(menu_band_check4, MyFrame::menu_band)
+EVT_MENU(menu_band_check5, MyFrame::menu_band)
+EVT_MENU(menu_band_check6, MyFrame::menu_band)
+EVT_MENU(menu_band_check7, MyFrame::menu_band)
+EVT_MENU(menu_band_check8, MyFrame::menu_band)
+EVT_MENU(menu_band_check9, MyFrame::menu_band)
+EVT_MENU(imenu_interpol, MyFrame::menu_interpol)
+wxEND_EVENT_TABLE()
+
 /**
 @brief Change background color (::blackback)
 */
-static void menu_background(
-  int value //!<[in] Selected menu
+void MyFrame::menu_background(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  if (value == 1 && blackback != 1) {
+  if (event.GetId() == menu_background_radio1 && blackback != 1) {
     glClearColor(0.0, 0.0, 0.0, 0.0);
     blackback = 1;
     if (color_scale == 2 || color_scale == 3) paint();
-    display();
+    Refresh(false);
   }
-  else if (value == 0 && blackback != 0) {
+  else if (event.GetId() == menu_background_radio2 && blackback != 0) {
     glClearColor(1.0, 1.0, 1.0, 0.0);
     blackback = 0;
     if (color_scale == 2 || color_scale == 3) paint();
-    display();
+    Refresh(false);
   }
 }/* bgcolor change*/
  /**
  @brief Toggle the appearance of each band (::draw_band)
 */
-static void menu_band(
-  int value //!< [in] Selected menu
+void MyFrame::menu_band(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  if (draw_band[value] == 0) {
-    draw_band[value] = 1;
+  int ib = event.GetId() - menu_band_check1;
+  if (draw_band[ib] == 0) {
+    draw_band[ib] = 1;
   }
   else {
-    draw_band[value] = 0;
+    draw_band[ib] = 0;
   }
-  display();
+  Refresh(false);
 } /* menu_band */
 /**
  @brief Change Brillouin zone (::fbz)
 */
-static void menu_brillouinzone(
-  int value //!<[in] Selected menu
+void MyFrame::menu_brillouinzone(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  if (value == 1 && fbz != 1) {
+  if (event.GetId() == menu_bz_radio1 && fbz != 1) {
     fbz = 1;
     refresh_patch_segment();
-    display();
+    Refresh(false);
   }
-  else if (value == 2 && fbz != -1) {
+  else if (event.GetId() == menu_bz_radio2 && fbz != -1) {
     fbz = -1;
     lsection = 0;
     refresh_patch_segment();
-    display();
+    Refresh(false);
   }
 } /* menu_brillouinzone */
 /**
  @brief Toggle Colorbar (::lcolorbar)
 */
-static void menu_colorbar(
-  int value //!<[in] Selected menu
+void MyFrame::menu_colorbar(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   if (lcolorbar != 1)  lcolorbar = 1;
   else lcolorbar = 0;
-  display();
+  Refresh(false);
 } /* menu_colorbar */
 /**
  @brief Change color scale mode (::color_scale)
 */
-static void menu_colorscale(
-  int value //!<[in] Selected menu
+void MyFrame::menu_colorscale(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   int ierr, ii;
 
-  if (value == 0) {
+  if (event.GetId() == colorscale_maxmin) {
     max_and_min();
     if (color_scale == 1 || color_scale == 4
       || color_scale == 6 || color_scale == 7) {
@@ -173,30 +296,30 @@ static void menu_colorscale(
       printf("  No color scale in this case.\n");
     }
     paint();
-    display();
+    Refresh(false);
   }
-  else if (value != color_scale) {
-    color_scale = value;
+  else if (event.GetId() - colorscale_radio1 + 1 != color_scale) {
+    color_scale = event.GetId() - colorscale_radio1 + 1;
     max_and_min();
     paint();
-    display();
+    Refresh(false);
   }
 } /* menu_colorscale */
 /**
  @brief Modify and toggle appearance of equator (::lequator)
 */
-static void menu_equator(
-  int value //!<[in] Selected menu
+void MyFrame::menu_equator(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   int ierr, ii, jj, ib;
   GLfloat vec[3];
 
-  if (value == 1) {
+  if (event.GetId() == equator_check) {
     if (lequator != 1) lequator = 1;
     else lequator = 0;
-    display();
-  }/*if (value == 1)*/
+    Refresh(false);
+  }/*if (event.GetId() == 1)*/
   else {
 
     printf("    New Miller index : ");
@@ -232,8 +355,8 @@ static void menu_equator(
 
     query = 1; equator();
     query = 0; equator();
-    display();
-  }/*else if (value > 1)*/
+    Refresh(false);
+  }/*else if (event.GetId() > 1)*/
 } /*void menu_equator*/
 /**
  @brief Modify interpolation ratio
@@ -241,13 +364,13 @@ static void menu_equator(
  This routine modify interpolation ratio (::interpol) 
  then compute Fermi surfaces, etc.
 */
-static void menu_interpol(
-  int value //!< [in] Selected menu
+void MyFrame::menu_interpol(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   int ierr;
 
-  if (value == 1) {
+  if (event.GetId() == imenu_interpol) {
     printf("    Old interpolation ratio : %d\n", interpol);
     printf("    New interpolation ratio : ");
     //
@@ -257,40 +380,40 @@ static void menu_interpol(
     interpol_energy();
     refresh_patch_segment();
     /**/
-    display();
+    Refresh(false);
   }
 }/*static void menu_interpol*/
 /**
  @brief Toggle Lighting (::lside)
 */
-static void menu_lighting(
-  int value //!<[in] Selected menu
+void MyFrame::menu_lighting(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  if (value == 1 && lside != 1) {
+  if (event.GetId() == menu_lighting_radio1 && lside != 1) {
     lside = 1;
     side = 1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-    display();
+    Refresh(false);
   }
-  if (value == 2 && lside != 2) {
+  if (event.GetId() == menu_lighting_radio2 && lside != 2) {
     lside = 2;
     side = 1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-    display();
+    Refresh(false);
   }
-  if (value == 3 && lside != 3) {
+  if (event.GetId() == menu_lighting_radio3 && lside != 3) {
     lside = 3;
     side = -1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-    display();
+    Refresh(false);
   }
 } /* menu_lighting */
 /**
  @brief Line width (::lside)
 */
-static void menu_line(
-  int value //!<[in] Selected menu
+void MyFrame::menu_line(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   int ierr;
@@ -298,61 +421,61 @@ static void menu_line(
   printf("        New line width : ");
   ierr = scanf("%f", &linewidth);
 
-  display();
+  Refresh(false);
 } /* menu_line */
 /**
  @brief Change the function associated to the mouse movement(::lmouse)
 */
-static void menu_mouse(
-  int value //!< [in] Selected menu
-) 
+void MyFrame::menu_mouse(
+  wxCommandEvent& event //!<[in] Selected menu
+)
 {
-  if (value == 1 && lmouse != 1) {
+  if (event.GetId() == menu_mouse_radio1 && lmouse != 1) {
     lmouse = 1;
-    display();
+    Refresh(false);
   }
-  if (value == 2 && lmouse != 2) {
+  if (event.GetId() == menu_mouse_radio2 && lmouse != 2) {
     lmouse = 2;
-    display();
+    Refresh(false);
   }
-  if (value == 3 && lmouse != 3) {
+  if (event.GetId() == menu_mouse_radio3 && lmouse != 3) {
     lmouse = 3;
-    display();
+    Refresh(false);
   }
 } /* menu_mouse */
 /**
  @brief Toggle apearance of nodale-line
 */
-static void menu_nodeline(
-  int value //!<[in] Selected menu
+void MyFrame::menu_nodeline(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   if (nodeline != 1) nodeline = 1;
   else nodeline = 0;
-  display();
+  Refresh(false);
 }/*menu_nodeline*/
 /**
  @brief Modify and toggle appearance of 2D Fermi lines (::lsection)
 */
-static void menu_section(
-  int value //!<[in] Selected menu
+void MyFrame::menu_section(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   int ierr, ii, jj, ib;
   GLfloat vec[3];
 
-  if (value == 1) {
+  if (event.GetId() == menu_section_check) {
     if (lsection != 1) {
       lsection = 1;
-      display();
+      Refresh(false);
     }
     else {
       lsection = 0;
-      display();
+      Refresh(false);
     }
-  }/*if (value == 1)*/
-  else if (value > 1) {
-    if (value == 2) secscale = 1.0;
+  }/*if (event.GetId() == 1)*/
+  else {
+    if (event.GetId() == menu_section_modify) secscale = 1.0;
     else secscale = 0.0;
 
     printf("    New Miller index : ");
@@ -381,14 +504,14 @@ static void menu_section(
     calc_2dbz();
     query = 1; calc_section();
     query = 0; calc_section();
-    display();
-  }/*else if (value > 1)*/
+    Refresh(false);
+  }/*else if (event.GetId() > 1)*/
 } /*void menu_section*/
 /**
  @brief Shift Fermi energy
 */
-static void menu_shift(
-  int value //!<[in] Selected menu
+void MyFrame::menu_shift(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   int ib, i0, i1, i2, ierr;
@@ -415,40 +538,40 @@ static void menu_shift(
   /**/
   refresh_patch_segment();
   /**/
-  display();
+  Refresh(false);
 } /* menu_shift */
 /**
  @brief Tern stereogram (::lstereo)
 */
-static void menu_stereo(
-  int value //!<[in] Selected menu
+void MyFrame::menu_stereo(
+  wxCommandEvent& event //!<[in] Selected menu
 ) {
-  if (value == 1 && lstereo != 1) {
+  if (event.GetId() == menu_stereo_radio1 && lstereo != 1) {
     lstereo = 1;
-    display();
+    Refresh(false);
   }
-  if (value == 2 && lstereo != 2) {
+  if (event.GetId() == menu_stereo_radio2 && lstereo != 2) {
     lstereo = 2;
-    display();
+    Refresh(false);
   }
-  if (value == 3 && lstereo != 3) {
+  if (event.GetId() == menu_stereo_radio3 && lstereo != 3) {
     lstereo = 3;
-    display();
+    Refresh(false);
   }
 } /* menu_stereo */
 /**
  @brief Change tetrahedron (::itet)
 */
-static void menu_tetra(
-  int value //!<[in] Selected menu
+void MyFrame::menu_tetra(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  if (value != itet) {
-    printf("    Tetra patern %d \n", value + 1);
-    itet = value;
+  if (event.GetId() - menu_tetra_radio1 != itet) {
+    printf("    Tetra patern %d \n", event.GetId()- menu_tetra_radio1 + 1);
+    itet = event.GetId() - menu_tetra_radio1;
     init_corner();
     refresh_patch_segment();
-    display();
+    Refresh(false);
   }
 }/*menu_tetra*/
  /**
@@ -457,27 +580,27 @@ static void menu_tetra(
  This modify scale (::scl) & tarnslation (::trans) &
  rotation (::thetax, ::thetay, ::thetaz, ::rot),
  */
-static void menu_view(
-  int value //!< [in] Selected menu
+void MyFrame::menu_view(
+  wxCommandEvent& event //!<[in] Selected menu
 )
 {
   int ierr;
 
-  if (value == 1) {
+  if (event.GetId() == menu_view_scale) {
 
     printf("    Current Scale : %f\n", scl);
     printf("        New Scale : ");
     ierr = scanf("%f", &scl);
 
   }
-  else  if (value == 2) {
+  else  if (event.GetId() == menu_view_position) {
 
     printf("    Current Position(x y) : %f %f\n", trans[0], trans[1]);
     printf("        New Position(x y) : ");
     ierr = scanf("%f %f", &trans[0], &trans[1]);
 
   }
-  else  if (value == 3) {
+  else  if (event.GetId() == menu_view_rotation) {
 
     /**/
     thetay = asinf(rot[0][2]);
@@ -514,346 +637,136 @@ static void menu_view(
 
   }
 
-  display();
-
+  Refresh(false);
 }
-/**
- @brief Modify text in the right-click munu
-*/
-void FS_ModifyMenu(
-  int status//!<[in]
-)
+
+MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
+  const wxSize& size, long style)
+  : wxFrame(frame, wxID_ANY, title, pos, size, style),
+  m_canvas(NULL)
 {
-  int ib;
-  char menu_str[50] = { 0 };
-  if (status == GLUT_MENU_IN_USE) {
-    display();
-  }
-  else {
-    /*
-    Background color
-    */
-    glutSetMenu(imenu_background);
-    for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
-    if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
-    else glutAddMenuEntry("[ ] Black", 1);
-    if (blackback == 0) glutAddMenuEntry("[x] White", 0);
-    else glutAddMenuEntry("[ ] White", 0);
-    /*
-    Band menu
-    */
-    glutSetMenu(imenu_band);
-    for (ib = 0; ib < nb; ib++) glutRemoveMenuItem(1);
-    for (ib = 0; ib < nb; ib++) {
-      if (draw_band[ib] == 1) sprintf(menu_str, "[x] band # %d", ib + 1);
-      else sprintf(menu_str, "[ ] band # %d", ib + 1);
-      glutAddMenuEntry(menu_str, ib);
-    }
-    /*
-    Brillouin zone
-    */
-    glutSetMenu(imenu_bzmode);
-    for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
-    if (fbz == 1) glutAddMenuEntry("[x] First Brillouin zone", 1);
-    else glutAddMenuEntry("[ ] First Brillouin zone", 1);
-    if (fbz == -1) glutAddMenuEntry("[x] Primitive Brillouin zone", 2);
-    else glutAddMenuEntry("[ ] Primitive Brillouin zone", 2);
-    /*
-    Colorbar on/off
-    */
-    glutSetMenu(imenu_colorbar);
-    for (ib = 0; ib < 1; ib++) glutRemoveMenuItem(1);
-    if (lcolorbar == 1) glutAddMenuEntry("[x] Color bar", 0);
-    else glutAddMenuEntry("[ ] Color bar", 0);
-    /*
-    Color scale mode
-    */
-    glutSetMenu(imenu_colorscale);
-    for (ib = 0; ib < 8; ib++) glutRemoveMenuItem(1);
-    glutAddMenuEntry("Max/Min of Scale", 0);
-    if (color_scale == 1) glutAddMenuEntry("[x] Input (Real)", 1);
-    else glutAddMenuEntry("[ ] Input (Real)", 1);
-    if (color_scale == 2) glutAddMenuEntry("[x] Input (Complex)", 2);
-    else glutAddMenuEntry("[ ] Input (Complex)", 2);
-    if (color_scale == 3) glutAddMenuEntry("[x] Input (Tri-number)", 3);
-    else glutAddMenuEntry("[ ] Input (Tri-number)", 3);
-    if (color_scale == 4) glutAddMenuEntry("[x] Fermi Velocity", 4);
-    else glutAddMenuEntry("[ ] Fermi Velocity", 4);
-    if (color_scale == 5) glutAddMenuEntry("[x] Band Index", 5);
-    else glutAddMenuEntry("[ ] Band Index", 5);
-    if (color_scale == 6) glutAddMenuEntry("[x] Input (Real, Gray Scale)", 6);
-    else glutAddMenuEntry("[ ] Input (Real, Gray Scale)", 6);
-    if (color_scale == 7) glutAddMenuEntry("[x] Fermi Velocity (Gray Scale)", 7);
-    else glutAddMenuEntry("[ ] Fermi Velocity (Gray Scale)", 7);
-    /*
-    Equator
-    */
-    glutSetMenu(imenu_equator);
-    for (ib = 0; ib < 2; ib++) glutRemoveMenuItem(1);
-    if (lequator == 1) glutAddMenuEntry("[x] Equator", 1);
-    else glutAddMenuEntry("[ ] Equator", 1);
-    glutAddMenuEntry("Modify euqtor", 2);
-    /*
-    Interpolation ratio
-    */
-    glutSetMenu(imenu_interpol);
-    glutRemoveMenuItem(1);
-    sprintf(menu_str, "Ratio : %d", interpol);
-    glutAddMenuEntry(menu_str, 1);
-    /*
-    Switch lighting
-    */
-    glutSetMenu(imenu_light);
-    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
-    if (lside == 1) glutAddMenuEntry("[x] Both side", 1);
-    else glutAddMenuEntry("[ ] Both side", 1);
-    if (lside == 2) glutAddMenuEntry("[x] Unoccupied side", 2);
-    else glutAddMenuEntry("[ ] Unoccupied side", 2);
-    if (lside == 3) glutAddMenuEntry("[x] Occupied side", 3);
-    else glutAddMenuEntry("[ ] Occupied side", 3);
-    /*
-    Line width
-    */
-    glutSetMenu(imenu_line);
-    for (ib = 0; ib < 1; ib++) glutRemoveMenuItem(1);
-    sprintf(menu_str, "Line width : %3.1f", linewidth);
-    glutAddMenuEntry(menu_str, 1);
-    /*
-     Operation with mouse drag
-    */
-    glutSetMenu(imenu_mouse);
-    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
-    if (lmouse == 1) glutAddMenuEntry("[x] Rotate", 1);
-    else glutAddMenuEntry("[ ] Rotate", 1);
-    if (lmouse == 2) glutAddMenuEntry("[x] Scale", 2);
-    else glutAddMenuEntry("[ ] Scale", 2);
-    if (lmouse == 3) glutAddMenuEntry("[x] Translate", 3);
-    else glutAddMenuEntry("[ ] Translate", 3);
-    /*
-     Nodal line on/off
-    */
-    glutSetMenu(imenu_nodeline);
-    for (ib = 0; ib < 1; ib++) glutRemoveMenuItem(1);
-    if (nodeline == 1) glutAddMenuEntry("[x] Nodal line", 0);
-    else glutAddMenuEntry("[ ] Nodal line", 0);
-    /*
-     2D Fermi lines
-    */
-    glutSetMenu(imenu_section);
-    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
-    if (fbz == -1) glutAddMenuEntry("[Cannot] Section", 0);
-    else if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
-    else glutAddMenuEntry("[ ] Section", 1);
-    glutAddMenuEntry("Modify section", 2);
-    glutAddMenuEntry("Modify section (across Gamma)", 3);
-    /*
-    Shift Fermi energy
-    */
-    glutSetMenu(imenu_shift);
-    for (ib = 0; ib < 1; ib++) glutRemoveMenuItem(1);
-    sprintf(menu_str, "Fermi energy :%9.5f", EF);
-    glutAddMenuEntry(menu_str, 1);
-    /*
-    Stereogram
-    */
-    glutSetMenu(imenu_stereo);
-    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
-    if (lstereo == 1) glutAddMenuEntry("[x] None", 1);
-    else glutAddMenuEntry("[ ] None", 1);
-    if (lstereo == 2) glutAddMenuEntry("[x] Parallel", 2);
-    else glutAddMenuEntry("[ ] Parallel", 2);
-    if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
-    else glutAddMenuEntry("[ ] Cross", 3);
-    /*
-     Tetrahedron
-    */
-    glutSetMenu(imenu_tetra);
-    for (ib = 0; ib < 16; ib++) glutRemoveMenuItem(1);
-    for (ib = 0; ib < 16; ib++) {
-      if (itet == ib) sprintf(menu_str, "[x] tetra # %d", ib + 1);
-      else sprintf(menu_str, "[ ] tetra # %d", ib + 1);
-      glutAddMenuEntry(menu_str, ib);
-    }
-    /*
-    Set view
-    */
-    glutSetMenu(imenu_view);
-    for (ib = 0; ib < 3; ib++) glutRemoveMenuItem(1);
-    sprintf(menu_str, "Scale");// :%6.2f", scl);
-    glutAddMenuEntry(menu_str, 1);
-    sprintf(menu_str, "Position");// :%6.2f %6.2f", trans[0], trans[1]);
-    glutAddMenuEntry(menu_str, 2);
-    sprintf(menu_str, "Rotation");// : %4.0f %4.0f %4.0f", thetax, thetay, thetaz);
-    glutAddMenuEntry(menu_str, 3);
-    
-    display();
-  }
-}/*void FS_ModifyMenu*/
-/**
- @brief Create Right-click Menu
-*/
-void FS_CreateMenu()
-{
-  int ib;
-  char menu_str[50] = { 0 };
-  /*
-  Background color
-  */
-  imenu_background = glutCreateMenu(menu_background);
-  if (blackback == 1) glutAddMenuEntry("[x] Black", 1);
-  else glutAddMenuEntry("[ ] Black", 1);
-  if (blackback == 0) glutAddMenuEntry("[x] White", 0);
-  else glutAddMenuEntry("[ ] White", 0);
-  /*
-  On/Off  each band
-  */
-  imenu_band = glutCreateMenu(menu_band);
+  int ib, itet;
+  char menuname[8];
+
+  // debug SetIcon(wxICON(sample));
+
+  wxMenu* imenu_bzmode = new wxMenu;
+  imenu_bzmode->AppendRadioItem(menu_bz_radio1, wxT("First Brillouin zone"));
+  imenu_bzmode->AppendRadioItem(menu_bz_radio2, wxT("Primitive Brillouin zone"));
+
+  wxMenu* imenu_background = new wxMenu;
+  imenu_background->AppendRadioItem(menu_background_radio1, wxT("Black"));
+  imenu_background->AppendRadioItem(menu_background_radio2, wxT("White"));
+
+  wxMenu* imenu_band = new wxMenu;
   for (ib = 0; ib < nb; ib++) {
-    if (draw_band[ib] == 1) sprintf(menu_str, "[x] band # %d", ib + 1);
-    else sprintf(menu_str, "[ ] band # %d", ib + 1);
-    glutAddMenuEntry(menu_str, ib);
+    imenu_band->AppendCheckItem(menu_band_check1 + ib, wxString::Format(wxT("Band %d"), ib));
   }
-  /*
-  Brillouin zone
-  */
-  imenu_bzmode = glutCreateMenu(menu_brillouinzone);
-  if (fbz == 1) glutAddMenuEntry("[x] First Brillouin zone", 1);
-  else glutAddMenuEntry("[ ] First Brillouin zone", 1);
-  if (fbz == -1) glutAddMenuEntry("[x] Primitive Brillouin zone", 2);
-  else glutAddMenuEntry("[ ] Primitive Brillouin zone", 2);
-  /*
-  Colorbar on/off
-  */
-  imenu_colorbar = glutCreateMenu(menu_colorbar);
-  if (lcolorbar == 1) glutAddMenuEntry("[x] Color bar", 1);
-  else glutAddMenuEntry("[ ] Color bar", 1);
-  /*
-  Color scale mode
-  */
-  imenu_colorscale = glutCreateMenu(menu_colorscale);
-  glutAddMenuEntry("Max/Min of Scale", 0);
-  if (color_scale == 1) glutAddMenuEntry("[x] Input (Real)", 1);
-  else glutAddMenuEntry("[ ] Input (Real)", 1);
-  if (color_scale == 2) glutAddMenuEntry("[x] Input (Complex)", 2);
-  else glutAddMenuEntry("[ ] Input (Complex)", 2);
-  if (color_scale == 3) glutAddMenuEntry("[x] Input (Tri-number)", 3);
-  else glutAddMenuEntry("[ ] Input (Tri-number)", 3);
-  if (color_scale == 4) glutAddMenuEntry("[x] Fermi Velocity", 4);
-  else glutAddMenuEntry("[ ] Fermi Velocity", 4);
-  if (color_scale == 5) glutAddMenuEntry("[x] Band Index", 5);
-  else glutAddMenuEntry("[ ] Band Index", 5);
-  if (color_scale == 6) glutAddMenuEntry("[x] Input (Real, Gray Scale)", 6);
-  else glutAddMenuEntry("[ ] Input (Real, Gray Scale)", 6);
-  if (color_scale == 7) glutAddMenuEntry("[x] Fermi Velocity (Gray Scale)", 7);
-  else glutAddMenuEntry("[ ] Fermi Velocity (Gray Scale)", 7);
-  /*
-  Equator
-  */
-  imenu_equator = glutCreateMenu(menu_equator);
-  if (lequator == 1) glutAddMenuEntry("[x] Equator", 1);
-  else glutAddMenuEntry("[ ] Equator", 1);
-  glutAddMenuEntry("Modify euqtor", 2);
-  /*
-  Interpolation ratio
-  */
-  sprintf(menu_str, "Ratio : %d", interpol);
-  imenu_interpol = glutCreateMenu(menu_interpol);
-  glutAddMenuEntry(menu_str, 1);
-  /*
-  Switch lighting
-  */
-  imenu_light = glutCreateMenu(menu_lighting);
-  if (lside == 1) glutAddMenuEntry("[x] Both side", 1);
-  else glutAddMenuEntry("[ ] Both side", 1);
-  if (lside == 2) glutAddMenuEntry("[x] Unoccupied side", 2);
-  else glutAddMenuEntry("[ ] Unoccupied side", 2);
-  if (lside == 3) glutAddMenuEntry("[x] Occupied side", 3);
-  else glutAddMenuEntry("[ ] Occupied side", 3);
-  /*
-  Line width
-  */
-  imenu_line = glutCreateMenu(menu_line);
-  sprintf(menu_str, "Line width : %3.1f", linewidth);
-  glutAddMenuEntry(menu_str, 1);
-  /*
-   Mouse drag works as ...
-  */
-  imenu_mouse = glutCreateMenu(menu_mouse);
-  if (lmouse == 1) glutAddMenuEntry("[x] Rotate", 1);
-  else glutAddMenuEntry("[ ] Rotate", 1);
-  if (lmouse == 2) glutAddMenuEntry("[x] Scale", 2);
-  else glutAddMenuEntry("[ ] Scale", 2);
-  if (lmouse == 3) glutAddMenuEntry("[x] Translate", 3);
-  else glutAddMenuEntry("[ ] Translate", 3);
-  /*
-  Nodeline on/off
-  */
-  imenu_nodeline = glutCreateMenu(menu_nodeline);
-  if (nodeline == 1) glutAddMenuEntry("[x] Nodal line", 0);
-  else glutAddMenuEntry("[ ] Nodal line", 0);
-  /*
-  2D Fermi lines
-  */
-  imenu_section = glutCreateMenu(menu_section);
-  if (fbz == -1) glutAddMenuEntry("[Cannot] Section", 0);
-  else if (lsection == 1) glutAddMenuEntry("[x] Section", 1);
-  else glutAddMenuEntry("[ ] Section", 1);
-  glutAddMenuEntry("Modify section", 2);
-  glutAddMenuEntry("Modify section (across Gamma)", 3);
-  /*
-  Shift Fermi energy
-  */
-  imenu_shift = glutCreateMenu(menu_shift);
-  sprintf(menu_str, "Fermi energy :%9.5f", EF);
-  glutAddMenuEntry(menu_str, 1);
-  /*
-   Stereogram
-  */
-  imenu_stereo = glutCreateMenu(menu_stereo);
-  if (lstereo == 1) glutAddMenuEntry("[x] None", 1);
-  else glutAddMenuEntry("[ ] None", 1);
-  if (lstereo == 2) glutAddMenuEntry("[x] Parallel", 2);
-  else glutAddMenuEntry("[ ] Parallel", 2);
-  if (lstereo == 3) glutAddMenuEntry("[x] Cross", 3);
-  else glutAddMenuEntry("[ ] Cross", 3);
-  /*
-   Tetrahedron 
-  */
-  imenu_tetra = glutCreateMenu(menu_tetra);
-  for (ib = 0; ib < 16; ib++) {
-    if (itet == ib) sprintf(menu_str, "[x] tetra # %d", ib + 1);
-    else sprintf(menu_str, "[ ] tetra # %d", ib + 1);
-    glutAddMenuEntry(menu_str, ib);
+
+  wxMenu* imenu_colorscale = new wxMenu;
+  imenu_colorscale->Append(colorscale_maxmin, wxT("Max/Min of Scale"));
+  imenu_colorscale->AppendRadioItem(colorscale_radio1, wxT("Input (Real)"));
+  imenu_colorscale->AppendRadioItem(colorscale_radio2, wxT("Input (Complex)"));
+  imenu_colorscale->AppendRadioItem(colorscale_radio3, wxT("Input (Tri-number)"));
+  imenu_colorscale->AppendRadioItem(colorscale_radio4, wxT("Fermi Velocity"));
+  imenu_colorscale->AppendRadioItem(colorscale_radio5, wxT("Band Index"));
+  imenu_colorscale->AppendRadioItem(colorscale_radio6, wxT("Input (Real, Gray Scale)"));
+  imenu_colorscale->AppendRadioItem(colorscale_radio7, wxT("Fermi Velocity (Gray Scale)"));
+
+  wxMenu* imenu_equator = new wxMenu;
+  imenu_equator->AppendCheckItem(equator_check, wxT("Equator"));
+  imenu_equator->Append(equator_modify, wxT("Modify euqtor"));
+
+  wxMenu* imenu_light = new wxMenu;
+  imenu_light->AppendRadioItem(menu_lighting_radio1, wxT("Both side"));
+  imenu_light->AppendRadioItem(menu_lighting_radio2, wxT("Unoccupied side"));
+  imenu_light->AppendRadioItem(menu_lighting_radio3, wxT("Occupied side"));
+
+  wxMenu* imenu_mouse = new wxMenu;
+  imenu_mouse->AppendRadioItem(menu_mouse_radio1, wxT("Rotate"));
+  imenu_mouse->AppendRadioItem(menu_mouse_radio2, wxT("Scale"));
+  imenu_mouse->AppendRadioItem(menu_mouse_radio3, wxT("Translate"));
+
+  wxMenu* imenu_section = new wxMenu;
+  imenu_section->AppendCheckItem(menu_section_check, wxT("Section"));
+  imenu_section->Append(menu_section_modify, wxT("Modify section"));
+  imenu_section->Append(menu_section_gamma, wxT("Modify section (across Gamma)"));
+
+  wxMenu* imenu_stereo = new wxMenu;
+  imenu_stereo->AppendRadioItem(menu_stereo_radio1, wxT("None"));
+  imenu_stereo->AppendRadioItem(menu_stereo_radio2, wxT("Parallel"));
+  imenu_stereo->AppendRadioItem(menu_stereo_radio3, wxT("Cross"));
+
+  wxMenu* imenu_tetra = new wxMenu;
+  for (itet = 0; itet < 16; itet++) {
+    imenu_tetra->AppendRadioItem(menu_tetra_radio1 + itet,
+      wxString::Format(wxT("tetra # %d"), itet));
   }
-  /*
-  Set view
-  */
-  imenu_view = glutCreateMenu(menu_view);
-  sprintf(menu_str, "Scale");// :%6.2f", scl);
-  glutAddMenuEntry(menu_str, 1);
-  sprintf(menu_str, "Position");// :%6.2f %6.2f", trans[0], trans[1]);
-  glutAddMenuEntry(menu_str, 2);
-  sprintf(menu_str, "Rotation");// : %4.0f %4.0f %4.0f", thetax, thetay, thetaz);
-  glutAddMenuEntry(menu_str, 3);
-  /*
-   Main menu
-  */
-  imenu = glutCreateMenu(main_menu);
-  glutAddSubMenu("Background color", imenu_background);
-  glutAddSubMenu("Band", imenu_band);
-  glutAddSubMenu("Brillouin zone", imenu_bzmode);
-  glutAddSubMenu("Color bar", imenu_colorbar);
-  glutAddSubMenu("Color scale mode", imenu_colorscale);
-  glutAddSubMenu("Equator", imenu_equator);
-  glutAddSubMenu("Interpolation", imenu_interpol);
-  glutAddSubMenu("Lighting", imenu_light);
-  glutAddSubMenu("Line width", imenu_line);
-  glutAddSubMenu("Mouse Drag", imenu_mouse);
-  glutAddSubMenu("Nodal line", imenu_nodeline);
-  glutAddSubMenu("Section", imenu_section);
-  glutAddSubMenu("Shift Fermi energy", imenu_shift);
-  glutAddSubMenu("Stereogram", imenu_stereo);
-  glutAddSubMenu("Tetrahedron", imenu_tetra);
-  glutAddSubMenu("View point", imenu_view);
-  glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+  wxMenu* imenu_view = new wxMenu;
+  imenu_view->Append(menu_view_scale, wxT("Scale"));
+  imenu_view->Append(menu_view_position, wxT("Position"));
+  imenu_view->Append(menu_view_rotation, wxT("Rotation"));
+
+  // Make a menubar
+  wxMenu* fileMenu = new wxMenu;
+
+  fileMenu->AppendSubMenu(imenu_background, wxT("Background color"));
+  fileMenu->AppendSubMenu(imenu_band, wxT("Band"));
+  fileMenu->AppendSubMenu(imenu_bzmode, wxT("Brillouin zone"));
+  fileMenu->AppendCheckItem(menu_colorbar_check, wxT("Color bar"));
+  fileMenu->AppendSubMenu(imenu_colorscale, wxT("Color scale mode"));
+  fileMenu->AppendSubMenu(imenu_equator, wxT("Equator"));
+  fileMenu->Append(imenu_interpol, wxT("Interpol ratio"));
+  fileMenu->AppendSubMenu(imenu_light, wxT("Lighting"));
+  fileMenu->Append(imenu_line, wxT("Line width"));
+  fileMenu->AppendSubMenu(imenu_mouse, wxT("Mouse Drag"));
+  fileMenu->AppendCheckItem(menu_nodeline_check, wxT("Nodal line"));
+  fileMenu->AppendSubMenu(imenu_section, wxT("Section"));
+  fileMenu->Append(imenu_shift, wxT("Shift Fermi energy"));
+  fileMenu->AppendSubMenu(imenu_stereo, wxT("Stereogram"));
+  fileMenu->AppendSubMenu(imenu_tetra, wxT("Tetrahedron"));
+  fileMenu->AppendSubMenu(imenu_view, wxT("View point"));
+
+  wxMenuBar* menuBar = new wxMenuBar;
+  menuBar->Append(fileMenu, wxT("File"));
+  SetMenuBar(menuBar);
+
+  // Make a TestGLCanvas
+
+  // JACS
+#ifdef __WXMSW__
+  int* gl_attrib = NULL;
+#else
+  int gl_attrib[20] =
+  { WX_GL_RGBA, WX_GL_MIN_RED, 1, WX_GL_MIN_GREEN, 1,
+  WX_GL_MIN_BLUE, 1, WX_GL_DEPTH_SIZE, 1,
+  WX_GL_DOUBLEBUFFER,
+#  if defined(__WXMAC__) || defined(__WXCOCOA__)
+        GL_NONE };
+#  else
+    None
+};
+#  endif
+#endif
+
+  m_canvas = new TestGLCanvas(this, wxID_ANY, gl_attrib);
+
+  // Show the frame
+  Show(true);
+  Raise();
+
+  m_canvas->InitGL();
+}
+
+MyFrame::~MyFrame()
+{
+  delete m_canvas;
+}
+
+// Intercept menu commands
+void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
+{
+  // true is to force the frame to close
+  Close(true);
 }

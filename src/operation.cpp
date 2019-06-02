@@ -24,215 +24,218 @@ THE SOFTWARE.
 /**@file
 @brief Handle operations associated to mouse drag and window resize
 */
+#include "wx/glcanvas.h"
+
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
-#if defined(HAVE_GL_GLUT_H)
-#include <GL/glut.h>
-#elif defined(HAVE_GLUT_GLUT_H)
-#include <GLUT/glut.h>
+#if defined(HAVE_GL_GLU_H)
+#include <GL/glu.h>
+#elif defined(HAVE_OPENGL_GLU_H)
+#include <OpenGL/glu.h>
 #endif
 
 #include <math.h>
 #include "draw.hpp"
 #include "variable.hpp"
+#include "operation.hpp"
+
+wxBEGIN_EVENT_TABLE(TestGLCanvas, wxGLCanvas)
+EVT_SIZE(TestGLCanvas::OnSize)
+EVT_PAINT(TestGLCanvas::OnPaint)
+EVT_CHAR(TestGLCanvas::OnChar)
+EVT_MOUSE_EVENTS(TestGLCanvas::OnMouseEvent)
+wxEND_EVENT_TABLE()
+
 /**
  @brief Window resize
 
  Modify : ::sx, ::sy
 */
-void resize(
-  int w, //!<[in] Window width
-  int h //!<[in] Window height
-)
+void TestGLCanvas::OnSize(wxSizeEvent& event)
 {
+  if (!IsShownOnScreen())
+    return;
+  // This is normally only necessary if there is more than one wxGLCanvas
+  // or more than one wxGLContext in the application.
+  SetCurrent(*m_glRC);
+
   /*
    Scale of translation of mousepointer
   */
-  sx = 1.0f / (GLfloat)w;
-  sy = 1.0f / (GLfloat)h;
-  /**/
-  glViewport(0, 0, w, h);
+  sx = 1.0f / (GLfloat)event.GetSize().x;
+  sy = 1.0f / (GLfloat)event.GetSize().y;
+  // It's up to the application code to update the OpenGL viewport settings.
+  // This is OK here only because there is only one canvas that uses the
+  // context. See the cube sample for that case that multiple canvases are
+  // made current with one context.
+  glViewport(0, 0, event.GetSize().x, event.GetSize().y);
   /**/
   glMatrixMode(GL_PROJECTION);
   /**/
   glLoadIdentity();
-  gluPerspective(30.0, (GLfloat)w / (GLfloat)h, 1.0, 100.0);
+  gluPerspective(30.0, (GLfloat)event.GetSize().x / (GLfloat)event.GetSize().y, 1.0, 100.0);
   /**/
   glMatrixMode(GL_MODELVIEW);
-} /* end resize */
-/**
- @brief Idling
-*/
-void idle(void)
-{
-  display();
-} /* idle */
+}
 /**
  @brief Glut mouse function
 
  Modify : ::cx, ::cy, ::scl
 */
-void mouse(
-  int button, //!< [in] pushed button
-  int state, //!< [in] down or up or ?
-  int x, //!< [in] position of mouse cursor
-  int y //!< [in] position of mouse cursor
-)
+void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
 {
-  switch (button) {
-  /*
-   Drag
-  */
-  case GLUT_LEFT_BUTTON:
-    switch (state) {
-    case GLUT_DOWN:
-      /* Start of animation */
-      glutIdleFunc(idle);
-      /* Record drag start point */
-      cx = x;
-      cy = y;
-      break;
-    case GLUT_UP:
-      /* End of animation */
-      glutIdleFunc(0);
-      break;
-    default:
-      break;
-    }
-    break;
-    /*
-     Zoom up
-    */
-  case MOUSE_SCROLL_UP:
-    switch (state) {
-    case GLUT_DOWN:
-      scl = scl * 1.1f;
-      display();
-      break;
-    case GLUT_UP:
-      break;
-    default:
-      break;
-    }
-    break;
-    /*
-     Zoom down
-    */
-  case MOUSE_SCROLL_DOWN:
-    switch (state) {
-    case GLUT_DOWN:
-      scl = scl * 0.9f;
-      display();
-      break;
-    case GLUT_UP:
-      break;
-    default:
-      break;
-    }
-    break;
-    /*
-     No pushing
-    */
-  default:
-    break;
-  }
-} /* end mouse */
-/**
- @brief Glut motion function
-
- Modify : ::scl, ::trans
-*/
-void motion(
-  int x, //!< [in] position of cursor
-  int y //!< [in] position of cursor
-)
-{
-  int i, j;
+  static int dragging = 0;
+  static float last_x, last_y;
+  int i, j, wheel;
   GLfloat dx, dy, a, rot0[3][3], rot1[3][3], ax, ay;
-  /*
-   Translation of mousepointer from starting point
-  */
-  dx = (x - cx) * sx;
-  dy = (y - cy) * sy;
-  /*
-   Distanse from starting point
-  */
-  a = sqrtf(dx * dx + dy * dy);
-  /**/
-  if (lmouse == 1) {
-    /**/
-    if (a != 0.0) {
+
+  // Allow default processing to happen, or else the canvas cannot gain focus
+  // (for key events).
+  event.Skip();
+
+  if (event.LeftIsDown())
+  {
+    if (!dragging)
+    {
+      dragging = 1;
+    }
+    else
+    {
       /*
-       Compute rotational matrix from translation of mousepointer
+       Translation of mousepointer from starting point
       */
-      ax = -dy;
-      ay = dx;
+      dx = (event.GetX() - last_x) * sx;
+      dy = (event.GetY() - last_y) * sy;
+      /*
+       Distanse from starting point
+      */
+      a = sqrtf(dx * dx + dy * dy);
       /**/
-      a = a * 10.0f;
-      /**/
-      rot0[0][0] = (ax * ax + ay * ay * cosf(a)) / (ax * ax + ay * ay);
-      rot0[0][1] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
-      rot0[0][2] = ay * sinf(a) / sqrtf(ax * ax + ay * ay);
-      rot0[1][0] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
-      rot0[1][1] = (ax * ax * cosf(a) + ay * ay) / (ax * ax + ay * ay);
-      rot0[1][2] =  ax * sinf(a) / sqrtf(ax * ax + ay * ay);
-      rot0[2][0] = -ay * sinf(a) / sqrtf(ax * ax + ay * ay);
-      rot0[2][1] = -ax * sinf(a) / sqrtf(ax * ax + ay * ay);
-      rot0[2][2] = cosf(a);
-      /**/
-      for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
-      /**/
-      for (i = 0; i < 3; i++) {
-        for (j = 0; j < 3; j++) {
-          rot[i][j] = rot0[i][0] * rot1[0][j]
-                    + rot0[i][1] * rot1[1][j]
-                    + rot0[i][2] * rot1[2][j];
+      if (lmouse == 1) {
+        /**/
+        if (a != 0.0) {
+          /*
+           Compute rotational matrix from translation of mousepointer
+          */
+          ax = -dy;
+          ay = dx;
+          /**/
+          a = a * 10.0f;
+          /**/
+          rot0[0][0] = (ax * ax + ay * ay * cosf(a)) / (ax * ax + ay * ay);
+          rot0[0][1] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
+          rot0[0][2] = ay * sinf(a) / sqrtf(ax * ax + ay * ay);
+          rot0[1][0] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
+          rot0[1][1] = (ax * ax * cosf(a) + ay * ay) / (ax * ax + ay * ay);
+          rot0[1][2] = ax * sinf(a) / sqrtf(ax * ax + ay * ay);
+          rot0[2][0] = -ay * sinf(a) / sqrtf(ax * ax + ay * ay);
+          rot0[2][1] = -ax * sinf(a) / sqrtf(ax * ax + ay * ay);
+          rot0[2][2] = cosf(a);
+          /**/
+          for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
+          /**/
+          for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+              rot[i][j] = rot0[i][0] * rot1[0][j]
+                        + rot0[i][1] * rot1[1][j]
+                        + rot0[i][2] * rot1[2][j];
+            }
+          }
         }
       }
+      else if (lmouse == 2) {
+        scl = scl * expf(-dy);
+      }
+      else {
+        trans[0] = trans[0] + dx;
+        trans[1] = trans[1] - dy;
+      }
+      Refresh(false);
     }
+    last_x = event.GetX();
+    last_y = event.GetY();
   }
-  else if (lmouse == 2) {
-    scl = scl * expf(-dy);
+  else
+  {
+    dragging = 0;
   }
-  else {
-    trans[0] = trans[0] + dx;
-    trans[1] = trans[1] - dy;
+
+  wheel = event.GetWheelRotation();
+  if (wheel > 0) {
+    scl = scl * 1.1f;
+    Refresh(false);
   }
-  cx = x;
-  cy = y;
-} /* motion */
+  else if (wheel < 0) {
+    scl = scl * 0.9f;
+    Refresh(false);
+  }
+}
 /**
  @brief Glut special key function
 
  Modify : ::trans
 */
-void special_key(
-  int key, //!< [in] typed special key
-  int x, //!< [in]
-  int y //!< [in]
-)
+void TestGLCanvas::OnChar(wxKeyEvent& event)
 {
-  switch (key) {
-  case GLUT_KEY_UP:
-    trans[1] = trans[1] + 0.1f;
-    display();
-    break;
-  case GLUT_KEY_DOWN:
-    trans[1] = trans[1] - 0.1f;
-    display();
-    break;
-  case GLUT_KEY_RIGHT:
-    /**/
-    trans[0] = trans[0] + 0.1f;
-    display();
-    break;
-    /**/
-  case GLUT_KEY_LEFT:
-    /**/
+  switch (event.GetKeyCode())
+  {
+  case WXK_LEFT:
     trans[0] = trans[0] - 0.1f;
-    display();
+    Refresh(false);
     break;
-    /**/
+
+  case WXK_RIGHT:
+    trans[0] = trans[0] + 0.1f;
+    Refresh(false);
+    break;
+
+  case WXK_UP:
+    trans[1] = trans[1] + 0.1f;
+    Refresh(false);
+    break;
+
+  case WXK_DOWN:
+    trans[1] = trans[1] - 0.1f;
+    Refresh(false);
+    break;
+
+  default:
+    event.Skip();
+    return;
   }
-} /* special_key */
+
+  Refresh(false);
+}
+
+void TestGLCanvas::InitGL()
+{
+  // Make the new context current (activate it for use) with this canvas.
+  SetCurrent(*m_glRC);
+
+  glClearColor(0.0, 0.0, 0.0, 0.0);
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHTING);
+  glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHT1);
+  glEnable(GL_NORMALIZE);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
+  glEnable(GL_COLOR_MATERIAL);
+}
+
+TestGLCanvas::TestGLCanvas(wxWindow* parent,
+  wxWindowID id,
+  int* gl_attrib)
+  : wxGLCanvas(parent, id, gl_attrib)
+{
+  // Explicitly create a new rendering context instance for this canvas.
+  m_glRC = new wxGLContext(this);
+}
+
+TestGLCanvas::~TestGLCanvas()
+{
+  delete m_glRC;
+}

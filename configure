@@ -625,8 +625,19 @@ ac_subst_vars='am__EXEEXT_FALSE
 am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
-GLUT_LIBS
-GLUT_CFLAGS
+WX_VERSION_MICRO
+WX_VERSION_MINOR
+WX_VERSION_MAJOR
+WX_RESCOMP
+WX_VERSION
+WX_LIBS_STATIC
+WX_LIBS
+WX_CXXFLAGS_ONLY
+WX_CFLAGS_ONLY
+WX_CXXFLAGS
+WX_CFLAGS
+WX_CPPFLAGS
+WX_CONFIG_PATH
 GLU_LIBS
 GLU_CFLAGS
 EGREP
@@ -741,6 +752,10 @@ enable_silent_rules
 enable_dependency_tracking
 with_openmp
 with_xquartz_gl
+with_wxdir
+with_wx_config
+with_wx_prefix
+with_wx_exec_prefix
 '
       ac_precious_vars='build_alias
 host_alias
@@ -760,9 +775,7 @@ GL_CFLAGS
 GL_LIBS
 CPP
 GLU_CFLAGS
-GLU_LIBS
-GLUT_CFLAGS
-GLUT_LIBS'
+GLU_LIBS'
 
 
 # Initialize some variables set by options.
@@ -1408,6 +1421,11 @@ Optional Packages:
                           instead of the built-in framework. If enabled, the
                           default location is [DIR=/opt/X11]. This option is
                           default to false.
+  --with-wxdir=PATH       Use uninstalled version of wxWidgets in PATH
+  --with-wx-config=CONFIG wx-config script to use (optional)
+  --with-wx-prefix=PREFIX Prefix where wxWidgets is installed (optional)
+  --with-wx-exec-prefix=PREFIX
+                          Exec prefix where wxWidgets is installed (optional)
 
 Some influential environment variables:
   CXX         C++ compiler command
@@ -1429,8 +1447,6 @@ Some influential environment variables:
   CPP         C preprocessor
   GLU_CFLAGS  C compiler flags for GLU, overriding system check
   GLU_LIBS    Linker flags for GLU, overriding system check
-  GLUT_CFLAGS C compiler flags for GLUT, overriding configure script defaults
-  GLUT_LIBS   Linker flags for GLUT, overriding configure script defaults
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -4309,7 +4325,7 @@ fi
 
 fi
 echo ""
-echo "  Check OpenGL and GLUT"
+echo "  Check OpenGL"
 echo ""
 # Make sure we can run config.sub.
 $SHELL "$ac_aux_dir/config.sub" sun4 >/dev/null 2>&1 ||
@@ -6701,523 +6717,324 @@ else
 
 fi
 
+CXXFLAGS="$CXXFLAGS $GL_CFLAGS $GLU_CFLAGS"
+LIBS="$LIBS $GLU_LIBS $GL_LIBS -lm"
+echo ""
+echo "  Check wxWidgets"
+echo ""
 
 
+# Check whether --with-wxdir was given.
+if test "${with_wxdir+set}" = set; then :
+  withval=$with_wxdir;  wx_config_name="$withval/wx-config"
+                  wx_config_args="--inplace"
+fi
 
 
+# Check whether --with-wx-config was given.
+if test "${with_wx_config+set}" = set; then :
+  withval=$with_wx_config; wx_config_name="$withval"
+fi
 
- case ${host} in #(
-  *-darwin*) :
-    if test "x$with_xquartz_gl" != "xno"; then :
-  GLUT_LIBS="${GLUT_LIBS:--lGLUT}"
+
+# Check whether --with-wx-prefix was given.
+if test "${with_wx_prefix+set}" = set; then :
+  withval=$with_wx_prefix; wx_config_prefix="$withval"
 else
-  GLUT_LIBS="${GLUT_LIBS:--framework GLUT}"
-fi ;; #(
-  *-cygwin*|*-mingw*) :
+  wx_config_prefix=""
+fi
 
 
-
-
-
-_ax_glut_saved_flag_cflags="$CFLAGS"
-CFLAGS="$GLUT_CFLAGS $CFLAGS"
-
-
-_ax_glut_saved_flag_libs="$LIBS"
-LIBS="$GLUT_LIBS $LIBS"
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing glutMainLoop" >&5
-$as_echo_n "checking for library containing glutMainLoop... " >&6; }
-if ${ac_cv_search_glutMainLoop+:} false; then :
-  $as_echo_n "(cached) " >&6
+# Check whether --with-wx-exec-prefix was given.
+if test "${with_wx_exec_prefix+set}" = set; then :
+  withval=$with_wx_exec_prefix; wx_config_exec_prefix="$withval"
 else
-  ac_func_search_save_LIBS=$LIBS
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
+  wx_config_exec_prefix=""
+fi
 
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char glutMainLoop ();
-int
-main ()
-{
-return glutMainLoop ();
-  ;
-  return 0;
-}
-_ACEOF
-for ac_lib in '' glut32 glut; do
-  if test -z "$ac_lib"; then
-    ac_res="none required"
-  else
-    ac_res=-l$ac_lib
-    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+
+reqwx=2.4.0
+
+
+    if test x${WX_CONFIG_NAME+set} != xset ; then
+     WX_CONFIG_NAME=wx-config
   fi
-  if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_search_glutMainLoop=$ac_res
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext
-  if ${ac_cv_search_glutMainLoop+:} false; then :
-  break
-fi
-done
-if ${ac_cv_search_glutMainLoop+:} false; then :
 
-else
-  ac_cv_search_glutMainLoop=no
-fi
-rm conftest.$ac_ext
-LIBS=$ac_func_search_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_glutMainLoop" >&5
-$as_echo "$ac_cv_search_glutMainLoop" >&6; }
-ac_res=$ac_cv_search_glutMainLoop
-if test "$ac_res" != no; then :
-  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
-  GLUT_LIBS="${GLUT_LIBS:-$ac_cv_search_glutMainLoop}"
-fi
-
-
-
-
-CFLAGS="$_ax_glut_saved_flag_cflags"
-
-
-LIBS="$_ax_glut_saved_flag_libs"
-
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-            for ac_header in windows.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "windows.h" "ac_cv_header_windows_h" "$ac_includes_default"
-if test "x$ac_cv_header_windows_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_WINDOWS_H 1
-_ACEOF
-
-fi
-
-done
-
-           ;; #(
-  *) :
-
-
-
-
-_ax_glut_saved_flag_cflags="$CFLAGS"
-CFLAGS="$GLUT_CFLAGS $CFLAGS"
-
-
-_ax_glut_saved_flag_libs="$LIBS"
-LIBS="$GLUT_LIBS $LIBS"
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking for library containing glutMainLoop" >&5
-$as_echo_n "checking for library containing glutMainLoop... " >&6; }
-if ${ac_cv_search_glutMainLoop+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_func_search_save_LIBS=$LIBS
-cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-/* Override any GCC internal prototype to avoid an error.
-   Use char because int might match the return type of a GCC
-   builtin and then its argument prototype would still apply.  */
-#ifdef __cplusplus
-extern "C"
-#endif
-char glutMainLoop ();
-int
-main ()
-{
-return glutMainLoop ();
-  ;
-  return 0;
-}
-_ACEOF
-for ac_lib in '' glut; do
-  if test -z "$ac_lib"; then
-    ac_res="none required"
-  else
-    ac_res=-l$ac_lib
-    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+  if test "x$wx_config_name" != x ; then
+     WX_CONFIG_NAME="$wx_config_name"
   fi
-  if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_search_glutMainLoop=$ac_res
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext
-  if ${ac_cv_search_glutMainLoop+:} false; then :
-  break
-fi
-done
-if ${ac_cv_search_glutMainLoop+:} false; then :
 
-else
-  ac_cv_search_glutMainLoop=no
-fi
-rm conftest.$ac_ext
-LIBS=$ac_func_search_save_LIBS
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_search_glutMainLoop" >&5
-$as_echo "$ac_cv_search_glutMainLoop" >&6; }
-ac_res=$ac_cv_search_glutMainLoop
-if test "$ac_res" != no; then :
-  test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
-  GLUT_LIBS="${GLUT_LIBS:-$ac_cv_search_glutMainLoop}"
-fi
-
-
-
-
-CFLAGS="$_ax_glut_saved_flag_cflags"
-
-
-LIBS="$_ax_glut_saved_flag_libs"
-
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-          ;;
-esac
-  case ${host} in #(
-  *-darwin*) :
-    if test "x$with_xquartz_gl" = "xno"; then :
-
-
-
-
-_ax_glut_saved_flag_cflags="$CFLAGS"
-CFLAGS="$GLUT_CFLAGS $CFLAGS"
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-  for ac_header in GLUT/glut.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "GLUT/glut.h" "ac_cv_header_GLUT_glut_h" "$ac_includes_default"
-if test "x$ac_cv_header_GLUT_glut_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_GLUT_GLUT_H 1
-_ACEOF
- ax_check_glut_have_headers=yes
-fi
-
-done
-
-
-
-
-CFLAGS="$_ax_glut_saved_flag_cflags"
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-else
-
-
-
-
-_ax_glut_saved_flag_cflags="$CFLAGS"
-CFLAGS="$GLUT_CFLAGS $CFLAGS"
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-  for ac_header in GL/glut.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "GL/glut.h" "ac_cv_header_GL_glut_h" "$ac_includes_default"
-if test "x$ac_cv_header_GL_glut_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_GL_GLUT_H 1
-_ACEOF
- ax_check_glut_have_headers=yes
-fi
-
-done
-
-
-
-
-CFLAGS="$_ax_glut_saved_flag_cflags"
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-
-fi ;; #(
-  *) :
-
-
-
-
-_ax_glut_saved_flag_cflags="$CFLAGS"
-CFLAGS="$GLUT_CFLAGS $CFLAGS"
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-  for ac_header in GL/glut.h
-do :
-  ac_fn_c_check_header_mongrel "$LINENO" "GL/glut.h" "ac_cv_header_GL_glut_h" "$ac_includes_default"
-if test "x$ac_cv_header_GL_glut_h" = xyes; then :
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_GL_GLUT_H 1
-_ACEOF
- ax_check_glut_have_headers=yes
-fi
-
-done
-
-
-
-
-CFLAGS="$_ax_glut_saved_flag_cflags"
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
- ;;
-esac
-
-  if test "X$ax_check_glut_have_headers" = "Xyes"; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for compiling a minimal GLUT program" >&5
-$as_echo_n "checking for compiling a minimal GLUT program... " >&6; }
-if ${ax_cv_check_glut_compile+:} false; then :
+    if test x$wx_config_exec_prefix != x ; then
+     wx_config_args="$wx_config_args --exec-prefix=$wx_config_exec_prefix"
+     WX_LOOKUP_PATH="$wx_config_exec_prefix/bin"
+  fi
+  if test x$wx_config_prefix != x ; then
+     wx_config_args="$wx_config_args --prefix=$wx_config_prefix"
+     WX_LOOKUP_PATH="$WX_LOOKUP_PATH:$wx_config_prefix/bin"
+  fi
+  if test "$cross_compiling" = "yes"; then
+     wx_config_args="$wx_config_args --host=$host_alias"
+  fi
+
+    if test -x "$WX_CONFIG_NAME" ; then
+     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wx-config" >&5
+$as_echo_n "checking for wx-config... " >&6; }
+     WX_CONFIG_PATH="$WX_CONFIG_NAME"
+     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $WX_CONFIG_PATH" >&5
+$as_echo "$WX_CONFIG_PATH" >&6; }
+  else
+     # Extract the first word of "$WX_CONFIG_NAME", so it can be a program name with args.
+set dummy $WX_CONFIG_NAME; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_WX_CONFIG_PATH+:} false; then :
   $as_echo_n "(cached) " >&6
 else
+  case $WX_CONFIG_PATH in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_WX_CONFIG_PATH="$WX_CONFIG_PATH" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+as_dummy=""$WX_LOOKUP_PATH:$PATH""
+for as_dir in $as_dummy
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if as_fn_executable_p "$as_dir/$ac_word$ac_exec_ext"; then
+    ac_cv_path_WX_CONFIG_PATH="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
 
-
-
-_ax_glut_saved_flag_cflags="$CFLAGS"
-CFLAGS="$GLUT_CFLAGS $CFLAGS"
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-                        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-# if HAVE_WINDOWS_H && defined(_WIN32)
-#   include <windows.h>
-# endif
-# ifdef HAVE_GL_GLUT_H
-#   include <GL/glut.h>
-# elif defined(HAVE_GLUT_GLUT_H)
-#   include <GLUT/glut.h>
-# else
-#   error no glut.h
-# endif
-int
-main ()
-{
-glutMainLoop()
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ax_cv_check_glut_compile="yes"
+  test -z "$ac_cv_path_WX_CONFIG_PATH" && ac_cv_path_WX_CONFIG_PATH="no"
+  ;;
+esac
+fi
+WX_CONFIG_PATH=$ac_cv_path_WX_CONFIG_PATH
+if test -n "$WX_CONFIG_PATH"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $WX_CONFIG_PATH" >&5
+$as_echo "$WX_CONFIG_PATH" >&6; }
 else
-  ax_cv_check_glut_compile="no"
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-
-
-
-CFLAGS="$_ax_glut_saved_flag_cflags"
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_glut_compile" >&5
-$as_echo "$ax_cv_check_glut_compile" >&6; }
-
-fi
-
-  if test "X$ax_cv_check_glut_compile" = "Xyes"; then :
-  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for linking a minimal GLUT program" >&5
-$as_echo_n "checking for linking a minimal GLUT program... " >&6; }
-if ${ax_cv_check_glut_link+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-
-
-
-_ax_glut_saved_flag_cflags="$CFLAGS"
-CFLAGS="$GLUT_CFLAGS $CFLAGS"
-
-
-_ax_glut_saved_flag_libs="$LIBS"
-LIBS="$GLUT_LIBS $LIBS"
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-                        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-# if HAVE_WINDOWS_H && defined(_WIN32)
-#   include <windows.h>
-# endif
-# ifdef HAVE_GL_GLUT_H
-#   include <GL/glut.h>
-# elif defined(HAVE_GLUT_GLUT_H)
-#   include <GLUT/glut.h>
-# else
-#   error no glut.h
-# endif
-int
-main ()
-{
-glutMainLoop()
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ax_cv_check_glut_link="yes"
-else
-  ax_cv_check_glut_link="no"
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
-
-
-CFLAGS="$_ax_glut_saved_flag_cflags"
-
-
-LIBS="$_ax_glut_saved_flag_libs"
-
-
-
-
-  ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ax_cv_check_glut_link" >&5
-$as_echo "$ax_cv_check_glut_link" >&6; }
-
-fi
-
-  if test "X$ax_cv_check_glut_link" = "Xyes"; then :
-
-$as_echo "#define HAVE_GLUT 1" >>confdefs.h
-
-    CFLAGS="$GLUT_CFLAGS $CFLAGS"
-      LIBS="$GLUT_LIBS $LIBS"
-
-else
-  as_fn_error $? "Could not find a valid GLUT implementation" "$LINENO" 5
-
-
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
 fi
 
 
-CXXFLAGS="$CXXFLAGS $GL_CFLAGS $GLU_CFLAGS $GLUT_CFLAGS"
-LIBS="$LIBS $GLUT_LIBS $GLU_LIBS $GL_LIBS -lm"
+  fi
+
+  if test "$WX_CONFIG_PATH" != "no" ; then
+    WX_VERSION=""
+
+    min_wx_version=$reqwx
+    if test -z "" ; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wxWidgets version >= $min_wx_version" >&5
+$as_echo_n "checking for wxWidgets version >= $min_wx_version... " >&6; }
+    else
+      { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wxWidgets version >= $min_wx_version ()" >&5
+$as_echo_n "checking for wxWidgets version >= $min_wx_version ()... " >&6; }
+    fi
+
+            WX_CONFIG_WITH_ARGS="$WX_CONFIG_PATH $wx_config_args "
+
+    WX_VERSION=`$WX_CONFIG_WITH_ARGS --version 2>/dev/null`
+    wx_config_major_version=`echo $WX_VERSION | \
+           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
+    wx_config_minor_version=`echo $WX_VERSION | \
+           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
+    wx_config_micro_version=`echo $WX_VERSION | \
+           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
+
+    wx_requested_major_version=`echo $min_wx_version | \
+           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
+    wx_requested_minor_version=`echo $min_wx_version | \
+           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
+    wx_requested_micro_version=`echo $min_wx_version | \
+           sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
+
+
+    wx_ver_ok=""
+    if test "x$WX_VERSION" != x ; then
+      if test $wx_config_major_version -gt $wx_requested_major_version; then
+        wx_ver_ok=yes
+      else
+        if test $wx_config_major_version -eq $wx_requested_major_version; then
+           if test $wx_config_minor_version -gt $wx_requested_minor_version; then
+              wx_ver_ok=yes
+           else
+              if test $wx_config_minor_version -eq $wx_requested_minor_version; then
+                 if test $wx_config_micro_version -ge $wx_requested_micro_version; then
+                    wx_ver_ok=yes
+                 fi
+              fi
+           fi
+        fi
+      fi
+    fi
+
+
+    if test -n "$wx_ver_ok"; then
+      { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes (version $WX_VERSION)" >&5
+$as_echo "yes (version $WX_VERSION)" >&6; }
+      WX_LIBS=`$WX_CONFIG_WITH_ARGS --libs std,gl`
+
+                              { $as_echo "$as_me:${as_lineno-$LINENO}: checking for wxWidgets static library" >&5
+$as_echo_n "checking for wxWidgets static library... " >&6; }
+      WX_LIBS_STATIC=`$WX_CONFIG_WITH_ARGS --static --libs std,gl 2>/dev/null`
+      if test "x$WX_LIBS_STATIC" = "x"; then
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+      else
+        { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+      fi
+
+            wx_has_cppflags=""
+      if test $wx_config_major_version -gt 2; then
+        wx_has_cppflags=yes
+      else
+        if test $wx_config_major_version -eq 2; then
+           if test $wx_config_minor_version -gt 2; then
+              wx_has_cppflags=yes
+           else
+              if test $wx_config_minor_version -eq 2; then
+                 if test $wx_config_micro_version -ge 6; then
+                    wx_has_cppflags=yes
+                 fi
+              fi
+           fi
+        fi
+      fi
+
+            wx_has_rescomp=""
+      if test $wx_config_major_version -gt 2; then
+        wx_has_rescomp=yes
+      else
+        if test $wx_config_major_version -eq 2; then
+           if test $wx_config_minor_version -ge 7; then
+              wx_has_rescomp=yes
+           fi
+        fi
+      fi
+      if test "x$wx_has_rescomp" = x ; then
+                  WX_RESCOMP=
+      else
+         WX_RESCOMP=`$WX_CONFIG_WITH_ARGS --rescomp`
+      fi
+
+      if test "x$wx_has_cppflags" = x ; then
+                  WX_CFLAGS=`$WX_CONFIG_WITH_ARGS --cflags std,gl`
+         WX_CPPFLAGS=$WX_CFLAGS
+         WX_CXXFLAGS=$WX_CFLAGS
+
+         WX_CFLAGS_ONLY=$WX_CFLAGS
+         WX_CXXFLAGS_ONLY=$WX_CFLAGS
+      else
+                  WX_CPPFLAGS=`$WX_CONFIG_WITH_ARGS --cppflags std,gl`
+         WX_CXXFLAGS=`$WX_CONFIG_WITH_ARGS --cxxflags std,gl`
+         WX_CFLAGS=`$WX_CONFIG_WITH_ARGS --cflags std,gl`
+
+         WX_CFLAGS_ONLY=`echo $WX_CFLAGS | sed "s@^$WX_CPPFLAGS *@@"`
+         WX_CXXFLAGS_ONLY=`echo $WX_CXXFLAGS | sed "s@^$WX_CFLAGS *@@"`
+      fi
+
+      wxWin=1
+
+    else
+
+       if test "x$WX_VERSION" = x; then
+                    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+       else
+          { $as_echo "$as_me:${as_lineno-$LINENO}: result: no (version $WX_VERSION is not new enough)" >&5
+$as_echo "no (version $WX_VERSION is not new enough)" >&6; }
+       fi
+
+       WX_CFLAGS=""
+       WX_CPPFLAGS=""
+       WX_CXXFLAGS=""
+       WX_LIBS=""
+       WX_LIBS_STATIC=""
+       WX_RESCOMP=""
+
+       if test ! -z ""; then
+
+          wx_error_message="
+    The configuration you asked for $PACKAGE_NAME requires a wxWidgets
+    build with the following settings:
+
+    but such build is not available.
+
+    To see the wxWidgets builds available on this system, please use
+    'wx-config --list' command. To use the default build, returned by
+    'wx-config --selected-config', use the options with their 'auto'
+    default values."
+
+       fi
+
+       wx_error_message="
+    The requested wxWidgets build couldn't be found.
+    $wx_error_message
+
+    If you still get this error, then check that 'wx-config' is
+    in path, the directory where wxWidgets libraries are installed
+    (returned by 'wx-config --libs' command) is in LD_LIBRARY_PATH
+    or equivalent variable and wxWidgets version is $reqwx or above."
+
+       as_fn_error $? "$wx_error_message" "$LINENO" 5
+
+    fi
+  else
+
+    WX_CFLAGS=""
+    WX_CPPFLAGS=""
+    WX_CXXFLAGS=""
+    WX_LIBS=""
+    WX_LIBS_STATIC=""
+    WX_RESCOMP=""
+
+    :
+
+  fi
+
+
+
+
+
+
+
+
+
+
+
+      WX_VERSION_MAJOR="$wx_config_major_version"
+  WX_VERSION_MINOR="$wx_config_minor_version"
+  WX_VERSION_MICRO="$wx_config_micro_version"
+
+
+
+
+
+if test "$wxWin" != 1; then
+	as_fn_error $? "
+		wxWidgets must be installed on your system.
+
+		Please check that wx-config is in path, the directory
+		where wxWidgets libraries are installed (returned by
+		'wx-config --libs' or 'wx-config --static --libs' command)
+		is in LD_LIBRARY_PATH or equivalent variable and
+		wxWidgets version is $reqwx or above.
+		" "$LINENO" 5
+fi
+
+CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
+CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
+CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
+LIBS="$LIBS $WX_LIBS"
 echo ""
 echo "  Output files"
 echo ""

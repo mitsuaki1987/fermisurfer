@@ -55,10 +55,10 @@ with a color-plot of the arbitraly matrix element
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
-#if defined(HAVE_GL_GLUT_H)
-#include <GL/glut.h>
-#elif defined(HAVE_GLUT_GLUT_H)
-#include <GLUT/glut.h>
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
 #endif
 #include <stdlib.h>
 #include <stdio.h>
@@ -78,6 +78,19 @@ with a color-plot of the arbitraly matrix element
 #if defined(_OPENMP)
 #include <omp.h>
 #endif
+#include <wx/wx.h>
+#include "wx/cmdline.h"
+
+class MyApp : public wxApp
+{
+public:
+  virtual bool OnInit();
+  virtual void OnInitCmdLine(wxCmdLineParser& parser);
+  virtual bool OnCmdLineParsed(wxCmdLineParser& parser);
+};
+
+IMPLEMENT_APP(MyApp)
+
 /*
  Input variables
 */
@@ -209,28 +222,10 @@ int nthreads;//!< Number of OpenMP threads
 /*
 Batch mode
 */
-char *window_name;
-char *batch_name;
+wxString window_name;
+wxString batch_name;
+wxString frmsf_file_name;
 int lbatch;
-/**
- @brief Initialize GLUT canvas
-*/
-void init(void)
-{
-  glClearColor(0.0, 0.0, 0.0, 0.0);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_LIGHTING);
-  glLightModelf(GL_LIGHT_MODEL_TWO_SIDE,GL_TRUE );
-  glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHT1);
-  glEnable(GL_NORMALIZE);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_NORMAL_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
-  glEnable(GL_COLOR_MATERIAL);
-  /* Menu */
-  FS_CreateMenu();
-} /* init */
 /**
   @brief Glut Display function
   called by glutDisplayFunc
@@ -273,12 +268,11 @@ void batch_draw()
 
  Modify: ::query, ::nthreads
 */
-int main(
-  int argc, //!< [in]
-  char *argv[] //!< [in] Input file name
-)
+bool MyApp::OnInit()
 {
   int ierr;
+
+  if (!wxApp::OnInit()) return false;
 
   printf("\n");
   printf("###########################################\n");
@@ -307,9 +301,8 @@ int main(
   printf("  Initialize variables ...\n");
   printf("\n");
   /**/
-  color_scale = read_file(argv[1]);
+  color_scale = read_file();
   if (color_scale == 0)color_scale = 4;
-  printf("debug %d\n", color_scale);
   interpol_energy();
   init_corner();
   bragg_vector();
@@ -334,17 +327,8 @@ int main(
   printf("      mouse right button : Menu\n");
   printf("\n");
   /**/
-  glutInit(&argc, argv);
-  if (argc > 4)glutInitWindowSize(atoi(argv[3]), atoi(argv[4]));
-  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE  | GLUT_DEPTH);
-  glutCreateWindow(argv[1]);
-  glutDisplayFunc(display);
-  glutReshapeFunc(resize);
-  glutMouseFunc(mouse);
-  glutMotionFunc(motion);
-  glutSpecialFunc(special_key);
-  glutMenuStateFunc(FS_ModifyMenu);
-  init();
+  //if (argc > 4)glutInitWindowSize(atoi(argv[3]), atoi(argv[4]));
+  new MyFrame(NULL, argv[1]);
   lbatch = 0;
   if (argc > 2) {
     lbatch = 1;
@@ -352,6 +336,22 @@ int main(
     batch_name = argv[2];
     batch_draw();
   }
-  glutMainLoop();
-  return 0;
+  //MyFrame::m_canvas->PostSizeEventToParent();
+  return true;
 } /* main */
+
+void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
+{
+  wxApp::OnInitCmdLine(parser);
+
+  parser.AddParam("FRMSF file to plot.",
+    wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY);
+}
+
+bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
+{
+  if (parser.GetParamCount())
+    frmsf_file_name = parser.GetParam(0);
+
+  return wxApp::OnCmdLineParsed(parser);
+}

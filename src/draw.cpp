@@ -24,18 +24,21 @@ THE SOFTWARE.
 /**@file 
  @brief Functions for actual displaying
 */
+#include "wx/wx.h"
+#include "wx/glcanvas.h"
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
-#if defined(HAVE_GL_GLUT_H)
-#include <GL/glut.h>
-#elif defined(HAVE_GLUT_GLUT_H)
-#include <GLUT/glut.h>
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
 #endif
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "variable.hpp"
+#include "operation.hpp"
 /**
  @brief Draw Fermi surfaces
 
@@ -487,7 +490,7 @@ static void draw_fermi_line() {
  @brief Glut Display function
  called by glutDisplayFunc
 */
-void display(void)
+void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
   GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
@@ -495,6 +498,14 @@ void display(void)
   GLfloat pos1[4], pos2[4];
   int ierr;
   char command_name[256];
+
+  // This is a dummy, to avoid an endless succession of paint messages.
+  // OnPaint handlers must always create a wxPaintDC.
+  wxPaintDC dc(this);
+
+  // This is normally only necessary if there is more than one wxGLCanvas
+  // or more than one wxGLContext in the application.
+  SetCurrent(*m_glRC);
 
   if (lstereo == 2) {
     /*
@@ -617,10 +628,12 @@ void display(void)
     /**/
     glPopMatrix();
   }/*if (lsection == 1)*/
-  glutSwapBuffers();
+  glFlush(); // Not really necessary: buffer swapping below implies glFlush()
+  SwapBuffers();
   if (lbatch == 1) {
     glFlush();
-    sprintf(command_name, "import -window \"%s\" %s.png", window_name, batch_name);
+    sprintf(command_name, "import -window \"%s\" %s.png", 
+      window_name.mb_str(), batch_name.mb_str());
     ierr = system(command_name);
     exit(0);
   }

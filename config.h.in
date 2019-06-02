@@ -6,15 +6,6 @@
 /* Defined if a valid GLU implementation is found. */
 #undef HAVE_GLU
 
-/* Defined if a valid GLUT implementation is found */
-#undef HAVE_GLUT
-
-/* Define to 1 if you have the <GLUT/glut.h> header file. */
-#undef HAVE_GLUT_GLUT_H
-
-/* Define to 1 if you have the <GL/glut.h> header file. */
-#undef HAVE_GL_GLUT_H
-
 /* Define to 1 if you have the <GL/glu.h> header file. */
 #undef HAVE_GL_GLU_H
 

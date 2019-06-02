@@ -27,9 +27,6 @@ THE SOFTWARE.
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
-#if defined(WIN32)
-#include <Windows.h>
-#endif
 #if defined(HAVE_GL_GL_H)
 #include <GL/gl.h>
 #elif defined(HAVE_OPENGL_GL_H)

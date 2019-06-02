@@ -21,13 +21,34 @@ if test x"$with_openmp" != xno; then
   ])
 fi
 echo ""
-echo "  Check OpenGL and GLUT"
+echo "  Check OpenGL"
 echo ""
 AX_CHECK_GL
 AX_CHECK_GLU
-AX_CHECK_GLUT
-CXXFLAGS="$CXXFLAGS $GL_CFLAGS $GLU_CFLAGS $GLUT_CFLAGS"
-LIBS="$LIBS $GLUT_LIBS $GLU_LIBS $GL_LIBS -lm"
+CXXFLAGS="$CXXFLAGS $GL_CFLAGS $GLU_CFLAGS"
+LIBS="$LIBS $GLU_LIBS $GL_LIBS -lm"
+echo ""
+echo "  Check wxWidgets"
+echo ""
+AM_OPTIONS_WXCONFIG
+reqwx=2.4.0
+AM_PATH_WXCONFIG($reqwx, wxWin=1,,[std,gl])
+if test "$wxWin" != 1; then
+	AC_MSG_ERROR([
+		wxWidgets must be installed on your system.
+
+		Please check that wx-config is in path, the directory
+		where wxWidgets libraries are installed (returned by
+		'wx-config --libs' or 'wx-config --static --libs' command)
+		is in LD_LIBRARY_PATH or equivalent variable and
+		wxWidgets version is $reqwx or above.
+		])
+fi
+
+CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
+CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
+CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
+LIBS="$LIBS $WX_LIBS"
 echo ""
 echo "  Output files"
 echo ""
