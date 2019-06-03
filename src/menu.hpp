@@ -59,5 +59,5 @@ private:
   void menu_stereo(wxCommandEvent& event);
   void menu_tetra(wxCommandEvent& event);
   void menu_view(wxCommandEvent& event);
-  wxDECLARE_EVENT_TABLE();
+  //wxDECLARE_EVENT_TABLE();
 };

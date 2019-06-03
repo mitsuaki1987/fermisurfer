@@ -120,82 +120,9 @@ enum
   menu_view_scale,
   menu_view_position,
   menu_view_rotation,
-  menu_band_check1,
-  menu_band_check2,
-  menu_band_check3,
-  menu_band_check4,
-  menu_band_check5,
-  menu_band_check6,
-  menu_band_check7,
-  menu_band_check8,
-  menu_band_check9,
-  imenu_interpol
+  imenu_interpol,
+  menu_band_check
 };
-wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
-EVT_MENU(menu_bz_radio1, MyFrame::menu_brillouinzone)
-EVT_MENU(menu_bz_radio2, MyFrame::menu_brillouinzone)
-EVT_MENU(menu_background_radio1, MyFrame::menu_background)
-EVT_MENU(menu_background_radio2, MyFrame::menu_background)
-EVT_MENU(menu_lighting_radio1, MyFrame::menu_lighting)
-EVT_MENU(menu_lighting_radio2, MyFrame::menu_lighting)
-EVT_MENU(menu_lighting_radio3, MyFrame::menu_lighting)
-EVT_MENU(menu_mouse_radio1, MyFrame::menu_mouse)
-EVT_MENU(menu_mouse_radio2, MyFrame::menu_mouse)
-EVT_MENU(menu_mouse_radio3, MyFrame::menu_mouse)
-EVT_MENU(menu_stereo_radio1, MyFrame::menu_stereo)
-EVT_MENU(menu_stereo_radio2, MyFrame::menu_stereo)
-EVT_MENU(menu_stereo_radio3, MyFrame::menu_stereo)
-EVT_MENU(menu_tetra_radio1, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio2, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio3, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio4, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio5, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio6, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio7, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio8, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio9, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio10, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio11, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio12, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio13, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio14, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio15, MyFrame::menu_tetra)
-EVT_MENU(menu_tetra_radio16, MyFrame::menu_tetra)
-EVT_MENU(menu_view_radio1, MyFrame::menu_view)
-EVT_MENU(menu_view_radio2, MyFrame::menu_view)
-EVT_MENU(menu_view_radio3, MyFrame::menu_view)
-EVT_MENU(menu_colorbar_check, MyFrame::menu_colorbar)
-EVT_MENU(menu_nodeline_check, MyFrame::menu_nodeline)
-EVT_MENU(imenu_line, MyFrame::menu_line)
-EVT_MENU(imenu_shift, MyFrame::menu_shift)
-EVT_MENU(colorscale_maxmin, MyFrame::menu_colorscale)
-EVT_MENU(colorscale_radio1, MyFrame::menu_colorscale)
-EVT_MENU(colorscale_radio2, MyFrame::menu_colorscale)
-EVT_MENU(colorscale_radio3, MyFrame::menu_colorscale)
-EVT_MENU(colorscale_radio4, MyFrame::menu_colorscale)
-EVT_MENU(colorscale_radio5, MyFrame::menu_colorscale)
-EVT_MENU(colorscale_radio6, MyFrame::menu_colorscale)
-EVT_MENU(colorscale_radio7, MyFrame::menu_colorscale)
-EVT_MENU(equator_check, MyFrame::menu_equator)
-EVT_MENU(equator_modify, MyFrame::menu_equator)
-EVT_MENU(menu_section_check, MyFrame::menu_section)
-EVT_MENU(menu_section_modify, MyFrame::menu_section)
-EVT_MENU(menu_section_gamma, MyFrame::menu_section)
-EVT_MENU(menu_view_scale, MyFrame::menu_view)
-EVT_MENU(menu_view_position, MyFrame::menu_view)
-EVT_MENU(menu_view_rotation, MyFrame::menu_view)
-EVT_MENU(menu_band_check1, MyFrame::menu_band)
-EVT_MENU(menu_band_check1, MyFrame::menu_band)
-EVT_MENU(menu_band_check2, MyFrame::menu_band)
-EVT_MENU(menu_band_check3, MyFrame::menu_band)
-EVT_MENU(menu_band_check4, MyFrame::menu_band)
-EVT_MENU(menu_band_check5, MyFrame::menu_band)
-EVT_MENU(menu_band_check6, MyFrame::menu_band)
-EVT_MENU(menu_band_check7, MyFrame::menu_band)
-EVT_MENU(menu_band_check8, MyFrame::menu_band)
-EVT_MENU(menu_band_check9, MyFrame::menu_band)
-EVT_MENU(imenu_interpol, MyFrame::menu_interpol)
-wxEND_EVENT_TABLE()
 
 /**
 @brief Change background color (::blackback)
@@ -224,7 +151,7 @@ void MyFrame::menu_band(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ib = event.GetId() - menu_band_check1;
+  int ib = event.GetId() - menu_band_check;
   if (draw_band[ib] == 0) {
     draw_band[ib] = 1;
   }
@@ -651,64 +578,95 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   // debug SetIcon(wxICON(sample));
 
   wxMenu* imenu_bzmode = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_brillouinzone, this, menu_bz_radio1);
   imenu_bzmode->AppendRadioItem(menu_bz_radio1, wxT("First Brillouin zone"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_brillouinzone, this, menu_bz_radio2);
   imenu_bzmode->AppendRadioItem(menu_bz_radio2, wxT("Primitive Brillouin zone"));
 
   wxMenu* imenu_background = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_background, this, menu_background_radio1);
   imenu_background->AppendRadioItem(menu_background_radio1, wxT("Black"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_background, this, menu_background_radio2);
   imenu_background->AppendRadioItem(menu_background_radio2, wxT("White"));
 
   wxMenu* imenu_band = new wxMenu;
   for (ib = 0; ib < nb; ib++) {
-    imenu_band->AppendCheckItem(menu_band_check1 + ib, wxString::Format(wxT("Band %d"), ib));
-    imenu_band->Check(menu_band_check1 + ib, true);
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_band, this, menu_band_check + ib);
+    imenu_band->AppendCheckItem(menu_band_check + ib, wxString::Format(wxT("Band %d"), ib));
+    imenu_band->Check(menu_band_check + ib, true);
   }
 
   wxMenu* imenu_colorscale = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorscale, this, colorscale_maxmin);
   imenu_colorscale->Append(colorscale_maxmin, wxT("Max/Min of Scale"));
   imenu_colorscale->AppendSeparator();
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorscale, this, colorscale_radio1);
   imenu_colorscale->AppendRadioItem(colorscale_radio1, wxT("Input (Real)"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorscale, this, colorscale_radio2);
   imenu_colorscale->AppendRadioItem(colorscale_radio2, wxT("Input (Complex)"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorscale, this, colorscale_radio3);
   imenu_colorscale->AppendRadioItem(colorscale_radio3, wxT("Input (Tri-number)"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorscale, this, colorscale_radio4);
   imenu_colorscale->AppendRadioItem(colorscale_radio4, wxT("Fermi Velocity"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorscale, this, colorscale_radio5);
   imenu_colorscale->AppendRadioItem(colorscale_radio5, wxT("Band Index"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorscale, this, colorscale_radio6);
   imenu_colorscale->AppendRadioItem(colorscale_radio6, wxT("Input (Real, Gray Scale)"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorscale, this, colorscale_radio7);
   imenu_colorscale->AppendRadioItem(colorscale_radio7, wxT("Fermi Velocity (Gray Scale)"));
 
   wxMenu* imenu_equator = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_equator, this, equator_check);
   imenu_equator->AppendCheckItem(equator_check, wxT("Equator"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_equator, this, equator_modify);
   imenu_equator->Append(equator_modify, wxT("Modify euqtor"));
 
   wxMenu* imenu_light = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_lighting, this, menu_lighting_radio1);
   imenu_light->AppendRadioItem(menu_lighting_radio1, wxT("Both side"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_lighting, this, menu_lighting_radio2);
   imenu_light->AppendRadioItem(menu_lighting_radio2, wxT("Unoccupied side"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_lighting, this, menu_lighting_radio3);
   imenu_light->AppendRadioItem(menu_lighting_radio3, wxT("Occupied side"));
 
   wxMenu* imenu_mouse = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_mouse, this, menu_mouse_radio1);
   imenu_mouse->AppendRadioItem(menu_mouse_radio1, wxT("Rotate"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_mouse, this, menu_mouse_radio2);
   imenu_mouse->AppendRadioItem(menu_mouse_radio2, wxT("Scale"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_mouse, this, menu_mouse_radio3);
   imenu_mouse->AppendRadioItem(menu_mouse_radio3, wxT("Translate"));
 
   wxMenu* imenu_section = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_section, this, menu_section_check);
   imenu_section->AppendCheckItem(menu_section_check, wxT("Section"));
   imenu_section->AppendSeparator();
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_section, this, menu_section_modify);
   imenu_section->Append(menu_section_modify, wxT("Modify section"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_section, this, menu_section_gamma);
   imenu_section->Append(menu_section_gamma, wxT("Modify section (across Gamma)"));
 
   wxMenu* imenu_stereo = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_stereo, this, menu_stereo_radio1);
   imenu_stereo->AppendRadioItem(menu_stereo_radio1, wxT("None"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_stereo, this, menu_stereo_radio2);
   imenu_stereo->AppendRadioItem(menu_stereo_radio2, wxT("Parallel"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_stereo, this, menu_stereo_radio3);
   imenu_stereo->AppendRadioItem(menu_stereo_radio3, wxT("Cross"));
 
   wxMenu* imenu_tetra = new wxMenu;
   for (itet = 0; itet < 16; itet++) {
+    Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_tetra, this, menu_tetra_radio1 + itet);
     imenu_tetra->AppendRadioItem(menu_tetra_radio1 + itet,
       wxString::Format(wxT("tetra # %d"), itet));
   }
 
   wxMenu* imenu_view = new wxMenu;
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_view, this, menu_view_scale);
   imenu_view->Append(menu_view_scale, wxT("Scale"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_view, this, menu_view_position);
   imenu_view->Append(menu_view_position, wxT("Position"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_view, this, menu_view_rotation);
   imenu_view->Append(menu_view_rotation, wxT("Rotation"));
 
   // Make a menubar
@@ -717,22 +675,25 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   fileMenu->AppendSubMenu(imenu_background, wxT("Background color"));
   fileMenu->AppendSubMenu(imenu_band, wxT("Band"));
   fileMenu->AppendSubMenu(imenu_bzmode, wxT("Brillouin zone"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_colorbar, this, menu_colorbar_check);
   fileMenu->AppendCheckItem(menu_colorbar_check, wxT("Color bar"));
   fileMenu->Check(menu_colorbar_check, true);
   fileMenu->AppendSubMenu(imenu_colorscale, wxT("Color scale mode"));
   fileMenu->AppendSubMenu(imenu_equator, wxT("Equator"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_interpol, this, imenu_interpol);
   fileMenu->Append(imenu_interpol, wxT("Interpol ratio"));
   fileMenu->AppendSubMenu(imenu_light, wxT("Lighting"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_line, this, imenu_line);
   fileMenu->Append(imenu_line, wxT("Line width"));
   fileMenu->AppendSubMenu(imenu_mouse, wxT("Mouse Drag"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_nodeline, this, menu_nodeline_check);
   fileMenu->AppendCheckItem(menu_nodeline_check, wxT("Nodal line"));
   fileMenu->AppendSubMenu(imenu_section, wxT("Section"));
+  Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_shift, this, imenu_shift);
   fileMenu->Append(imenu_shift, wxT("Shift Fermi energy"));
   fileMenu->AppendSubMenu(imenu_stereo, wxT("Stereogram"));
   fileMenu->AppendSubMenu(imenu_tetra, wxT("Tetrahedron"));
   fileMenu->AppendSubMenu(imenu_view, wxT("View point"));
-
-  //Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
 
   wxMenuBar* menuBar = new wxMenuBar;
   menuBar->Append(fileMenu, wxT("File"));
