@@ -661,10 +661,12 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   wxMenu* imenu_band = new wxMenu;
   for (ib = 0; ib < nb; ib++) {
     imenu_band->AppendCheckItem(menu_band_check1 + ib, wxString::Format(wxT("Band %d"), ib));
+    imenu_band->Check(menu_band_check1 + ib, true);
   }
 
   wxMenu* imenu_colorscale = new wxMenu;
   imenu_colorscale->Append(colorscale_maxmin, wxT("Max/Min of Scale"));
+  imenu_colorscale->AppendSeparator();
   imenu_colorscale->AppendRadioItem(colorscale_radio1, wxT("Input (Real)"));
   imenu_colorscale->AppendRadioItem(colorscale_radio2, wxT("Input (Complex)"));
   imenu_colorscale->AppendRadioItem(colorscale_radio3, wxT("Input (Tri-number)"));
@@ -689,6 +691,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
 
   wxMenu* imenu_section = new wxMenu;
   imenu_section->AppendCheckItem(menu_section_check, wxT("Section"));
+  imenu_section->AppendSeparator();
   imenu_section->Append(menu_section_modify, wxT("Modify section"));
   imenu_section->Append(menu_section_gamma, wxT("Modify section (across Gamma)"));
 
@@ -715,6 +718,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   fileMenu->AppendSubMenu(imenu_band, wxT("Band"));
   fileMenu->AppendSubMenu(imenu_bzmode, wxT("Brillouin zone"));
   fileMenu->AppendCheckItem(menu_colorbar_check, wxT("Color bar"));
+  fileMenu->Check(menu_colorbar_check, true);
   fileMenu->AppendSubMenu(imenu_colorscale, wxT("Color scale mode"));
   fileMenu->AppendSubMenu(imenu_equator, wxT("Equator"));
   fileMenu->Append(imenu_interpol, wxT("Interpol ratio"));
@@ -727,6 +731,8 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   fileMenu->AppendSubMenu(imenu_stereo, wxT("Stereogram"));
   fileMenu->AppendSubMenu(imenu_tetra, wxT("Tetrahedron"));
   fileMenu->AppendSubMenu(imenu_view, wxT("View point"));
+
+  //Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::OnExit, this, wxID_EXIT);
 
   wxMenuBar* menuBar = new wxMenuBar;
   menuBar->Append(fileMenu, wxT("File"));

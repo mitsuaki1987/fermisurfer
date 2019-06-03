@@ -77,6 +77,7 @@ void TestGLCanvas::OnSize(wxSizeEvent& event)
   gluPerspective(30.0, (GLfloat)event.GetSize().x / (GLfloat)event.GetSize().y, 1.0, 100.0);
   /**/
   glMatrixMode(GL_MODELVIEW);
+  Refresh(false);
 }
 /**
  @brief Glut mouse function
@@ -224,6 +225,7 @@ void TestGLCanvas::InitGL()
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
   glEnable(GL_COLOR_MATERIAL);
+  PostSizeEventToParent();
 }
 
 TestGLCanvas::TestGLCanvas(wxWindow* parent,
