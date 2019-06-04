@@ -159,6 +159,7 @@ GLfloat **clrnl;//!< Color of nodeline [::nb][::nnl*2*4]
  2D Fermi line
 */
 GLfloat secvec[3];         //!< @f$k@f$-vector to define section
+GLfloat secvec_fr[3];         //!< @f$k@f$-vector to define section
 GLfloat secscale;          //!< 0.0 (across @f$\Gamma@f$) or 1.0
 GLfloat axis2d[2][3];      //!< @f$k@f$-vector to define section
 int *n2d;                  //!< Number of line segment
@@ -172,6 +173,7 @@ GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projecte
  Equator
 */
 GLfloat eqvec[3]; //!<  @f$k@f$-vector for equator
+GLfloat eqvec_fr[3]; //!<  @f$k@f$-vector for equator
 int *nequator;             //!< The number of equator
 GLfloat ****kveq;     //!< @f$k@f$-vector of equator [::nb][::nequator][2][3]
 GLfloat **kveq_rot; //!< @f$k@f$-vector of equator [::nb][::nequator*2*3]

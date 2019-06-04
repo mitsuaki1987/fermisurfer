@@ -132,7 +132,11 @@ int read_file()
   for (i = 0; i < 3; ++i) {
     secvec[i] = bvec[2][i];
     eqvec[i] = bvec[2][i];
+    eqvec_fr[i] = 0.0;
+    secvec_fr[i] = 0.0;
   }
+  eqvec_fr[2] = 1.0;
+  secvec_fr[2] = 1.0;
   secscale = 0.0;
   /*
    Allocation of Kohn-Sham energies $ matrix elements
