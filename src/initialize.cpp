@@ -229,7 +229,7 @@ void bragg_vector() {
   for (ibr = 1; ibr < 26; ibr++) {
     if (brnrm_min > brnrm[ibr]) brnrm_min = brnrm[ibr];
   }
-  printf("    Minimum Bragg norm : %f\n", brnrm_min);
+  *terminal << wxString::Format(wxT("    Minimum Bragg norm : %f\n"), brnrm_min);
 }/* bragg_vector */
 /**
  @brief Print max and minimum @f$\varepsilon_{n k}, \Delta_{n k}@f$
@@ -239,10 +239,10 @@ void max_and_min_bz() {
   int ib, i0, i1, i2;
   GLfloat eigmin, eigmax, matmin, matmax;
   /**/
-  printf("\n");
-  printf("  ##  Max. and Min. of each bands  #######################\n");
-  printf("\n");
-  printf("    Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max\n");
+  *terminal << wxT("\n");
+  *terminal << wxT("  ##  Max. and Min. of each bands  #######################\n");
+  *terminal << wxT("\n");
+  *terminal << wxT("    Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max\n");
   for (ib = 0; ib < nb; ib++) {
     eigmax = eig0[0][0][0][0];
     eigmin = eig0[0][0][0][0];
@@ -258,6 +258,7 @@ void max_and_min_bz() {
         }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
       }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
     }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
-    printf("    %d     %f     %f     %f     %f\n", ib + 1, eigmin, eigmax, matmin, matmax);
+    *terminal << wxString::Format(wxT("    %d     %f     %f     %f     %f\n"),
+      ib + 1, eigmin, eigmax, matmin, matmax);
   }/*for (ib = 0; ib < nb; ib++)*/
 }/* max_and_min_bz */

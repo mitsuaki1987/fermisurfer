@@ -226,6 +226,9 @@ wxString window_name;
 wxString batch_name;
 wxString frmsf_file_name;
 int lbatch;
+
+wxTextCtrl* terminal;
+
 /**
   @brief Glut Display function
   called by glutDisplayFunc
@@ -274,13 +277,15 @@ bool MyApp::OnInit()
 
   if (!wxApp::OnInit()) return false;
 
-  printf("\n");
-  printf("###########################################\n");
-  printf("##                                       ##\n");
-  printf("##  Welocome to FermiSurfer ver. %s  ##\n", VERSION);
-  printf("##                                       ##\n");
-  printf("###########################################\n");
-  printf("\n");
+  new MyFrame(NULL, argv[1]);
+
+  *terminal << wxT("###########################################\n");
+  *terminal << wxT("##                                       ##\n");
+  *terminal << wxT("##  Welocome to FermiSurfer ver. ") << 
+    wxT(VERSION) << wxT("  ##\n");
+  *terminal << wxT("##                                       ##\n");
+  *terminal << wxT("###########################################\n");
+  *terminal << wxT("\n");
   if (argc < 2) {
     printf("\n");
     printf("  Input file is not specified !\n");
@@ -296,10 +301,10 @@ bool MyApp::OnInit()
 #else
   nthreads = 1;
 #endif
-  printf("  Number of threads : %d\n", nthreads);
-  printf("\n");
-  printf("  Initialize variables ...\n");
-  printf("\n");
+  *terminal << wxT("  Number of threads : ") << nthreads << wxT("\n");
+  *terminal << wxT("\n");
+  *terminal << wxT("  Initialize variables ...\n");
+  *terminal << wxT("\n");
   /**/
   color_scale = read_file();
   if (color_scale == 0)color_scale = 4;
@@ -318,17 +323,16 @@ bool MyApp::OnInit()
   /*
     Description
   */
-  printf("\n");
-  printf("  ##  How to handle  ###################\n");
-  printf("\n");
-  printf("              mouse drag : Rotate objects\n");
-  printf("              mousewheel : Resize objects\n");
-  printf("               cursorkey : Move objects\n");
-  printf("      mouse right button : Menu\n");
-  printf("\n");
+  *terminal << wxT("\n");
+  *terminal << wxT("  ##  How to handle  ###################\n");
+  *terminal << wxT("\n");
+  *terminal << wxT("              mouse drag : Rotate objects\n");
+  *terminal << wxT("              mousewheel : Resize objects\n");
+  *terminal << wxT("               cursorkey : Move objects\n");
+  *terminal << wxT("      mouse right button : Menu\n");
+  *terminal << wxT("\n");
   /**/
   //if (argc > 4)glutInitWindowSize(atoi(argv[3]), atoi(argv[4]));
-  new MyFrame(NULL, argv[1]);
   lbatch = 0;
   if (argc > 2) {
     lbatch = 1;
@@ -336,7 +340,6 @@ bool MyApp::OnInit()
     batch_name = argv[2];
     batch_draw();
   }
-  //MyFrame::m_canvas->PostSizeEventToParent();
   return true;
 } /* main */
 

@@ -54,41 +54,42 @@ int read_file()
   /*
    Open input file.
   */
-  printf("  Openning %s ...\n", frmsf_file_name.mb_str());
+  *terminal << wxT("  Openning ") << frmsf_file_name << wxT(" ...\n");
   if ((fp = fopen(frmsf_file_name.mb_str(), "r")) == NULL) {
-    printf("file open error!!\n");
-    printf("  Press any key to exit.\n");
+    *terminal << wxT("file open error!!\n");
+    *terminal << wxT("  Press any key to exit.\n");
     ierr = getchar();
     exit(EXIT_FAILURE);
   }
-  printf("\n");
-  printf("  ##  Brillouin zone informations  ###########\n");
-  printf("\n");
+  *terminal << wxT("\n");
+  *terminal << wxT("  ##  Brillouin zone informations  ###########\n");
+  *terminal << wxT("\n");
   /*
    k-point grid
   */
   ctemp1 = fgets(ctemp2, 256, fp);
   ierr = sscanf(ctemp2, "%d%d%d", &ng0[0], &ng0[1], &ng0[2]);
 
-  if (ierr == 0) printf("error ! reading ng");
-  printf("    k point grid : %d %d %d \n", ng0[0], ng0[1], ng0[2]);
+  if (ierr == 0) *terminal << wxT("error ! reading ng\n");
+  *terminal << wxString::Format(wxT("    k point grid : %d %d %d\n"),
+    ng0[0], ng0[1], ng0[2]);
   for (i = 0; i < 3; i++) ng[i] = ng0[i];
   /*
    Shift of k-point grid
   */
   ierr = fscanf(fp, "%d", &lshift);
-  if (ierr == 0) printf("error ! reading lshift");
+  if (ierr == 0) *terminal << wxT("error ! reading lshift\n");
 
   if (lshift == 0) {
-    printf("    k point grid is the Monkhorst-Pack grid. \n");
+    *terminal << wxT("    k point grid is the Monkhorst-Pack grid.\n");
     for (i = 0; i < 3; i++) shiftk[i] = (ng0[i] + 1) % 2;
   }
   else if (lshift == 1) {
-    printf("    k point grid starts from Gamma. \n");
+    *terminal << wxT("    k point grid starts from Gamma.\n");
     for (i = 0; i < 3; i++) shiftk[i] = 0;
   }
   else if (lshift == 2) {
-    printf("    k point grid starts from Gamma + a half grid. \n");
+    *terminal << wxT("    k point grid starts from Gamma + a half grid.\n");
     for (i = 0; i < 3; i++) shiftk[i] = 1;
   }
   else {
@@ -98,8 +99,8 @@ int read_file()
    # of bands
   */
   ierr = fscanf(fp, "%d", &nb);
-  if (ierr == 0) printf("error ! reading nb");
-  printf("    # of bands : %d\n", nb);
+  if (ierr == 0) *terminal << wxT("error ! reading nb\n");
+  *terminal << wxString::Format(wxT("    # of bands : %d\n"), nb);
   ntri = new int[nb];
   ntri_th = new int*[nb];
   for (ib = 0; ib < nb; ib++) ntri_th[ib] = new int[nthreads];
@@ -113,8 +114,8 @@ int read_file()
   */
   for (i = 0; i < 3; ++i) {
     ierr = fscanf(fp, "%e%e%e", &bvec[i][0], &bvec[i][1], &bvec[i][2]);
-    if (ierr == 0) printf("error ! reading bvec");
-    printf("    bvec %d : %f %f %f \n", i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
+    if (ierr == 0) *terminal << wxT("error ! reading bvec\n");
+    *terminal << wxString::Format(wxT("    bvec %d : %f %f %f \n"), i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
   }/*for (i = 0; i < 3; ++i)*/
   scl /= sqrtf(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
   linewidth /= scl;
@@ -125,7 +126,8 @@ int read_file()
     for (j = 0; j < 3; ++j) avec[i][j] = 0.0f;
     avec[i][i] = 1.0f;
     solve3(bvec, avec[i]);
-    printf("    avec %d : %f %f %f \n", i + 1, avec[i][0], avec[i][1], avec[i][2]);
+    *terminal << wxString::Format(wxT("    avec %d : %f %f %f \n"),
+      i + 1, avec[i][0], avec[i][1], avec[i][2]);
   }/*for (i = 0; i < 3; ++i)*/
   for (i = 0; i < 3; ++i) {
     secvec[i] = bvec[2][i];

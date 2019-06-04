@@ -172,4 +172,6 @@ extern wxString batch_name;
 extern wxString frmsf_file_name;
 extern int lbatch;
 
+extern wxTextCtrl* terminal;
+
 #endif

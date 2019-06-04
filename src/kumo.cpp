@@ -65,7 +65,7 @@ static void kumo_coef(
 void interpol_energy() {
   int ib, i0, i1, i2, ii;
 
-  printf("    Interpolating ... ");
+  *terminal << wxT("    Interpolating ... ");
   /*
    Reallocate
   */
@@ -224,5 +224,5 @@ void interpol_energy() {
       }/*for (i0 = 0; i0 < ng[0]; i0++)*/
     }/*for (ib = 0; ib < nb; ib++)*/
   }/*End of parallel region*/
-  printf("Done\n\n");
+  *terminal << wxT("Done\n\n");
 }/*void interpol_energy() */

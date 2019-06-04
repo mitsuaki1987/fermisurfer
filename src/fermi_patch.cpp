@@ -436,8 +436,8 @@ void fermi_patch()
   /**/
   if (fbz == 1) {
     if (query == 1) {
-      printf("\n");
-      printf("  ##  First Brillouin zone mode  #######\n");
+      *terminal << wxT("\n");
+      *terminal << wxT("  ##  First Brillouin zone mode  #######\n");
     }
     for (i0 = 0; i0 < 3; ++i0) {
       start[i0] = ng[i0] / 2 - ng[i0];
@@ -446,15 +446,15 @@ void fermi_patch()
   }
   else {
     if (query == 1) {
-      printf("\n");
-      printf("  ##  Premitive Brillouin zone mode  #######\n");
+      *terminal << wxT("\n");
+      *terminal << wxT("  ##  Premitive Brillouin zone mode  #######\n");
     }
     for (i0 = 0; i0 < 3; ++i0) {
       start[i0] = 0;
       last[i0] = ng[i0];
     }
   }
-  if (query == 1) printf("    Computing patch ...\n");
+  if (query == 1)* terminal << wxT("    Computing patch ...\n");
   /**/
 #pragma omp parallel default(none) \
   shared(nb,ntri,ntri_th,start,last,ng,ng0,eig,vf,EF,mat,shiftk,query) \
@@ -573,9 +573,9 @@ void fermi_patch()
       ntri_th[ib][0] = 0;
     }
     /**/
-    printf("      band   # of patchs\n");
+    *terminal << wxT("      band   # of patchs\n");
     for (ib = 0; ib < nb; ib++) {
-      printf("      %d       %d\n", ib + 1, ntri[ib]);
+      *terminal << wxString::Format(wxT("      %d       %d\n"), ib + 1, ntri[ib]);
     }
     /*
      Allocation of triangler patches
@@ -606,6 +606,6 @@ void fermi_patch()
     }/*for (ib = 0; ib < nb; ++ib)*/
   }/*if (query == 1)*/
   else {
-    printf("    ... Done\n");
+    *terminal << wxT("    ... Done\n");
   }
 } /* fermi_patch */

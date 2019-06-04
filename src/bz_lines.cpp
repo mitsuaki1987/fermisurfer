@@ -131,7 +131,7 @@ static void check_bragg() {
 
     }/*for (ii = 0; ii < 2; ii++)*/
   }/*for (ibzl = 0; ibzl < nbzl; ibzl++)*/
-  printf("    Number of corners of 1st BZ : %d\n", nbzcorner);
+  *terminal << wxString::Format(wxT("    Number of corners of 1st BZ : %d\n"), nbzcorner);
   /**@brief
   Then, compute real number Bragg plane of 1st BZ (::nbragg), 
   Re-order ::bragg and ::brnrm
@@ -150,7 +150,7 @@ static void check_bragg() {
       nbragg += 1;
     }
   }
-  printf("    Number of plane of 1st BZ : %d\n", nbragg);
+  *terminal << wxString::Format(wxT("    Number of plane of 1st BZ : %d\n"), nbragg);
 }/*static void check_bragg*/
 /**
  @brief Compute Brillouin zone boundariy lines

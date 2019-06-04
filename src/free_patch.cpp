@@ -134,14 +134,14 @@ void max_and_min()
     min_th[ithread] = new GLfloat[3];
   }
 
-  printf("\n");
-  if (color_scale == 1) printf("  ##  Color Scale as Input Quantity (Real) #############\n");
-  else if (color_scale == 2) printf("  ##  Color Scale as Input Quantity (Complex) #############\n");
-  else if (color_scale == 3) printf("  ##  Color Scale as Fermi Velocity #############\n");
-  else if (color_scale == 4) printf("  ##  Color Scale as Band Index #############\n");
-  else if (color_scale == 5) printf("  ##  Gray Scale as Input Quantity (Real) #############\n");
-  else if (color_scale == 6) printf("  ##  Gray Scale as Fermi Velocity #############\n");
-  printf("\n");
+  *terminal << wxT("\n");
+  if (color_scale == 1) *terminal << wxT("  ##  Color Scale as Input Quantity (Real) #############\n");
+  else if (color_scale == 2) *terminal << wxT("  ##  Color Scale as Input Quantity (Complex) #############\n");
+  else if (color_scale == 3) *terminal << wxT("  ##  Color Scale as Fermi Velocity #############\n");
+  else if (color_scale == 4) *terminal << wxT("  ##  Color Scale as Band Index #############\n");
+  else if (color_scale == 5) *terminal << wxT("  ##  Gray Scale as Input Quantity (Real) #############\n");
+  else if (color_scale == 6) *terminal << wxT("  ##  Gray Scale as Fermi Velocity #############\n");
+  *terminal << wxT("\n");
   /*
    Search max and min.
   */
@@ -273,14 +273,14 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
 
   if (color_scale == 1 || color_scale == 4
     || color_scale == 6 || color_scale == 7) {
-     printf("    Min. and Max. value : %f %f\n", patch_min[0], patch_max[0]);
+    *terminal << wxString::Format(wxT("    Min. and Max. value : %f %f\n"), patch_min[0], patch_max[0]);
   }
   else if (color_scale == 2) {
-    printf("    Max. absolute value : %f\n", patch_max[0]);
+    *terminal << wxString::Format(wxT("    Max. absolute value : %f\n"), patch_max[0]);
   }
   else if (color_scale == 3) {
     for (itri = 0; itri < 3; ++itri) {
-      printf("    Min. and Max. value for axis %d : %f %f\n", 
+      *terminal << wxString::Format(wxT("    Min. and Max. value for axis %d : %f %f\n"),
         itri, patch_min[itri], patch_max[itri]);
     }
   }

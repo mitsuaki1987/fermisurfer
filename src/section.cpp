@@ -357,9 +357,9 @@ void calc_section() {
       }
       ntri_th[ib][0] = 0;
     }
-    printf("    band   # of Fermi-line\n");
+    *terminal << wxT("    band   # of Fermi-line\n");
     for (ib = 0; ib < nb; ib++) {
-      printf("    %d       %d\n", ib + 1, n2d[ib]);
+      *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, n2d[ib]);
     }
     /*
     Allocation of Fermi-lines

@@ -499,6 +499,8 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
   int ierr;
   char command_name[256];
 
+  if (draw_band == NULL) return;
+
   // This is a dummy, to avoid an endless succession of paint messages.
   // OnPaint handlers must always create a wxPaintDC.
   wxPaintDC dc(this);

@@ -589,6 +589,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_background, this, menu_background_radio2);
   imenu_background->AppendRadioItem(menu_background_radio2, wxT("White"));
 
+  nb = 10;// debug
   wxMenu* imenu_band = new wxMenu;
   for (ib = 0; ib < nb; ib++) {
     Bind(wxEVT_COMMAND_MENU_SELECTED, &MyFrame::menu_band, this, menu_band_check + ib);
@@ -718,6 +719,23 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
 #endif
 
   m_canvas = new TestGLCanvas(this, wxID_ANY, gl_attrib);
+
+  wxBoxSizer* insizer = new wxBoxSizer(wxVERTICAL);
+  insizer->Add(m_canvas, 1, wxEXPAND, 1);
+
+  terminal = new wxTextCtrl(this, wxID_ANY, wxT(""),
+    wxPoint(0, 250), wxSize(100, 50), wxTE_MULTILINE);
+  insizer->Add(terminal, 1, wxEXPAND, 1);
+
+  wxBoxSizer* outsizer = new wxBoxSizer(wxHORIZONTAL);
+  outsizer->Add(insizer, 1, wxEXPAND, 1);
+
+  wxPanel* panel = new wxPanel(this);
+  wxButton* select_two = new wxButton(panel, menu_nodeline_check, wxT("Select #&2"));
+
+  outsizer->Add(panel, 1, wxEXPAND, 1);
+  SetSizer(outsizer);
+  SetAutoLayout(true);
 
   // Show the frame
   Show(true);

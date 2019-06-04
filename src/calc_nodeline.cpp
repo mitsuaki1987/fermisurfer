@@ -113,9 +113,9 @@ void calc_nodeline() {
       }
       ntri_th[ib][0] = 0;
     }/*for (ib = 0; ib < nb; ib++)*/
-    printf("    band   # of nodeline\n");
+    *terminal << wxT("    band   # of nodeline\n");
     for (ib = 0; ib < nb; ib++) {
-      printf("    %d       %d\n", ib + 1, nnl[ib]);
+      *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, nnl[ib]);
     }/*for (ib = 0; ib < nb; ib++)*/
     /*
      Allocation of nodeline
