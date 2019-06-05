@@ -175,5 +175,5 @@ extern wxString frmsf_file_name;
 extern int lbatch;
 
 extern wxTextCtrl* terminal;
-
+extern int refresh_interpol;
 #endif

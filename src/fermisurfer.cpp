@@ -230,6 +230,7 @@ wxString frmsf_file_name;
 int lbatch;
 
 wxTextCtrl* terminal;
+int refresh_interpol = 0;
 
 /**
   @brief Glut Display function
