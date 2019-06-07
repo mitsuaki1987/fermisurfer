@@ -280,7 +280,7 @@ bool MyApp::OnInit()
 
   if (!wxApp::OnInit()) return false;
 
-  new MyFrame(NULL, argv[1]);
+  MyFrame *myf = new MyFrame(NULL, argv[1]);
 
   *terminal << wxT("###########################################\n");
   *terminal << wxT("##                                       ##\n");
@@ -314,6 +314,7 @@ bool MyApp::OnInit()
   interpol_energy();
   init_corner();
   bragg_vector();
+  myf->modify_band();
   /*
    Brillouin zone
   */

@@ -38,14 +38,15 @@ public:
     long style = wxDEFAULT_FRAME_STYLE);
 
   virtual ~MyFrame();
-
+  void modify_band();
   TestGLCanvas* m_canvas;
+  wxPanel* panel;
 
 private:
   void OnExit(wxCommandEvent& event);
+  void check_band(wxCommandEvent& event);
   void radio_brillouinzone(wxCommandEvent& event);
   void radio_background(wxCommandEvent& event);
-  void check_band(wxCommandEvent& event);
   void check_colorbar(wxCommandEvent& event);
   void radiovalue_colorscale(wxCommandEvent& event);
   void checkvalue_equator(wxCommandEvent& event);
