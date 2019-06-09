@@ -37,6 +37,7 @@ THE SOFTWARE.
 #include <OpenGL/gl.h>
 #endif
 #include <wx/wx.h>
+#include "menu.hpp"
 
 /*
  Input variables
@@ -92,8 +93,8 @@ extern GLfloat ****matp;    //!< Matrix elements of points [::nb][::ntri][3][3]
 extern GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
 extern int itet;           //!< Counter for tetrahedron
 extern GLfloat side;       //!< Which side is lighted
-extern GLfloat patch_max[3];  //!< Max value across patch
-extern GLfloat patch_min[3];  //!< Max value across patch
+extern GLfloat patch_max;  //!< Max value across patch
+extern GLfloat patch_min;  //!< Max value across patch
 /*
   Variables for nodeline
 */
@@ -176,4 +177,12 @@ extern int lbatch;
 
 extern wxTextCtrl* terminal;
 extern int refresh_interpol;
+extern int refresh_patch;
+extern int refresh_color;
+extern int refresh_nodeline;
+extern int refresh_equator;
+extern int refresh_section;
+extern int skip_minmax;
+extern MyFrame* myf;
+
 #endif

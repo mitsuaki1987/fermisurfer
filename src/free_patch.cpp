@@ -41,80 +41,87 @@ void free_patch() {
   /*
    Fermi patch
   */
-  for (ib = 0; ib < nb; ++ib) {
-    for (i0 = 0; i0 < ntri[ib]; ++i0) {
-      for (i1 = 0; i1 < 3; ++i1) {
-        delete[] nmlp[ib][i0][i1];
-        delete[] matp[ib][i0][i1];
-        delete[] kvp[ib][i0][i1];
+  if (refresh_patch == 1) {
+    for (ib = 0; ib < nb; ++ib) {
+      for (i0 = 0; i0 < ntri[ib]; ++i0) {
+        for (i1 = 0; i1 < 3; ++i1) {
+          delete[] nmlp[ib][i0][i1];
+          delete[] matp[ib][i0][i1];
+          delete[] kvp[ib][i0][i1];
+        }
+        delete[] nmlp[ib][i0];
+        delete[] matp[ib][i0];
+        delete[] kvp[ib][i0];
       }
-      delete[] nmlp[ib][i0];
-      delete[] matp[ib][i0];
-      delete[] kvp[ib][i0];
+      delete[] nmlp[ib];
+      delete[] matp[ib];
+      delete[] clr[ib];
+      delete[] kvp[ib];
+      delete[] nmlp_rot[ib];
+      delete[] kvp_rot[ib];
     }
-    delete[] nmlp[ib];
-    delete[] matp[ib];
-    delete[] clr[ib];
-    delete[] kvp[ib];
-    delete[] nmlp_rot[ib];
-    delete[] kvp_rot[ib];
-  }
-  delete[] nmlp;
-  delete[] matp;
-  delete[] clr;
-  delete[] kvp;
-  delete[] nmlp_rot;
-  delete[] kvp_rot;
+    delete[] nmlp;
+    delete[] matp;
+    delete[] clr;
+    delete[] kvp;
+    delete[] nmlp_rot;
+    delete[] kvp_rot;
+  }/*if (refresh_patch == 1)*/
   /*
    Nodal line
   */
-  for (ib = 0; ib < nb; ++ib) {
-    for (i0 = 0; i0 < nnl[ib]; ++i0) {
-      for (i1 = 0; i1 < 2; ++i1) {
-        delete[] kvnl[ib][i0][i1];
-      }/*for (i1 = 0; i1 < 2; ++i1)*/
-      delete[] kvnl[ib][i0];
-    }/*for (i0 = 0; i0 < nnl[ib]; ++i0)*/
-    delete[] kvnl[ib];
-    delete[] kvnl_rot[ib];
-    delete[] nmlnl[ib];
-    delete[] clrnl[ib];
-  }/*for (ib = 0; ib < nb; ++ib)*/
-  delete[] kvnl;
-  delete[] kvnl_rot;
-  delete[] nmlnl;
-  delete[] clrnl;
+  if (refresh_nodeline == 1) {
+    for (ib = 0; ib < nb; ++ib) {
+      for (i0 = 0; i0 < nnl[ib]; ++i0) {
+        for (i1 = 0; i1 < 2; ++i1) {
+          delete[] kvnl[ib][i0][i1];
+        }/*for (i1 = 0; i1 < 2; ++i1)*/
+        delete[] kvnl[ib][i0];
+      }/*for (i0 = 0; i0 < nnl[ib]; ++i0)*/
+      delete[] kvnl[ib];
+      delete[] kvnl_rot[ib];
+      delete[] nmlnl[ib];
+      delete[] clrnl[ib];
+    }/*for (ib = 0; ib < nb; ++ib)*/
+    delete[] kvnl;
+    delete[] kvnl_rot;
+    delete[] nmlnl;
+    delete[] clrnl;
+  }/*if (refresh_nodeline == 1)*/
   /*
    2D Fermi line
   */
-  for (ib = 0; ib < nb; ++ib) {
-    delete[] kv2d[ib];
-    delete[] clr2d[ib];
-    delete[] nml2d[ib];
-  }/*for (ib = 0; ib < nb; ++ib)*/
-  delete[] kv2d;
-  delete[] clr2d;
-  delete[] nml2d;
+  if (refresh_section == 1) {
+    for (ib = 0; ib < nb; ++ib) {
+      delete[] kv2d[ib];
+      delete[] clr2d[ib];
+      delete[] nml2d[ib];
+    }/*for (ib = 0; ib < nb; ++ib)*/
+    delete[] kv2d;
+    delete[] clr2d;
+    delete[] nml2d;
+  }/*if (refresh_section == 1)*/
   /*
   equator
   */
-  for (ib = 0; ib < nb; ++ib) {
-    for (i0 = 0; i0 < nequator[ib]; ++i0) {
-      for (i1 = 0; i1 < 2; ++i1) {
-        delete[] kveq[ib][i0][i1];
-      }/*for (i1 = 0; i1 < 2; ++i1)*/
-      delete[] kveq[ib][i0];
-    }/*for (i0 = 0; i0 < nequator[ib]; ++i0)*/
-    delete[] kveq[ib];
-    delete[] kveq_rot[ib];
-    delete[] nmleq[ib];
-    delete[] clreq[ib];
-  }/*for (ib = 0; ib < nb; ++ib)*/
-  delete[] kveq;
-  delete[] kveq_rot;
-  delete[] nmleq;
-  delete[] clreq;
-
+  if (refresh_equator == 1) {
+    for (ib = 0; ib < nb; ++ib) {
+      for (i0 = 0; i0 < nequator[ib]; ++i0) {
+        for (i1 = 0; i1 < 2; ++i1) {
+          delete[] kveq[ib][i0][i1];
+        }/*for (i1 = 0; i1 < 2; ++i1)*/
+        delete[] kveq[ib][i0];
+      }/*for (i0 = 0; i0 < nequator[ib]; ++i0)*/
+      delete[] kveq[ib];
+      delete[] kveq_rot[ib];
+      delete[] nmleq[ib];
+      delete[] clreq[ib];
+    }/*for (ib = 0; ib < nb; ++ib)*/
+    delete[] kveq;
+    delete[] kveq_rot;
+    delete[] nmleq;
+    delete[] clreq;
+  }/*if (refresh_equator == 1)*/
 }/*void free_patch()*/
 /**
  @brief Compute Max. & Min. of matrix elements.
@@ -125,14 +132,10 @@ void free_patch() {
 void max_and_min() 
 {
   int itri, ithread;
-  GLfloat **max_th, **min_th;
+  GLfloat *max_th, *min_th;
   
-  max_th = new GLfloat*[nthreads];
-  min_th = new GLfloat*[nthreads];
-  for (ithread = 0; ithread < nthreads; ithread++) {
-    max_th[ithread] = new GLfloat[3];
-    min_th[ithread] = new GLfloat[3];
-  }
+  max_th = new GLfloat[nthreads];
+  min_th = new GLfloat[nthreads];
 
   *terminal << wxT("\n");
   if (color_scale == 1) *terminal << wxT("  ##  Color Scale as Input Quantity (Real) #############\n");
@@ -152,36 +155,37 @@ shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
       int i, ib;
 
       ithread = get_thread();
-      max_th[ithread][0] = -1.0e10f;
-      min_th[ithread][0] = 1.0e10f;
+      max_th[ithread] = -1.0e10f;
+      min_th[ithread] = 1.0e10f;
 
       for (ib = 0; ib < nb; ib++) {
 #pragma omp for
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
-            if (matp[ib][itri][i][0] > max_th[ithread][0]) max_th[ithread][0] = matp[ib][itri][i][0];
-            if (matp[ib][itri][i][0] < min_th[ithread][0]) min_th[ithread][0] = matp[ib][itri][i][0];
+            if (matp[ib][itri][i][0] > max_th[ithread]) max_th[ithread] = matp[ib][itri][i][0];
+            if (matp[ib][itri][i][0] < min_th[ithread]) min_th[ithread] = matp[ib][itri][i][0];
           }
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    patch_max[0] = max_th[0][0];
-    patch_min[0] = min_th[0][0];
+    patch_max = max_th[0];
+    patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread][0] > patch_max[0]) patch_max[0] = max_th[ithread][0];
-      if (min_th[ithread][0] < patch_min[0]) patch_min[0] = min_th[ithread][0];
+      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
+      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
     }
   }/*if (color_scale == 0 || color_scale == 4)*/
   else   if (color_scale == 2) {
 #pragma omp parallel default(none) \
-shared(nb,ntri,matp,max_th) private(itri,ithread)
+shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
     {
       int i, ib;
       GLfloat abs;
 
       ithread = get_thread();
-      max_th[ithread][0] = -1.0e10f;
+      max_th[ithread] = -1.0e10f;
+      min_th[ithread] = 1.0e10f;
 
       for (ib = 0; ib < nb; ib++) {
 #pragma omp for
@@ -189,49 +193,50 @@ shared(nb,ntri,matp,max_th) private(itri,ithread)
           for (i = 0; i < 3; ++i) {
             abs = sqrtf(matp[ib][itri][i][0] * matp[ib][itri][i][0]
                       + matp[ib][itri][i][1] * matp[ib][itri][i][1]);
-            if (abs > max_th[ithread][0]) max_th[ithread][0] = abs;
+            if (abs > max_th[ithread]) max_th[ithread] = abs;
+            if (abs < min_th[ithread]) min_th[ithread] = abs;
           }
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
-   /**/
-    patch_max[0] = max_th[0][0];
+    /**/
+    patch_min = min_th[0];
+    patch_max = max_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread][0] > patch_max[0]) patch_max[0] = max_th[ithread][0];
+      if (max_th[ithread] < patch_min) patch_min = max_th[ithread];
+      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
     }
   }/*if (color_scale == 2)*/
   else   if (color_scale == 3) {
 #pragma omp parallel default(none) \
 shared(nb,ntri,matp,min_th,max_th) private(itri,ithread)
     {
-      int i, j, ib;
+      int i, ib;
+      GLfloat abs;
 
       ithread = get_thread();
-      min_th[ithread][0] = 1.0e10f;
-      max_th[ithread][0] = -1.0e10f;
+      min_th[ithread] = 1.0e10f;
+      max_th[ithread] = -1.0e10f;
 
       for (ib = 0; ib < nb; ib++) {
 #pragma omp for
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
-            for (j = 0; j < 3; ++j) {
-              if (matp[ib][itri][i][j] > max_th[ithread][j]) max_th[ithread][j] = matp[ib][itri][i][j];
-              if (matp[ib][itri][i][j] < min_th[ithread][j]) min_th[ithread][j] = matp[ib][itri][i][j];
-            }
+            abs = sqrtf(matp[ib][itri][i][0] * matp[ib][itri][i][0]
+                      + matp[ib][itri][i][1] * matp[ib][itri][i][1]
+                      + matp[ib][itri][i][2] * matp[ib][itri][i][2]);
+            if (abs > max_th[ithread]) max_th[ithread] = abs;
+            if (abs < min_th[ithread]) min_th[ithread] = abs;
           }
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    for (itri = 0; itri < 3; ++itri) {
-      patch_max[itri] = max_th[0][itri];
-      patch_min[itri] = min_th[0][itri];
-    }
+    patch_max = max_th[0];
+    patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      for (itri = 0; itri < 3; ++itri) {
-        if (max_th[ithread][itri] > patch_max[itri]) patch_max[itri] = max_th[ithread][itri];
-        if (min_th[ithread][itri] < patch_min[itri]) patch_min[itri] = min_th[ithread][itri];
-      }
+      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
+      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
     }
   }/*if (color_scale == 3)*/
   else if (color_scale == 4 || color_scale == 7) {
@@ -242,8 +247,8 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
       GLfloat norm;
 
       ithread = get_thread();
-      max_th[ithread][0] = -1.0e10f;
-      min_th[ithread][0] = 1.0e10f;
+      max_th[ithread] = -1.0e10f;
+      min_th[ithread] = 1.0e10f;
 
       for (ib = 0; ib < nb; ib++) {
 #pragma omp for
@@ -253,37 +258,26 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
             for (j = 0; j < 3; ++j) norm += nmlp[ib][itri][i][j]*nmlp[ib][itri][i][j];
             norm = sqrtf(norm);
 
-            if (norm > max_th[ithread][0]) max_th[ithread][0] = norm;
-            if (norm < min_th[ithread][0]) min_th[ithread][0] = norm;
+            if (norm > max_th[ithread]) max_th[ithread] = norm;
+            if (norm < min_th[ithread]) min_th[ithread] = norm;
           }
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    patch_max[0] = max_th[0][0];
-    patch_min[0] = min_th[0][0];
+    patch_max = max_th[0];
+    patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread][0] > patch_max[0]) patch_max[0] = max_th[ithread][0];
-      if (min_th[ithread][0] < patch_min[0]) patch_min[0] = min_th[ithread][0];
+      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
+      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
     }    
   }/*if (color_scale == 5 || color_scale == 6)*/
 
   delete[] max_th;
   delete[] min_th;
 
-  if (color_scale == 1 || color_scale == 4
-    || color_scale == 6 || color_scale == 7) {
-    *terminal << wxString::Format(wxT("    Min. and Max. value : %f %f\n"), patch_min[0], patch_max[0]);
-  }
-  else if (color_scale == 2) {
-    *terminal << wxString::Format(wxT("    Max. absolute value : %f\n"), patch_max[0]);
-  }
-  else if (color_scale == 3) {
-    for (itri = 0; itri < 3; ++itri) {
-      *terminal << wxString::Format(wxT("    Min. and Max. value for axis %d : %f %f\n"),
-        itri, patch_min[itri], patch_max[itri]);
-    }
-  }
+  myf->textbox_min->ChangeValue(wxString::Format(wxT("%f"), patch_min));
+  myf->textbox_max->ChangeValue(wxString::Format(wxT("%f"), patch_max));
 }/* max_and_min */
  /**
  @brief Compute Max. & Min. of matrix elements.
@@ -309,7 +303,7 @@ private(itri, j)
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             /**/
-            mat2 = (matp[ib][itri][i][0] - patch_min[0]) / (patch_max[0] - patch_min[0]);
+            mat2 = (matp[ib][itri][i][0] - patch_min) / (patch_max - patch_min);
             mat2 = mat2 * 4.0f;
             /**/
             if (mat2 <= 1.0) {
@@ -350,10 +344,10 @@ private(itri, j)
             /**/
             abs = sqrtf(matp[ib][itri][i][0] * matp[ib][itri][i][0]
                       + matp[ib][itri][i][1] * matp[ib][itri][i][1]);
-            if (abs / patch_max[0] < 0.00001) theta = 0.0f;
+            if (abs / patch_max < 0.00001) theta = 0.0f;
             else if (matp[ib][itri][i][1] > 0.0) theta = acosf(matp[ib][itri][i][0] / abs);
             else theta = -acosf(matp[ib][itri][i][0] / abs);
-            abs /= patch_max[0];
+            abs /= patch_max;
             theta = 3.0f * theta / acosf(-1.0f);
             /**/
             if (-3.0f <= theta && theta < -2.0f) {
@@ -407,7 +401,7 @@ private(itri, j)
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             for (j = 0; j < 3; j++)
-              mat2[j] = (matp[ib][itri][i][j] - patch_min[j]) / (patch_max[j] - patch_min[j]);
+              mat2[j] = (matp[ib][itri][i][j] - patch_min) / (patch_max - patch_min);
             clr[ib][0 + 4 * i + 12 * itri] = 0.9f * mat2[0] + 0.1f * (1.0f - mat2[0]);
             clr[ib][1 + 4 * i + 12 * itri] = 0.9f * mat2[1] + 0.1f * (1.0f - mat2[1]);
             clr[ib][2 + 4 * i + 12 * itri] = 0.9f * mat2[2] + 0.1f * (1.0f - mat2[2]);
@@ -433,7 +427,7 @@ private(itri, j)
             mat2 = 0.0f;
             for (j = 0; j < 3; ++j) mat2 += nmlp[ib][itri][i][j] * nmlp[ib][itri][i][j];
             mat2 = sqrtf(mat2);
-            mat2 = (mat2 - patch_min[0]) / (patch_max[0] - patch_min[0]);
+            mat2 = (mat2 - patch_min) / (patch_max - patch_min);
             mat2 = mat2 * 4.0f;
             /**/
             if (mat2 <= 1.0) {
@@ -521,7 +515,7 @@ private(itri, j)
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             /**/
-            mat2 = (matp[ib][itri][i][0] - patch_min[0]) / (patch_max[0] - patch_min[0]);
+            mat2 = (matp[ib][itri][i][0] - patch_min) / (patch_max - patch_min);
             /**/
             for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0f - mat2);
           }/*for (i = 0; i < 3; ++i)*/
@@ -545,7 +539,7 @@ private(itri, j)
            mat2 = 0.0f;
             for (j = 0; j < 3; ++j) mat2 += nmlp[ib][itri][i][j] * nmlp[ib][itri][i][j];
             mat2 = sqrtf(mat2);
-            mat2 = (mat2 - patch_min[0]) / (patch_max[0] - patch_min[0]);
+            mat2 = (mat2 - patch_min) / (patch_max - patch_min);
             /**/
             for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0f - mat2);
           }/*for (i = 0; i < 3; ++i)*/

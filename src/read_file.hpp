@@ -32,4 +32,4 @@ THE SOFTWARE.
 #include <wx/wx.h>
 
 int read_file();
-int read_batch(GLfloat minmax[3][2]);
+void read_batch();

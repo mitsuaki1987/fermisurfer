@@ -48,23 +48,45 @@ THE SOFTWARE.
 #include "menu.hpp"
 #include "operation.hpp"
 #include "wx/splitter.h"
+#include "wx/gbsizer.h"
 
 void compute_patch_segment() {
   if (refresh_interpol == 1){
     interpol_energy();
+    refresh_patch = 1;
     refresh_interpol = 0;
   }
-  query = 1; fermi_patch();
-  query = 0; fermi_patch();
-  max_and_min();
-  paint();
-  query = 1; calc_nodeline();
-  query = 0; calc_nodeline();
-  calc_2dbz();
-  query = 1; calc_section();
-  query = 0; calc_section();
-  query = 1; equator();
-  query = 0; equator();
+  if (refresh_patch == 1) {
+    query = 1; fermi_patch();
+    query = 0; fermi_patch();
+    refresh_color = 1;
+    refresh_section = 1;
+    refresh_equator = 1;
+    refresh_nodeline = 1;
+    refresh_patch = 0;
+  }
+  if (refresh_color == 1) {
+    if (skip_minmax == 1) skip_minmax = 0;
+    else max_and_min();
+    paint();
+    refresh_color = 0;
+  }
+  if (refresh_nodeline == 1) {
+    query = 1; calc_nodeline();
+    query = 0; calc_nodeline();
+    refresh_nodeline = 0;
+  }
+  if (refresh_section == 1) {
+    calc_2dbz();
+    query = 1; calc_section();
+    query = 0; calc_section();
+    refresh_section = 0;
+  }
+  if (refresh_equator == 1) {
+    query = 1; equator();
+    query = 0; equator();
+    refresh_equator = 0;
+  }
 }
 
 void refresh_patch_segment() {
@@ -105,6 +127,7 @@ enum
   itext_rotx,
   itext_roty,
   itext_rotz,
+  ibutton_rotate,
   icheck_band
 };
 
@@ -170,6 +193,7 @@ void MyFrame::radio_brillouinzone(
     fbz = -1;
     lsection = 0;
   }
+  refresh_patch = 1;
 } /* menu_brillouinzone */
 /**
  @brief Toggle Colorbar (::lcolorbar)
@@ -193,18 +217,14 @@ void MyFrame::radiovalue_colorscale(
   double dminmax;
 
   if (event.GetId() == itext_colorscalemin) {
-    max_and_min();
     if (event.GetString().ToDouble(&dminmax))
-      patch_min[0] = (GLfloat)dminmax;
-    paint();
-    Refresh(false);
+      patch_min = (GLfloat)dminmax;
+    skip_minmax = 1;
   }
   else if (event.GetId() == itext_colorscalemax) {
-    max_and_min();
     if (event.GetString().ToDouble(&dminmax))
-      patch_max[0] = (GLfloat)dminmax;
-    paint();
-    Refresh(false);
+      patch_max = (GLfloat)dminmax;
+    skip_minmax = 1;
   }
   else if (event.GetString().Cmp(wxT("Input (Real)")) == 0) 
     color_scale = 1;
@@ -220,6 +240,7 @@ void MyFrame::radiovalue_colorscale(
     color_scale = 6;
   else if (event.GetString().Cmp(wxT("Fermi Velocity (Gray Scale)")) == 0)
     color_scale = 7;
+  refresh_color = 1;
 } /* menu_colorscale */
 /**
  @brief Modify and toggle appearance of equator (::lequator)
@@ -255,6 +276,7 @@ void MyFrame::checkvalue_equator(
         eqvec[ii] += eqvec_fr[jj] * bvec[jj][ii];
       }/*for (jj = 0; jj < 3; jj++)*/
     }/*for (ii = 0; ii < 3; ii++)*/
+    refresh_equator = 1;
   }/*else if (event.GetId() > 1)*/
 } /*void menu_equator*/
 /**
@@ -346,20 +368,23 @@ void MyFrame::radiovalue_section(
   double dsecvec;
 
   if (event.GetId() == icheck_section) {
-    lsection = 0;
+    if (lsection == 0)lsection = 1;
+    else lsection = 0;
+    Refresh(false);
   }
   else if(event.GetId() == icheck_gamma) {
     if(secscale > 0.5) secscale = 0.0;
     else secscale = 1.0;
+    refresh_section = 1;
   }
   else {
-    if (event.GetId() == itext_equatorx) {
+    if (event.GetId() == itext_sectionx) {
       if (event.GetString().ToDouble(&dsecvec)) secvec_fr[0] = (GLfloat)dsecvec;
     }
-    else if (event.GetId() == itext_equatory) {
+    else if (event.GetId() == itext_sectiony) {
       if (event.GetString().ToDouble(&dsecvec)) secvec_fr[1] = (GLfloat)dsecvec;
     }
-    else if (event.GetId() == itext_equatorz) {
+    else if (event.GetId() == itext_sectionz) {
       if (event.GetString().ToDouble(&dsecvec)) secvec_fr[2] = (GLfloat)dsecvec;
     }
     /*
@@ -371,6 +396,7 @@ void MyFrame::radiovalue_section(
         secvec[ii] += secvec_fr[jj] * bvec[jj][ii];
       }/*for (jj = 0; jj < 3; jj++)*/
     }/*for (ii = 0; ii < 3; ii++)*/
+    refresh_section = 1;
   }/*else if (event.GetId() > 1)*/
 } /*void menu_section*/
 /**
@@ -380,27 +406,11 @@ void MyFrame::textctrl_shift(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ib, i0, i1, i2, ierr;
-  GLfloat emin, emax;
   double dEF;
-
-  emin = 100000.0;
-  emax = -100000.0;
-  for (ib = 0; ib < nb; ++ib) {
-    for (i0 = 0; i0 < ng[0]; ++i0) {
-      for (i1 = 0; i1 < ng[1]; ++i1) {
-        for (i2 = 0; i2 < ng[2]; ++i2) {
-          if (emin > eig[ib][i0][i1][i2]) emin = eig[ib][i0][i1][i2];
-          if (emax < eig[ib][i0][i1][i2]) emax = eig[ib][i0][i1][i2];
-        }
-      }
-    }
+  if (event.GetString().ToDouble(&dEF)) {
+    EF = (GLfloat)dEF;
+    refresh_patch = 1;
   }
-  printf("    Min  Max  E_F \n");
-  printf("    %f %f %f \n", emin, emax, EF);
-  printf("    New Fermi energy : ");
-  //
-  if (event.GetString().ToDouble(&dEF)) EF = (GLfloat)dEF;
 } /* menu_shift */
 /**
  @brief Tern stereogram (::lstereo)
@@ -422,6 +432,7 @@ void MyFrame::radio_tetra(
 {
   itet = wxAtoi(event.GetString());
   init_corner();
+  refresh_patch = 1;
 }/*menu_tetra*/
  /**
  @brief Setting of view
@@ -437,20 +448,27 @@ void MyFrame::textctrl_view(
   double dvalue;
 
   if (event.GetId() == itext_scale) {
-    if (event.GetString().ToDouble(&dvalue)) scl = (GLfloat)dvalue;
-
+    if (event.GetString().ToDouble(&dvalue)) {
+      scl = (GLfloat)dvalue;
+      Refresh(false);
+    }
   }
   else  if (event.GetId() == itext_positionx) {
-    if (event.GetString().ToDouble(&dvalue)) trans[0] = (GLfloat)dvalue;
-
+    if (event.GetString().ToDouble(&dvalue)) {
+      trans[0] = (GLfloat)dvalue;
+      Refresh(false);
+    }
   }
   else  if (event.GetId() == itext_positiony) {
-    if (event.GetString().ToDouble(&dvalue)) trans[1] = (GLfloat)dvalue;
+    if (event.GetString().ToDouble(&dvalue)) {
+      trans[1] = (GLfloat)dvalue;
+      Refresh(false);
+    }
   }
-  else  if (event.GetId() == itext_rotx|| 
-    event.GetId() == itext_roty|| 
+  else  if (event.GetId() == itext_rotx ||
+    event.GetId() == itext_roty ||
     event.GetId() == itext_rotz) {
-    /**/
+    /*
     thetay = asinf(rot[0][2]);
     if (cosf(thetay) != 0.0) {
       if (-rot[1][2] / cosf(thetay) >= 0.0) thetax = acosf(rot[2][2] / cosf(thetay));
@@ -468,19 +486,21 @@ void MyFrame::textctrl_view(
     thetaz = 180.0f / 3.14159265f * thetaz;
     printf("    Current Rotation (theta_x theta_y teta_z) in degree : %f %f %f\n", thetax, thetay, thetaz);
     printf("        New Rotation (theta_x theta_y teta_z) in degree : ");
+    */
     if (event.GetId() == itext_rotx) {
-      if (event.GetString().ToDouble(&dvalue)) thetax = (GLfloat)dvalue;
+      if (event.GetString().ToDouble(&dvalue))
+        thetax = (GLfloat)(dvalue) / 180.0f * 3.14159265f;
     }
     else if (event.GetId() == itext_roty) {
-      if (event.GetString().ToDouble(&dvalue)) thetay = (GLfloat)dvalue;
+      if (event.GetString().ToDouble(&dvalue))
+        thetay = (GLfloat)(dvalue) / 180.0f * 3.14159265f;
     }
     else if (event.GetId() == itext_rotz) {
-      if (event.GetString().ToDouble(&dvalue)) thetaz = (GLfloat)dvalue;
+      if (event.GetString().ToDouble(&dvalue))
+        thetaz = (GLfloat)(dvalue) / 180.0f * 3.14159265f;
     }
-    thetax = 3.14159265f / 180.0f * thetax;
-    thetay = 3.14159265f / 180.0f * thetay;
-    thetaz = 3.14159265f / 180.0f * thetaz;
-
+  }
+  else if(event.GetId() == ibutton_rotate){
     rot[0][0] = cosf(thetay)* cosf(thetaz);
     rot[0][1] = -cosf(thetay)* sinf(thetaz);
     rot[0][2] = sinf(thetay);
@@ -490,8 +510,8 @@ void MyFrame::textctrl_view(
     rot[2][0] = -cosf(thetax)* cosf(thetaz)* sinf(thetay) + sinf(thetax)* sinf(thetaz);
     rot[2][1] = cosf(thetaz)* sinf(thetax) + cosf(thetax)* sinf(thetay)* sinf(thetaz);
     rot[2][2] = cosf(thetax)* cosf(thetay);
+    Refresh(false);
   }
-  Refresh(false);
 }
 
 MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
@@ -519,139 +539,170 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
 
   panel = new wxPanel(splitterV);
 
+  gbsizer = new wxGridBagSizer(25, 5);
+
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_compute, this, ibutton_compute);
-  new wxButton(panel, ibutton_compute, wxT("Update"), wxPoint(10, 10));
+  gbsizer->Add(new wxButton(panel, ibutton_compute, wxT("Update")), wxGBPosition(0,0), wxGBSpan(1,1));
+
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line width :")),
+    wxGBPosition(0, 1), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_line, this, itext_line);
+  wxTextCtrl* textbox_linewidth = new wxTextCtrl(panel, itext_line, wxT(""));
+  gbsizer->Add(textbox_linewidth, wxGBPosition(0, 2), wxGBSpan(1, 1));
+  textbox_linewidth->ChangeValue(wxT("1"));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_gamma);
-  new wxCheckBox(panel, icheck_gamma, wxT("On Gamma"), wxPoint(210, 25));
-  new wxStaticText(panel, wxID_ANY, wxT("Section-v :"),
-    wxPoint(30, 52), wxDefaultSize, wxALIGN_RIGHT);
+  gbsizer->Add(new wxCheckBox(panel, icheck_gamma, wxT("On Gamma")), wxGBPosition(0, 3), wxGBSpan(1, 1));
+
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Section-v :")), wxGBPosition(1, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectionx);
-  new wxTextCtrl(panel, itext_sectionx, wxT(""), wxPoint(110, 50), wxDefaultSize);
+  wxTextCtrl* textbox_sectionx = new wxTextCtrl(panel, itext_sectionx, wxT(""));
+  gbsizer->Add(textbox_sectionx, wxGBPosition(1, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectiony);
-  new wxTextCtrl(panel, itext_sectiony, wxT(""), wxPoint(210, 50), wxDefaultSize);
+  wxTextCtrl* textbox_sectiony = new wxTextCtrl(panel, itext_sectiony, wxT(""));
+  gbsizer->Add(textbox_sectiony, wxGBPosition(1, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectionz);
-  new wxTextCtrl(panel, itext_sectionz, wxT(""), wxPoint(310, 50), wxDefaultSize);
+  wxTextCtrl* textbox_sectionz = new wxTextCtrl(panel, itext_sectionz, wxT(""));
+  gbsizer->Add(textbox_sectionz, wxGBPosition(1, 3), wxGBSpan(1, 1));
+  textbox_sectionx->ChangeValue(wxT("0"));
+  textbox_sectiony->ChangeValue(wxT("0"));
+  textbox_sectionz->ChangeValue(wxT("1"));
 
-  new wxStaticText(panel, wxID_ANY, wxT("Equator-v :"),
-    wxPoint(30, 77), wxDefaultSize, wxALIGN_RIGHT);
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Equator-v :")), wxGBPosition(2, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatorx);
-  new wxTextCtrl(panel, itext_equatorx, wxT(""), wxPoint(110, 75), wxDefaultSize);
+  wxTextCtrl* textbox_equatorx = new wxTextCtrl(panel, itext_equatorx, wxT(""));
+  gbsizer->Add(textbox_equatorx, wxGBPosition(2, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatory);
-  new wxTextCtrl(panel, itext_equatory, wxT(""), wxPoint(210, 75), wxDefaultSize);
+  wxTextCtrl* textbox_equatory = new wxTextCtrl(panel, itext_equatory, wxT(""));
+  gbsizer->Add(textbox_equatory, wxGBPosition(2, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatorz);
-  new wxTextCtrl(panel, itext_equatorz, wxT(""), wxPoint(310, 75), wxDefaultSize);
+  wxTextCtrl* textbox_equatorz = new wxTextCtrl(panel, itext_equatorz, wxT(""));
+  gbsizer->Add(textbox_equatorz, wxGBPosition(2, 3), wxGBSpan(1, 1));
+  textbox_equatorx->ChangeValue(wxT("0"));
+  textbox_equatory->ChangeValue(wxT("0"));
+  textbox_equatorz->ChangeValue(wxT("1"));
 
-  new wxStaticText(panel, wxID_ANY, wxT("Interpol ratio :"),
-    wxPoint(10, 102), wxDefaultSize, wxALIGN_RIGHT);
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Interpol ratio :")), wxGBPosition(3, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_interpol, this, itext_interpol);
-  new wxTextCtrl(panel, itext_interpol, wxT(""), wxPoint(110, 100), wxDefaultSize);
+  wxTextCtrl* textbox_interpol = new wxTextCtrl(panel, itext_interpol, wxT(""));
+  gbsizer->Add(textbox_interpol, wxGBPosition(3, 1), wxGBSpan(1, 1));
+  textbox_interpol->ChangeValue(wxT("1"));
 
-  new wxStaticText(panel, wxID_ANY, wxT("Fermi energy :"),
-    wxPoint(10, 127), wxDefaultSize, wxALIGN_RIGHT);
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Fermi energy :")), wxGBPosition(4, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_shift, this, itext_shift);
-  new wxTextCtrl(panel, itext_shift, wxT(""), wxPoint(110, 125), wxDefaultSize);
+  wxTextCtrl* textbox_shift = new wxTextCtrl(panel, itext_shift, wxT(""));
+  gbsizer->Add(textbox_shift, wxGBPosition(4, 1), wxGBSpan(1, 1));
+  textbox_shift->ChangeValue(wxT("0"));
 
-  new wxStaticText(panel, wxID_ANY, wxT("Min of Scale :"),
-    wxPoint(15, 152), wxDefaultSize, wxALIGN_RIGHT);
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Min of Scale :")), wxGBPosition(5, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_colorscale, this, itext_colorscalemin);
-  new wxTextCtrl(panel, itext_colorscalemin, wxT(""), wxPoint(110, 150), wxDefaultSize);
-  new wxStaticText(panel, wxID_ANY, wxT("Max of Scale :"),
-    wxPoint(15, 177), wxDefaultSize, wxALIGN_RIGHT);
+  textbox_min = new wxTextCtrl(panel, itext_colorscalemin, wxT(""));
+  gbsizer->Add(textbox_min, wxGBPosition(5, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Max of Scale :")), wxGBPosition(6, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_colorscale, this, itext_colorscalemax);
-  new wxTextCtrl(panel, itext_colorscalemax, wxT(""), wxPoint(110, 175), wxDefaultSize);
-
-  wxString choices_colorscale[] = { wxT("Input (Real)"), wxT("Input (Complex)"),
-    wxT("Input (Tri-number)"), wxT("Fermi Velocity"), wxT("Band Index"),
-    wxT("Input (Real, Gray Scale)"), wxT("Fermi Velocity (Gray Scale)") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radiovalue_colorscale, this, iradio_colorscale);
-  new wxRadioBox(panel, iradio_colorscale, wxT("Color scale mode"),
-    wxPoint(10, 200), wxDefaultSize,
-    WXSIZEOF(choices_colorscale), choices_colorscale,
-    1, wxRA_SPECIFY_COLS);
-
-  wxString choices_bz[] = { wxT("First Brillouin zone"), wxT("Primitive Brillouin zone") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_brillouinzone, this, iradio_brillouinzone);
-  new wxRadioBox(panel, iradio_brillouinzone, wxT("Brillouin zone"),
-    wxPoint(10, 400), wxDefaultSize,
-    WXSIZEOF(choices_bz), choices_bz,
-    1, wxRA_SPECIFY_COLS);
+  textbox_max = new wxTextCtrl(panel, itext_colorscalemax, wxT(""));
+  gbsizer->Add(textbox_max, wxGBPosition(6, 1), wxGBSpan(1, 1));
 
   wxString choices_tetra[] = { wxT("1"), wxT("2"), wxT("3"), wxT("4"), wxT("5"), wxT("6"), wxT("7") ,
 wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
  wxT("15"), wxT("16") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_tetra, this, iradio_tetra);
-  new wxRadioBox(panel, iradio_tetra, wxT("Tetrahedron"),
-    wxPoint(220, 100), wxDefaultSize,
+  gbsizer->Add(new wxRadioBox(panel, iradio_tetra, wxT("Tetrahedron"),
+    wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_tetra), choices_tetra,
-    1, wxRA_SPECIFY_COLS);
+    4, wxRA_SPECIFY_COLS), wxGBPosition(3,2), wxGBSpan(4, 2));
 
-  new wxStaticText(panel, wxID_ANY, wxT("Line width :"),
-    wxPoint(30, 477), wxDefaultSize, wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_line, this, itext_line);
-  new wxTextCtrl(panel, itext_line, wxT(""), wxPoint(110, 475), wxDefaultSize);
+  wxString choices_colorscale[] = { wxT("Input (Real)"), wxT("Input (Complex)"),
+    wxT("Input (Tri-number)"), wxT("Fermi Velocity"), wxT("Band Index"),
+    wxT("Input (Real, Gray Scale)"), wxT("Fermi Velocity (Gray Scale)") };
+  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radiovalue_colorscale, this, iradio_colorscale);
+  gbsizer->Add(new wxRadioBox(panel, iradio_colorscale, wxT("Color scale mode"),
+    wxDefaultPosition, wxDefaultSize,
+    WXSIZEOF(choices_colorscale), choices_colorscale,
+    1, wxRA_SPECIFY_COLS), wxGBPosition(7, 0), wxGBSpan(2, 2));
 
-  new wxStaticText(panel, wxID_ANY, wxT("Rotation :"),
-    wxPoint(40, 502), wxDefaultSize, wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotx);
-  new wxTextCtrl(panel, itext_rotx, wxT(""), wxPoint(110, 500), wxDefaultSize);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_roty);
-  new wxTextCtrl(panel, itext_roty, wxT(""), wxPoint(210, 500), wxDefaultSize);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotz);
-  new wxTextCtrl(panel, itext_rotz, wxT(""), wxPoint(310, 500), wxDefaultSize);
-
-  new wxStaticText(panel, wxID_ANY, wxT("Position :"),
-    wxPoint(140, 527), wxDefaultSize, wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positionx);
-  new wxTextCtrl(panel, itext_positionx, wxT(""), wxPoint(210, 525), wxDefaultSize);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positiony);
-  new wxTextCtrl(panel, itext_positiony, wxT(""), wxPoint(310, 525), wxDefaultSize);
-
-  new wxStaticText(panel, wxID_ANY, wxT("Scale :"),
-    wxPoint(260, 552), wxDefaultSize, wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_scale);
-  new wxTextCtrl(panel, itext_scale, wxT(""), wxPoint(310, 550), wxDefaultSize);
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_colorbar, this, icheck_colorbar);
-  new wxCheckBox(panel, icheck_colorbar, wxT("Color bar"), wxPoint(110, 550));
-  // debug fileMenu->Check(menu_colorbar_check, true);
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::checkvalue_equator, this, icheck_equator);
-  new wxCheckBox(panel, icheck_equator, wxT("Equator"), wxPoint(110, 575));
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_nodeline, this, icheck_nodeline);
-  new wxCheckBox(panel, icheck_nodeline, wxT("Nodal line"), wxPoint(110, 600));
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_section);
-  new wxCheckBox(panel, icheck_section, wxT("Section"), wxPoint(110, 625));
+  wxString choices_bz[] = { wxT("First Brillouin zone"), wxT("Primitive Brillouin zone") };
+  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_brillouinzone, this, iradio_brillouinzone);
+  gbsizer->Add(new wxRadioBox(panel, iradio_brillouinzone, wxT("Brillouin zone"),
+    wxDefaultPosition, wxDefaultSize,
+    WXSIZEOF(choices_bz), choices_bz,
+    1, wxRA_SPECIFY_COLS), wxGBPosition(7, 2), wxGBSpan(1, 2));
 
   wxString choices_stereo[] = { wxT("None"), wxT("Parallel"), wxT("Cross") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_stereo, this, iradio_stereo);
-  new wxRadioBox(panel, iradio_stereo, wxT("Stereogram"),
-    wxPoint(210,575), wxDefaultSize,
+  gbsizer->Add(new wxRadioBox(panel, iradio_stereo, wxT("Stereogram"),
+    wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_stereo), choices_stereo,
-    1, wxRA_SPECIFY_COLS);
-
-  wxString choices_bg[] = { wxT("Black"), wxT("White") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_background, this, iradio_background);
-  new wxRadioBox(panel, iradio_background, wxT("Background color"),
-    wxPoint(260, 670), wxDefaultSize,
-    WXSIZEOF(choices_bg), choices_bg,
-    1, wxRA_SPECIFY_COLS);
+    1, wxRA_SPECIFY_COLS), wxGBPosition(8, 2), wxGBSpan(1, 1));
 
   wxString choices_mouse[] = { wxT("Rotate"), wxT("Scale"), wxT("Translate") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_mouse, this, iradio_mouse);
-  new wxRadioBox(panel, iradio_mouse, wxT("Mouse Drag"),
-    wxPoint(310, 575), wxDefaultSize,
+  gbsizer->Add(new wxRadioBox(panel, iradio_mouse, wxT("Mouse Drag"),
+    wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_mouse), choices_mouse,
-    1, wxRA_SPECIFY_COLS);
+    1, wxRA_SPECIFY_COLS), wxGBPosition(8, 3), wxGBSpan(1, 1));
 
-  wxString choices_light[] = { wxT("Both side"), wxT("Unoccupied side"), wxT("Occupied side") };
+  Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::textctrl_view, this, ibutton_rotate);
+  gbsizer->Add(new wxButton(panel, ibutton_rotate, wxT("Rotate")), 
+    wxGBPosition(9, 0), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotx);
+  textbox_rotatex = new wxTextCtrl(panel, itext_rotx, wxT(""));
+  gbsizer->Add(textbox_rotatex, wxGBPosition(9, 1), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_roty);
+  textbox_rotatey = new wxTextCtrl(panel, itext_roty, wxT(""));
+  gbsizer->Add(textbox_rotatey, wxGBPosition(9, 2), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotz);
+  textbox_rotatez = new wxTextCtrl(panel, itext_rotz, wxT(""));
+  gbsizer->Add(textbox_rotatez, wxGBPosition(9, 3), wxGBSpan(1, 1));
+  textbox_rotatex->ChangeValue(wxT("0"));
+  textbox_rotatey->ChangeValue(wxT("0"));
+  textbox_rotatez->ChangeValue(wxT("0"));
+
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Position :")), 
+    wxGBPosition(10, 1), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positionx);
+  textbox_positionx = new wxTextCtrl(panel, itext_positionx, wxT(""));
+  gbsizer->Add(textbox_positionx, wxGBPosition(10, 2), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positiony);
+  textbox_positiony = new wxTextCtrl(panel, itext_positiony, wxT(""));
+  gbsizer->Add(textbox_positiony, wxGBPosition(10, 3), wxGBSpan(1, 1));
+  textbox_positionx->ChangeValue(wxT("0"));
+  textbox_positiony->ChangeValue(wxT("0"));
+
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Scale :")), wxGBPosition(11, 2), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_scale);
+  textbox_scale = new wxTextCtrl(panel, itext_scale, wxT(""));
+  gbsizer->Add(textbox_scale, wxGBPosition(11, 3), wxGBSpan(1, 1));
+  textbox_scale->ChangeValue(wxT("1"));
+
+  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_colorbar, this, icheck_colorbar);
+  wxCheckBox* check = new wxCheckBox(panel, icheck_colorbar, wxT("Color bar"));
+  gbsizer->Add(check, wxGBPosition(11, 1), wxGBSpan(1, 1));
+  check->SetValue(true);
+  // debug fileMenu->Check(menu_colorbar_check, true);
+
+  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::checkvalue_equator, this, icheck_equator);
+  gbsizer->Add(new wxCheckBox(panel, icheck_equator, wxT("Equator")), wxGBPosition(12, 1), wxGBSpan(1, 1));
+
+  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_nodeline, this, icheck_nodeline);
+  gbsizer->Add(new wxCheckBox(panel, icheck_nodeline, wxT("Nodal line")), wxGBPosition(13, 1), wxGBSpan(1, 1));
+
+  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_section);
+  gbsizer->Add(new wxCheckBox(panel, icheck_section, wxT("Section")), wxGBPosition(14, 1), wxGBSpan(1, 1));
+
+  wxString choices_light[] = { wxT("Both"), wxT("Unoccupy"), wxT("Occupy") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_lighting, this, iradio_lighting);
-  new wxRadioBox(panel, iradio_lighting, wxT("Lighting"),
-    wxPoint(110, 670), wxDefaultSize,
+  gbsizer->Add(new wxRadioBox(panel, iradio_lighting, wxT("Lighting"),
+    wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_light), choices_light,
-    1, wxRA_SPECIFY_COLS);
+    1, wxRA_SPECIFY_COLS), wxGBPosition(12, 2), wxGBSpan(3, 1));
+
+  wxString choices_bg[] = { wxT("Black"), wxT("White") };
+  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_background, this, iradio_background);
+  gbsizer->Add(new wxRadioBox(panel, iradio_background, wxT("Background color"),
+    wxDefaultPosition, wxDefaultSize,
+    WXSIZEOF(choices_bg), choices_bg,
+    1, wxRA_SPECIFY_COLS), wxGBPosition(12, 3), wxGBSpan(3, 1));
 
   // Make a TestGLCanvas
 
@@ -680,6 +731,8 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   terminal = new wxTextCtrl(splitterH, wxID_ANY, wxT(""),
     wxPoint(0, 250), wxSize(100, 50), wxTE_MULTILINE);
   splitterH->SplitHorizontally(m_canvas, terminal);
+
+  panel->SetSizer(gbsizer);
 
   splitterV->SplitVertically(splitterH, panel);
 
@@ -710,10 +763,11 @@ void MyFrame::modify_band() {
 
   for (ib = 0; ib < nb; ib++) {
     Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_band, this, icheck_band + ib);
-    new wxCheckBox(panel, icheck_band + ib, wxString::Format(wxT("Band %d"), ib),
-      wxPoint(10, 525 + 25 * ib));
-    // debug imenu_band->Check(icheck_band + ib, true);
+    wxCheckBox* check = new wxCheckBox(panel, icheck_band + ib, 
+      wxString::Format(wxT("Band %d"), ib));
+    gbsizer->Add(check, wxGBPosition(10 + ib, 0), wxGBSpan(1, 1));
+    check->SetValue(true);
   }
-  Show(true);
 
+  Show(true);
 }

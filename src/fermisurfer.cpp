@@ -145,8 +145,8 @@ GLfloat ****matp;    //!< Matrix elements of points [::nb][::ntri][3][3]
 GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
 int itet = 0;           //!< Counter for tetrahedron
 GLfloat side = 1.0;       //!< Which side is lighted
-GLfloat patch_max[3];  //!< Max value across patch
-GLfloat patch_min[3];  //!< Max value across patch
+GLfloat patch_max;  //!< Max value across patch
+GLfloat patch_min;  //!< Max value across patch
 /*
   Variables for nodeline
 */
@@ -229,8 +229,16 @@ wxString batch_name;
 wxString frmsf_file_name;
 int lbatch;
 
+MyFrame* myf;
+
 wxTextCtrl* terminal;
 int refresh_interpol = 0;
+int refresh_patch = 1;
+int refresh_color = 1;
+int refresh_nodeline = 1;
+int refresh_equator = 1;
+int refresh_section = 1;
+int skip_minmax = 0;
 
 /**
   @brief Glut Display function
@@ -243,29 +251,8 @@ void batch_draw()
 
   printf("\n  Batch mode.\n");
 
-  iminmax = read_batch(minmax);
+  read_batch();
   refresh_patch_segment();
-  if (iminmax == 1) {
-    if (color_scale == 3) {
-      patch_min[0] = minmax[0][0];
-      patch_max[0] = minmax[0][1];
-      patch_min[1] = minmax[1][0];
-      patch_max[1] = minmax[1][1];
-      patch_min[2] = minmax[2][0];
-      patch_max[2] = minmax[2][1];
-    }
-    else if (color_scale == 2) {
-      patch_min[0] = minmax[0][0];
-      patch_max[0] = minmax[0][1];
-      patch_min[1] = minmax[1][0];
-      patch_max[1] = minmax[1][1];
-    }
-    else {
-      patch_min[0] = minmax[0][0];
-      patch_max[0] = minmax[0][1];
-    }
-    paint();
-  }
 }
 /**
  @brief Main routine of FermiSurfer
@@ -280,7 +267,7 @@ bool MyApp::OnInit()
 
   if (!wxApp::OnInit()) return false;
 
-  MyFrame *myf = new MyFrame(NULL, argv[1]);
+  myf = new MyFrame(NULL, argv[1]);
 
   *terminal << wxT("###########################################\n");
   *terminal << wxT("##                                       ##\n");

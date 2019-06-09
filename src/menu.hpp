@@ -21,8 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#if ! defined(FERMISURFER_MENU_H)
+#define FERMISURFER_MENU_H
+
 #include "wx/wx.h"
 #include "operation.hpp"
+#include "wx/gbsizer.h"
 
 void compute_patch_segment();
 void refresh_patch_segment();
@@ -40,7 +44,19 @@ public:
   virtual ~MyFrame();
   void modify_band();
   TestGLCanvas* m_canvas;
+  wxGridBagSizer* gbsizer;
   wxPanel* panel;
+  /*
+ Text Box
+*/
+  wxTextCtrl* textbox_scale;
+  wxTextCtrl* textbox_positionx;
+  wxTextCtrl* textbox_positiony;
+  wxTextCtrl* textbox_rotatex;
+  wxTextCtrl* textbox_rotatey;
+  wxTextCtrl* textbox_rotatez;
+  wxTextCtrl* textbox_min;
+  wxTextCtrl* textbox_max;
 
 private:
   void OnExit(wxCommandEvent& event);
@@ -64,3 +80,5 @@ private:
   void button_compute(wxCommandEvent& event);
   //wxDECLARE_EVENT_TABLE();
 };
+
+#endif // FERMISURFER_MENU_H

@@ -231,16 +231,14 @@ static void Text2Lower(char *value //!<[inout] @brief Keyword or value
     value[ii] = value2;
   }
 }/*static void Text2Lower*/
-int read_batch(
-  GLfloat minmax[3][2]
-)
+void read_batch()
 {
   char keyword[256], value[256];
   FILE *fp;
   char *ctmp;
   int ierr, ib, iminmax;
 
-  printf("  Openning batch file %s ...\n", batch_name.mb_str());
+  *terminal << wxT("  Openning ") << batch_name << wxT(" ...\n");
   if ((fp = fopen(batch_name.mb_str(), "r")) == NULL) {
     printf("file open error!!\n");
     printf("  Press any key to exit.\n");
@@ -249,11 +247,11 @@ int read_batch(
   }
 
   iminmax = 0;
-  printf("  Reading...\n");
+  *terminal << wxT("  Reading...\n");
   while (fscanf(fp, "%s", keyword) != EOF) {
 
     Text2Lower(keyword);
-    printf("%s\n", keyword);
+    *terminal << wxString::Format(wxT("%s\n"), keyword);
     if (keyword[0] == '#') {
       ctmp = fgets(keyword, 256, fp);
       continue;
@@ -303,17 +301,8 @@ int read_batch(
       }
     }
     else if (strcmp(keyword, "minmax") == 0) {
-      iminmax = 1;
-      if(color_scale == 3)
-        ierr = fscanf(fp, "%f%f%f%f%f%f", 
-          &minmax[0][0], &minmax[0][1], 
-          &minmax[1][0], &minmax[1][1], 
-          &minmax[2][0], &minmax[2][1]);
-      else if (color_scale == 2)
-        ierr = fscanf(fp, "%f%f%f%f", 
-          &minmax[0][0], &minmax[0][1], &minmax[1][0], &minmax[1][1]);
-      else
-        ierr = fscanf(fp, "%f%f", &minmax[0][0], &minmax[0][1]);
+      ierr = fscanf(fp, "%f%f", &patch_min, &patch_max);
+      skip_minmax = 1;
     }
     else if (strcmp(keyword, "equator") == 0) {
       ierr = fscanf(fp, "%f%f%f", &eqvec[0], &eqvec[1], &eqvec[2]);
@@ -405,6 +394,4 @@ int read_batch(
   rot[2][0] = -cosf(thetax)* cosf(thetaz)* sinf(thetay) + sinf(thetax)* sinf(thetaz);
   rot[2][1] = cosf(thetaz)* sinf(thetax) + cosf(thetax)* sinf(thetay)* sinf(thetaz);
   rot[2][2] = cosf(thetax)* cosf(thetay);
-
-  return iminmax;
 }

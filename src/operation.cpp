@@ -39,6 +39,7 @@ THE SOFTWARE.
 #include "draw.hpp"
 #include "variable.hpp"
 #include "operation.hpp"
+#include "menu.hpp"
 
 wxBEGIN_EVENT_TABLE(TestGLCanvas, wxGLCanvas)
 EVT_SIZE(TestGLCanvas::OnSize)
@@ -78,6 +79,7 @@ void TestGLCanvas::OnSize(wxSizeEvent& event)
   /**/
   glMatrixMode(GL_MODELVIEW);
   Refresh(false);
+  //myf->Show(true);
 }
 /**
  @brief Glut mouse function
@@ -143,14 +145,41 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
                         + rot0[i][2] * rot1[2][j];
             }
           }
+          /*
+          Print angle to text Box
+          */
+          thetay = asinf(rot[0][2]);
+          if (cosf(thetay) != 0.0) {
+            if (-rot[1][2] / cosf(thetay) >= 0.0) thetax = acosf(rot[2][2] / cosf(thetay));
+            else thetax = 6.283185307f - acosf(rot[2][2] / cosf(thetay));
+            if (-rot[0][1] / cosf(thetay) >= 0.0) thetaz = acosf(rot[0][0] / cosf(thetay));
+            else thetaz = 6.283185307f - acosf(rot[0][0] / cosf(thetay));
+          }
+          else {
+            thetax = 0.0;
+            if (rot[1][0] >= 0.0) thetaz = acosf(rot[1][1]);
+            else thetaz = 6.283185307f - acosf(rot[1][1]);
+          }
+          thetax *= 180.0f / 3.14159265f;
+          thetay *= 180.0f / 3.14159265f;
+          thetaz *= 180.0f / 3.14159265f;
+          myf->textbox_rotatex->ChangeValue(wxString::Format(wxT("%f"), thetax));
+          myf->textbox_rotatey->ChangeValue(wxString::Format(wxT("%f"), thetay));
+          myf->textbox_rotatez->ChangeValue(wxString::Format(wxT("%f"), thetaz));
+          myf->Show(true);
         }
       }
       else if (lmouse == 2) {
         scl = scl * expf(-dy);
+        myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
+        myf->Show(true);
       }
       else {
         trans[0] = trans[0] + dx;
         trans[1] = trans[1] - dy;
+        myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
+        myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
+        myf->Show(true);
       }
       Refresh(false);
     }
@@ -164,11 +193,15 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
 
   wheel = event.GetWheelRotation();
   if (wheel > 0) {
-    scl = scl * 1.1f;
+    scl = scl * 1.1f; 
+    myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
+    myf->Show(true);
     Refresh(false);
   }
   else if (wheel < 0) {
     scl = scl * 0.9f;
+    myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
+    myf->Show(true);
     Refresh(false);
   }
 }
@@ -182,22 +215,30 @@ void TestGLCanvas::OnChar(wxKeyEvent& event)
   switch (event.GetKeyCode())
   {
   case WXK_LEFT:
-    trans[0] = trans[0] - 0.1f;
+    trans[0] += - 0.1f;
+    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
+    myf->Show(true);
     Refresh(false);
     break;
 
   case WXK_RIGHT:
-    trans[0] = trans[0] + 0.1f;
+    trans[0] += 0.1f;
+    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
+    myf->Show(true);
     Refresh(false);
     break;
 
   case WXK_UP:
-    trans[1] = trans[1] + 0.1f;
+    trans[1] += 0.1f;
+    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
+    myf->Show(true);
     Refresh(false);
     break;
 
   case WXK_DOWN:
-    trans[1] = trans[1] - 0.1f;
+    trans[1] += - 0.1f;
+    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
+    myf->Show(true);
     Refresh(false);
     break;
 
@@ -205,8 +246,6 @@ void TestGLCanvas::OnChar(wxKeyEvent& event)
     event.Skip();
     return;
   }
-
-  Refresh(false);
 }
 
 void TestGLCanvas::InitGL()
