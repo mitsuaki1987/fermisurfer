@@ -224,10 +224,9 @@ int nthreads;//!< Number of OpenMP threads
 /*
 Batch mode
 */
-wxString window_name;
 wxString batch_name;
 wxString frmsf_file_name;
-int lbatch;
+int lbatch = 0;
 
 MyFrame* myf;
 
@@ -317,15 +316,10 @@ bool MyApp::OnInit()
   *terminal << wxT("              mouse drag : Rotate objects\n");
   *terminal << wxT("              mousewheel : Resize objects\n");
   *terminal << wxT("               cursorkey : Move objects\n");
-  *terminal << wxT("      mouse right button : Menu\n");
   *terminal << wxT("\n");
   /**/
   //if (argc > 4)glutInitWindowSize(atoi(argv[3]), atoi(argv[4]));
-  lbatch = 0;
-  if (argc > 2) {
-    lbatch = 1;
-    window_name = argv[1];
-    batch_name = argv[2];
+  if (lbatch == 1) {
     batch_draw();
   }
   return true;
@@ -337,12 +331,19 @@ void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
 
   parser.AddParam("FRMSF file to plot.",
     wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY);
+  parser.AddParam("Batch file",
+    wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
 }
 
 bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
 {
-  if (parser.GetParamCount())
+  if (parser.GetParamCount() > 0) {
     frmsf_file_name = parser.GetParam(0);
+    if (parser.GetParamCount() > 1) {
+      batch_name = parser.GetParam(1);
+      lbatch = 1;
+    }
+  }
 
   return wxApp::OnCmdLineParsed(parser);
 }

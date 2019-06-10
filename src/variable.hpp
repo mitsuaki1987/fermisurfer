@@ -170,7 +170,6 @@ extern int nthreads;//!< Number of OpenMP threads
 /*
 Batch mode
 */
-extern wxString window_name;
 extern wxString batch_name;
 extern wxString frmsf_file_name;
 extern int lbatch;

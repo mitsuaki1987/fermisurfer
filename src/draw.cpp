@@ -633,9 +633,11 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
   glFlush(); // Not really necessary: buffer swapping below implies glFlush()
   SwapBuffers();
   if (lbatch == 1) {
+    char file2[256], batch2[256];
     glFlush();
-    sprintf(command_name, "import -window \"%s\" %s.png", 
-      window_name.mb_str(), batch_name.mb_str());
+    strncpy(file2, (const char*)frmsf_file_name.mb_str(wxConvUTF8), 255);
+    strncpy(batch2, (const char*)batch_name.mb_str(wxConvUTF8), 255);
+    sprintf(command_name, "import -window \"%s\" %s.png", file2, batch2);
     ierr = system(command_name);
     exit(0);
   }

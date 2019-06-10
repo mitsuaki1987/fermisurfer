@@ -55,7 +55,7 @@ void calc_nodeline() {
   private(ib,itri,i,j,ithread)
   {
     int sw[3], nnl0;
-    GLfloat a[3][3];
+    GLfloat a[3][3], matps[3];
 
     ithread = get_thread();
     for (ib = 0; ib < nb; ib++) {
@@ -64,7 +64,9 @@ void calc_nodeline() {
 #pragma omp for
       for (itri = 0; itri < ntri[ib]; ++itri) {
 
-        eigsort(3, matp[ib][itri][0], sw);
+        for (i = 0; i < 3; ++i) matps[i] = matp[ib][itri][i][0];
+        eigsort(3, matps, sw);
+
         for (i = 0; i < 3; ++i) {
           for (j = 0; j < 3; ++j) {
             a[i][j] = (0.f - matp[ib][itri][sw[j]][0]) 

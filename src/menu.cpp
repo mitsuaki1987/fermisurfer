@@ -226,17 +226,17 @@ void MyFrame::radiovalue_colorscale(
       patch_max = (GLfloat)dminmax;
     skip_minmax = 1;
   }
-  else if (event.GetString().Cmp(wxT("Input (Real)")) == 0) 
+  else if (event.GetString().Cmp(wxT("Input (1D)")) == 0) 
     color_scale = 1;
-  else if (event.GetString().Cmp(wxT("Input (Complex)")) == 0)
+  else if (event.GetString().Cmp(wxT("Input (2D)")) == 0)
     color_scale = 2;
-  else if (event.GetString().Cmp(wxT("Input (Tri-number)")) == 0)
+  else if (event.GetString().Cmp(wxT("Input (3D)")) == 0)
     color_scale = 3;
   else if (event.GetString().Cmp(wxT("Fermi Velocity")) == 0)
     color_scale = 4;
   else if (event.GetString().Cmp(wxT("Band Index")) == 0)
     color_scale = 5;
-  else if (event.GetString().Cmp(wxT("Input (Real, Gray Scale)")) == 0)
+  else if (event.GetString().Cmp(wxT("Input (1D, Gray Scale)")) == 0)
     color_scale = 6;
   else if (event.GetString().Cmp(wxT("Fermi Velocity (Gray Scale)")) == 0)
     color_scale = 7;
@@ -612,9 +612,9 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
     WXSIZEOF(choices_tetra), choices_tetra,
     4, wxRA_SPECIFY_COLS), wxGBPosition(3,2), wxGBSpan(4, 2));
 
-  wxString choices_colorscale[] = { wxT("Input (Real)"), wxT("Input (Complex)"),
-    wxT("Input (Tri-number)"), wxT("Fermi Velocity"), wxT("Band Index"),
-    wxT("Input (Real, Gray Scale)"), wxT("Fermi Velocity (Gray Scale)") };
+  wxString choices_colorscale[] = { wxT("Input (1D)"), wxT("Input (2D)"),
+    wxT("Input (3D)"), wxT("Fermi Velocity"), wxT("Band Index"),
+    wxT("Input (1D, Gray Scale)"), wxT("Fermi Velocity (Gray Scale)") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radiovalue_colorscale, this, iradio_colorscale);
   gbsizer->Add(new wxRadioBox(panel, iradio_colorscale, wxT("Color scale mode"),
     wxDefaultPosition, wxDefaultSize,

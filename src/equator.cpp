@@ -116,7 +116,7 @@ void equator() {
       }
       ntri_th[ib][0] = 0;
     }/*for (ib = 0; ib < nb; ib++)*/
-    *terminal << wxT("    band   # of nodeline\n");
+    *terminal << wxT("    band   # of equator\n");
     for (ib = 0; ib < nb; ib++) {
       *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, nequator[ib]);
     }/*for (ib = 0; ib < nb; ib++)*/
