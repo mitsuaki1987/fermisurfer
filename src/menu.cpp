@@ -304,17 +304,17 @@ void MyFrame::radio_lighting(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  if (event.GetString().Cmp(wxT("Both side")) == 0) {
+  if (event.GetString().Cmp(wxT("Both")) == 0) {
     lside = 1;
     side = 1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
   }
-  if (event.GetString().Cmp(wxT("Unoccupied side")) == 0) {
+  if (event.GetString().Cmp(wxT("Unoccupy")) == 0) {
     lside = 2;
     side = 1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
   }
-  if (event.GetString().Cmp(wxT("Occupied side")) == 0) {
+  if (event.GetString().Cmp(wxT("Occupy")) == 0) {
     lside = 3;
     side = -1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
@@ -532,7 +532,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
 
   wxBoxSizer* sizermain = new wxBoxSizer(wxVERTICAL);
 
-  wxSplitterWindow* splitterV = new wxSplitterWindow(this, wxID_ANY);
+  splitterV = new wxSplitterWindow(this, wxID_ANY);
   splitterV->SetSashGravity(0.5);
   splitterV->SetMinimumPaneSize(20); 
   sizermain->Add(splitterV, 1, wxEXPAND, 0);
@@ -552,7 +552,9 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   textbox_linewidth->ChangeValue(wxT("1"));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_gamma);
-  gbsizer->Add(new wxCheckBox(panel, icheck_gamma, wxT("On Gamma")), wxGBPosition(0, 3), wxGBSpan(1, 1));
+  wxCheckBox *check_ongamma = new wxCheckBox(panel, icheck_gamma, wxT("On Gamma"));
+  gbsizer->Add(check_ongamma, wxGBPosition(0, 3), wxGBSpan(1, 1));
+  check_ongamma->SetValue(true);
 
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Section-v :")), wxGBPosition(1, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectionx);
@@ -722,7 +724,7 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
 #  endif
 #endif
 
-  wxSplitterWindow* splitterH = new wxSplitterWindow(splitterV, wxID_ANY);
+  splitterH = new wxSplitterWindow(splitterV, wxID_ANY);
   splitterH->SetSashGravity(0.5);
   splitterH->SetMinimumPaneSize(20); // Smalest size the
 
@@ -760,14 +762,22 @@ void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 
 void MyFrame::modify_band() {
   int ib;
+  wxCheckBox** check;
+
+  check = new wxCheckBox * [nb];
 
   for (ib = 0; ib < nb; ib++) {
     Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_band, this, icheck_band + ib);
-    wxCheckBox* check = new wxCheckBox(panel, icheck_band + ib, 
+    check[ib] = new wxCheckBox(panel, icheck_band + ib, 
       wxString::Format(wxT("Band %d"), ib));
-    gbsizer->Add(check, wxGBPosition(10 + ib, 0), wxGBSpan(1, 1));
-    check->SetValue(true);
+    gbsizer->Add(check[ib], wxGBPosition(10 + ib, 0), wxGBSpan(1, 1));
+    check[ib]->SetValue(true);
+  }
+  if (lbatch == 1) {
+    splitterH->Unsplit();
+    splitterV->Unsplit();
   }
   Refresh(false);
   Raise();
+  Refresh(false);
 }

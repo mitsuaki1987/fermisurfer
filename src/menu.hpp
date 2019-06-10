@@ -27,6 +27,7 @@ THE SOFTWARE.
 #include "wx/wx.h"
 #include "operation.hpp"
 #include "wx/gbsizer.h"
+#include "wx/splitter.h"
 
 void compute_patch_segment();
 void refresh_patch_segment();
@@ -46,6 +47,8 @@ public:
   TestGLCanvas* m_canvas;
   wxGridBagSizer* gbsizer;
   wxPanel* panel;
+  wxSplitterWindow* splitterV;
+  wxSplitterWindow* splitterH;
   /*
  Text Box
 */

@@ -239,6 +239,8 @@ int refresh_equator = 1;
 int refresh_section = 1;
 int skip_minmax = 0;
 
+int windowx = 1700;
+int windowy = 1300;
 /**
   @brief Glut Display function
   called by glutDisplayFunc
@@ -266,7 +268,7 @@ bool MyApp::OnInit()
 
   if (!wxApp::OnInit()) return false;
 
-  myf = new MyFrame(NULL, argv[1], wxDefaultPosition, wxSize(1700,1300));
+  myf = new MyFrame(NULL, argv[1], wxDefaultPosition, wxSize(windowx, windowy));
 
   *terminal << wxT("\n");
   *terminal << wxT("#####  Welocome to FermiSurfer ver. ") << 
@@ -318,7 +320,6 @@ bool MyApp::OnInit()
   *terminal << wxT("               cursorkey : Move objects\n");
   *terminal << wxT("\n");
   /**/
-  //if (argc > 4)glutInitWindowSize(atoi(argv[3]), atoi(argv[4]));
   if (lbatch == 1) {
     batch_draw();
   }
@@ -333,6 +334,10 @@ void MyApp::OnInitCmdLine(wxCmdLineParser& parser)
     wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY);
   parser.AddParam("Batch file",
     wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
+  parser.AddParam("Window Size x",
+    wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
+  parser.AddParam("Window Size y",
+    wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
 }
 
 bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
@@ -342,6 +347,12 @@ bool MyApp::OnCmdLineParsed(wxCmdLineParser& parser)
     if (parser.GetParamCount() > 1) {
       batch_name = parser.GetParam(1);
       lbatch = 1;
+      if (parser.GetParamCount() > 2) {
+        windowx = wxAtoi(parser.GetParam(2));
+        if (parser.GetParamCount() > 3) {
+          windowy = wxAtoi(parser.GetParam(3));
+        }
+      }
     }
   }
 
