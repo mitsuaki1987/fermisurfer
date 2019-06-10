@@ -525,21 +525,21 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   // debug SetIcon(wxICON(sample));
 
   // Make a menubar
-  wxMenu* fileMenu = new wxMenu;
-  wxMenuBar* menuBar = new wxMenuBar;
-  menuBar->Append(fileMenu, wxT("File"));
-  SetMenuBar(menuBar);
+  //wxMenu* fileMenu = new wxMenu;
+  //wxMenuBar* menuBar = new wxMenuBar;
+  //menuBar->Append(fileMenu, wxT("File"));
+  //SetMenuBar(menuBar);
 
   wxBoxSizer* sizermain = new wxBoxSizer(wxVERTICAL);
 
   wxSplitterWindow* splitterV = new wxSplitterWindow(this, wxID_ANY);
   splitterV->SetSashGravity(0.5);
-  splitterV->SetMinimumPaneSize(20); // Smalest size the
+  splitterV->SetMinimumPaneSize(20); 
   sizermain->Add(splitterV, 1, wxEXPAND, 0);
 
   panel = new wxPanel(splitterV);
 
-  gbsizer = new wxGridBagSizer(25, 5);
+  gbsizer = new wxGridBagSizer(25, 4);
 
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_compute, this, ibutton_compute);
   gbsizer->Add(new wxButton(panel, ibutton_compute, wxT("Update")), wxGBPosition(0,0), wxGBSpan(1,1));
@@ -730,11 +730,11 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
 
   terminal = new wxTextCtrl(splitterH, wxID_ANY, wxT(""),
     wxPoint(0, 250), wxSize(100, 50), wxTE_MULTILINE);
-  splitterH->SplitHorizontally(m_canvas, terminal);
+  splitterH->SplitHorizontally(m_canvas, terminal,300);
 
   panel->SetSizer(gbsizer);
 
-  splitterV->SplitVertically(splitterH, panel);
+  splitterV->SplitVertically(splitterH, panel,300);
 
   SetSizer(sizermain);
   SetAutoLayout(true);
@@ -768,6 +768,6 @@ void MyFrame::modify_band() {
     gbsizer->Add(check, wxGBPosition(10 + ib, 0), wxGBSpan(1, 1));
     check->SetValue(true);
   }
-
-  Show(true);
+  Refresh(false);
+  Raise();
 }

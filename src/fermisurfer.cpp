@@ -267,14 +267,11 @@ bool MyApp::OnInit()
 
   if (!wxApp::OnInit()) return false;
 
-  myf = new MyFrame(NULL, argv[1]);
+  myf = new MyFrame(NULL, argv[1], wxDefaultPosition, wxSize(1700,1300));
 
-  *terminal << wxT("###########################################\n");
-  *terminal << wxT("##                                       ##\n");
-  *terminal << wxT("##  Welocome to FermiSurfer ver. ") << 
-    wxT(VERSION) << wxT("  ##\n");
-  *terminal << wxT("##                                       ##\n");
-  *terminal << wxT("###########################################\n");
+  *terminal << wxT("\n");
+  *terminal << wxT("#####  Welocome to FermiSurfer ver. ") << 
+    wxT(VERSION) << wxT("  #####\n");
   *terminal << wxT("\n");
   if (argc < 2) {
     printf("\n");

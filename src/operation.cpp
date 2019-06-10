@@ -230,14 +230,14 @@ void TestGLCanvas::OnChar(wxKeyEvent& event)
 
   case WXK_UP:
     trans[1] += 0.1f;
-    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
+    myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
     myf->Show(true);
     Refresh(false);
     break;
 
   case WXK_DOWN:
     trans[1] += - 0.1f;
-    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
+    myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
     myf->Show(true);
     Refresh(false);
     break;
