@@ -260,8 +260,6 @@ void TestGLCanvas::InitGL()
   glEnable(GL_LIGHT1);
   glEnable(GL_NORMALIZE);
   glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_NORMAL_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
   glEnable(GL_COLOR_MATERIAL);
   PostSizeEventToParent();
 }

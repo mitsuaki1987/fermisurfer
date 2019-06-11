@@ -259,11 +259,13 @@ static void write_file(
       }
     }
   }
-  for (ibnd = 0; ibnd < Nb; ++ibnd) {
-    for (ik0 = 0; ik0 < Ng[0]; ++ik0) {
-      for (ik1 = 0; ik1 < Ng[1]; ++ik1) {
-        for (ik2 = 0; ik2 < Ng[2]; ++ik2) {
-          ierr = fprintf(fo, "%e\n", vf[ibnd][ik0][ik1][ik2][component]);
+  if (component != 7) {
+    for (ibnd = 0; ibnd < Nb; ++ibnd) {
+      for (ik0 = 0; ik0 < Ng[0]; ++ik0) {
+        for (ik1 = 0; ik1 < Ng[1]; ++ik1) {
+          for (ik2 = 0; ik2 < Ng[2]; ++ik2) {
+            ierr = fprintf(fo, "%e\n", vf[ibnd][ik0][ik1][ik2][component]);
+          }
         }
       }
     }
@@ -292,17 +294,22 @@ int main(
   
   fvel();
 
-  printf("\n#####  Output files  #####\n\n");
+  if (argc > 2 && strncmp(argv[2], "-v", 2) == 0) {
+    printf("\n#####  Output files  #####\n\n");
 
-  write_file(argv[1], "_vfa1.frmsf\0", 0);
-  write_file(argv[1], "_vfa2.frmsf\0", 1);
-  write_file(argv[1], "_vfa3.frmsf\0", 2);
-  write_file(argv[1], "_vfx.frmsf\0", 3);
-  write_file(argv[1], "_vfy.frmsf\0", 4);
-  write_file(argv[1], "_vfz.frmsf\0", 5);
-  write_file(argv[1], "_vf.frmsf\0", 6);
+    write_file(argv[1], "_vfa1.frmsf\0", 0);
+    write_file(argv[1], "_vfa2.frmsf\0", 1);
+    write_file(argv[1], "_vfa3.frmsf\0", 2);
+    write_file(argv[1], "_vfx.frmsf\0", 3);
+    write_file(argv[1], "_vfy.frmsf\0", 4);
+    write_file(argv[1], "_vfz.frmsf\0", 5);
+    write_file(argv[1], "_vf.frmsf\0", 6);
 
-  printf("\n#####  DONE  #####\n");
-  printf("  Press any key to exit.\n");
-  ierr = getchar();
+    printf("\n#####  DONE  #####\n");
+    printf("  Press any key to exit.\n");
+    ierr = getchar();
+  }
+  else {
+    write_file(argv[1], ".frmsf\0", 7);
+  }
 }

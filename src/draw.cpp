@@ -89,6 +89,8 @@ static void draw_fermi() {
   /*
    Second, draw each triangle
   */
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
       glVertexPointer(3, GL_FLOAT, 0, kvp_rot[ib]);
@@ -97,16 +99,21 @@ static void draw_fermi() {
       glDrawArrays(GL_TRIANGLES, 0, ntri[ib] * 3);
     }/*if (draw_band[ib] == 1)*/
   }/*for (ib = 0; ib < nb; ib++)*/
-  //if (color_scale == 3) {
-    //for (ib = 0; ib < nb; ib++) {
-      //if (draw_band[ib] == 1) {
-  //      glVertexPointer(3, GL_FLOAT, 0, arw_rot[ib]);
-        //glNormalPointer(GL_FLOAT, 0, nmlp_rot[ib]);
-        //glColorPointer(4, GL_FLOAT, 0, clr[ib]);
-      //  glDrawArrays(GL_LINES, 0, ntri[ib] * 3 * 2);
-    //  }/*if (draw_band[ib] == 1)*/
-   // }/*for (ib = 0; ib < nb; ib++)*/
- // }
+  glDisableClientState(GL_NORMAL_ARRAY);
+  glDisableClientState(GL_COLOR_ARRAY);
+  /*
+  Arrow for 3D value
+  */
+  glColor3fv(white);
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  if (color_scale == 3) {
+    for (ib = 0; ib < nb; ib++) {
+      if (draw_band[ib] == 1) {
+        glVertexPointer(3, GL_FLOAT, 0, arw_rot[ib]);
+        glDrawArrays(GL_LINES, 0, ntri[ib] * 3 * 2);
+      }
+    }
+  }
   /*
    Nodeline
   */
@@ -142,11 +149,11 @@ static void draw_fermi() {
     /*
      Second, draw each lines
     */
+    glColor3fv(black);
+    glNormal3f(0.0f, 0.0f, 1.0f);
     for (ib = 0; ib < nb; ib++) {
       if (draw_band[ib] == 1) {
         glVertexPointer(3, GL_FLOAT, 0, kvnl_rot[ib]);
-        glNormalPointer(GL_FLOAT, 0, nmlnl[ib]);
-        glColorPointer(4, GL_FLOAT, 0, clrnl[ib]);
         glDrawArrays(GL_LINES, 0, 2 * nnl[ib]);
       }/*if (draw_band[ib] == 1)*/
     }/* for (ib = 0; ib < nb; ib++)*/
@@ -186,11 +193,11 @@ static void draw_fermi() {
    /*
    Second, draw each lines
    */
+  glColor3fv(black);
+  glNormal3f(0.0f, 0.0f, 1.0f);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
       glVertexPointer(3, GL_FLOAT, 0, kveq_rot[ib]);
-      glNormalPointer(GL_FLOAT, 0, nmleq[ib]);
-      glColorPointer(4, GL_FLOAT, 0, clreq[ib]);
       glDrawArrays(GL_LINES, 0, 2 * nequator[ib]);
     }/*if (draw_band[ib] == 1)*/
   }/* for (ib = 0; ib < nb; ib++)*/
@@ -230,9 +237,9 @@ static void draw_bz_lines() {
                   + trans[j];
         for (j = 0; j < 3; j++) vertices[j + 3 * i] = bzl2[j];
       }/*for (i = 0; i< 2; ++i)*/
+      glColor3fv(linecolor);
+      glNormal3f(0.0f, 0.0f, 1.0f);
       glVertexPointer(3, GL_FLOAT, 0, vertices);
-      glNormalPointer(GL_FLOAT, 0, normals);
-      glColorPointer(4, GL_FLOAT, 0, colors);
       glDrawArrays(GL_LINES, 0, 2);
     }/*for (ibzl = 0; ibzl < nbzl; ++ibzl)*/
   }/*if (fbz == 1)*/
@@ -264,9 +271,9 @@ static void draw_bz_lines() {
     for (i = 0; i<3; ++i) vertices[i+3*14] = trans[i] + bvec2[1][i] + bvec2[2][i];
     for (i = 0; i<3; ++i) vertices[i+3*15] = trans[i] + bvec2[1][i];
     for (i = 0; i<3; ++i) vertices[i+3*16] = trans[i] + bvec2[0][i] + bvec2[1][i];
+    glColor3fv(linecolor);
+    glNormal3f(0.0f, 0.0f, 1.0f);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glNormalPointer(GL_FLOAT, 0, normals);
-    glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_LINE_STRIP, 0, 17);
   }/*if (fbz != 1)*/
   /*
@@ -289,9 +296,9 @@ static void draw_bz_lines() {
                 + trans[j];
       for (j = 0; j < 3; j++)vertices[j + 3 * ibzl] = bzl2[j];
     }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
+    glColor3fv(gray);
+    glNormal3fv(secvec2);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glNormalPointer(GL_FLOAT, 0, normals);
-    glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_FAN, 0, nbzl2d);
   }/*if (lsection == 1)*/
 }/*draw bz_lines */
@@ -304,6 +311,7 @@ static void draw_colorbar()
   int i, j, k;
   GLfloat mat2, vertices[366], normals[366], colors[488];
   /**/
+  glEnableClientState(GL_COLOR_ARRAY);
   if (color_scale == 1 || color_scale == 4) {
     for (i = 0; i < 5; i++) {
       for (j = 0; j < 2; j++) {
@@ -319,8 +327,8 @@ static void draw_colorbar()
         else if (i == 4) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = red[k];
       }
     }/*for (i = 0; i < 10; i++)*/
+    glNormal3f(0.0f, 0.0f, 1.0f);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 10);
   }/*if (color_scale == 1 || color_scale == 4)*/
@@ -373,42 +381,11 @@ static void draw_colorbar()
       for (j = 0; j < 2; j++) normals[j + 3 * (i + 1)] = 0.0f;
       normals[2 + 3 * (i + 1)] = 1.0f;
     }/*for (i = 0; i <= 60; i++)*/
+    glNormal3f(0.0f, 0.0f, 1.0f);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 62);
   }/*else if (color_scale == 2)*/
-  else if (color_scale == 3) {
-    /*
-    Periodic color scale
-    */
-    vertices[0] = 0.0f;
-    vertices[1] = -1.0f;
-    vertices[2] = 0.0f;
-    normals[0] = 0.0f;
-    normals[1] = 0.0f;
-    normals[2] = 1.0f;
-    for (j = 0; j < 4; j++) colors[j] = bgray[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 1] = red[j] * 0.8f + bgray[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 2] = yellow[j] * 0.8f + bgray[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 3] = green[j] * 0.8f + bgray[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 4] = cyan[j] * 0.8f + bgray[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 5] = blue[j] * 0.8f + bgray[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 6] = magenta[j] * 0.8f + bgray[j];
-    for (j = 0; j < 4; j++) colors[j + 4 * 7] = red[j] * 0.8f + bgray[j];
-    /**/
-    for (i = 0; i <= 6; i++) {
-      vertices[0 + 3 * (i + 1)] = 0.2f * cosf((GLfloat)i / 6.0f * 6.283185307f);
-      vertices[1 + 3 * (i + 1)] = 0.2f * sinf((GLfloat)i / 6.0f * 6.283185307f) - 1.0f;
-      vertices[2 + 3 * (i + 1)] = 0.0f;
-      for (j = 0; j < 2; j++) normals[j + 3 * (i + 1)] = 0.0f;
-      normals[2 + 3 * (i + 1)] = 1.0f;
-    }/*for (i = 0; i <= 60; i++)*/
-    glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glNormalPointer(GL_FLOAT, 0, normals);
-    glColorPointer(4, GL_FLOAT, 0, colors);
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
-  }/*else if (color_scale == 3)*/
   else  if (color_scale == 6 || color_scale == 7) {
     for (i = 0; i < 2; i++) {
       for (j = 0; j < 2; j++) {
@@ -421,12 +398,12 @@ static void draw_colorbar()
         else if (i == 1) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = wgray[k];
       }
     }/*for (i = 0; i < 10; i++)*/
+    glNormal3f(0.0f, 0.0f, 1.0f);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
-    glNormalPointer(GL_FLOAT, 0, normals);
     glColorPointer(4, GL_FLOAT, 0, colors);
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   }/*if (color_scale == 6 || color_scale == 7)*/
-
+  glDisableClientState(GL_COLOR_ARRAY);
 }/*void draw_colorbar*/
 /**
  @brief Draw eye-points for the stereogram
@@ -453,15 +430,13 @@ static void draw_circles(
     vertices[0 + (i + 1) * 3] = r * cosf((GLfloat)i / 20.0f * 6.283185307f) + 0.7f - dx2d;
     vertices[1 + (i + 1) * 3] = r * sinf((GLfloat)i / 20.0f * 6.283185307f) + scl;
   }/*for (i = 0; i <= 20; i++)*/
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glColor3fv(colors);
   glVertexPointer(3, GL_FLOAT, 0, vertices);
-  glNormalPointer(GL_FLOAT, 0, normals);
-  glColorPointer(4, GL_FLOAT, 0, colors);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 22);
   /**/
   for (i = 0; i < 22; i++) vertices[3 * i] += -1.4f;
   glVertexPointer(3, GL_FLOAT, 0, vertices);
-  glNormalPointer(GL_FLOAT, 0, normals);
-  glColorPointer(4, GL_FLOAT, 0, colors);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 22);
 }/*void draw_circles*/
 /**
@@ -485,22 +460,24 @@ static void draw_fermi_line() {
     for (i = 0; i < 2; i++) normals[i + 3 * ibzl] = 0.0f;
     normals[2 + 3 * ibzl] = 1.0f;
   }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glColor3fv(linecolor);
   glVertexPointer(3, GL_FLOAT, 0, vertices);
-  glNormalPointer(GL_FLOAT, 0, normals);
-  glColorPointer(4, GL_FLOAT, 0, colors);
   glDrawArrays(GL_LINE_LOOP, 0, nbzl2d);
   /*
    Draw Fermi lines
   */
   glLineWidth(linewidth*scl);
+  glEnableClientState(GL_COLOR_ARRAY);
+  glNormal3f(0.0f, 0.0f, 1.0f);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
       glVertexPointer(3, GL_FLOAT, 0, kv2d[ib]);
-      glNormalPointer(GL_FLOAT, 0, nml2d[ib]);
       glColorPointer(4, GL_FLOAT, 0, clr2d[ib]);
       glDrawArrays(GL_LINES, 0, 2 * n2d[ib]);
     }/*if (draw_band[ib] == 1)*/
   }/* for (ib = 0; ib < nb; ib++)*/
+  glDisableClientState(GL_COLOR_ARRAY);
 }/*void draw_fermi_line*/
 /**
  @brief Glut Display function

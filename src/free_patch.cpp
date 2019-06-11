@@ -395,30 +395,6 @@ private(itri, j)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
   }/*if (color_scale == 2)*/
-  else if (color_scale == 3) {
-
-#pragma omp parallel default(none) \
-shared(nb,ntri,matp,clr,patch_max,patch_min,origin) \
-private(itri, j)
-    {
-      int i, ib;
-      GLfloat mat2[3];
-
-      for (ib = 0; ib < nb; ib++) {
-#pragma omp for nowait
-        for (itri = 0; itri < ntri[ib]; ++itri) {
-          for (i = 0; i < 3; ++i) {
-            for (j = 0; j < 3; j++)
-              mat2[j] = (matp[ib][itri][i][j] - patch_min) / (patch_max - patch_min);
-            clr[ib][0 + 4 * i + 12 * itri] = 0.9f * mat2[0] + 0.1f * (1.0f - mat2[0]);
-            clr[ib][1 + 4 * i + 12 * itri] = 0.9f * mat2[1] + 0.1f * (1.0f - mat2[1]);
-            clr[ib][2 + 4 * i + 12 * itri] = 0.9f * mat2[2] + 0.1f * (1.0f - mat2[2]);
-            clr[ib][3 + 4 * i + 12 * itri] = 1.0;
-          }/*for (i = 0; i < 3; ++i)*/
-        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-      }/*for (ib = 0; ib < nb; ib++)*/
-    }/*End of parallel region*/
-  }/*if (color_scale == 3)*/
   else if (color_scale == 4) {
 #pragma omp parallel default(none) \
 shared(nb,ntri,nmlp,clr,cyan,blue,green,yellow,red,patch_max,patch_min) \
