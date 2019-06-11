@@ -24,11 +24,11 @@ THE SOFTWARE.
 /**@file 
  @brief Functions for actual displaying
 */
-#include "wx/wx.h"
-#include "wx/glcanvas.h"
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
+#include "wx/wx.h"
+#include "wx/glcanvas.h"
 #if defined(HAVE_GL_GL_H)
 #include <GL/gl.h>
 #elif defined(HAVE_OPENGL_GL_H)
@@ -53,10 +53,10 @@ static void draw_fermi() {
    First, rotate k-vector and normal vector
   */
 #pragma omp parallel default(none) \
-  shared(nb,draw_band,ntri,rot,nmlp,nmlp_rot,kvp,kvp_rot,trans,side) \
+  shared(nb,draw_band,ntri,rot,nmlp,arw,nmlp_rot,kvp,kvp_rot,arw_rot,trans,side) \
   private(ib)
   {
-    int i, j, itri;
+    int i, j, l, itri;
 
     for (ib = 0; ib < nb; ib++) {
       if (draw_band[ib] == 1) {
@@ -74,6 +74,12 @@ static void draw_fermi() {
                 + rot[j][1] * nmlp[ib][itri][i][1]
                 + rot[j][2] * nmlp[ib][itri][i][2];
               nmlp_rot[ib][j + 3 * i + 9 * itri] *= side;
+              for (l = 0; l < 2; ++l) {
+                arw_rot[ib][j + 3*l + 6 * i + 18 * itri]
+                  = rot[j][0] * arw[ib][itri][i][l][0]
+                  + rot[j][1] * arw[ib][itri][i][l][1]
+                  + rot[j][2] * arw[ib][itri][i][l][2];
+              }
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -91,6 +97,16 @@ static void draw_fermi() {
       glDrawArrays(GL_TRIANGLES, 0, ntri[ib] * 3);
     }/*if (draw_band[ib] == 1)*/
   }/*for (ib = 0; ib < nb; ib++)*/
+  //if (color_scale == 3) {
+    //for (ib = 0; ib < nb; ib++) {
+      //if (draw_band[ib] == 1) {
+  //      glVertexPointer(3, GL_FLOAT, 0, arw_rot[ib]);
+        //glNormalPointer(GL_FLOAT, 0, nmlp_rot[ib]);
+        //glColorPointer(4, GL_FLOAT, 0, clr[ib]);
+      //  glDrawArrays(GL_LINES, 0, ntri[ib] * 3 * 2);
+    //  }/*if (draw_band[ib] == 1)*/
+   // }/*for (ib = 0; ib < nb; ib++)*/
+ // }
   /*
    Nodeline
   */
@@ -256,7 +272,7 @@ static void draw_bz_lines() {
   /*
    Section for the 2D Fermi line
   */
-  if (lsection == 1) {
+  if (lsection == 1 && fbz == 1) {
     for (j = 0; j < 3; ++j)
       secvec2[j] = rot[j][0] * secvec[0]
                  + rot[j][1] * secvec[1]
@@ -551,7 +567,7 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
     theta = 0.0;
     dx = 0.0;
   }/*lstero == 1*/
-  if (lsection == 1) dx2d = 0.7f;
+  if (lsection == 1 && fbz == 1) dx2d = 0.7f;
   else dx2d = 0.0;
   /*
    Initialize
@@ -615,7 +631,7 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
   /*
    Draw 2D Fermi line
   */
-  if (lsection == 1) {
+  if (lsection == 1 && fbz == 1) {
     glPushMatrix();
     glLoadIdentity();
     glTranslatef(0.0, 0.0, -5.0);

@@ -37,7 +37,7 @@ THE SOFTWARE.
         ::kvnl, ::kvnl_rot, ::kv2d, ::clr2d
 */
 void free_patch() {
-  int ib, i0, i1;
+  int ib, i0, i1, i2;
   /*
    Fermi patch
   */
@@ -45,27 +45,35 @@ void free_patch() {
     for (ib = 0; ib < nb; ++ib) {
       for (i0 = 0; i0 < ntri[ib]; ++i0) {
         for (i1 = 0; i1 < 3; ++i1) {
+          for (i2 = 0; i2 < 2; ++i2)
+            delete[] arw[ib][i0][i1][i2];
           delete[] nmlp[ib][i0][i1];
           delete[] matp[ib][i0][i1];
           delete[] kvp[ib][i0][i1];
+          delete[] arw[ib][i0][i1];
         }
         delete[] nmlp[ib][i0];
         delete[] matp[ib][i0];
         delete[] kvp[ib][i0];
+        delete[] arw[ib][i0];
       }
       delete[] nmlp[ib];
       delete[] matp[ib];
       delete[] clr[ib];
       delete[] kvp[ib];
+      delete[] arw[ib];
       delete[] nmlp_rot[ib];
       delete[] kvp_rot[ib];
+      delete[] arw_rot[ib];
     }
     delete[] nmlp;
     delete[] matp;
     delete[] clr;
     delete[] kvp;
+    delete[] arw;
     delete[] nmlp_rot;
     delete[] kvp_rot;
+    delete[] arw_rot;
   }/*if (refresh_patch == 1)*/
   /*
    Nodal line
@@ -450,9 +458,9 @@ private(itri, j)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
   }/*if (color_scale == 4)*/
-  else if (color_scale == 5) {
+  else if (color_scale == 3 || color_scale == 5) {
 #pragma omp parallel default(none) \
-shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red) \
+shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red,color_scale,kvp,arw,patch_max) \
 private(itri, j)
     {
       int i, ib;
@@ -500,6 +508,22 @@ private(itri, j)
           }
         }
       }/*for (ib = 0; ib < nb; ib++*/
+
+      if (color_scale == 3) {
+        for (ib = 0; ib < nb; ib++) {
+#pragma omp for nowait
+          for (itri = 0; itri < ntri[ib]; ++itri) {
+            for (i = 0; i < 3; ++i) {
+              for (j = 0; j < 3; ++j) {
+                arw[ib][itri][i][0][j] = kvp[ib][itri][i][j]
+                               - 0.5f * matp[ib][itri][i][j] / patch_max;
+                arw[ib][itri][i][1][j] = kvp[ib][itri][i][j]
+                               + 0.5f * matp[ib][itri][i][j] / patch_max;
+              }/*for (j = 0; j < 3; ++j)*/
+            }/*for (i = 0; i < 3; ++i)*/
+          }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+        }/*for (ib = 0; ib < nb; ib++)*/
+      }/*if (color_scale == 3)*/
     }/*End of parallel region*/
   }/*if (color_scale == 5)*/
   else if (color_scale == 6) {

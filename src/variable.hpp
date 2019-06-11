@@ -86,9 +86,11 @@ extern int *ntri;          //!< The number of triangle patch [::nb]
 extern int **ntri_th;      //!< The number of triangle patch in each thread [::nb]
 extern int *draw_band;     //!< Switch for drawn bands [::nb]
 extern GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
+extern GLfloat***** arw;
 extern GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
 extern GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
 extern GLfloat **kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
+extern GLfloat **arw_rot;
 extern GLfloat ****matp;    //!< Matrix elements of points [::nb][::ntri][3][3]
 extern GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
 extern int itet;           //!< Counter for tetrahedron

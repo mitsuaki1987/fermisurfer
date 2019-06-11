@@ -171,6 +171,8 @@ int bragg_vert2d(
 void calc_2dbz() {
   int jbr, nbr, i, j, lvert, ibzl;
   GLfloat vert[2][3], vec[26][2][3], prod, thr;
+
+  if (fbz != 1)return;
   /*
    Set Projection axis for 2D plane
   */
@@ -268,6 +270,8 @@ void calc_2dbz() {
 */
 void calc_section() {
   int i, ib, itri, ithread;
+
+  if (fbz != 1)return;
 
 #pragma omp parallel default(none) \
   shared(nb,n2d,clr,clr2d,kvp,kv2d,ntri,ntri_th,secvec,secscale,query) \

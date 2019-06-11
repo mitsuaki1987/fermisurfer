@@ -24,11 +24,10 @@ THE SOFTWARE.
 /**@file
 @brief Handle operations associated to mouse drag and window resize
 */
-#include "wx/glcanvas.h"
-
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
+#include "wx/glcanvas.h"
 #if defined(HAVE_GL_GLU_H)
 #include <GL/glu.h>
 #elif defined(HAVE_OPENGL_GLU_H)

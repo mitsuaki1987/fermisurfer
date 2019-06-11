@@ -69,6 +69,7 @@ void compute_patch_segment() {
     if (skip_minmax == 1) skip_minmax = 0;
     else max_and_min();
     paint();
+    refresh_section = 1;
     refresh_color = 0;
   }
   if (refresh_nodeline == 1) {
@@ -191,7 +192,6 @@ void MyFrame::radio_brillouinzone(
   }
   else if (event.GetString().Cmp(wxT("Primitive Brillouin zone")) == 0) {
     fbz = -1;
-    lsection = 0;
   }
   refresh_patch = 1;
 } /* menu_brillouinzone */

@@ -139,8 +139,10 @@ int **ntri_th;      //!< The number of triangle patch in each thread [::nb]
 int *draw_band;     //!< Switch for drawn bands [::nb]
 GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
 GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
+GLfloat***** arw;
 GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
 GLfloat **kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
+GLfloat** arw_rot;
 GLfloat ****matp;    //!< Matrix elements of points [::nb][::ntri][3][3]
 GLfloat **clr;      //!< Colors of points [::nb][::ntri*3*4]
 int itet = 0;           //!< Counter for tetrahedron
