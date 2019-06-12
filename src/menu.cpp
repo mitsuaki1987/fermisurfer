@@ -449,7 +449,9 @@ void MyFrame::textctrl_view(
 
   if (event.GetId() == itext_scale) {
     if (event.GetString().ToDouble(&dvalue)) {
+      linewidth *= (GLfloat)dvalue/scl;
       scl = (GLfloat)dvalue;
+      textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
       Refresh(false);
     }
   }
@@ -522,7 +524,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   int ib, itet;
   char menuname[8];
 
-  // debug SetIcon(wxICON(sample));
+  //SetIcon(wxICON(fermisurfer));
 
   // Make a menubar
   //wxMenu* fileMenu = new wxMenu;
@@ -547,9 +549,9 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line width :")),
     wxGBPosition(0, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_line, this, itext_line);
-  wxTextCtrl* textbox_linewidth = new wxTextCtrl(panel, itext_line, wxT(""));
+  textbox_linewidth = new wxTextCtrl(panel, itext_line, wxT(""));
   gbsizer->Add(textbox_linewidth, wxGBPosition(0, 2), wxGBSpan(1, 1));
-  textbox_linewidth->ChangeValue(wxT("1"));
+  textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_gamma);
   wxCheckBox *check_ongamma = new wxCheckBox(panel, icheck_gamma, wxT("On Gamma"));
@@ -617,11 +619,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   wxString choices_colorscale[] = { wxT("Input (1D)"), wxT("Input (2D)"),
     wxT("Input (3D)"), wxT("Fermi Velocity"), wxT("Band Index"),
     wxT("Input (1D, Gray Scale)"), wxT("Fermi Velocity (Gray Scale)") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radiovalue_colorscale, this, iradio_colorscale);
-  gbsizer->Add(new wxRadioBox(panel, iradio_colorscale, wxT("Color scale mode"),
+  radiobox_color = new wxRadioBox(panel, iradio_colorscale,
+    wxT("Color scale mode"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_colorscale), choices_colorscale,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(7, 0), wxGBSpan(2, 2));
+    1, wxRA_SPECIFY_COLS);
+  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radiovalue_colorscale, this, iradio_colorscale);
+  gbsizer->Add(radiobox_color, wxGBPosition(7, 0), wxGBSpan(2, 2));
 
   wxString choices_bz[] = { wxT("First Brillouin zone"), wxT("Primitive Brillouin zone") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_brillouinzone, this, iradio_brillouinzone);
@@ -675,7 +679,7 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_scale);
   textbox_scale = new wxTextCtrl(panel, itext_scale, wxT(""));
   gbsizer->Add(textbox_scale, wxGBPosition(11, 3), wxGBSpan(1, 1));
-  textbox_scale->ChangeValue(wxT("1"));
+  textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_colorbar, this, icheck_colorbar);
   wxCheckBox* check = new wxCheckBox(panel, icheck_colorbar, wxT("Color bar"));
@@ -726,17 +730,17 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
 
   splitterH = new wxSplitterWindow(splitterV, wxID_ANY);
   splitterH->SetSashGravity(0.5);
-  splitterH->SetMinimumPaneSize(20); // Smalest size the
+  splitterH->SetMinimumPaneSize(20);
 
   m_canvas = new TestGLCanvas(splitterH, wxID_ANY, gl_attrib);
 
   terminal = new wxTextCtrl(splitterH, wxID_ANY, wxT(""),
     wxPoint(0, 250), wxSize(100, 50), wxTE_MULTILINE);
-  splitterH->SplitHorizontally(m_canvas, terminal,300);
+  splitterH->SplitHorizontally(m_canvas, terminal, 200);
 
   panel->SetSizer(gbsizer);
 
-  splitterV->SplitVertically(splitterH, panel,300);
+  splitterV->SplitVertically(splitterH, panel,200);
 
   SetSizer(sizermain);
   SetAutoLayout(true);
@@ -764,6 +768,8 @@ void MyFrame::modify_band() {
   int ib;
   wxCheckBox** check;
 
+  radiobox_color->SetSelection(color_scale - 1);
+
   check = new wxCheckBox * [nb];
 
   for (ib = 0; ib < nb; ib++) {
@@ -779,5 +785,4 @@ void MyFrame::modify_band() {
   }
   Refresh(false);
   Raise();
-  Refresh(false);
 }

@@ -103,8 +103,6 @@ extern GLfloat patch_min;  //!< Max value across patch
 extern int *nnl;             //!< The number of nodeline
 extern GLfloat ****kvnl;     //!< @f$k@f$-vector of nodeline [::nb][::nnl][2][3]
 extern GLfloat **kvnl_rot; //!< @f$k@f$-vector of nodeline [::nb][::nnl*2*3]
-extern GLfloat **nmlnl;//!< Normal vector of nodeline [::nb][::nnl*2*3]
-extern GLfloat **clrnl;//!< Color of nodeline [::nb][::nnl*2*4]
 /*
  2D Fermi line
 */
@@ -115,7 +113,6 @@ extern GLfloat axis2d[2][3];      //!< @f$k@f$-vector to define section
 extern int *n2d;                  //!< Number of line segment
 extern GLfloat **kv2d;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
 extern GLfloat **clr2d;         //!< Matrix element for 2D plot [::nb][::n2d*2*4]
-extern GLfloat **nml2d;          //!< Normal-vector for 2D plot [::nb][::n2d*2*3]
 extern int nbzl2d;                //!< The number of Lines of 1st Brillouin zone
 extern GLfloat bzl2d[26][3];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
 extern GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
@@ -127,8 +124,6 @@ extern GLfloat eqvec_fr[3]; //!<  @f$k@f$-vector for equator
 extern int *nequator;             //!< The number of equator
 extern GLfloat ****kveq;     //!< @f$k@f$-vector of equator [::nb][::nequator][2][3]
 extern GLfloat **kveq_rot; //!< @f$k@f$-vector of equator [::nb][::nequator*2*3]
-extern GLfloat **nmleq;//!< Normal vector of equator [::nb][::nequator*2*3]
-extern GLfloat **clreq;//!< Color of equator [::nb][::nequator*2*4]
 /*
   Variables for mouse  & cursorkey
 */

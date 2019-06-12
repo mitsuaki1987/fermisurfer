@@ -370,15 +370,9 @@ void calc_section() {
     */
     kv2d = new GLfloat*[nb];
     clr2d = new GLfloat*[nb];
-    nml2d = new GLfloat*[nb];
     for (ib = 0; ib < nb; ++ib) {
       kv2d[ib] = new GLfloat[6 * n2d[ib]];
-      nml2d[ib] = new GLfloat[6 * n2d[ib]];
       clr2d[ib] = new GLfloat[8 * n2d[ib]];
-      for (itri = 0; itri < n2d[ib]; itri++) {
-        for (i = 0; i < 6; i++)nml2d[ib][i + itri * 6] = 0.0f;
-        for (i = 0; i < 2; i++)nml2d[ib][2 + i * 3 + itri * 6] = 1.0f;
-      }/*for (itri = 0; itri < n2d[ib]; itri++)*/
     }/*for (ib = 0; ib < nb; ++ib)*/
   }/*if (query == 0)*/
 }/*void calc_nodeline()*/

@@ -209,7 +209,7 @@ static void draw_fermi() {
 static void draw_bz_lines() {
   int ibzl, i, j;
   GLfloat bzl2[3], bvec2[3][3], linecolor[4], secvec2[3];
-  GLfloat vertices[300], colors[400], normals[300];
+  GLfloat vertices[300];
   /*
    Line color is oposit of BG color
   */
@@ -218,12 +218,7 @@ static void draw_bz_lines() {
   else
     for (i = 0; i<4; i++) linecolor[i] = black[i];
   /**/
-  glLineWidth(linewidth*scl);
-  for (i = 0; i < 18; ++i) {
-    for (j = 0; j < 4; j++) colors[j + i * 4] = linecolor[j];
-    for (j = 0; j < 2; j++) normals[j + i * 3] = 0.0f;
-    normals[2 + i * 3] = 1.0f;
-  }/*for (i = 0; i < 2; ++i)*/
+  glLineWidth(linewidth);
   /*
    First Brillouin zone mode
   */
@@ -284,10 +279,6 @@ static void draw_bz_lines() {
       secvec2[j] = rot[j][0] * secvec[0]
                  + rot[j][1] * secvec[1]
                  + rot[j][2] * secvec[2];
-    for (i = 0; i < nbzl2d; ++i) {
-      for (j = 0; j < 4; j++) colors[j + i * 4] = gray[j];
-      for (j = 0; j < 3; j++) normals[j + i * 3] = secvec2[j];
-    }
     for (ibzl = 0; ibzl < nbzl2d; ++ibzl) {
       for (j = 0; j < 3; ++j)
         bzl2[j] = rot[j][0] * bzl2d[ibzl][0]
@@ -309,14 +300,12 @@ static void draw_bz_lines() {
 static void draw_colorbar()
 {
   int i, j, k;
-  GLfloat mat2, vertices[366], normals[366], colors[488];
+  GLfloat mat2, vertices[366], colors[488];
   /**/
   glEnableClientState(GL_COLOR_ARRAY);
   if (color_scale == 1 || color_scale == 4) {
     for (i = 0; i < 5; i++) {
       for (j = 0; j < 2; j++) {
-        for (k = 0; k < 2; k++) normals[k + j*3 + i * 6] = 0.0f;
-        normals[2 + j * 3 + i * 6] = 1.0f;
         vertices[0 + j * 3 + i * 6] = -1.0f + 0.5f*(GLfloat)i;
         vertices[1 + j * 3 + i * 6] = -1.0f - 0.1f*(GLfloat)j;
         vertices[2 + j * 3 + i * 6] = 0.0f;
@@ -339,9 +328,6 @@ static void draw_colorbar()
     vertices[0] = 0.0f;
     vertices[1] = -1.0f;
     vertices[2] = 0.0f;
-    normals[0] = 0.0f;
-    normals[1] = 0.0f;
-    normals[2] = 1.0f;
     if (blackback == 1)
       for (j = 0; j < 4; j++) colors[j] = wgray[j];
     else
@@ -378,8 +364,6 @@ static void draw_colorbar()
       vertices[0 + 3 * (i + 1)] = 0.2f * cosf((GLfloat)i / 60.0f * 6.283185307f);
       vertices[1 + 3 * (i + 1)] = 0.2f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
       vertices[2 + 3 * (i + 1)] = 0.0f;
-      for (j = 0; j < 2; j++) normals[j + 3 * (i + 1)] = 0.0f;
-      normals[2 + 3 * (i + 1)] = 1.0f;
     }/*for (i = 0; i <= 60; i++)*/
     glNormal3f(0.0f, 0.0f, 1.0f);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
@@ -389,8 +373,6 @@ static void draw_colorbar()
   else  if (color_scale == 6 || color_scale == 7) {
     for (i = 0; i < 2; i++) {
       for (j = 0; j < 2; j++) {
-        for (k = 0; k < 2; k++) normals[k + j * 3 + i * 6] = 0.0f;
-        normals[2 + j * 3 + i * 6] = 1.0f;
         vertices[0 + j * 3 + i * 6] = -1.0f + 2.0f*(GLfloat)i;
         vertices[1 + j * 3 + i * 6] = -1.0f - 0.1f*(GLfloat)j;
         vertices[2 + j * 3 + i * 6] = 0.0f;
@@ -412,26 +394,21 @@ static void draw_circles(
   GLfloat dx2d //!< [in] Translation used for the section-mode
 ) {
   int i, j;
-  GLfloat r, vertices[66], colors[88], normals[66];
+  GLfloat r, vertices[66];
   /**/
   r = 0.05f;
   /**/
-  for (i = 0; i < 22; i++) {
-    for (j = 0; j < 2; j++)normals[j + i * 3] = 0.0f;
-    normals[2 + i * 3] = 1.0f;
-    vertices[2 + i * 3] = 0.0f;
-    if (blackback == 1)for (j = 0; j < 4; j++) colors[j + i * 4] = white[j];
-    else for (j = 0; j < 4; j++) colors[j + i * 4] = black[j];
-  }/*for (i = 0; i < 22; i++)*/
-  /**/
   vertices[0] = 0.7f - dx2d;
   vertices[1] = scl;
+  vertices[2] = 0.0f;
   for (i = 0; i <= 20; i++) {
     vertices[0 + (i + 1) * 3] = r * cosf((GLfloat)i / 20.0f * 6.283185307f) + 0.7f - dx2d;
     vertices[1 + (i + 1) * 3] = r * sinf((GLfloat)i / 20.0f * 6.283185307f) + scl;
+    vertices[2 + (i + 1) * 3] = 0.0f;
   }/*for (i = 0; i <= 20; i++)*/
   glNormal3f(0.0f, 0.0f, 1.0f);
-  glColor3fv(colors);
+  if (blackback == 1) glColor3fv(white);
+  else glColor3fv(black);
   glVertexPointer(3, GL_FLOAT, 0, vertices);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 22);
   /**/
@@ -444,30 +421,23 @@ static void draw_circles(
 */
 static void draw_fermi_line() {
   int i, ib, ibzl;
-  GLfloat linecolor[4], vertices[60], normals[60], colors[80];
+  GLfloat vertices[60];
   /*
    Draw 2D BZ lines
   */
-  if (blackback == 1)
-    for (i = 0; i<4; i++) linecolor[i] = white[i];
-  else
-    for (i = 0; i<4; i++) linecolor[i] = black[i];
-  /**/
-  glLineWidth(linewidth*scl);
+  glLineWidth(linewidth);
   for (ibzl = 0; ibzl < nbzl2d; ++ibzl) {
     for (i = 0; i < 3; i++) vertices[i + 3 * ibzl] = bzl2d_proj[ibzl][i];
-    for (i = 0; i < 4; i++) colors[i + 4 * ibzl] = linecolor[i];
-    for (i = 0; i < 2; i++) normals[i + 3 * ibzl] = 0.0f;
-    normals[2 + 3 * ibzl] = 1.0f;
   }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
   glNormal3f(0.0f, 0.0f, 1.0f);
-  glColor3fv(linecolor);
+  if (blackback == 1)glColor3fv(white);
+  else glColor3fv(black);
   glVertexPointer(3, GL_FLOAT, 0, vertices);
   glDrawArrays(GL_LINE_LOOP, 0, nbzl2d);
   /*
    Draw Fermi lines
   */
-  glLineWidth(linewidth*scl);
+  glLineWidth(linewidth);
   glEnableClientState(GL_COLOR_ARRAY);
   glNormal3f(0.0f, 0.0f, 1.0f);
   for (ib = 0; ib < nb; ib++) {

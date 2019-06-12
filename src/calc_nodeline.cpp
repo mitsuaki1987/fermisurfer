@@ -124,20 +124,13 @@ void calc_nodeline() {
     */
     kvnl = new GLfloat***[nb];
     kvnl_rot = new GLfloat*[nb];
-    nmlnl = new GLfloat*[nb];
-    clrnl = new GLfloat*[nb];
     for (ib = 0; ib < nb; ++ib) {
       kvnl[ib] = new GLfloat**[nnl[ib]];
       kvnl_rot[ib] = new GLfloat[6*nnl[ib]];
-      nmlnl[ib] = new GLfloat[6*nnl[ib]];
-      clrnl[ib] = new GLfloat[8 * nnl[ib]];
       for (itri = 0; itri < nnl[ib]; ++itri) {
         kvnl[ib][itri] = new GLfloat * [2];
         for (i = 0; i < 2; ++i) {
           kvnl[ib][itri][i] = new GLfloat[3];
-          for (j = 0; j < 2; ++j)nmlnl[ib][j + 3 * i + 6 * itri] = 0.0f;
-          nmlnl[ib][2 + 3 * i + 6 * itri] = 1.0f;
-          for (j = 0; j < 4; ++j)clrnl[ib][j + 4 * i + 8 * itri] = black[j];
         }/*for (j = 0; j < 2; ++j)*/
       }/*for (i = 0; i < nnl[ib]; ++i)*/
     }/*for (ib = 0; ib < nb; ++ib)*/

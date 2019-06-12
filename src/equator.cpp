@@ -125,20 +125,13 @@ void equator() {
     */
     kveq = new GLfloat***[nb];
     kveq_rot = new GLfloat*[nb];
-    nmleq = new GLfloat*[nb];
-    clreq = new GLfloat*[nb];
     for (ib = 0; ib < nb; ++ib) {
       kveq[ib] = new GLfloat**[nequator[ib]];
       kveq_rot[ib] = new GLfloat[6 * nequator[ib]];
-      nmleq[ib] = new GLfloat[6 * nequator[ib]];
-      clreq[ib] = new GLfloat[8 * nequator[ib]];
       for (itri = 0; itri < nequator[ib]; ++itri) {
         kveq[ib][itri] = new GLfloat*[2];
         for (i = 0; i < 2; ++i) {
           kveq[ib][itri][i] = new GLfloat[3];
-          for (j = 0; j < 2; ++j)nmleq[ib][j + 3 * i + 6 * itri] = 0.0f;
-          nmleq[ib][2 + 3 * i + 6 * itri] = 1.0f;
-          for (j = 0; j < 4; ++j)clreq[ib][j + 4 * i + 8 * itri] = black[j];
         }/*for (j = 0; j < 2; ++j)*/
       }/*for (i = 0; i < nequator[ib]; ++i)*/
     }/*for (ib = 0; ib < nb; ++ib)*/

@@ -88,13 +88,9 @@ void free_patch() {
       }/*for (i0 = 0; i0 < nnl[ib]; ++i0)*/
       delete[] kvnl[ib];
       delete[] kvnl_rot[ib];
-      delete[] nmlnl[ib];
-      delete[] clrnl[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
     delete[] kvnl;
     delete[] kvnl_rot;
-    delete[] nmlnl;
-    delete[] clrnl;
   }/*if (refresh_nodeline == 1)*/
   /*
    2D Fermi line
@@ -103,11 +99,9 @@ void free_patch() {
     for (ib = 0; ib < nb; ++ib) {
       delete[] kv2d[ib];
       delete[] clr2d[ib];
-      delete[] nml2d[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
     delete[] kv2d;
     delete[] clr2d;
-    delete[] nml2d;
   }/*if (refresh_section == 1)*/
   /*
   equator
@@ -122,13 +116,9 @@ void free_patch() {
       }/*for (i0 = 0; i0 < nequator[ib]; ++i0)*/
       delete[] kveq[ib];
       delete[] kveq_rot[ib];
-      delete[] nmleq[ib];
-      delete[] clreq[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
     delete[] kveq;
     delete[] kveq_rot;
-    delete[] nmleq;
-    delete[] clreq;
   }/*if (refresh_equator == 1)*/
 }/*void free_patch()*/
 /**

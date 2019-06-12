@@ -47,6 +47,7 @@ public:
   TestGLCanvas* m_canvas;
   wxGridBagSizer* gbsizer;
   wxPanel* panel;
+  wxRadioBox* radiobox_color;
   wxSplitterWindow* splitterV;
   wxSplitterWindow* splitterH;
   /*
@@ -60,6 +61,7 @@ public:
   wxTextCtrl* textbox_rotatez;
   wxTextCtrl* textbox_min;
   wxTextCtrl* textbox_max;
+  wxTextCtrl* textbox_linewidth;
 
 private:
   void OnExit(wxCommandEvent& event);

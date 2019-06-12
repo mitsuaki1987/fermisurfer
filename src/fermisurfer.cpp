@@ -63,6 +63,11 @@ with a color-plot of the arbitraly matrix element
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#if defined(_OPENMP)
+#include <omp.h>
+#endif
+#include <wx/wx.h>
+#include "wx/cmdline.h"
 #include "read_file.hpp"
 #include "menu.hpp"
 #include "operation.hpp"
@@ -75,11 +80,6 @@ with a color-plot of the arbitraly matrix element
 #include "section.hpp"
 #include "kumo.hpp"
 #include "equator.hpp"
-#if defined(_OPENMP)
-#include <omp.h>
-#endif
-#include <wx/wx.h>
-#include "wx/cmdline.h"
 
 class MyApp : public wxApp
 {
@@ -155,8 +155,6 @@ GLfloat patch_min;  //!< Max value across patch
 int *nnl;             //!< The number of nodeline
 GLfloat ****kvnl;     //!< @f$k@f$-vector of nodeline [::nb][::nnl][2][3]
 GLfloat **kvnl_rot; //!< @f$k@f$-vector of nodeline [::nb][::nnl*2*3]
-GLfloat **nmlnl;//!< Normal vector of nodeline [::nb][::nnl*2*3]
-GLfloat **clrnl;//!< Color of nodeline [::nb][::nnl*2*4]
 /*
  2D Fermi line
 */
@@ -167,7 +165,6 @@ GLfloat axis2d[2][3];      //!< @f$k@f$-vector to define section
 int *n2d;                  //!< Number of line segment
 GLfloat **kv2d;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
 GLfloat **clr2d;         //!< Matrix element for 2D plot [::nb][::n2d*2*4]
-GLfloat **nml2d;          //!< Normal-vector for 2D plot [::nb][::n2d*2*3]
 int nbzl2d;                //!< The number of Lines of 1st Brillouin zone
 GLfloat bzl2d[26][3];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
 GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
@@ -179,8 +176,6 @@ GLfloat eqvec_fr[3]; //!<  @f$k@f$-vector for equator
 int *nequator;             //!< The number of equator
 GLfloat ****kveq;     //!< @f$k@f$-vector of equator [::nb][::nequator][2][3]
 GLfloat **kveq_rot; //!< @f$k@f$-vector of equator [::nb][::nequator*2*3]
-GLfloat **nmleq;//!< Normal vector of equator [::nb][::nequator*2*3]
-GLfloat **clreq;//!< Color of equator [::nb][::nequator*2*4]
 /*
   Variables for mouse  & cursorkey
 */
@@ -240,9 +235,13 @@ int refresh_nodeline = 1;
 int refresh_equator = 1;
 int refresh_section = 1;
 int skip_minmax = 0;
-
+#if defined(__WXMSW__)
 int windowx = 1700;
 int windowy = 1300;
+#else
+int windowx = 1000;
+int windowy = 700;
+#endif
 /**
   @brief Glut Display function
   called by glutDisplayFunc
