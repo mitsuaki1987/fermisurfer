@@ -740,7 +740,7 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
 
   panel->SetSizer(gbsizer);
 
-  splitterV->SplitVertically(splitterH, panel,200);
+  splitterV->SplitVertically(splitterH, panel,300);
 
   SetSizer(sizermain);
   SetAutoLayout(true);

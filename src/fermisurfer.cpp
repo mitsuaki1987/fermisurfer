@@ -239,8 +239,8 @@ int skip_minmax = 0;
 int windowx = 1700;
 int windowy = 1300;
 #else
-int windowx = 1000;
-int windowy = 700;
+int windowx = 1100;
+int windowy = 850;
 #endif
 /**
   @brief Glut Display function

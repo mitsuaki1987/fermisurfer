@@ -104,7 +104,8 @@ static void draw_fermi() {
   /*
   Arrow for 3D value
   */
-  glColor3fv(white);
+  if (blackback == 1) glColor3fv(white);
+  else glColor3fv(black);
   glNormal3f(0.0f, 0.0f, 1.0f);
   if (color_scale == 3) {
     for (ib = 0; ib < nb; ib++) {
