@@ -16,3 +16,5 @@ src/Makefile
 bin/
 .vs/
 x64/
+fermisurfer.aps
+fermisurfer.vcxproj.user
