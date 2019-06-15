@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{FDED1030-E96C-4A15-974F-0AAB8B26627D}</ProjectGuid>
+    <Keyword>
+    </Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>C:\Users\kawamuura\program\fermisurfer;C:\Users\kawamuura\program\wxWidgets-3.0.4\lib\vc_x64_lib\mswu;C:\Users\kawamuura\program\wxWidgets-3.0.4\include\msvc;C:\Users\kawamuura\program\wxWidgets-3.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>HAVE_GL_GL_H;HAVE_GL_GLU_H;NDEBUG;__WXMSW__;_UNICODE;VERSION="1.10.1";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OpenMPSupport>true</OpenMPSupport>
+      <SDLCheck>false</SDLCheck>
+      <ForcedIncludeFiles>Windows.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Users\kawamuura\program\wxWidgets-3.0.4\lib\vc_x64_lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>wxbase30u.lib;wxbase30u_net.lib;wxbase30u_xml.lib;wxbase30ud.lib;wxbase30ud_net.lib;wxbase30ud_xml.lib;wxexpat.lib;wxexpatd.lib;wxjpeg.lib;wxjpegd.lib;wxmsw30u_adv.lib;wxmsw30u_aui.lib;wxmsw30u_core.lib;wxmsw30u_gl.lib;wxmsw30u_html.lib;wxmsw30u_media.lib;wxmsw30u_propgrid.lib;wxmsw30u_qa.lib;wxmsw30u_ribbon.lib;wxmsw30u_richtext.lib;wxmsw30u_stc.lib;wxmsw30u_webview.lib;wxmsw30u_xrc.lib;wxmsw30ud_adv.lib;wxmsw30ud_aui.lib;wxmsw30ud_core.lib;wxmsw30ud_gl.lib;wxmsw30ud_html.lib;wxmsw30ud_media.lib;wxmsw30ud_propgrid.lib;wxmsw30ud_qa.lib;wxmsw30ud_ribbon.lib;wxmsw30ud_richtext.lib;wxmsw30ud_stc.lib;wxmsw30ud_webview.lib;wxmsw30ud_xrc.lib;wxpng.lib;wxpngd.lib;wxregexu.lib;wxregexud.lib;wxscintilla.lib;wxscintillad.lib;wxtiff.lib;wxtiffd.lib;wxzlib.lib;wxzlibd.lib;glu32.lib;opengl32.lib;ComCtl32.Lib;Uuid.Lib;USP10.Lib;RpcRT4.Lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="src\basic_math.hpp" />
+    <ClInclude Include="src\bz_lines.hpp" />
+    <ClInclude Include="src\calc_nodeline.hpp" />
+    <ClInclude Include="src\draw.hpp" />
+    <ClInclude Include="src\equator.hpp" />
+    <ClInclude Include="src\fermi_patch.hpp" />
+    <ClInclude Include="src\free_patch.hpp" />
+    <ClInclude Include="src\initialize.hpp" />
+    <ClInclude Include="src\kumo.hpp" />
+    <ClInclude Include="src\menu.hpp" />
+    <ClInclude Include="src\operation.hpp" />
+    <ClInclude Include="src\read_file.hpp" />
+    <ClInclude Include="src\section.hpp" />
+    <ClInclude Include="src\variable.hpp" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\basic_math.cpp" />
+    <ClCompile Include="src\bz_lines.cpp" />
+    <ClCompile Include="src\calc_nodeline.cpp" />
+    <ClCompile Include="src\draw.cpp" />
+    <ClCompile Include="src\equator.cpp" />
+    <ClCompile Include="src\fermisurfer.cpp" />
+    <ClCompile Include="src\fermi_patch.cpp" />
+    <ClCompile Include="src\free_patch.cpp" />
+    <ClCompile Include="src\initialize.cpp" />
+    <ClCompile Include="src\kumo.cpp" />
+    <ClCompile Include="src\menu.cpp" />
+    <ClCompile Include="src\operation.cpp" />
+    <ClCompile Include="src\read_file.cpp" />
+    <ClCompile Include="src\section.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="doc\figs\fermisurfer.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="fermisurfer.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+</Project>

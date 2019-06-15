@@ -10,14 +10,14 @@ Linuxの場合
 
       .. code-block:: bash
 
-          $ sudo aptitude install freeglut3-dev
+          $ sudo aptitude install libwxgtk3.0-dev
                       
 
    -  Red Hat Enterprise Linux/CentOS 等
 
       .. code-block:: bash
 
-          $ sudo yum install freeglut-devel.x86_64
+          $ sudo yum install wxGTK3-devel.x86_64
                       
 
 #. インストール

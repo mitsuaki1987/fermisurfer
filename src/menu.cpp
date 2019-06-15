@@ -49,6 +49,7 @@ THE SOFTWARE.
 #include "operation.hpp"
 #include "wx/splitter.h"
 #include "wx/gbsizer.h"
+#include "fermisurfer.xpm"
 
 void compute_patch_segment() {
   if (refresh_interpol == 1){
@@ -524,7 +525,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   int ib, itet;
   char menuname[8];
 
-  //SetIcon(wxICON(fermisurfer));
+  SetIcon(wxICON(fermisurfer));
 
   // Make a menubar
   //wxMenu* fileMenu = new wxMenu;

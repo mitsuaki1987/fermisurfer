@@ -33,3 +33,4 @@ THE SOFTWARE.
 
 int read_file();
 void read_batch();
+void read_bxsf();

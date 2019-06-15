@@ -295,8 +295,13 @@ bool MyApp::OnInit()
   *terminal << wxT("  Initialize variables ...\n");
   *terminal << wxT("\n");
   /**/
-  color_scale = read_file();
-  if (color_scale == 0)color_scale = 4;
+  if (frmsf_file_name.AfterLast(wxUniChar('.')).CmpNoCase(wxT("bxsf")) == 0) {
+    read_bxsf();
+  }
+  else {
+    color_scale = read_file();
+    if (color_scale == 0)color_scale = 4;
+  }
   interpol_energy();
   init_corner();
   bragg_vector();

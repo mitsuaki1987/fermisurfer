@@ -40,7 +40,80 @@ THE SOFTWARE.
 #include <OpenGL/gl.h>
 #endif
 #include <wx/wx.h>
+/*
+ Allocation of Kohn-Sham energies $ matrix elements
+*/
+static void allocate_griddata() 
+{
+  int i, j, ib, i0, i1, i2;
 
+  for (i = 0; i < 3; i++) ng[i] = ng0[i];
+
+  ntri = new int[nb];
+  ntri_th = new int* [nb];
+  for (ib = 0; ib < nb; ib++) ntri_th[ib] = new int[nthreads];
+  nnl = new int[nb];
+  n2d = new int[nb];
+  nequator = new int[nb];
+  draw_band = new int[nb];
+  for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
+
+  scl /= sqrtf(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
+  linewidth /= scl;
+  myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
+  myf->textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
+  /*
+   Direct lattice vector
+  */
+  for (i = 0; i < 3; ++i) {
+    for (j = 0; j < 3; ++j) avec[i][j] = 0.0f;
+    avec[i][i] = 1.0f;
+    solve3(bvec, avec[i]);
+    *terminal << wxString::Format(wxT("    avec %d : %f %f %f \n"),
+      i + 1, avec[i][0], avec[i][1], avec[i][2]);
+  }/*for (i = 0; i < 3; ++i)*/
+  for (i = 0; i < 3; ++i) {
+    secvec[i] = bvec[2][i];
+    eqvec[i] = bvec[2][i];
+    eqvec_fr[i] = 0.0;
+    secvec_fr[i] = 0.0;
+  }
+  eqvec_fr[2] = 1.0;
+  secvec_fr[2] = 1.0;
+  secscale = 0.0;
+
+  eig0 = new GLfloat * **[nb];
+  eig = new GLfloat * **[nb];
+  mat0 = new GLfloat * ***[nb];
+  mat = new GLfloat * ***[nb];
+  vf = new GLfloat * ***[nb];
+  for (ib = 0; ib < nb; ib++) {
+    eig0[ib] = new GLfloat * *[ng0[0]];
+    eig[ib] = new GLfloat * *[ng0[0]];
+    mat0[ib] = new GLfloat * **[ng0[0]];
+    mat[ib] = new GLfloat * **[ng0[0]];
+    vf[ib] = new GLfloat * **[ng0[0]];
+    for (i0 = 0; i0 < ng0[0]; i0++) {
+      eig0[ib][i0] = new GLfloat * [ng0[1]];
+      eig[ib][i0] = new GLfloat * [ng0[1]];
+      mat0[ib][i0] = new GLfloat * *[ng0[1]];
+      mat[ib][i0] = new GLfloat * *[ng0[1]];
+      vf[ib][i0] = new GLfloat * *[ng0[1]];
+      for (i1 = 0; i1 < ng0[1]; i1++) {
+        eig0[ib][i0][i1] = new GLfloat[ng0[2]];
+        eig[ib][i0][i1] = new GLfloat[ng0[2]];
+        mat0[ib][i0][i1] = new GLfloat * [ng0[2]];
+        mat[ib][i0][i1] = new GLfloat * [ng0[2]];
+        vf[ib][i0][i1] = new GLfloat * [ng0[2]];
+        for (i2 = 0; i2 < ng0[2]; ++i2) {
+          mat0[ib][i0][i1][i2] = new GLfloat[3];
+          mat[ib][i0][i1][i2] = new GLfloat[3];
+          vf[ib][i0][i1][i2] = new GLfloat[3];
+        }
+      }
+    }
+  }
+}
 /**
  @brief Input from Fermi surface file
 */
@@ -73,7 +146,6 @@ int read_file()
   if (ierr == 0) *terminal << wxT("error ! reading ng\n");
   *terminal << wxString::Format(wxT("    k point grid : %d %d %d\n"),
     ng0[0], ng0[1], ng0[2]);
-  for (i = 0; i < 3; i++) ng[i] = ng0[i];
   /*
    Shift of k-point grid
   */
@@ -101,14 +173,6 @@ int read_file()
   ierr = fscanf(fp, "%d", &nb);
   if (ierr == 0) *terminal << wxT("error ! reading nb\n");
   *terminal << wxString::Format(wxT("    # of bands : %d\n"), nb);
-  ntri = new int[nb];
-  ntri_th = new int*[nb];
-  for (ib = 0; ib < nb; ib++) ntri_th[ib] = new int[nthreads];
-  nnl = new int[nb];
-  n2d = new int[nb];
-  nequator = new int[nb];
-  draw_band = new int[nb];
-  for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
   /*
    Reciplocal lattice vectors
   */
@@ -117,63 +181,7 @@ int read_file()
     if (ierr == 0) *terminal << wxT("error ! reading bvec\n");
     *terminal << wxString::Format(wxT("    bvec %d : %f %f %f \n"), i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
   }/*for (i = 0; i < 3; ++i)*/
-  scl /= sqrtf(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
-  linewidth /= scl;
-  myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
-  myf->textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
-  /*
-   Direct lattice vector
-  */
-  for (i = 0; i < 3; ++i) {
-    for (j = 0; j < 3; ++j) avec[i][j] = 0.0f;
-    avec[i][i] = 1.0f;
-    solve3(bvec, avec[i]);
-    *terminal << wxString::Format(wxT("    avec %d : %f %f %f \n"),
-      i + 1, avec[i][0], avec[i][1], avec[i][2]);
-  }/*for (i = 0; i < 3; ++i)*/
-  for (i = 0; i < 3; ++i) {
-    secvec[i] = bvec[2][i];
-    eqvec[i] = bvec[2][i];
-    eqvec_fr[i] = 0.0;
-    secvec_fr[i] = 0.0;
-  }
-  eqvec_fr[2] = 1.0;
-  secvec_fr[2] = 1.0;
-  secscale = 0.0;
-  /*
-   Allocation of Kohn-Sham energies $ matrix elements
-  */
-  eig0 = new GLfloat * **[nb];
-  eig = new GLfloat * **[nb];
-  mat0 = new GLfloat * ***[nb];
-  mat = new GLfloat * ***[nb];
-  vf = new GLfloat * ***[nb];
-  for (ib = 0; ib < nb; ib++) {
-    eig0[ib] = new GLfloat**[ng0[0]];
-    eig[ib] = new GLfloat**[ng0[0]];
-    mat0[ib] = new GLfloat***[ng0[0]];
-    mat[ib] = new GLfloat***[ng0[0]];
-    vf[ib] = new GLfloat***[ng0[0]];
-    for (i0 = 0; i0 < ng0[0]; i0++) {
-      eig0[ib][i0] = new GLfloat*[ng0[1]];
-      eig[ib][i0] = new GLfloat*[ng0[1]];
-      mat0[ib][i0] = new GLfloat**[ng0[1]];
-      mat[ib][i0] = new GLfloat**[ng0[1]];
-      vf[ib][i0] = new GLfloat**[ng0[1]];
-      for (i1 = 0; i1 < ng0[1]; i1++) {
-        eig0[ib][i0][i1] = new GLfloat[ng0[2]];
-        eig[ib][i0][i1] = new GLfloat[ng0[2]];
-        mat0[ib][i0][i1] = new GLfloat*[ng0[2]];
-        mat[ib][i0][i1] = new GLfloat*[ng0[2]];
-        vf[ib][i0][i1] = new GLfloat*[ng0[2]];
-        for (i2 = 0; i2 < ng0[2]; ++i2) {
-          mat0[ib][i0][i1][i2] = new GLfloat[3];
-          mat[ib][i0][i1][i2] = new GLfloat[3];
-          vf[ib][i0][i1][i2] = new GLfloat[3];
-        }
-      }
-    }
-  }
+  allocate_griddata();
   /*
    Kohn-Sham energies
   */
@@ -397,3 +405,79 @@ void read_batch()
   rot[2][1] = cosf(thetaz)* sinf(thetax) + cosf(thetax)* sinf(thetay)* sinf(thetaz);
   rot[2][2] = cosf(thetax)* cosf(thetay);
 }
+
+void read_bxsf()
+{
+  FILE* fp;
+  char ctmp[256], ctmpEF1[16], ctmpEF2[16];
+  int ierr, ii, ib, i0, i1, i2, ii0, ii1, ii2;
+  char* cerr;
+  double EF;
+
+  if ((fp = fopen(frmsf_file_name.mb_str(), "r")) == NULL) {
+    printf("file open error!!\n");
+    printf("  Press any key to exit.\n");
+    ierr = getchar();
+    exit(EXIT_FAILURE);
+  }
+  *terminal << wxT("\n#####  Reading BXSF file ") 
+    << frmsf_file_name << wxT(" #####\n\n");
+
+  cerr = fgets(ctmp, 256, fp);
+  while (strstr(ctmp, "Fermi Energy:") == NULL) {
+    cerr = fgets(ctmp, 256, fp);
+  }
+  ierr = sscanf(ctmp, "%s %s %lf", ctmpEF1, ctmpEF2, &EF);
+  *terminal << wxString::Format(wxT("  Fermi energy : %le\n"), EF);
+
+  cerr = fgets(ctmp, 256, fp);
+  while (strstr(ctmp, "BEGIN_BLOCK_BANDGRID_3D") == NULL) {
+    cerr = fgets(ctmp, 256, fp);
+  }
+  cerr = fgets(ctmp, 256, fp);
+  cerr = fgets(ctmp, 256, fp);
+
+  cerr = fgets(ctmp, 256, fp);
+  ierr = sscanf(ctmp, "%d", &nb);
+  *terminal << wxString::Format(wxT("  Number of bands : %d\n"), nb);
+  cerr = fgets(ctmp, 256, fp);
+  ierr = sscanf(ctmp, "%d%d%d", &ng0[0], &ng0[1], &ng0[2]);
+  for (ii = 0; ii < 3; ii++) ng0[ii] -= 1;
+  *terminal << wxString::Format(wxT("  k point grid : %d %d %d\n"), 
+    ng0[0], ng0[1], ng0[2]);
+
+  cerr = fgets(ctmp, 256, fp);
+  for (ii = 0; ii < 3; ++ii) {
+    cerr = fgets(ctmp, 256, fp);
+    ierr = sscanf(ctmp, "%e%e%e", &bvec[ii][0], &bvec[ii][1], &bvec[ii][2]);
+    *terminal << wxString::Format(wxT("  Bvec %d : %f %f %f\n"), 
+      ii, bvec[ii][0], bvec[ii][1], bvec[ii][2]);
+  }
+  allocate_griddata();
+
+  for (ib = 0; ib < nb; ib++) {
+    cerr = fgets(ctmp, 256, fp);
+    *terminal << wxString::Format(wxT("  Reading %s"), ctmp);
+
+    for (i0 = 0; i0 <= ng0[0]; i0++) {
+      if (i0 == ng0[0]) ii0 = 0;
+      else ii0 = i0;
+      for (i1 = 0; i1 <= ng0[1]; i1++) {
+        if (i1 == ng0[1]) ii1 = 0;
+        else ii1 = i1;
+        for (i2 = 0; i2 <= ng0[2]; i2++) {
+          if (i2 == ng0[2]) ii2 = 0;
+          else ii2 = i2;
+
+          ierr = fscanf(fp, "%e", &eig0[ib][ii0][ii1][ii2]);
+          eig0[ib][ii0][ii1][ii2] -= EF;
+        }/*for (i2 = 0; i2 < Ng[2]; i2++)*/
+      }/*for (i1 = 0; i1 < Ng[1]; i1++)*/
+    }/*for (i0 = 0; i0 < Ng[0]; i0++)*/
+
+    cerr = fgets(ctmp, 256, fp);
+
+  }/*for (ib = 0; ib < Nb; ib++)*/
+  for (ii = 0; ii < 3; ii++) shiftk[ii] = 0;
+  color_scale = 4;
+}/*void read_bxsf*/
