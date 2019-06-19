@@ -536,19 +536,19 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   wxBoxSizer* sizermain = new wxBoxSizer(wxVERTICAL);
 
   splitterV = new wxSplitterWindow(this, wxID_ANY);
-  splitterV->SetSashGravity(0.5);
+  splitterV->SetSashGravity(1.0);
   splitterV->SetMinimumPaneSize(20); 
   sizermain->Add(splitterV, 1, wxEXPAND, 0);
 
   panel = new wxPanel(splitterV);
 
-  gbsizer = new wxGridBagSizer(25, 4);
+  gbsizer = new wxGridBagSizer();
 
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_compute, this, ibutton_compute);
   gbsizer->Add(new wxButton(panel, ibutton_compute, wxT("Update")), wxGBPosition(0,0), wxGBSpan(1,1));
 
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line width :")),
-    wxGBPosition(0, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line width : ")),
+    wxGBPosition(0, 1), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_line, this, itext_line);
   textbox_linewidth = new wxTextCtrl(panel, itext_line, wxT(""));
   gbsizer->Add(textbox_linewidth, wxGBPosition(0, 2), wxGBSpan(1, 1));
@@ -559,7 +559,8 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   gbsizer->Add(check_ongamma, wxGBPosition(0, 3), wxGBSpan(1, 1));
   check_ongamma->SetValue(true);
 
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Section-v :")), wxGBPosition(1, 0), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Section-v : ")), 
+    wxGBPosition(1, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectionx);
   wxTextCtrl* textbox_sectionx = new wxTextCtrl(panel, itext_sectionx, wxT(""));
   gbsizer->Add(textbox_sectionx, wxGBPosition(1, 1), wxGBSpan(1, 1));
@@ -573,7 +574,8 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   textbox_sectiony->ChangeValue(wxT("0"));
   textbox_sectionz->ChangeValue(wxT("1"));
 
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Equator-v :")), wxGBPosition(2, 0), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Equator-v : ")), 
+    wxGBPosition(2, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatorx);
   wxTextCtrl* textbox_equatorx = new wxTextCtrl(panel, itext_equatorx, wxT(""));
   gbsizer->Add(textbox_equatorx, wxGBPosition(2, 1), wxGBSpan(1, 1));
@@ -587,23 +589,27 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   textbox_equatory->ChangeValue(wxT("0"));
   textbox_equatorz->ChangeValue(wxT("1"));
 
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Interpol ratio :")), wxGBPosition(3, 0), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Interpol ratio : ")),
+    wxGBPosition(3, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_interpol, this, itext_interpol);
   wxTextCtrl* textbox_interpol = new wxTextCtrl(panel, itext_interpol, wxT(""));
   gbsizer->Add(textbox_interpol, wxGBPosition(3, 1), wxGBSpan(1, 1));
   textbox_interpol->ChangeValue(wxT("1"));
 
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Fermi energy :")), wxGBPosition(4, 0), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Fermi energy : ")), 
+    wxGBPosition(4, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_shift, this, itext_shift);
   wxTextCtrl* textbox_shift = new wxTextCtrl(panel, itext_shift, wxT(""));
   gbsizer->Add(textbox_shift, wxGBPosition(4, 1), wxGBSpan(1, 1));
   textbox_shift->ChangeValue(wxT("0"));
 
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Min of Scale :")), wxGBPosition(5, 0), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Min of Scale : ")), 
+    wxGBPosition(5, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_colorscale, this, itext_colorscalemin);
   textbox_min = new wxTextCtrl(panel, itext_colorscalemin, wxT(""));
   gbsizer->Add(textbox_min, wxGBPosition(5, 1), wxGBSpan(1, 1));
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Max of Scale :")), wxGBPosition(6, 0), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Max of Scale : ")),
+    wxGBPosition(6, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_colorscale, this, itext_colorscalemax);
   textbox_max = new wxTextCtrl(panel, itext_colorscalemax, wxT(""));
   gbsizer->Add(textbox_max, wxGBPosition(6, 1), wxGBSpan(1, 1));
@@ -665,8 +671,8 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_rotatey->ChangeValue(wxT("0"));
   textbox_rotatez->ChangeValue(wxT("0"));
 
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Position :")), 
-    wxGBPosition(10, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Position : ")), 
+    wxGBPosition(10, 1), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positionx);
   textbox_positionx = new wxTextCtrl(panel, itext_positionx, wxT(""));
   gbsizer->Add(textbox_positionx, wxGBPosition(10, 2), wxGBSpan(1, 1));
@@ -676,7 +682,8 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_positionx->ChangeValue(wxT("0"));
   textbox_positiony->ChangeValue(wxT("0"));
 
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Scale :")), wxGBPosition(11, 2), wxGBSpan(1, 1));
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Scale : ")), 
+    wxGBPosition(11, 2), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_scale);
   textbox_scale = new wxTextCtrl(panel, itext_scale, wxT(""));
   gbsizer->Add(textbox_scale, wxGBPosition(11, 3), wxGBSpan(1, 1));
@@ -730,18 +737,18 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
 #endif
 
   splitterH = new wxSplitterWindow(splitterV, wxID_ANY);
-  splitterH->SetSashGravity(0.5);
+  splitterH->SetSashGravity(1.0);
   splitterH->SetMinimumPaneSize(20);
 
   m_canvas = new TestGLCanvas(splitterH, wxID_ANY, gl_attrib);
 
   terminal = new wxTextCtrl(splitterH, wxID_ANY, wxT(""),
     wxPoint(0, 250), wxSize(100, 50), wxTE_MULTILINE);
-  splitterH->SplitHorizontally(m_canvas, terminal, 200);
+  splitterH->SplitHorizontally(m_canvas, terminal, -200);
 
   panel->SetSizer(gbsizer);
 
-  splitterV->SplitVertically(splitterH, panel,300);
+  splitterV->SplitVertically(splitterH, panel,0);
 
   SetSizer(sizermain);
   SetAutoLayout(true);
@@ -766,7 +773,7 @@ void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 }
 
 void MyFrame::modify_band() {
-  int ib;
+  int ib, width, height;
   wxCheckBox** check;
 
   radiobox_color->SetSelection(color_scale - 1);
@@ -780,10 +787,14 @@ void MyFrame::modify_band() {
     gbsizer->Add(check[ib], wxGBPosition(10 + ib, 0), wxGBSpan(1, 1));
     check[ib]->SetValue(true);
   }
+  gbsizer->Layout();
   if (lbatch == 1) {
     splitterH->Unsplit();
     splitterV->Unsplit();
   }
+  splitterV->SetSashPosition(-gbsizer->CalcMin().GetX());
+  splitterV->Layout();
+  splitterH->Layout();
   Refresh(false);
   Raise();
 }

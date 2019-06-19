@@ -26,7 +26,7 @@ Linuxの場合
          
        $ ./configure
        $ make
-       $ make install
+       $ sudo make install
 
 以上で実行可能ファイル ``src/fermisurfer`` および ``src/bxsf2frmsf`` が作られ,
 ``/usr/local/bin/`` にコピーされます.
@@ -51,5 +51,4 @@ Windowsの場合
 -------------
 
 実行可能ファイル ``bin/fermisurfer.exe`` を直接実行します.
-freeglutライブラリをダウンロードして自分でコンパイルすることも可能です.
-
+VisualStudio用ファイル ``fermisurfer.vcxproj`` を使って自分でビルドすることも可能です.

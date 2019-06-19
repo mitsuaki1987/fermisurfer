@@ -90,54 +90,16 @@ input fileの書式
    後述の ``Shift Fermi Energy`` メニューを用いて
    Fermiエネルギーを ``0.0`` 以外の値に変更することも可能です.
 
-#. 物理量 (並び順は :ref:`format` 参照)
+#. 物理量 (並び順は :ref:`format` 参照) (オプショナル)
 
-   特にカラープロットをしたい量が無く,
-   Fermi面の描画のみを行いたい場合には,
-   後述の ``Color scale mode`` メニューから
-   ``Unicolor`` を選択してください. その際,
-   この"物理量"は利用されることはありませんが,
-   ファイルの読み込みを完了させるために何らかの数字で埋めてください
-   (すべて ``1.0`` とするなど).
+   0個から3個のブロックで, カラープロットしたい量を入力する.
+   省略することも可能.
 
-BXSF形式からの変換
-------------------
+BXSF形式
+--------
 
-付属のユーティリティー ``bxsf2frmsf`` を使うと
-XCrysDen用の入力ファイルから ``fermisurfer`` で読み取り可能な入力ファイルが
-作られます. また, そのときにFermi面上にカラープロットされるFermi速度が,
-エネルギーバンドから計算されます.
-
-使い方は次のとおりです. ``examples/`` ディレクトリにある ``pb.bxsf``
-ファイルを例として使います.
-
-Linuxの場合
-~~~~~~~~~~~
-
-作成した実行可能ファイル ``bxsf2frmsf`` にパスが通っている状態で
-
-.. code-block:: bash
-
-    $ bxsf2frmsf pb.bxsf
-        
-
-とコマンド, スペース, 入力ファイル名とタイプします. その後,
-次のファイルが生成されます.
-
--  ``pb_vf.frmsf``: Fermi速度の絶対値
--  ``pb_vfx.frmsf``: Fermi速度の :math:`x` 成分
--  ``pb_vfy.frmsf``: Fermi速度の :math:`y` 成分
--  ``pb_vfz.frmsf``: Fermi速度の :math:`z` 成分
--  ``pb_vfa1.frmsf``: Fermi速度の, 格子ベクトル :math:`{\bf a}_1` に平行な成分
--  ``pb_vfa2.frmsf``: Fermi速度の, 格子ベクトル :math:`{\bf a}_2` に平行な成分
--  ``pb_vfa3.frmsf``: Fermi速度の, 格子ベクトル :math:`{\bf a}_3` に平行な成分
-
-Windowsの場合
-~~~~~~~~~~~~~
-
-入力ファイル(この場合は ``pb.bxsf``)を右クリックし,
-メニューから「プログラムから開く」を選択し,
-実行ファイルを ``bxsf2frmsf.exe`` に設定してください.
+XCrysDen用の入力ファイルを ``fermisurfer`` で読み取ることも可能.
+その場合は前節の「物理量」を省略した場合と同じ振る舞いになる。
 
 .. _format:
 
@@ -225,4 +187,78 @@ C言語
       } 
       fclose(fo); 
         
+2次元量のカラープロットを行う場合
+---------------------------------
 
+fortran
+
+.. code-block:: fortran
+
+      real(4) :: bvec1(3), bvec2(3), bvec3(3) !逆格子ベクトル
+      INTEGER :: nk1, nk2, nk3 !各逆格子ベクトルの方向の分割数
+      integer :: ishift !グリットをシフトさせるか(=1)否か(=0)
+      integer :: nbnd !バンド数
+      real(4) :: eig(nk3,nk2,nk1,nbnd) !エネルギー
+      real(4) :: x(nk3,nk2,nk1,nbnd,2) !物理量 (2次元量、複素数など)
+
+      integer :: ik1, ik2, ik3, ibnd, fo, ii
+
+      open(fo, file = "sample.frmsf")
+      write(fo,*) nk1, nk2, nk3
+      write(fo,*) ishift
+      write(fo,*) nbnd
+      write(fo,*) real(bvec1(1:3))
+      write(fo,*) real(bvec2(1:3))
+      write(fo,*) real(bvec3(1:3))
+      do ibnd = 1, nbnd
+         do ik1 = 1, nk1
+            do ik2 = 1, nk2
+               do ik3 = 1, nk3
+                  write(fo,*) real(eig(ik3,ik2,ik1,ibnd)) 
+               end do
+            end do
+         end do
+      end do
+      do ii = 1, 2
+         do ibnd = 1, nbnd
+            do ik1 = 1, nk1
+               do ik2 = 1, nk2
+                  do ik3 = 1, nk3
+                     write(fo,*) real(x(ik3,ik2,ik1,ibnd,ii))
+                  end do
+               end do
+            end do
+         end do
+      close(fo)
+
+カラープロットしたい量を省略する場合
+------------------------------------
+
+fortran
+
+.. code-block:: fortran
+
+      real(4) :: bvec1(3), bvec2(3), bvec3(3) !逆格子ベクトル
+      INTEGER :: nk1, nk2, nk3 !各逆格子ベクトルの方向の分割数
+      integer :: ishift !グリットをシフトさせるか(=1)否か(=0)
+      integer :: nbnd !バンド数
+      real(4) :: eig(nk3,nk2,nk1,nbnd) !エネルギー
+
+      integer :: ik1, ik2, ik3, ibnd, fo, ii
+
+      open(fo, file = "sample.frmsf")
+      write(fo,*) nk1, nk2, nk3
+      write(fo,*) ishift
+      write(fo,*) nbnd
+      write(fo,*) real(bvec1(1:3))
+      write(fo,*) real(bvec2(1:3))
+      write(fo,*) real(bvec3(1:3))
+      do ibnd = 1, nbnd
+         do ik1 = 1, nk1
+            do ik2 = 1, nk2
+               do ik3 = 1, nk3
+                  write(fo,*) real(eig(ik3,ik2,ik1,ibnd)) 
+               end do
+            end do
+         end do
+      end do
