@@ -209,6 +209,13 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
     myf->Show(true);
     Refresh(false);
   }
+  if (event.LeftDClick()) {
+    trans[0] = (event.GetX() * sx * 2.0 - 1.0) / scl;
+    trans[1] = -(event.GetY() * sy * 2.0 - 1.0) / scl;
+    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
+    myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
+    Refresh(false);
+  }
 }
 /**
  @brief Glut special key function
@@ -219,6 +226,7 @@ void TestGLCanvas::OnChar(wxKeyEvent& event)
 {
   switch (event.GetKeyCode())
   {
+  case 'a':
   case WXK_LEFT:
     trans[0] += - 0.1f;
     myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
@@ -226,6 +234,7 @@ void TestGLCanvas::OnChar(wxKeyEvent& event)
     Refresh(false);
     break;
 
+  case 'd':
   case WXK_RIGHT:
     trans[0] += 0.1f;
     myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
@@ -233,6 +242,7 @@ void TestGLCanvas::OnChar(wxKeyEvent& event)
     Refresh(false);
     break;
 
+  case 'w':
   case WXK_UP:
     trans[1] += 0.1f;
     myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
@@ -240,6 +250,7 @@ void TestGLCanvas::OnChar(wxKeyEvent& event)
     Refresh(false);
     break;
 
+  case 's':
   case WXK_DOWN:
     trans[1] += - 0.1f;
     myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));

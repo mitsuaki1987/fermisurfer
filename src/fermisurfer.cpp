@@ -323,7 +323,7 @@ bool MyApp::OnInit()
   *terminal << wxT("\n");
   *terminal << wxT("              mouse drag : Rotate objects\n");
   *terminal << wxT("              mousewheel : Resize objects\n");
-  *terminal << wxT("               cursorkey : Move objects\n");
+  *terminal << wxT("    cursorkey or w,a,s,d : Move objects\n");
   *terminal << wxT("\n");
   /**/
   if (lbatch == 1) {
