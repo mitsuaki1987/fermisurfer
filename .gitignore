@@ -18,3 +18,4 @@ bin/
 x64/
 fermisurfer.aps
 fermisurfer.vcxproj.user
+Release/
