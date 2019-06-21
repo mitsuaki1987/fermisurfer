@@ -299,31 +299,28 @@ void MyFrame::textctrl_interpol(
   }
 }/*static void menu_interpol*/
 /**
- @brief Toggle Lighting (::lside)
+ @brief Toggle Lighting
 */
 void MyFrame::radio_lighting(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
   if (event.GetString().Cmp(wxT("Both")) == 0) {
-    lside = 1;
     side = 1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
   }
   if (event.GetString().Cmp(wxT("Unoccupy")) == 0) {
-    lside = 2;
     side = 1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
   }
   if (event.GetString().Cmp(wxT("Occupy")) == 0) {
-    lside = 3;
     side = -1.0;
     glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
   }
   Refresh(false);
 } /* menu_lighting */
 /**
- @brief Line width (::lside)
+ @brief Line width
 */
 void MyFrame::textctrl_line(
   wxCommandEvent& event //!<[in] Selected menu
@@ -431,7 +428,7 @@ void MyFrame::radio_tetra(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  itet = wxAtoi(event.GetString());
+  itet = wxAtoi(event.GetString()) - 1;
   init_corner();
   refresh_patch = 1;
 }/*menu_tetra*/

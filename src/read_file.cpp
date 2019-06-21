@@ -328,15 +328,15 @@ void read_batch()
       ierr = fscanf(fp, "%s", value);
       Text2Lower(value);
       if (strcmp(value, "both") == 0) {
-        lside = 1;
+        glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
         side = 1.0;
       }
       else if (strcmp(value, "unoccupied") == 0) {
-        lside = 2;
+        glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
         side = 1.0;
       }
       else if (strcmp(value, "occupied") == 0) {
-        lside = 3;
+        glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
         side = -1.0;
       }
       else {

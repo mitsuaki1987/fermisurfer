@@ -68,7 +68,6 @@ extern int lcolorbar;   //!< Switch for colorbar
 extern int lstereo;     //!< Switch for the stereogram
 extern int lmouse;      //!< Switch for the mouse function
 extern int lsection;    //!< Switch for the 2D Fermi lines
-extern int lside;       //!< Switch for lighting
 extern int lequator;    //!< Switch for equator
 /*
  Variables for Brillouin zone boundaries
