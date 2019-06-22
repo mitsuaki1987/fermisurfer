@@ -529,17 +529,47 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   //wxMenuBar* menuBar = new wxMenuBar;
   //menuBar->Append(fileMenu, wxT("File"));
   //SetMenuBar(menuBar);
+  // JACS
+#ifdef __WXMSW__
+  int* gl_attrib = NULL;
+#else
+  int gl_attrib[20] =
+  { WX_GL_RGBA, WX_GL_MIN_RED, 1, WX_GL_MIN_GREEN, 1,
+  WX_GL_MIN_BLUE, 1, WX_GL_DEPTH_SIZE, 1,
+  WX_GL_DOUBLEBUFFER,
+#  if defined(__WXMAC__) || defined(__WXCOCOA__)
+        GL_NONE };
+#  else
+    None
+};
+#  endif
+#endif
 
   wxBoxSizer* sizermain = new wxBoxSizer(wxVERTICAL);
 
   splitterV = new wxSplitterWindow(this, wxID_ANY);
   splitterV->SetSashGravity(1.0);
-  splitterV->SetMinimumPaneSize(20); 
+  splitterV->SetMinimumPaneSize(0); 
   sizermain->Add(splitterV, 1, wxEXPAND, 0);
 
   panel = new wxPanel(splitterV);
 
   gbsizer = new wxGridBagSizer();
+
+  splitterH = new wxSplitterWindow(splitterV, wxID_ANY);
+  splitterH->SetSashGravity(1.0);
+  splitterH->SetMinimumPaneSize(0);
+
+  m_canvas = new TestGLCanvas(splitterH, wxID_ANY, gl_attrib);
+
+  terminal = new wxTextCtrl(splitterH, wxID_ANY, wxT(""),
+    wxPoint(0, 250), wxSize(100, 0), wxTE_MULTILINE);
+  if (lbatch == 1) splitterH->SplitHorizontally(m_canvas, terminal, -1);
+  else splitterH->SplitHorizontally(m_canvas, terminal, -200);
+  panel->SetSizer(gbsizer);
+
+  if (lbatch == 1)splitterV->SplitVertically(splitterH, panel, -1);
+  else splitterV->SplitVertically(splitterH, panel, 0);
 
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_compute, this, ibutton_compute);
   gbsizer->Add(new wxButton(panel, ibutton_compute, wxT("Update")), wxGBPosition(0,0), wxGBSpan(1,1));
@@ -715,38 +745,6 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
     WXSIZEOF(choices_bg), choices_bg,
     1, wxRA_SPECIFY_COLS), wxGBPosition(12, 3), wxGBSpan(3, 1));
 
-  // Make a TestGLCanvas
-
-  // JACS
-#ifdef __WXMSW__
-  int* gl_attrib = NULL;
-#else
-  int gl_attrib[20] =
-  { WX_GL_RGBA, WX_GL_MIN_RED, 1, WX_GL_MIN_GREEN, 1,
-  WX_GL_MIN_BLUE, 1, WX_GL_DEPTH_SIZE, 1,
-  WX_GL_DOUBLEBUFFER,
-#  if defined(__WXMAC__) || defined(__WXCOCOA__)
-        GL_NONE };
-#  else
-    None
-};
-#  endif
-#endif
-
-  splitterH = new wxSplitterWindow(splitterV, wxID_ANY);
-  splitterH->SetSashGravity(1.0);
-  splitterH->SetMinimumPaneSize(20);
-
-  m_canvas = new TestGLCanvas(splitterH, wxID_ANY, gl_attrib);
-
-  terminal = new wxTextCtrl(splitterH, wxID_ANY, wxT(""),
-    wxPoint(0, 250), wxSize(100, 50), wxTE_MULTILINE);
-  splitterH->SplitHorizontally(m_canvas, terminal, -200);
-
-  panel->SetSizer(gbsizer);
-
-  splitterV->SplitVertically(splitterH, panel,0);
-
   SetSizer(sizermain);
   SetAutoLayout(true);
 
@@ -789,7 +787,9 @@ void MyFrame::modify_band() {
     splitterH->Unsplit();
     splitterV->Unsplit();
   }
-  splitterV->SetSashPosition(-gbsizer->CalcMin().GetX());
+  else {
+    splitterV->SetSashPosition(-gbsizer->CalcMin().GetX());
+  }
   splitterV->Layout();
   splitterH->Layout();
   Refresh(false);
