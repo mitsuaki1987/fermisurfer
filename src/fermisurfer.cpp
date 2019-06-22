@@ -234,13 +234,8 @@ int refresh_nodeline = 1;
 int refresh_equator = 1;
 int refresh_section = 1;
 int skip_minmax = 0;
-#if defined(__WXMSW__)
-int windowx = 1700;
-int windowy = 1300;
-#else
 int windowx = 1100;
 int windowy = 850;
-#endif
 /**
   @brief Glut Display function
   called by glutDisplayFunc
