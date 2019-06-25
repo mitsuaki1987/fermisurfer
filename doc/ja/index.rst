@@ -14,8 +14,8 @@ Welcome to FermiSurfer's documentation!
    install
    input
    ops
+   batch
    qe           
-   gallery
    ack
    copy
    contact

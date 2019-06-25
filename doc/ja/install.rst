@@ -31,24 +31,11 @@ Linuxの場合
 以上で実行可能ファイル ``src/fermisurfer`` および ``src/bxsf2frmsf`` が作られ,
 ``/usr/local/bin/`` にコピーされます.
 
-Mac OSX の場合
---------------
+Mac, Windowsの場合
+------------------
 
-#. Xcodeをあらかじめインストールしておく
+それぞれのOSに応じたバイナリ実行ファイルをダウンロードする.
 
-#. インストール
-
-   .. code-block:: bash
-
-       $ ./configure
-       $ make 
-       $ make install
-               
-以上で実行可能ファイル ``src/fermisurfer`` および ``src/bxsf2frmsf`` が作られ,
-``/usr/local/bin/`` にコピーされます.
-
-Windowsの場合
--------------
-
-実行可能ファイル ``bin/fermisurfer.exe`` を直接実行します.
-VisualStudio用ファイル ``fermisurfer.vcxproj`` を使って自分でビルドすることも可能です.
+またwxWidgetsライブラリをインストールしたのちにFermiSurferを自前でビルドすることも可能.
+MacではLinuxと同様にconfigureを用いてビルドする.
+WindowsではVisualStudio用ファイル ``fermisurfer.vcxproj`` が利用できる.

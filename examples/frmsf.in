@@ -15,5 +15,5 @@
         scale  1.0
      rotation  120.0 40.0 0.0
   fermienergy  0.0
-   stereogram  normal
+   stereogram  none
   tetrahedron  1

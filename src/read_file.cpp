@@ -297,14 +297,13 @@ void read_batch()
     else if (strcmp(keyword, "colorscale") == 0) {
       ierr = fscanf(fp, "%s", value);
       Text2Lower(value);
-      if (strcmp(value, "inputreal") == 0) color_scale = 1;
-      else if (strcmp(value, "inputcomplex") == 0) color_scale = 2;
-      else if (strcmp(value, "inputtrinumber") == 0) color_scale = 3;
+      if (strcmp(value, "input1d") == 0) color_scale = 1;
+      else if (strcmp(value, "input2d") == 0) color_scale = 2;
+      else if (strcmp(value, "input3d") == 0) color_scale = 3;
       else if (strcmp(value, "fermivelocity") == 0) color_scale = 4;
       else if (strcmp(value, "bandindex") == 0) color_scale = 5;
       else if (strcmp(value, "inputgray") == 0) color_scale = 6;
-      else if (strcmp(value, "inputrealgray") == 0) color_scale = 7;
-      else if (strcmp(value, "fermivelocitygray") == 0) color_scale = 8;
+      else if (strcmp(value, "fermivelocitygray") == 0) color_scale = 7;
       else {
         printf("Error! %s = %s", keyword, value);
         exit(-1);
@@ -370,7 +369,7 @@ void read_batch()
     else if (strcmp(keyword, "stereogram") == 0) {
       ierr = fscanf(fp, "%s", value);
       Text2Lower(value);
-      if (strcmp(value, "normal") == 0) lstereo = 1;
+      if (strcmp(value, "none") == 0) lstereo = 1;
       else if (strcmp(value, "parallel") == 0) lstereo = 2;
       else if (strcmp(value, "cross") == 0) lstereo = 3;
       else {
