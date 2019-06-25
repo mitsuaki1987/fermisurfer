@@ -9,16 +9,16 @@ Welcome to FermiSurfer's documentation!
 .. toctree::
    :maxdepth: 3
 
-   fermisf_overview_en
-   fermisf_file_en
-   fermisf_install_en
-   fermisf_input_en
-   fermisf_ops_en
-   fermisf_qe_en
-   fermisf_gallery_en
-   fermisf_ack_en
-   fermisf_copy_en
-   fermisf_contact_en
+   overview
+   file
+   install
+   input
+   ops
+   batch
+   qe
+   ack
+   copy
+   contact
 
 .. Indices and tables
 .. ==================

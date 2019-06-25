@@ -28,7 +28,7 @@ Linuxの場合
        $ make
        $ sudo make install
 
-以上で実行可能ファイル ``src/fermisurfer`` および ``src/bxsf2frmsf`` が作られ,
+以上で実行可能ファイル ``src/fermisurfer`` が作られ,
 ``/usr/local/bin/`` にコピーされます.
 
 Mac, Windowsの場合

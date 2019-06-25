@@ -86,47 +86,15 @@ The input file is as follows (``mgb2_vfz.fs``):
 
 #. Matrix elements (The order of component is written in  :ref:`format` )
 
-   If you have no quantity to plot on Fermi surfaces, please use
-   ``Unicolor`` switch in ``Color scale mode`` menu described at section
-   6.7. In that case, although this "Matrix elements" is not used by
-   ``fermisurfer``, please fill them with arbitrary numbers.
+   Same as the energy, but in this case we can
+   write 0 to 3 blocks for this quantity, i.e.
+   we can omit to write this.
 
---------------
+BXSF format
+-----------
 
-Converting bxsf file
---------------------
-
-You can generate input files for ``fermisurfer`` from an input file for
-XCrysDen (the bxsf format) by using the utility program ``bxsf2frmsf``.
-
-The usage is as follow (we use ``examples/pb.bxsf`` as an example.):
-
-For Linux
-~~~~~~~~~
-
-You can launch generated executable as follows:
-
-.. code-block:: bash
-
-    $ bxsf2frmsf pb.bxsf
-        
-
-You need a space between the command and input-file name. After it
-finishes, the following files are generated:
-
--  ``pb_vf.frmsf``: Absolute value of the Fermi velocity
--  ``pb_vfx.frmsf``: :math:`x` component of the Fermi velocity
--  ``pb_vfy.frmsf``: :math:`y` component of the Fermi velocity
--  ``pb_vfz.frmsf``: :math:`z` component of the Fermi velocity
--  ``pb_vfa1.frmsf``: Component of the Fermi velocity (along :math:`{\bf a}_1`)
--  ``pb_vfa2.frmsf``: Component of the Fermi velocity (along :math:`{\bf a}_2`)
--  ``pb_vfa3.frmsf``: Component of the Fermi velocity (along :math:`{\bf a}_3`)
-
-For Windows
-~~~~~~~~~~~
-
-Click mouse right button on the input file. Choose "Open With ..." menu,
-then choose ``bxsf2frmsf.exe``.
+The BXSF format also can be treated by FermiSurfer.
+In this case this program behaves as "Matrix elements" are omitted.
 
 .. _format:
 
@@ -214,3 +182,78 @@ C
       } 
       fclose(fo); 
         
+For the 2D color plot (See srvo3_t2g.frmsf in examples)
+-------------------------------------------------------
+
+fortran
+
+.. code-block:: fortran
+                
+      real(4) :: bvec1(3), bvec2(3), bvec3(3) !Resiplocal lattice vector
+      INTEGER :: nk1, nk2, nk3 !k-grid of each direction
+      integer :: ishift !1 for shifted grid, 0 for unshifted grid.
+      integer :: nbnd !The number of bands
+      real(4) :: eig(nk3,nk2,nk1,nbnd) !energy
+      real(4) :: x(nk3,nk2,nk1,nbnd,2) !matrix element (2D or complex)
+
+      integer :: ik1, ik2, ik3, ibnd, fo, ii
+
+      open(fo, file = "sample.frmsf")
+      write(fo,*) nk1, nk2, nk3
+      write(fo,*) ishift
+      write(fo,*) nbnd
+      write(fo,*) real(bvec1(1:3))
+      write(fo,*) real(bvec2(1:3))
+      write(fo,*) real(bvec3(1:3))
+      do ibnd = 1, nbnd
+         do ik1 = 1, nk1
+            do ik2 = 1, nk2
+               do ik3 = 1, nk3
+                  write(fo,*) real(eig(ik3,ik2,ik1,ibnd)) 
+               end do
+            end do
+         end do
+      end do
+      do ii = 1, 2
+         do ibnd = 1, nbnd
+            do ik1 = 1, nk1
+               do ik2 = 1, nk2
+                  do ik3 = 1, nk3
+                     write(fo,*) real(x(ik3,ik2,ik1,ibnd,ii))
+                  end do
+               end do
+            end do
+         end do
+      close(fo)
+
+Omit the quantity for the color plot
+------------------------------------
+
+fortran
+
+.. code-block:: fortran
+
+      real(4) :: bvec1(3), bvec2(3), bvec3(3) ! Resiplocal lattice vector
+      INTEGER :: nk1, nk2, nk3 ! k-grid of each direction
+      integer :: ishift ! 1 for shifted grid, 0 for unshifted grid.
+      integer :: nbnd ! The number of bands
+      real(4) :: eig(nk3,nk2,nk1,nbnd) ! energy
+
+      integer :: ik1, ik2, ik3, ibnd, fo, ii
+
+      open(fo, file = "sample.frmsf")
+      write(fo,*) nk1, nk2, nk3
+      write(fo,*) ishift
+      write(fo,*) nbnd
+      write(fo,*) real(bvec1(1:3))
+      write(fo,*) real(bvec2(1:3))
+      write(fo,*) real(bvec3(1:3))
+      do ibnd = 1, nbnd
+         do ik1 = 1, nk1
+            do ik2 = 1, nk2
+               do ik3 = 1, nk3
+                  write(fo,*) real(eig(ik3,ik2,ik1,ibnd)) 
+               end do
+            end do
+         end do
+      end do
