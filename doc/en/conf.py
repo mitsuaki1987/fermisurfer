@@ -194,7 +194,7 @@ latex_elements = {
 # Additional stuff for the LaTeX preamble.
 #'preamble': '\usepackage{pxjahyper}',
     'babel': '\\usepackage[english]{babel}',
-    'classoptions': ',dvipdfmx,openany'
+    'classoptions': ',pdftex,openany'
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
