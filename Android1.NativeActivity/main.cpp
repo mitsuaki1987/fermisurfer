@@ -102,40 +102,70 @@ static int engine_init_display(struct engine* engine) {
   fclose(fp);
 
   // GL の状態を初期化します。
+  glDisable(GL_DITHER);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  glEnable(GL_CULL_FACE);
+  glClearColor(1.0f, 0.41f, 0.71f, 1.0f);
+  //glEnable(GL_CULL_FACE);
   glShadeModel(GL_SMOOTH);
-
-  glClearColor(0.0, 0.0, 0.0, 0.0);
   glEnable(GL_DEPTH_TEST);
+
+  //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+  //glShadeModel(GL_SMOOTH);
+
+  //glClearColor(0.0, 0.0, 0.0, 0.0);
+  //glEnable(GL_DEPTH_TEST);
   //glDisable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
   glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
   glEnable(GL_NORMALIZE);
-  glEnableClientState(GL_VERTEX_ARRAY);
   glEnable(GL_COLOR_MATERIAL);
   glViewport(0, 0, engine->width, engine->height);
+  GLfloat ratio = (GLfloat)engine->width/ (GLfloat)engine->height;
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  glMatrixMode(GL_MODELVIEW);
+  glFrustumf(-ratio, ratio, -1, 1, 1, 10);
+  glEnableClientState(GL_VERTEX_ARRAY);
+
+ // glMatrixMode(GL_MODELVIEW);
   return 0;
 }
 /**
 * ディスプレイ内の現在のフレームのみ。
 */
 static void engine_draw_frame(struct engine* engine) {
-  int ntri = 1;
-  GLfloat clr[] = { 1.0, 0.0, 0.0, 1.0,
-                    0.0, 1.0, 0.0, 1.0,
-                    0.0, 0.0, 1.0, 1.0};
-  GLfloat kvp[] = {1.0, 0.0, 0.0,
-                   0.0, 1.0, 0.0,
-                  0.0, 0.0, 1.0 };
-  GLfloat nmlp[] = {0.0, 0.0, 1.0,
-                    0.0, 1.0, 1.0,
-                    1.0, 0.0, 1.0};
+  int ntri = 8;
+  GLfloat kvp[][3] = { 
+    { 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0},
+    { 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0},
+    { 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0},
+    { 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0},
+    {-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0},
+    {-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0},
+    {-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0},
+    {-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}
+  };
+  GLfloat nmlp[][3] = {
+    { 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0},
+    { 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0},
+    { 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0},
+    { 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0},
+    {-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0},
+    {-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0},
+    {-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0},
+    {-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}
+  };
+  GLfloat clr[][4] = { 
+    {1.0, 0.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0},
+    {1.0, 0.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0},
+    {1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0},
+    {1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0},
+    {0.0, 1.0, 1.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0},
+    {0.0, 1.0, 1.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0},
+    {0.0, 1.0, 1.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0},
+    {0.0, 1.0, 1.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0}
+  };
   GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
 
@@ -143,7 +173,7 @@ static void engine_draw_frame(struct engine* engine) {
     // ディスプレイがありません。
     return;
   }
-
+  glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslatef(0.0, 0.0, -5.0);
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
@@ -152,19 +182,19 @@ static void engine_draw_frame(struct engine* engine) {
 
   // 色で画面を塗りつぶします。
   //glClearColor(((float)engine->state.x) / engine->width, 0.5, ((float)engine->state.y) / engine->height, 1);
-  glClearColor(0.5, 0.5, 0.5, 1);
+  glClearColor(0.7, 0.7, 0.7, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  //glEnableClientState(GL_NORMAL_ARRAY);
-  //glEnableClientState(GL_COLOR_ARRAY);
-  glColor4f(0.0, 0.0, 0.0, 1.0);
-  glNormal3f(0.0f, 0.0f, 1.0f);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glEnableClientState(GL_COLOR_ARRAY);
+  glLineWidth(5.0);
+  //glColor4f(0.0, 1.0, 0.0, 1.0);
+  //glNormal3f(0.0f, 0.0f, 1.0f);
   glVertexPointer(3, GL_FLOAT, 0, kvp);
-  //glNormalPointer(GL_FLOAT, 0, nmlp);
-  //glColorPointer(4, GL_FLOAT, 0, clr);
-  //glDrawArrays(GL_TRIANGLES, 0, ntri * 3);
-  glDrawArrays(GL_LINES, 0, ntri * 2);
-  //glDisableClientState(GL_NORMAL_ARRAY);
-  //glDisableClientState(GL_COLOR_ARRAY);
+  glNormalPointer(GL_FLOAT, 0, nmlp);
+  glColorPointer(4, GL_FLOAT, 0, clr);
+  glDrawArrays(GL_TRIANGLES, 0, ntri * 3);
+  glDisableClientState(GL_NORMAL_ARRAY);
+  glDisableClientState(GL_COLOR_ARRAY);
 
   eglSwapBuffers(engine->display, engine->surface);
 }
