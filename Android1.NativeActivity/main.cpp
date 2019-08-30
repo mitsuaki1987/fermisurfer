@@ -22,16 +22,21 @@
 
 #include <malloc.h>
 #include <stdio.h>
+#include <math.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "AndroidProject1.NativeActivity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "AndroidProject1.NativeActivity", __VA_ARGS__))
-
+GLfloat rot[3][3] = { { 1.0, 0.0, 0.0 },
+                      { 0.0, 1.0, 0.0 },
+                      { 0.0, 0.0, 1.0 } }; //!< Rotation matrix
 /**
 * 保存状態のデータです。
 */
 struct saved_state {
   int32_t x;
   int32_t y;
+  int32_t x0;
+  int32_t y0;
 };
 /**
 * アプリの保存状態です。
@@ -135,44 +140,106 @@ static int engine_init_display(struct engine* engine) {
 * ディスプレイ内の現在のフレームのみ。
 */
 static void engine_draw_frame(struct engine* engine) {
-  int ntri = 8;
-  GLfloat kvp[][3] = { 
-    { 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0},
-    { 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0},
-    { 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0},
-    { 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0},
-    {-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0},
-    {-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0},
-    {-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0},
-    {-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}
+  int ntri = 8, itri, i, j;
+  GLfloat kvp_rot[72];
+  GLfloat kvp[8][3][3] = { 
+    {{ 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0}},
+    {{ 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0}},
+    {{ 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0}},
+    {{ 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}},
+    {{-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0}},
+    {{-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0}},
+    {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0}},
+    {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}}
   };
-  GLfloat nmlp[][3] = {
-    { 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0},
-    { 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0},
-    { 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0},
-    { 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0},
-    {-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0},
-    {-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0},
-    {-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0},
-    {-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}
+  GLfloat nmlp_rot[72];
+  GLfloat nmlp[8][3][3] = {
+    {{ 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0}},
+    {{ 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0}},
+    {{ 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0}},
+    {{ 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}},
+    {{-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0}},
+    {{-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0}},
+    {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0}},
+    {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}}
   };
-  GLfloat clr[][4] = { 
-    {1.0, 0.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0},
-    {1.0, 0.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0},
-    {1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0},
-    {1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0},
-    {0.0, 1.0, 1.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0},
-    {0.0, 1.0, 1.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0},
-    {0.0, 1.0, 1.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0},
-    {0.0, 1.0, 1.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0}
+  GLfloat clr[8][3][4] = { 
+    {{1.0, 0.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0}},
+    {{1.0, 0.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0}},
+    {{1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0}},
+    {{1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0}},
+    {{0.0, 1.0, 1.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0}},
+    {{0.0, 1.0, 1.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0}},
+    {{0.0, 1.0, 1.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0}},
+    {{0.0, 1.0, 1.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0}}
   };
   GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
+  GLfloat dx, dy, a, rot0[3][3], rot1[3][3], ax, ay, sx = 1.0/engine->width, sy = 1.0/engine->height;
+
+  /*
+ Translation of mousepointer from starting point
+  */
+  dx = (engine->state.x - engine->state.x0) * sx;
+  dy = (engine->state.y - engine->state.y0) * sy;
+  /*
+   Distanse from starting point
+  */
+  a = sqrtf(dx * dx + dy * dy);
+  /**/
+  if (a != 0.0) {
+    /*
+     Compute rotational matrix from translation of mousepointer
+    */
+    ax = -dy;
+    ay = dx;
+    /**/
+    a = a * 10.0f;
+    /**/
+    rot0[0][0] = (ax * ax + ay * ay * cosf(a)) / (ax * ax + ay * ay);
+    rot0[0][1] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
+    rot0[0][2] = ay * sinf(a) / sqrtf(ax * ax + ay * ay);
+    rot0[1][0] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
+    rot0[1][1] = (ax * ax * cosf(a) + ay * ay) / (ax * ax + ay * ay);
+    rot0[1][2] = ax * sinf(a) / sqrtf(ax * ax + ay * ay);
+    rot0[2][0] = -ay * sinf(a) / sqrtf(ax * ax + ay * ay);
+    rot0[2][1] = -ax * sinf(a) / sqrtf(ax * ax + ay * ay);
+    rot0[2][2] = cosf(a);
+    /**/
+    for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
+    /**/
+    for (i = 0; i < 3; i++) {
+      for (j = 0; j < 3; j++) {
+        rot[i][j] = rot0[i][0] * rot1[0][j]
+          + rot0[i][1] * rot1[1][j]
+          + rot0[i][2] * rot1[2][j];
+      }
+    }
+  }
+
+  for (itri = 0; itri < ntri; ++itri) {
+    for (i = 0; i < 3; ++i) {
+      for (j = 0; j < 3; ++j) {
+        kvp_rot[j + 3 * i + 9 * itri]
+          = rot[j][0] * kvp[itri][i][0]
+          + rot[j][1] * kvp[itri][i][1]
+          + rot[j][2] * kvp[itri][i][2];
+        nmlp_rot[j + 3 * i + 9 * itri]
+          = rot[j][0] * nmlp[itri][i][0]
+          + rot[j][1] * nmlp[itri][i][1]
+          + rot[j][2] * nmlp[itri][i][2];
+      }
+    }/*for (i = 0; i < 3; ++i)*/
+  }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
 
   if (engine->display == NULL) {
     // ディスプレイがありません。
     return;
   }
+
+  glClearColor(0.0, 0.0, 0.0, 1);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslatef(0.0, 0.0, -5.0);
@@ -180,17 +247,10 @@ static void engine_draw_frame(struct engine* engine) {
   glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
   //glScalef(1.0, 1.0, 1.0);
 
-  // 色で画面を塗りつぶします。
-  //glClearColor(((float)engine->state.x) / engine->width, 0.5, ((float)engine->state.y) / engine->height, 1);
-  glClearColor(0.7, 0.7, 0.7, 1);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
-  glLineWidth(5.0);
-  //glColor4f(0.0, 1.0, 0.0, 1.0);
-  //glNormal3f(0.0f, 0.0f, 1.0f);
-  glVertexPointer(3, GL_FLOAT, 0, kvp);
-  glNormalPointer(GL_FLOAT, 0, nmlp);
+  glVertexPointer(3, GL_FLOAT, 0, kvp_rot);
+  glNormalPointer(GL_FLOAT, 0, nmlp_rot);
   glColorPointer(4, GL_FLOAT, 0, clr);
   glDrawArrays(GL_TRIANGLES, 0, ntri * 3);
   glDisableClientState(GL_NORMAL_ARRAY);
@@ -222,6 +282,8 @@ static void engine_term_display(struct engine* engine) {
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
   struct engine* engine = (struct engine*)app->userData;
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+    engine->state.x0 = engine->state.x;
+    engine->state.y0 = engine->state.y;
     engine->state.x = AMotionEvent_getX(event, 0);
     engine->state.y = AMotionEvent_getY(event, 0);
     engine_draw_frame(engine);
