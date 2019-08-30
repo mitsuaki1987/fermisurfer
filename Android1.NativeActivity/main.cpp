@@ -17,7 +17,6 @@
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 
-#include <android/sensor.h>
 #include <android/log.h>
 #include "android_native_app_glue.h"
 
@@ -31,7 +30,6 @@
 * 保存状態のデータです。
 */
 struct saved_state {
-  float angle;
   int32_t x;
   int32_t y;
 };
@@ -41,16 +39,11 @@ struct saved_state {
 struct engine {
   struct android_app* app;
 
-  ASensorManager* sensorManager;
-  const ASensor* accelerometerSensor;
-  ASensorEventQueue* sensorEventQueue;
-
-  int animating;
   EGLDisplay display;
   EGLSurface surface;
   EGLContext context;
-  int32_t width;
-  int32_t height;
+  EGLint width;
+  EGLint height;
   struct saved_state state;
 };
 /**
@@ -69,70 +62,109 @@ static int engine_init_display(struct engine* engine) {
           EGL_BLUE_SIZE, 8,
           EGL_GREEN_SIZE, 8,
           EGL_RED_SIZE, 8,
+                EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
           EGL_NONE
   };
-  EGLint w, h, format;
+  EGLint format;
   EGLint numConfigs;
   EGLConfig config;
-  EGLSurface surface;
-  EGLContext context;
 
-  EGLDisplay display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+  engine->display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
 
-  eglInitialize(display, 0, 0);
+  eglInitialize(engine->display, 0, 0);
 
   /* ここで、アプリケーションは目的の構成を選択します。このサンプルでは、
   * 抽出条件と一致する最初の EGLConfig を
   * 選択する単純な選択プロセスがあります */
-  eglChooseConfig(display, attribs, &config, 1, &numConfigs);
+  eglChooseConfig(engine->display, attribs, &config, 1, &numConfigs);
 
   /* EGL_NATIVE_VISUAL_ID は、ANativeWindow_setBuffersGeometry() に
   * よって受け取られることが保証されている EGLConfig の属性です。
   * EGLConfig を選択したらすぐに、ANativeWindow バッファーを一致させるために
   * EGL_NATIVE_VISUAL_ID を使用して安全に再構成できます。*/
-  eglGetConfigAttrib(display, config, EGL_NATIVE_VISUAL_ID, &format);
+  eglGetConfigAttrib(engine->display, config, EGL_NATIVE_VISUAL_ID, &format);
 
   ANativeWindow_setBuffersGeometry(engine->app->window, 0, 0, format);
 
-  surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
-  context = eglCreateContext(display, config, NULL, NULL);
+  engine->surface = eglCreateWindowSurface(engine->display, config, engine->app->window, NULL);
+  engine->context = eglCreateContext(engine->display, config, NULL, NULL);
 
-  if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
+  if (eglMakeCurrent(engine->display, engine->surface, engine->surface, engine->context) == EGL_FALSE) {
     LOGW("Unable to eglMakeCurrent");
     return -1;
   }
 
-  eglQuerySurface(display, surface, EGL_WIDTH, &w);
-  eglQuerySurface(display, surface, EGL_HEIGHT, &h);
+  eglQuerySurface(engine->display, engine->surface, EGL_WIDTH, &engine->width);
+  eglQuerySurface(engine->display, engine->surface, EGL_HEIGHT, &engine->height);
 
-  engine->display = display;
-  engine->context = context;
-  engine->surface = surface;
-  engine->width = w;
-  engine->height = h;
-  engine->state.angle = 0;
+  FILE* fp = fopen("/sdcard/Download/test.txt", "w");
+  fprintf(fp, "test %d %d\n", engine->width, engine->height);
+  fclose(fp);
 
   // GL の状態を初期化します。
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
   glEnable(GL_CULL_FACE);
   glShadeModel(GL_SMOOTH);
-  glDisable(GL_DEPTH_TEST);
 
+  glClearColor(0.0, 0.0, 0.0, 0.0);
+  glEnable(GL_DEPTH_TEST);
+  //glDisable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHTING);
+  glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHT1);
+  glEnable(GL_NORMALIZE);
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnable(GL_COLOR_MATERIAL);
+  glViewport(0, 0, engine->width, engine->height);
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  glMatrixMode(GL_MODELVIEW);
   return 0;
 }
 /**
 * ディスプレイ内の現在のフレームのみ。
 */
 static void engine_draw_frame(struct engine* engine) {
+  int ntri = 1;
+  GLfloat clr[] = { 1.0, 0.0, 0.0, 1.0,
+                    0.0, 1.0, 0.0, 1.0,
+                    0.0, 0.0, 1.0, 1.0};
+  GLfloat kvp[] = {1.0, 0.0, 0.0,
+                   0.0, 1.0, 0.0,
+                  0.0, 0.0, 1.0 };
+  GLfloat nmlp[] = {0.0, 0.0, 1.0,
+                    0.0, 1.0, 1.0,
+                    1.0, 0.0, 1.0};
+  GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+  GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
+
   if (engine->display == NULL) {
     // ディスプレイがありません。
     return;
   }
 
+  glLoadIdentity();
+  glTranslatef(0.0, 0.0, -5.0);
+  glLightfv(GL_LIGHT0, GL_POSITION, pos);
+  glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
+  //glScalef(1.0, 1.0, 1.0);
+
   // 色で画面を塗りつぶします。
-  glClearColor(((float)engine->state.x) / engine->width, engine->state.angle,
-    ((float)engine->state.y) / engine->height, 1);
-  glClear(GL_COLOR_BUFFER_BIT);
+  //glClearColor(((float)engine->state.x) / engine->width, 0.5, ((float)engine->state.y) / engine->height, 1);
+  glClearColor(0.5, 0.5, 0.5, 1);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  //glEnableClientState(GL_NORMAL_ARRAY);
+  //glEnableClientState(GL_COLOR_ARRAY);
+  glColor4f(0.0, 0.0, 0.0, 1.0);
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glVertexPointer(3, GL_FLOAT, 0, kvp);
+  //glNormalPointer(GL_FLOAT, 0, nmlp);
+  //glColorPointer(4, GL_FLOAT, 0, clr);
+  //glDrawArrays(GL_TRIANGLES, 0, ntri * 3);
+  glDrawArrays(GL_LINES, 0, ntri * 2);
+  //glDisableClientState(GL_NORMAL_ARRAY);
+  //glDisableClientState(GL_COLOR_ARRAY);
 
   eglSwapBuffers(engine->display, engine->surface);
 }
@@ -150,7 +182,6 @@ static void engine_term_display(struct engine* engine) {
     }
     eglTerminate(engine->display);
   }
-  engine->animating = 0;
   engine->display = EGL_NO_DISPLAY;
   engine->context = EGL_NO_CONTEXT;
   engine->surface = EGL_NO_SURFACE;
@@ -163,6 +194,7 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
     engine->state.x = AMotionEvent_getX(event, 0);
     engine->state.y = AMotionEvent_getY(event, 0);
+    engine_draw_frame(engine);
     return 1;
   }
   return 0;
@@ -191,24 +223,9 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
     engine_term_display(engine);
     break;
   case APP_CMD_GAINED_FOCUS:
-    // アプリがフォーカスを取得すると、加速度計の監視を開始します。
-    if (engine->accelerometerSensor != NULL) {
-      ASensorEventQueue_enableSensor(engine->sensorEventQueue,
-        engine->accelerometerSensor);
-      // 目標は 1 秒ごとに 60 のイベントを取得することです (米国)。
-      ASensorEventQueue_setEventRate(engine->sensorEventQueue,
-        engine->accelerometerSensor, (1000L / 60) * 1000);
-    }
     break;
   case APP_CMD_LOST_FOCUS:
-    // アプリがフォーカスを失うと、加速度計の監視を停止します。
-    // これにより、使用していないときのバッテリーを節約できます。
-    if (engine->accelerometerSensor != NULL) {
-      ASensorEventQueue_disableSensor(engine->sensorEventQueue,
-        engine->accelerometerSensor);
-    }
     // また、アニメーションを停止します。
-    engine->animating = 0;
     engine_draw_frame(engine);
     break;
   }
@@ -220,7 +237,6 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 */
 void android_main(struct android_app* state) {
   struct engine engine;
-  FILE* fp;
 
   memset(&engine, 0, sizeof(engine));
   state->userData = &engine;
@@ -228,25 +244,12 @@ void android_main(struct android_app* state) {
   state->onInputEvent = engine_handle_input;
   engine.app = state;
 
-  // 加速度計の監視の準備
-  engine.sensorManager = ASensorManager_getInstance();
-  engine.accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,
-    ASENSOR_TYPE_ACCELEROMETER);
-  engine.sensorEventQueue = ASensorManager_createEventQueue(engine.sensorManager,
-    state->looper, LOOPER_ID_USER, NULL, NULL);
-
   if (state->savedState != NULL) {
     // 以前の保存状態で開始します。復元してください。
     engine.state = *(struct saved_state*)state->savedState;
   }
 
-  engine.animating = 1;
-
   // ループはスタッフによる開始を待っています。
-
-  fp = fopen("/sdcard/Download/test.txt", "w");
-  fprintf(fp, "test\n");
-  fclose(fp);
 
   while (1) {
     // 保留中のすべてのイベントを読み取ります。
@@ -254,28 +257,12 @@ void android_main(struct android_app* state) {
     int events;
     struct android_poll_source* source;
 
-    // アニメーションしない場合、無期限にブロックしてイベントが発生するのを待ちます。
-    // アニメーションする場合、すべてのイベントが読み取られるまでループしてから続行します
-    // アニメーションの次のフレームを描画します。
-    while ((ident = ALooper_pollAll(engine.animating ? 0 : -1, NULL, &events,
-      (void**)& source)) >= 0) {
+    // 無期限にブロックしてイベントが発生するのを待ちます。
+    while ((ident = ALooper_pollAll(-1, NULL, &events, (void**)& source)) >= 0) {
 
       // このイベントを処理します。
       if (source != NULL) {
         source->process(state, source);
-      }
-
-      // センサーにデータがある場合、今すぐ処理します。
-      if (ident == LOOPER_ID_USER) {
-        if (engine.accelerometerSensor != NULL) {
-          ASensorEvent event;
-          while (ASensorEventQueue_getEvents(engine.sensorEventQueue,
-            &event, 1) > 0) {
-            LOGI("accelerometer: x=%f y=%f z=%f",
-              event.acceleration.x, event.acceleration.y,
-              event.acceleration.z);
-          }
-        }
       }
 
       // 終了するかどうか確認します。
@@ -283,18 +270,6 @@ void android_main(struct android_app* state) {
         engine_term_display(&engine);
         return;
       }
-    }
-
-    if (engine.animating) {
-      // イベントが完了したら次のアニメーション フレームを描画します。
-      engine.state.angle += .01f;
-      if (engine.state.angle > 1) {
-        engine.state.angle = 0;
-      }
-
-      // 描画は画面の更新レートに合わせて調整されているため、
-      // ここで時間調整をする必要はありません。
-      engine_draw_frame(&engine);
     }
   }
 }
