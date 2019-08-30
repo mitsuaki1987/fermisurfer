@@ -67,6 +67,7 @@ static int engine_init_display(struct engine* engine) {
           EGL_BLUE_SIZE, 8,
           EGL_GREEN_SIZE, 8,
           EGL_RED_SIZE, 8,
+          EGL_DEPTH_SIZE, 16,
                 EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
           EGL_NONE
   };
@@ -114,26 +115,20 @@ static int engine_init_display(struct engine* engine) {
   glShadeModel(GL_SMOOTH);
   glEnable(GL_DEPTH_TEST);
 
-  //glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  //glShadeModel(GL_SMOOTH);
-
-  //glClearColor(0.0, 0.0, 0.0, 0.0);
-  //glEnable(GL_DEPTH_TEST);
-  //glDisable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
   glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
   glEnable(GL_LIGHT0);
   glEnable(GL_LIGHT1);
   glEnable(GL_NORMALIZE);
   glEnable(GL_COLOR_MATERIAL);
+  glEnableClientState(GL_VERTEX_ARRAY);
   glViewport(0, 0, engine->width, engine->height);
   GLfloat ratio = (GLfloat)engine->width/ (GLfloat)engine->height;
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glFrustumf(-ratio, ratio, -1, 1, 1, 10);
-  glEnableClientState(GL_VERTEX_ARRAY);
 
- // glMatrixMode(GL_MODELVIEW);
+  glMatrixMode(GL_MODELVIEW);
   return 0;
 }
 /**
@@ -164,14 +159,14 @@ static void engine_draw_frame(struct engine* engine) {
     {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}}
   };
   GLfloat clr[8][3][4] = { 
-    {{1.0, 0.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0}},
-    {{1.0, 0.0, 0.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0}},
-    {{1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0}},
-    {{1.0, 0.0, 0.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0}},
-    {{0.0, 1.0, 1.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {0.0, 0.0, 1.0, 1.0}},
-    {{0.0, 1.0, 1.0, 1.0}, {0.0, 1.0, 0.0, 1.0}, {1.0, 1.0, 0.0, 1.0}},
-    {{0.0, 1.0, 1.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {0.0, 0.0, 1.0, 1.0}},
-    {{0.0, 1.0, 1.0, 1.0}, {1.0, 0.0, 1.0, 1.0}, {1.0, 1.0, 0.0, 1.0}}
+    {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}},
+    {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {1.0, 1.0, 0.0, 0.0}},
+    {{1.0, 0.0, 0.0, 0.0}, {1.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 1.0, 0.0}},
+    {{1.0, 0.0, 0.0, 0.0}, {1.0, 0.0, 1.0, 0.0}, {1.0, 1.0, 0.0, 0.0}},
+    {{0.0, 1.0, 1.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}},
+    {{0.0, 1.0, 1.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {1.0, 1.0, 0.0, 0.0}},
+    {{0.0, 1.0, 1.0, 0.0}, {1.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 1.0, 0.0}},
+    {{0.0, 1.0, 1.0, 0.0}, {1.0, 0.0, 1.0, 0.0}, {1.0, 1.0, 0.0, 0.0}}
   };
   GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
@@ -240,12 +235,11 @@ static void engine_draw_frame(struct engine* engine) {
   glClearColor(0.0, 0.0, 0.0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
   glTranslatef(0.0, 0.0, -5.0);
   glLightfv(GL_LIGHT0, GL_POSITION, pos);
   glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
-  //glScalef(1.0, 1.0, 1.0);
+  glScalef(2.0, 2.0, 2.0);
 
   glEnableClientState(GL_NORMAL_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
@@ -282,11 +276,17 @@ static void engine_term_display(struct engine* engine) {
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
   struct engine* engine = (struct engine*)app->userData;
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-    engine->state.x0 = engine->state.x;
-    engine->state.y0 = engine->state.y;
-    engine->state.x = AMotionEvent_getX(event, 0);
-    engine->state.y = AMotionEvent_getY(event, 0);
-    engine_draw_frame(engine);
+    if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
+      engine->state.x = AMotionEvent_getX(event, 0);
+      engine->state.y = AMotionEvent_getY(event, 0);
+    }
+    else if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_MOVE) {
+      engine->state.x0 = engine->state.x;
+      engine->state.y0 = engine->state.y;
+      engine->state.x = AMotionEvent_getX(event, 0);
+      engine->state.y = AMotionEvent_getY(event, 0);
+      engine_draw_frame(engine);
+    }
     return 1;
   }
   return 0;
