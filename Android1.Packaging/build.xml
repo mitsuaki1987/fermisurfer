@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="$(projectname)" default="help">
+<project name="Fermisurfer" default="help">
 
     <!-- The ant.properties file can be created by you. It is only edited by the
          'android' tool to add properties to it.

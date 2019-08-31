@@ -116,7 +116,7 @@ int read_file()
   /*
    Open input file.
   */
-  fp = fopen("/sdcard/Download/vfermi.frmsf", "r");
+  fp = fopen("/sdcard/Download/frmsf", "r");
   /*
    k-point grid
   */
