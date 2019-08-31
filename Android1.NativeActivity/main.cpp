@@ -176,6 +176,8 @@ struct saved_state {
   int32_t y;
   int32_t x0;
   int32_t y0;
+  int32_t zoom;
+  int32_t zoom0;
 };
 /**
 * アプリの保存状態です。
@@ -273,46 +275,50 @@ static int engine_init_display(struct engine* engine) {
 /**
 * ディスプレイ内の現在のフレームのみ。
 */
-static void engine_draw_frame(struct engine* engine) {
+static void engine_draw_frame(struct engine* engine, int flag) {
   int i, j;
   GLfloat dx, dy, a, rot0[3][3], rot1[3][3], ax, ay, sx = 1.0/engine->width, sy = 1.0/engine->height;
-
-  /*
- Translation of mousepointer from starting point
-  */
-  dx = (engine->state.x - engine->state.x0) * sx;
-  dy = (engine->state.y - engine->state.y0) * sy;
-  /*
-   Distanse from starting point
-  */
-  a = sqrtf(dx * dx + dy * dy);
-  /**/
-  if (a != 0.0) {
+  if (flag == 0) {
+    scl *= expf((GLfloat)(engine->state.zoom0 - engine->state.zoom) * sy);
+  }
+  else if (flag == 1) {
     /*
-     Compute rotational matrix from translation of mousepointer
+     Translation of mousepointer from starting point
     */
-    ax = -dy;
-    ay = dx;
+    dx = (engine->state.x - engine->state.x0) * sx;
+    dy = (engine->state.y - engine->state.y0) * sy;
+    /*
+     Distanse from starting point
+    */
+    a = sqrtf(dx * dx + dy * dy);
     /**/
-    a = a * 10.0f;
-    /**/
-    rot0[0][0] = (ax * ax + ay * ay * cosf(a)) / (ax * ax + ay * ay);
-    rot0[0][1] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
-    rot0[0][2] = ay * sinf(a) / sqrtf(ax * ax + ay * ay);
-    rot0[1][0] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
-    rot0[1][1] = (ax * ax * cosf(a) + ay * ay) / (ax * ax + ay * ay);
-    rot0[1][2] = ax * sinf(a) / sqrtf(ax * ax + ay * ay);
-    rot0[2][0] = -ay * sinf(a) / sqrtf(ax * ax + ay * ay);
-    rot0[2][1] = -ax * sinf(a) / sqrtf(ax * ax + ay * ay);
-    rot0[2][2] = cosf(a);
-    /**/
-    for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
-    /**/
-    for (i = 0; i < 3; i++) {
-      for (j = 0; j < 3; j++) {
-        rot[i][j] = rot0[i][0] * rot1[0][j]
-          + rot0[i][1] * rot1[1][j]
-          + rot0[i][2] * rot1[2][j];
+    if (a != 0.0) {
+      /*
+       Compute rotational matrix from translation of mousepointer
+      */
+      ax = -dy;
+      ay = dx;
+      /**/
+      a = a * 10.0f;
+      /**/
+      rot0[0][0] = (ax * ax + ay * ay * cosf(a)) / (ax * ax + ay * ay);
+      rot0[0][1] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
+      rot0[0][2] = ay * sinf(a) / sqrtf(ax * ax + ay * ay);
+      rot0[1][0] = ax * ay * (cosf(a) - 1.0f) / (ax * ax + ay * ay);
+      rot0[1][1] = (ax * ax * cosf(a) + ay * ay) / (ax * ax + ay * ay);
+      rot0[1][2] = ax * sinf(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][0] = -ay * sinf(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][1] = -ax * sinf(a) / sqrtf(ax * ax + ay * ay);
+      rot0[2][2] = cosf(a);
+      /**/
+      for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
+      /**/
+      for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+          rot[i][j] = rot0[i][0] * rot1[0][j]
+            + rot0[i][1] * rot1[1][j]
+            + rot0[i][2] * rot1[2][j];
+        }
       }
     }
   }
@@ -347,16 +353,29 @@ static void engine_term_display(struct engine* engine) {
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
   struct engine* engine = (struct engine*)app->userData;
   if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
-    if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
-      engine->state.x = AMotionEvent_getX(event, 0);
-      engine->state.y = AMotionEvent_getY(event, 0);
+    if (AMotionEvent_getX(event, 0) > 0.95* engine->width ||
+        AMotionEvent_getX(event, 0) < 0.05 * engine->width) {
+      if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
+        engine->state.zoom = AMotionEvent_getY(event, 0);
+      }
+      else if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_MOVE) {
+        engine->state.zoom0 = engine->state.zoom;
+        engine->state.zoom = AMotionEvent_getY(event, 0);
+        engine_draw_frame(engine, 0);
+      }
     }
-    else if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_MOVE) {
-      engine->state.x0 = engine->state.x;
-      engine->state.y0 = engine->state.y;
-      engine->state.x = AMotionEvent_getX(event, 0);
-      engine->state.y = AMotionEvent_getY(event, 0);
-      engine_draw_frame(engine);
+    else {
+      if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
+        engine->state.x = AMotionEvent_getX(event, 0);
+        engine->state.y = AMotionEvent_getY(event, 0);
+      }
+      else if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_MOVE) {
+        engine->state.x0 = engine->state.x;
+        engine->state.y0 = engine->state.y;
+        engine->state.x = AMotionEvent_getX(event, 0);
+        engine->state.y = AMotionEvent_getY(event, 0);
+        engine_draw_frame(engine, 1);
+      }
     }
     return 1;
   }
@@ -378,7 +397,9 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
     // ウィンドウが表示されています。準備してください。
     if (engine->app->window != NULL) {
       engine_init_display(engine);
-      engine_draw_frame(engine);
+      engine->state.zoom = 0;
+      engine->state.zoom0 = 0;
+      engine_draw_frame(engine, 0);
     }
     break;
   case APP_CMD_TERM_WINDOW:
@@ -389,7 +410,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
     break;
   case APP_CMD_LOST_FOCUS:
     // また、アニメーションを停止します。
-    engine_draw_frame(engine);
+    engine_draw_frame(engine, 0);
     break;
   }
 }
@@ -414,6 +435,7 @@ void android_main(struct android_app* state) {
   }
 
   color_scale = read_file();
+  lcolorbar = 0;
   interpol_energy();
   init_corner();
   bragg_vector();
