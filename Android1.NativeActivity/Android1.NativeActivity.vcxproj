@@ -149,7 +149,7 @@
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
-      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;</LibraryDependencies>
+      <LibraryDependencies>%(LibraryDependencies);GLESv1_CM;EGL;m</LibraryDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
@@ -204,10 +204,35 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="android_native_app_glue.h" />
+    <ClInclude Include="basic_math.hpp" />
+    <ClInclude Include="bz_lines.hpp" />
+    <ClInclude Include="calc_nodeline.hpp" />
+    <ClInclude Include="draw.hpp" />
+    <ClInclude Include="equator.hpp" />
+    <ClInclude Include="fermi_patch.hpp" />
+    <ClInclude Include="free_patch.hpp" />
+    <ClInclude Include="initialize.hpp" />
+    <ClInclude Include="kumo.hpp" />
+    <ClInclude Include="menu.hpp" />
+    <ClInclude Include="read_file.hpp" />
+    <ClInclude Include="section.hpp" />
+    <ClInclude Include="variable.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="android_native_app_glue.c" />
+    <ClCompile Include="basic_math.cpp" />
+    <ClCompile Include="bz_lines.cpp" />
+    <ClCompile Include="calc_nodeline.cpp" />
+    <ClCompile Include="draw.cpp" />
+    <ClCompile Include="equator.cpp" />
+    <ClCompile Include="fermi_patch.cpp" />
+    <ClCompile Include="free_patch.cpp" />
+    <ClCompile Include="initialize.cpp" />
+    <ClCompile Include="kumo.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="menu.cpp" />
+    <ClCompile Include="read_file.cpp" />
+    <ClCompile Include="section.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

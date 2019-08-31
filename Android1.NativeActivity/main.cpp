@@ -14,6 +14,13 @@
 * 本ライセンスを参照してください。
 *
 */
+#include "read_file.hpp"
+#include "kumo.hpp"
+#include "initialize.hpp"
+#include "bz_lines.hpp"
+#include "section.hpp"
+#include "menu.hpp"
+#include "draw.hpp"
 #include <EGL/egl.h>
 #include <GLES/gl.h>
 
@@ -26,9 +33,141 @@
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "AndroidProject1.NativeActivity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "AndroidProject1.NativeActivity", __VA_ARGS__))
+/*
+ Input variables
+*/
+int ng0[3];         //!< @f$k@f$-point grid in the input file
+int shiftk[3];      //!< Wherether @f$k@f$-grid is shifted or not
+int nb;             //!< The number of Bands
+GLfloat avec[3][3]; //!< Direct lattice vector
+GLfloat bvec[3][3]; //!< Reciprocal lattice vector
+GLfloat**** eig0;   //!< Eigenvalues @f$\varepsilon_{n k}@f$[::nb][::ng0[0]][::ng0[1]][::ng0[2]]
+GLfloat***** mat0;   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]][3]
+/*
+ Interpolation
+*/
+int ng[3];        //!< @b Interpolated @f$k@f$-grids
+GLfloat**** eig;  //!< Eigenvalues @f$\varepsilon_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
+GLfloat***** mat; //!< Matrix element @f$\delta_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
+GLfloat***** vf;  //!< Matrix element @f$\{\bf v}_{{\rm f} n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
+int interpol = 1;     //!< Ratio of interpolation
+/*
+ Switch for some modes
+*/
+int blackback = 1;   //!< Switch for black background
+int color_scale = 1; //!< Switch for full color scale mode
+int fbz = 1;         //!< Switch for 1st Brillouin zone mode
+int nodeline = 0;    //!< Switch for node lines
+int lcolorbar = 1;   //!< Switch for colorbar
+int lstereo = 1;     //!< Switch for the stereogram
+int lmouse = 1;      //!< Switch for the mouse function
+int lsection = 0;    //!< Switch for the 2D Fermi lines
+int lequator = 0;    //!< Switch for equator
+/*
+ Variables for Brillouin zone boundaries
+*/
+int nbzl;               //!< The number of Lines of 1st Brillouin zone
+GLfloat bzl[676][2][3]; //!< Lines of 1st BZ [nbzl(max:26*26=676)][2][3]
+GLfloat bragg[26][3];   //!< Bragg plane vectors
+GLfloat brnrm[26];      //!< Norms of Bragg plane vectors
+GLfloat brnrm_min;     //!< Minimum scale of the reciplocal space
+int nbragg;             //!< Number of Bragg plane og 1st BZ
+/*
+ Variables for patchs
+*/
+int* ntri;          //!< The number of triangle patch [::nb]
+int** ntri_th;      //!< The number of triangle patch in each thread [::nb]
+int* draw_band;     //!< Switch for drawn bands [::nb]
+GLfloat**** nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
+GLfloat**** kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
+GLfloat***** arw;
+GLfloat** nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
+GLfloat** kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
+GLfloat** arw_rot;
+GLfloat**** matp;    //!< Matrix elements of points [::nb][::ntri][3][3]
+GLfloat** clr;      //!< Colors of points [::nb][::ntri*3*4]
+int itet = 0;           //!< Counter for tetrahedron
+GLfloat side = 1.0;       //!< Which side is lighted
+GLfloat patch_max;  //!< Max value across patch
+GLfloat patch_min;  //!< Max value across patch
+/*
+  Variables for nodeline
+*/
+int* nnl;             //!< The number of nodeline
+GLfloat**** kvnl;     //!< @f$k@f$-vector of nodeline [::nb][::nnl][2][3]
+GLfloat** kvnl_rot; //!< @f$k@f$-vector of nodeline [::nb][::nnl*2*3]
+/*
+ 2D Fermi line
+*/
+GLfloat secvec[3];         //!< @f$k@f$-vector to define section
+GLfloat secvec_fr[3];         //!< @f$k@f$-vector to define section
+GLfloat secscale;          //!< 0.0 (across @f$\Gamma@f$) or 1.0
+GLfloat axis2d[2][3];      //!< @f$k@f$-vector to define section
+int* n2d;                  //!< Number of line segment
+GLfloat** kv2d;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
+GLfloat** clr2d;         //!< Matrix element for 2D plot [::nb][::n2d*2*4]
+int nbzl2d;                //!< The number of Lines of 1st Brillouin zone
+GLfloat bzl2d[26][3];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
+GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
+/*
+ Equator
+*/
+GLfloat eqvec[3]; //!<  @f$k@f$-vector for equator
+GLfloat eqvec_fr[3]; //!<  @f$k@f$-vector for equator
+int* nequator;             //!< The number of equator
+GLfloat**** kveq;     //!< @f$k@f$-vector of equator [::nb][::nequator][2][3]
+GLfloat** kveq_rot; //!< @f$k@f$-vector of equator [::nb][::nequator*2*3]
+/*
+  Variables for mouse  & cursorkey
+*/
+GLfloat sx;        //!< Scale of mouse movement
+GLfloat sy;        //!< Scale of mouse movement
+int cx;            //!< Starting point of drug
+int cy;            //!< Starting point of drug
+GLfloat scl = 1.0;       //!< Initial scale
+GLfloat trans[3] = { 0.0, 0.0, 0.0 };  //!< Translation
 GLfloat rot[3][3] = { { 1.0, 0.0, 0.0 },
                       { 0.0, 1.0, 0.0 },
                       { 0.0, 0.0, 1.0 } }; //!< Rotation matrix
+GLfloat thetax = 0.0;    //!< Rotation angle
+GLfloat thetay = 0.0;    //!< Rotation angle
+GLfloat thetaz = 0.0;    //!< Rotation angle
+GLfloat linewidth = 3.0; //!< BZ/nodal-line/Fermiline width
+/*
+ Colors
+*/
+GLfloat   black[4] = { 0.0, 0.0, 0.0, 1.0 }; //!< Black color code
+GLfloat    gray[4] = { 0.5f, 0.5f, 0.5f, 1.0 }; //!< Gray color code
+GLfloat   wgray[4] = { 0.9f, 0.9f, 0.9f, 1.0 }; //!< Gray color code
+GLfloat   bgray[4] = { 0.1f, 0.1f, 0.1f, 1.0 }; //!< Gray color code
+GLfloat   white[4] = { 1.0, 1.0, 1.0, 1.0 }; //!< White color code
+GLfloat    cyan[4] = { 0.0, 1.0, 1.0, 1.0 }; //!< Cyan color code
+GLfloat magenta[4] = { 1.0, 0.0, 1.0, 1.0 }; //!< Magenta color code
+GLfloat  yellow[4] = { 1.0, 1.0, 0.0, 1.0 }; //!< Yellow color code
+GLfloat     red[4] = { 1.0, 0.0, 0.0, 1.0 }; //!< Red color code
+GLfloat   green[4] = { 0.0, 1.0, 0.0, 1.0 }; //!< Green color code
+GLfloat    blue[4] = { 0.0, 0.0, 1.0, 1.0 }; //!< Blue color code
+/*
+ Others
+*/
+int query;        //!< Query switch
+int corner[6][4]; //!< Corners of tetrahedron
+GLfloat EF = 0.0;       //!< Fermi energy
+enum
+{
+  MOUSE_SCROLL_UP = 3,  //!< Mouse wheel up
+  MOUSE_SCROLL_DOWN = 4 //!< Mouse wheel down
+};
+int nthreads;//!< Number of OpenMP threads
+int refresh_interpol = 0;
+int refresh_patch = 1;
+int refresh_color = 1;
+int refresh_nodeline = 1;
+int refresh_equator = 1;
+int refresh_section = 1;
+int skip_minmax = 0;
+int windowx = 1100;
+int windowy = 850;
 /**
 * 保存状態のデータです。
 */
@@ -110,7 +249,7 @@ static int engine_init_display(struct engine* engine) {
   // GL の状態を初期化します。
   glDisable(GL_DITHER);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-  glClearColor(1.0f, 0.41f, 0.71f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
   //glEnable(GL_CULL_FACE);
   glShadeModel(GL_SMOOTH);
   glEnable(GL_DEPTH_TEST);
@@ -135,41 +274,7 @@ static int engine_init_display(struct engine* engine) {
 * ディスプレイ内の現在のフレームのみ。
 */
 static void engine_draw_frame(struct engine* engine) {
-  int ntri = 8, itri, i, j;
-  GLfloat kvp_rot[72];
-  GLfloat kvp[8][3][3] = { 
-    {{ 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0}},
-    {{ 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0}},
-    {{ 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0}},
-    {{ 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}},
-    {{-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0}},
-    {{-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0}},
-    {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0}},
-    {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}}
-  };
-  GLfloat nmlp_rot[72];
-  GLfloat nmlp[8][3][3] = {
-    {{ 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0}},
-    {{ 1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0}},
-    {{ 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0}},
-    {{ 1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}},
-    {{-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0,  1.0}},
-    {{-1.0, 0.0, 0.0}, {0.0,  1.0, 0.0}, {0.0, 0.0, -1.0}},
-    {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0,  1.0}},
-    {{-1.0, 0.0, 0.0}, {0.0, -1.0, 0.0}, {0.0, 0.0, -1.0}}
-  };
-  GLfloat clr[8][3][4] = { 
-    {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}},
-    {{1.0, 0.0, 0.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {1.0, 1.0, 0.0, 0.0}},
-    {{1.0, 0.0, 0.0, 0.0}, {1.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 1.0, 0.0}},
-    {{1.0, 0.0, 0.0, 0.0}, {1.0, 0.0, 1.0, 0.0}, {1.0, 1.0, 0.0, 0.0}},
-    {{0.0, 1.0, 1.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {0.0, 0.0, 1.0, 0.0}},
-    {{0.0, 1.0, 1.0, 0.0}, {0.0, 1.0, 0.0, 0.0}, {1.0, 1.0, 0.0, 0.0}},
-    {{0.0, 1.0, 1.0, 0.0}, {1.0, 0.0, 1.0, 0.0}, {0.0, 0.0, 1.0, 0.0}},
-    {{0.0, 1.0, 1.0, 0.0}, {1.0, 0.0, 1.0, 0.0}, {1.0, 1.0, 0.0, 0.0}}
-  };
-  GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
-  GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
+  int i, j;
   GLfloat dx, dy, a, rot0[3][3], rot1[3][3], ax, ay, sx = 1.0/engine->width, sy = 1.0/engine->height;
 
   /*
@@ -211,45 +316,11 @@ static void engine_draw_frame(struct engine* engine) {
       }
     }
   }
-
-  for (itri = 0; itri < ntri; ++itri) {
-    for (i = 0; i < 3; ++i) {
-      for (j = 0; j < 3; ++j) {
-        kvp_rot[j + 3 * i + 9 * itri]
-          = rot[j][0] * kvp[itri][i][0]
-          + rot[j][1] * kvp[itri][i][1]
-          + rot[j][2] * kvp[itri][i][2];
-        nmlp_rot[j + 3 * i + 9 * itri]
-          = rot[j][0] * nmlp[itri][i][0]
-          + rot[j][1] * nmlp[itri][i][1]
-          + rot[j][2] * nmlp[itri][i][2];
-      }
-    }/*for (i = 0; i < 3; ++i)*/
-  }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-
   if (engine->display == NULL) {
     // ディスプレイがありません。
     return;
   }
-
-  glClearColor(0.0, 0.0, 0.0, 1);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  glLoadIdentity();
-  glTranslatef(0.0, 0.0, -5.0);
-  glLightfv(GL_LIGHT0, GL_POSITION, pos);
-  glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
-  glScalef(2.0, 2.0, 2.0);
-
-  glEnableClientState(GL_NORMAL_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
-  glVertexPointer(3, GL_FLOAT, 0, kvp_rot);
-  glNormalPointer(GL_FLOAT, 0, nmlp_rot);
-  glColorPointer(4, GL_FLOAT, 0, clr);
-  glDrawArrays(GL_TRIANGLES, 0, ntri * 3);
-  glDisableClientState(GL_NORMAL_ARRAY);
-  glDisableClientState(GL_COLOR_ARRAY);
-
+  draw();
   eglSwapBuffers(engine->display, engine->surface);
 }
 /**
@@ -330,6 +401,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 void android_main(struct android_app* state) {
   struct engine engine;
 
+  nthreads = 1;
   memset(&engine, 0, sizeof(engine));
   state->userData = &engine;
   state->onAppCmd = engine_handle_cmd;
@@ -341,8 +413,19 @@ void android_main(struct android_app* state) {
     engine.state = *(struct saved_state*)state->savedState;
   }
 
-  // ループはスタッフによる開始を待っています。
-
+  color_scale = read_file();
+  interpol_energy();
+  init_corner();
+  bragg_vector();
+  /*
+     Brillouin zone
+    */
+  bz_lines();
+  calc_2dbz();
+  /**/
+  max_and_min_bz();
+  /**/
+  compute_patch_segment();
   while (1) {
     // 保留中のすべてのイベントを読み取ります。
     int ident;
