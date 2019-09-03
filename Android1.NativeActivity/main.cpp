@@ -244,10 +244,6 @@ static int engine_init_display(struct engine* engine) {
   eglQuerySurface(engine->display, engine->surface, EGL_WIDTH, &engine->width);
   eglQuerySurface(engine->display, engine->surface, EGL_HEIGHT, &engine->height);
 
-  FILE* fp = fopen("/sdcard/Download/test.txt", "w");
-  fprintf(fp, "test %d %d\n", engine->width, engine->height);
-  fclose(fp);
-
   // GL ‚Ìó‘Ô‚ð‰Šú‰»‚µ‚Ü‚·B
   glDisable(GL_DITHER);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
