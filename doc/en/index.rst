@@ -16,6 +16,7 @@ Welcome to FermiSurfer's documentation!
    ops
    batch
    qe
+   android
    ack
    copy
    contact
