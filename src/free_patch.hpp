@@ -21,8 +21,29 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-
-void free_patch();
-void max_and_min();
-void paint();
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif
+#include "menu.hpp"
+void free_patch(int nb,  int refresh_patch,
+  int* ntri, GLfloat**** kvp, GLfloat** kvp_rot, GLfloat**** matp,
+  GLfloat** clr, GLfloat**** nmlp, GLfloat** nmlp_rot, GLfloat***** arw,
+  GLfloat** arw_rot, int refresh_nodeline, int* nnl, GLfloat**** kvnl,
+  GLfloat** kvnl_rot, int refresh_section, GLfloat** kv2d, GLfloat** clr2d,
+  int refresh_equator, int* nequator, GLfloat**** kveq, GLfloat** kveq_rot);
+void max_and_min(int nb, int nthreads, wxTextCtrl* terminal,
+  MyFrame* myf, int color_scale, int* ntri, GLfloat**** matp,
+  GLfloat *patch_min, GLfloat *patch_max, GLfloat**** nmlp);
+void paint(int nb,  int color_scale,  int blackback,
+  int* ntri,  GLfloat patch_min,  GLfloat patch_max,
+  GLfloat**** kvp,  GLfloat**** matp,  GLfloat** clr,
+  GLfloat**** nmlp,  GLfloat***** arw,
+  GLfloat red[4], GLfloat green[4], GLfloat blue[4],
+  GLfloat cyan[4], GLfloat magenta[4], GLfloat yellow[4],
+  GLfloat wgray[4], GLfloat bgray[4]);
 

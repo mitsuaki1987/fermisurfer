@@ -24,11 +24,11 @@ THE SOFTWARE.
 /**@file
 @brief Read .frmsf file
 */
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <ctype.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
+#include <cctype>
+#include <cstring>
 #include "basic_math.hpp"
 #include "variable.hpp"
 #if defined(HAVE_CONFIG_H)
@@ -43,15 +43,16 @@ THE SOFTWARE.
 /*
  Allocation of Kohn-Sham energies $ matrix elements
 */
-static void allocate_griddata() 
+static void allocate_griddata(
+int ng[3],
+int ng0[3]
+) 
 {
   int i, j, ib, i0, i1, i2;
 
   for (i = 0; i < 3; i++) ng[i] = ng0[i];
 
   ntri = new int[nb];
-  ntri_th = new int* [nb];
-  for (ib = 0; ib < nb; ib++) ntri_th[ib] = new int[nthreads];
   nnl = new int[nb];
   n2d = new int[nb];
   nequator = new int[nb];
@@ -181,7 +182,7 @@ int read_file()
     if (ierr == 0) *terminal << wxT("error ! reading bvec\n");
     *terminal << wxString::Format(wxT("    bvec %d : %f %f %f \n"), i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
   }/*for (i = 0; i < 3; ++i)*/
-  allocate_griddata();
+  allocate_griddata(ng, ng0);
   /*
    Kohn-Sham energies
   */
@@ -452,7 +453,7 @@ void read_bxsf()
     *terminal << wxString::Format(wxT("  Bvec %d : %f %f %f\n"), 
       ii, bvec[ii][0], bvec[ii][1], bvec[ii][2]);
   }
-  allocate_griddata();
+  allocate_griddata(ng, ng0);
 
   for (ib = 0; ib < nb; ib++) {
     cerr = fgets(ctmp, 256, fp);

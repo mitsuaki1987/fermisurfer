@@ -28,6 +28,8 @@ THE SOFTWARE.
 #if ! defined(FERMISURFER_VARIABLE_H)
 #define FERMISURFER_VARIABLE_H
 
+#include "menu.hpp"
+#include <wx/wx.h>
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
 #endif
@@ -36,8 +38,6 @@ THE SOFTWARE.
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
-#include <wx/wx.h>
-#include "menu.hpp"
 
 /*
  Input variables
@@ -82,7 +82,6 @@ extern int nbragg;             //!< Number of Bragg plane og 1st BZ
  Variables for patchs
 */
 extern int *ntri;          //!< The number of triangle patch [::nb]
-extern int **ntri_th;      //!< The number of triangle patch in each thread [::nb]
 extern int *draw_band;     //!< Switch for drawn bands [::nb]
 extern GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
 extern GLfloat***** arw;
@@ -154,7 +153,6 @@ extern GLfloat    blue[4]; //!< Blue color code
 /*
  Others
 */
-extern int query;        //!< Query switch
 extern int corner[6][4]; //!< Corners of tetrahedron
 extern GLfloat EF;       //!< Fermi energy
 enum

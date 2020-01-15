@@ -24,18 +24,6 @@ THE SOFTWARE.
 /**@file
 @brief Create & modify right-click menu. And operate their function.
 */
-#if defined(HAVE_CONFIG_H)
-#include <config.h>
-#endif
-#if defined(HAVE_GL_GL_H)
-#include <GL/gl.h>
-#elif defined(HAVE_OPENGL_GL_H)
-#include <OpenGL/gl.h>
-#endif
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
 #include "free_patch.hpp"
 #include "fermi_patch.hpp"
 #include "calc_nodeline.hpp"
@@ -47,19 +35,33 @@ THE SOFTWARE.
 #include "variable.hpp"
 #include "menu.hpp"
 #include "operation.hpp"
-#include "wx/splitter.h"
-#include "wx/gbsizer.h"
 #include "fermisurfer.xpm"
+#include <wx/splitter.h>
+#include <wx/gbsizer.h>
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
 
 void compute_patch_segment() {
   if (refresh_interpol == 1){
-    interpol_energy();
+    interpol_energy(avec, nb, interpol, ng0, ng,
+      terminal, eig, vf, mat, eig0, mat0);
     refresh_patch = 1;
     refresh_interpol = 0;
   }
   if (refresh_patch == 1) {
-    query = 1; fermi_patch();
-    query = 0; fermi_patch();
+    fermi_patch(nb, nthreads, ng, ng0, shiftk,
+      fbz, eig, EF, mat, vf, corner, bvec, nbragg,
+      bragg, brnrm, brnrm_min, terminal, ntri, kvp, matp,
+      clr, arw, nmlp, kvp_rot, nmlp_rot, arw_rot);
     refresh_color = 1;
     refresh_section = 1;
     refresh_equator = 1;
@@ -68,31 +70,37 @@ void compute_patch_segment() {
   }
   if (refresh_color == 1) {
     if (skip_minmax == 1) skip_minmax = 0;
-    else max_and_min();
-    paint();
+    else max_and_min(nb, nthreads, terminal, myf, color_scale, ntri, matp,
+      &patch_min, &patch_max, nmlp);
+    paint(nb, color_scale, blackback, ntri, patch_min, patch_max,
+      kvp, matp, clr, nmlp, arw, red, green, blue,
+      cyan, magenta, yellow, wgray, bgray);
     refresh_section = 1;
     refresh_color = 0;
   }
   if (refresh_nodeline == 1) {
-    query = 1; calc_nodeline();
-    query = 0; calc_nodeline();
+    calc_nodeline(nb, ntri, matp, kvp, nthreads, terminal, nnl, kvnl, kvnl_rot);
     refresh_nodeline = 0;
   }
   if (refresh_section == 1) {
-    calc_2dbz();
-    query = 1; calc_section();
-    query = 0; calc_section();
+    calc_2dbz(fbz, secvec, secscale, axis2d,
+      &nbzl2d, nbragg, bragg, brnrm, bzl2d, bzl2d_proj);
+    calc_section(fbz, nb, nthreads, secvec, secscale,
+      axis2d, ntri, kvp, clr, terminal, n2d, kv2d, clr2d);
     refresh_section = 0;
   }
   if (refresh_equator == 1) {
-    query = 1; equator();
-    query = 0; equator();
+    equator(nb, nthreads, eqvec, ntri, kvp,
+      nmlp, terminal, nequator, kveq, kveq_rot);
     refresh_equator = 0;
   }
 }
 
 void refresh_patch_segment() {
-  free_patch();
+  free_patch(nb, refresh_patch, ntri, kvp, kvp_rot, matp,
+    clr, nmlp, nmlp_rot, arw, arw_rot, refresh_nodeline, nnl, kvnl,
+    kvnl_rot, refresh_section, kv2d, clr2d,
+    refresh_equator, nequator, kveq, kveq_rot);
   compute_patch_segment();
 }
 
@@ -142,7 +150,10 @@ void MyFrame::button_refresh(
 void MyFrame::button_compute(
   wxCommandEvent& event//!<[in] Selected menu
 ) {
-  free_patch();
+  free_patch(nb, refresh_patch, ntri, kvp, kvp_rot, matp,
+    clr, nmlp, nmlp_rot, arw, arw_rot, refresh_nodeline, nnl, kvnl,
+    kvnl_rot, refresh_section, kv2d, clr2d,
+    refresh_equator, nequator, kveq, kveq_rot);
   compute_patch_segment();
   Refresh(false);
 }
@@ -429,7 +440,7 @@ void MyFrame::radio_tetra(
 )
 {
   itet = wxAtoi(event.GetString()) - 1;
-  init_corner();
+  init_corner(itet, corner);
   refresh_patch = 1;
 }/*menu_tetra*/
  /**

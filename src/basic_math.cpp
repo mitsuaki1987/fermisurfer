@@ -33,7 +33,7 @@ THE SOFTWARE.
 #include <OpenGL/gl.h>
 #endif
 
-#include <math.h>
+#include <cmath>
 
 #if defined(_OPENMP)
 #include <omp.h>

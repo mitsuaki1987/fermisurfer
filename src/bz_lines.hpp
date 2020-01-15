@@ -22,4 +22,4 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-void bz_lines();
+void bz_lines(wxTextCtrl* terminal, GLfloat bragg[26][3], GLfloat brnrm[26], int* nbzl, GLfloat bzl[676][2][3], int* nbragg);

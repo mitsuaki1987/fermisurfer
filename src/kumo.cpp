@@ -33,11 +33,10 @@ denser @f$k@f$-grid with French-curve (Kumo) interpolation
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
-
-#include <stdlib.h>
-#include <stdio.h>
+#include <wx/wx.h>
+#include <cstdlib>
+#include <cstdio>
 #include "basic_math.hpp"
-#include "variable.hpp"
 /**
  @brief Compute coefficient for the French-curve (Kumo) interpolation
  @f[
@@ -46,7 +45,8 @@ denser @f$k@f$-grid with French-curve (Kumo) interpolation
 */
 static void kumo_coef(
   int j, //!< [in] Interpolated grid index
-  GLfloat *coef //!< [out] Coefficient of interpolation @f$C_i@f$
+  GLfloat *coef, //!< [out] Coefficient of interpolation @f$C_i@f$
+  int interpol
 ) {
   GLfloat x, mx;
   x = (GLfloat)j / (GLfloat)interpol;
@@ -62,7 +62,19 @@ static void kumo_coef(
 
  Modify : ::eig, ::mat
 */
-void interpol_energy() {
+void interpol_energy(
+  GLfloat avec[3][3],
+  int nb,
+  int interpol,
+  int ng0[3],
+  int ng[3],
+  wxTextCtrl *terminal,
+  GLfloat ****eig,
+  GLfloat *****vf,
+  GLfloat *****mat,
+  GLfloat**** eig0,
+  GLfloat***** mat0
+) {
   int ib, i0, i1, i2, ii;
 
   *terminal << wxT("    Interpolating ... ");
@@ -142,7 +154,7 @@ void interpol_energy() {
               }/*for (j1 = 0; j1 < 4; j1++)*/
             }/*for (i2 = 0; i2 < ng0[2]; i2++)*/
             for (j0 = 0; j0 < interpol; j0++) {
-              kumo_coef(j0, &coef[0]);
+              kumo_coef(j0, &coef[0], interpol);
               for (j1 = 0; j1 < 4; j1++) {
                 for (j2 = 0; j2 < 4; j2++) {
                   eig2[j1][j2] = 0.0;
@@ -155,7 +167,7 @@ void interpol_energy() {
                 }/*for (j2 = 0; j2 < 4; j2++)*/
               }/*for (j1 = 0; j1 < 4; j1++)*/
               for (j1 = 0; j1 < interpol; j1++) {
-                kumo_coef(j1, &coef[0]);
+                kumo_coef(j1, &coef[0], interpol);
                 for (j2 = 0; j2 < 4; j2++) {
                   eig3[j2] = 0.0;
                   for (jj = 0; jj < 3; jj++) mat3[j2][jj] = 0.0;
@@ -166,7 +178,7 @@ void interpol_energy() {
                   }/*for (ii = 0; ii < 4; ii++)*/
                 }/*for (j2 = 0; j2 < 4; j2++)*/
                 for (j2 = 0; j2 < interpol; j2++) {
-                  kumo_coef(j2, &coef[0]);
+                  kumo_coef(j2, &coef[0], interpol);
                   eig[ib][i0*interpol + j0]
                          [i1*interpol + j1]
                          [i2*interpol + j2] = 0.0;

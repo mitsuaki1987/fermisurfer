@@ -21,5 +21,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif
+#include <wx/wx.h>
 
-void calc_nodeline();
+void calc_nodeline(int nb, int* ntri, GLfloat**** matp, GLfloat**** kvp, int nthreads,
+  wxTextCtrl* terminal, int* nnl, GLfloat**** kvnl, GLfloat** kvnl_rot);

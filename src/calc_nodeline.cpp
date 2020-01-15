@@ -32,35 +32,52 @@ THE SOFTWARE.
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <wx/wx.h>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
+#include <vector>
 #include "basic_math.hpp"
-#include "variable.hpp"
 
 /**
 @brief Compute node-line where \f$\Delta_{n k} = 0\f$
 
- Modify : ::ntri_th, ::nnl, ::kvnl, ::kvnl_rot
+ Modify : ::nnl, ::kvnl, ::kvnl_rot
 
- If ::query = 1, this routine only compute the number of 
- line segmants and malloc variables.
 */
-void calc_nodeline() {
-  int ib, itri, i, j, ithread;
+void calc_nodeline(
+int nb,
+int *ntri,
+GLfloat ****matp,
+GLfloat ****kvp,
+int nthreads,
+wxTextCtrl *terminal,
+int* nnl,
+GLfloat**** kvnl,
+GLfloat** kvnl_rot
+) {
+  int ib, itri, i, j, ithread, nnl0;
+  std::vector<std::vector<std::vector<std::vector<GLfloat>>>> kvnl_v;
+
+  kvnl_v.resize(nthreads);
+
+  *terminal << wxT("    band   # of nodeline\n");
+  for (ib = 0; ib < nb; ib++) {
 
 #pragma omp parallel default(none) \
-  shared(nb,nnl,matp,kvnl,kvp,ntri,ntri_th,query) \
-  private(ib,itri,i,j,ithread)
-  {
-    int sw[3], nnl0;
-    GLfloat a[3][3], matps[3];
+shared(nb,ib,matp,kvp,ntri,kvnl_v) \
+private(itri,i,j,ithread)
+    {
+      int sw[3];
+      GLfloat a[3][3], matps[3];
+      std::vector<std::vector<GLfloat> > kvnl0;
 
-    ithread = get_thread();
-    for (ib = 0; ib < nb; ib++) {
-      if(query == 1) nnl0 = 0;
-      else nnl0 = ntri_th[ib][ithread];
+      kvnl0.resize(2);
+      for (i = 0; i < 2; i++)kvnl0.at(i).resize(3);
+
+      ithread = get_thread();
+      kvnl_v.at(ithread).resize(0);
+
 #pragma omp for
       for (itri = 0; itri < ntri[ib]; ++itri) {
 
@@ -76,63 +93,51 @@ void calc_nodeline() {
 
         if (( matp[ib][itri][sw[0]][0] < 0.0 && 0.0 <= matp[ib][itri][sw[1]][0])
           || (matp[ib][itri][sw[0]][0] <= 0.0 && 0.0 < matp[ib][itri][sw[1]][0])) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) {
-              kvnl[ib][nnl0][0][i] = kvp[ib][itri][sw[0]][i] * a[0][1] + kvp[ib][itri][sw[1]][i] * a[1][0];
-              kvnl[ib][nnl0][1][i] = kvp[ib][itri][sw[0]][i] * a[0][2] + kvp[ib][itri][sw[2]][i] * a[2][0];
-            }/*for (i = 0; i < 3; ++i)*/
-          }/*if (query == 0)*/
-          nnl0 += 1;
+          for (i = 0; i < 3; ++i) {
+            kvnl0.at(0).at(i) = kvp[ib][itri][sw[0]][i] * a[0][1] + kvp[ib][itri][sw[1]][i] * a[1][0];
+            kvnl0.at(1).at(i) = kvp[ib][itri][sw[0]][i] * a[0][2] + kvp[ib][itri][sw[2]][i] * a[2][0];
+          }/*for (i = 0; i < 3; ++i)*/
+          kvnl_v.at(ithread).push_back(kvnl0);
         }/*else if (matp[ib][itri][sw[0]] < 0.0 && 0.0 <= matp[ib][itri][sw[1]])*/
         else if ((matp[ib][itri][sw[1]][0] < 0.0 && 0.0 <= matp[ib][itri][sw[2]][0])
           ||     (matp[ib][itri][sw[1]][0] <= 0.0 && 0.0 < matp[ib][itri][sw[2]][0])) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) {
-              kvnl[ib][nnl0][0][i] = kvp[ib][itri][sw[0]][i] * a[0][2] + kvp[ib][itri][sw[2]][i] * a[2][0];
-              kvnl[ib][nnl0][1][i] = kvp[ib][itri][sw[1]][i] * a[1][2] + kvp[ib][itri][sw[2]][i] * a[2][1];
-            }/*for (i = 0; i < 3; ++i)*/
-          }/*if (query == 0)*/
-          nnl0 += 1;
+          for (i = 0; i < 3; ++i) {
+            kvnl0.at(0).at(i) = kvp[ib][itri][sw[0]][i] * a[0][2] + kvp[ib][itri][sw[2]][i] * a[2][0];
+            kvnl0.at(1).at(i) = kvp[ib][itri][sw[1]][i] * a[1][2] + kvp[ib][itri][sw[2]][i] * a[2][1];
+          }/*for (i = 0; i < 3; ++i)*/
+          kvnl_v.at(ithread).push_back(kvnl0);
         }/*else if (matp[ib][itri][sw[1]] < 0.0 && 0.0 <= matp[ib][itri][sw[2]])*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-      if (query == 1) ntri_th[ib][ithread] = nnl0;
-    }/*for (ib = 0; ib < nb; ib++)*/
-  }/* End of parallel region */
-  /*
-   Allocation of nodeline
-  */
-  if (query == 1) {
-    /*
-    Sum node-lines in all threads
-    */
-    for (ib = 0; ib < nb; ib++) {
-      for (ithread = 1; ithread < nthreads; ithread++) {
-        ntri_th[ib][ithread] += ntri_th[ib][ithread - 1];
-      }
-      nnl[ib] = ntri_th[ib][nthreads - 1];
-      for (ithread = nthreads - 1; ithread > 0; ithread--) {
-        ntri_th[ib][ithread] = ntri_th[ib][ithread - 1];
-      }
-      ntri_th[ib][0] = 0;
-    }/*for (ib = 0; ib < nb; ib++)*/
-    *terminal << wxT("    band   # of nodeline\n");
-    for (ib = 0; ib < nb; ib++) {
-      *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, nnl[ib]);
-    }/*for (ib = 0; ib < nb; ib++)*/
+    }/* End of parallel region */
     /*
      Allocation of nodeline
+     */
+    nnl[ib] = 0;
+    for (ithread = 0; ithread < nthreads; ithread++)
+      nnl[ib] += kvnl_v.at(ithread).size();
+    *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, nnl[ib]);
+
+    kvnl[ib] = new GLfloat * *[nnl[ib]];
+    kvnl_rot[ib] = new GLfloat[6 * nnl[ib]];
+    for (itri = 0; itri < nnl[ib]; ++itri) {
+      kvnl[ib][itri] = new GLfloat *[2];
+      for (i = 0; i < 2; ++i) {
+        kvnl[ib][itri][i] = new GLfloat[3];
+      }/*for (j = 0; j < 2; ++j)*/
+    }
+    /*
+     Input
     */
-    kvnl = new GLfloat***[nb];
-    kvnl_rot = new GLfloat*[nb];
-    for (ib = 0; ib < nb; ++ib) {
-      kvnl[ib] = new GLfloat**[nnl[ib]];
-      kvnl_rot[ib] = new GLfloat[6*nnl[ib]];
-      for (itri = 0; itri < nnl[ib]; ++itri) {
-        kvnl[ib][itri] = new GLfloat * [2];
+    nnl0 = 0;
+    for (ithread = 0; ithread < nthreads; ithread++){
+      for (itri = 0; itri < kvnl_v.at(ithread).size(); ++itri) {
         for (i = 0; i < 2; ++i) {
-          kvnl[ib][itri][i] = new GLfloat[3];
+          for (j = 0; j < 3; j++) {
+            kvnl[ib][nnl0][i][j] = kvnl_v.at(ithread).at(itri).at(i).at(j);
+          }
         }/*for (j = 0; j < 2; ++j)*/
-      }/*for (i = 0; i < nnl[ib]; ++i)*/
-    }/*for (ib = 0; ib < nb; ++ib)*/
-  }/*if (query == 1)*/
+        nnl0 += 1;
+      }
+    }
+  }/*for (ib = 0; ib < nb; ib++)*/
 }/*void calc_nodeline()*/

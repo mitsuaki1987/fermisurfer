@@ -21,6 +21,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif
+#include <wx/wx.h>
 
-void calc_2dbz();
-void calc_section();
+void calc_2dbz(int fbz, GLfloat secvec[3], GLfloat secscale, GLfloat axis2d[2][3],
+  int *nbzl2d, int nbragg, GLfloat bragg[26][3], GLfloat brnrm[26], GLfloat bzl2d[26][3],
+  GLfloat bzl2d_proj[26][3]);
+void calc_section(int fbz, int nb, int nthreads, GLfloat secvec[3], GLfloat secscale,
+  GLfloat axis2d[2][3], int* ntri, GLfloat**** kvp, GLfloat** clr, wxTextCtrl* terminal,
+  int* n2d, GLfloat** kv2d, GLfloat** clr2d);

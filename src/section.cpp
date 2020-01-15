@@ -33,18 +33,19 @@ THE SOFTWARE.
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
+#include <wx/wx.h>
+#include <vector>
+#include <cstdio>
+#include <cstdlib>
+#include <cmath>
 #include "basic_math.hpp"
-#include "variable.hpp"
 /**
  @brief Project 3D \f$k\f$-vector into 2D plane. 
 
  Modify: ::kv2d
 */
 static void proj_2d(
+  GLfloat axis2d[2][3],
   GLfloat vec[3] //!< [in,out] Line ends to be projected
 ) 
 {
@@ -64,7 +65,10 @@ static void proj_2d(
 
  Modify : ::axis2d
 */
-static void set2daxis() {
+static void set2daxis(
+  GLfloat secvec[3],
+  GLfloat axis2d[2][3]
+) {
   int ii, jj;
   GLfloat snorm, norm, thr = 0.001f;
 
@@ -101,6 +105,11 @@ static void set2daxis() {
  @brief Judge wheser this line is the edge of 1st BZ (or the premitive BZ)
 */
 int bragg_vert2d(
+  int nbragg,
+  GLfloat bragg[26][3],
+  GLfloat brnrm[26],
+  GLfloat secvec[3],
+  GLfloat secscale,
   int jbr, //!< [in] Index of a Bragg plane
   int nbr, //!< [in]
   GLfloat vert[3], //!< [inout] start point of line
@@ -168,7 +177,18 @@ int bragg_vert2d(
 
  Modify : ::nbzl2d, ::bzl2d_proj
 */
-void calc_2dbz() {
+void calc_2dbz(
+int fbz,
+GLfloat secvec[3],
+GLfloat secscale,
+GLfloat axis2d[2][3],
+int *nbzl2d,
+int nbragg,
+GLfloat bragg[26][3],
+GLfloat brnrm[26],
+GLfloat bzl2d[26][3],
+GLfloat bzl2d_proj[26][3]
+) {
   int jbr, nbr, i, j, lvert, ibzl;
   GLfloat vert[2][3], vec[26][2][3], prod, thr;
 
@@ -176,30 +196,30 @@ void calc_2dbz() {
   /*
    Set Projection axis for 2D plane
   */
-  set2daxis();
+  set2daxis(secvec, axis2d);
 
-  nbzl2d = 0;
+  *nbzl2d = 0;
 
   for (jbr = 0; jbr < nbragg; ++jbr) {
     /**/
     for (i = 0; i < 3; ++i) vert[1][i] = 0.0;
     nbr = 0;
-    lvert = bragg_vert2d(jbr, nbr, vert[0], vert[1]);
+    lvert = bragg_vert2d(nbragg, bragg, brnrm, secvec, secscale, jbr, nbr, vert[0], vert[1]);
     if (lvert == 0) continue;
     nbr = lvert;
     /**/
-    lvert = bragg_vert2d(jbr, nbr, vert[1], vert[0]);
+    lvert = bragg_vert2d(nbragg, bragg, brnrm, secvec, secscale, jbr, nbr, vert[1], vert[0]);
     if (lvert == 0) continue;
     /**/
-    for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) vec[nbzl2d][i][j] = vert[i][j];
-    nbzl2d = nbzl2d + 1;
+    for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) vec[*nbzl2d][i][j] = vert[i][j];
+    *nbzl2d += 1;
   }/*for (jbr = 0; jbr < nbragg; ++jbr)*/
   /*
    Order bz lines
   */
   for (i = 0; i < 3; i++) bzl2d[0][i] = vec[0][0][i];
   for (i = 0; i < 3; i++) bzl2d[1][i] = vec[0][1][i];
-  for (ibzl = 0; ibzl < nbzl2d; ibzl++) {
+  for (ibzl = 0; ibzl < *nbzl2d; ibzl++) {
 
     thr = 0.0f;
     for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) thr += bzl2d[j][i] * bzl2d[j][i];
@@ -216,23 +236,23 @@ void calc_2dbz() {
       prod += (bzl2d[1 - j][i] - vec[ibzl][j][i]) * (bzl2d[1 - j][i] - vec[ibzl][j][i]);
     if (prod < thr)
       for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
-  }/*for (ibzl = 1; ibzl < nbzl2d; ibzl++)*/
+  }/*for (ibzl = 1; ibzl < *nbzl2d; ibzl++)*/
 
-  for (jbr = 1; jbr < nbzl2d - 1; jbr++) {
+  for (jbr = 1; jbr < *nbzl2d - 1; jbr++) {
 
     thr = 0.0f;
     for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) thr += bzl2d[jbr][i] * bzl2d[jbr][i];
     thr *= 0.001f;
 
     prod = 0.0;
-    for (ibzl = 0; ibzl < nbzl2d; ibzl++) for (i = 0; i < 3; i++)
+    for (ibzl = 0; ibzl < *nbzl2d; ibzl++) for (i = 0; i < 3; i++)
       prod += vec[ibzl][0][i] * vec[ibzl][0][i];
     if (prod < thr) {
-      nbzl2d = jbr + 1;
+      *nbzl2d = jbr + 1;
       break;
     }
 
-    for (ibzl = 1; ibzl < nbzl2d; ibzl++) {
+    for (ibzl = 1; ibzl < *nbzl2d; ibzl++) {
       prod = (bzl2d[jbr][0] - vec[ibzl][0][0]) * (bzl2d[jbr][0] - vec[ibzl][0][0])
            + (bzl2d[jbr][1] - vec[ibzl][0][1]) * (bzl2d[jbr][1] - vec[ibzl][0][1])
            + (bzl2d[jbr][2] - vec[ibzl][0][2]) * (bzl2d[jbr][2] - vec[ibzl][0][2]);
@@ -248,42 +268,66 @@ void calc_2dbz() {
         for (i = 0; i < 3; i++) bzl2d[jbr + 1][i] = vec[ibzl][0][i];
         for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
       }
-    }/*for (ibzl = 1; ibzl < nbzl2d; ibzl++)*/
+    }/*for (ibzl = 1; ibzl < *nbzl2d; ibzl++)*/
   }/*for (ibzl = 1; ibzl < nbzl; ibzl++)*/
   /*
    Project into 2D plane
   */
-  for (ibzl = 0; ibzl < nbzl2d; ibzl++) {
+  for (ibzl = 0; ibzl < *nbzl2d; ibzl++) {
     for (i = 0; i < 3; i++) bzl2d_proj[ibzl][i] = bzl2d[ibzl][i];
-    proj_2d(bzl2d_proj[ibzl]);
-  }/*for (ibzl = 0; ibzl < nbzl2d; ibzl++)*/
+    proj_2d(axis2d, bzl2d_proj[ibzl]);
+  }/*for (ibzl = 0; ibzl < *nbzl2d; ibzl++)*/
 }/*calc_2dbz()*/
 /**
  @brief Compute Fermi-line 
 
- Modify : ::ntri_th, ::n2d, ::clr2d, ::kv2d
-
- If ::query = 1, this routine only compute the number of line segment and
- malloc variables.
-
- If ::query = 0, actually compute lines and store them.
+ Modify : ::n2d, ::clr2d, ::kv2d
 */
-void calc_section() {
-  int i, ib, itri, ithread;
+void calc_section(
+int fbz,
+int nb,
+int nthreads,
+GLfloat secvec[3],
+GLfloat secscale,
+GLfloat axis2d[2][3],
+int *ntri,
+GLfloat ****kvp,
+GLfloat ** clr,
+wxTextCtrl *terminal,
+int *n2d,
+GLfloat **kv2d,
+GLfloat **clr2d
+) {
+  int i, j, ib, itri, ithread, n2d0;
+  std::vector<std::vector<std::vector<std::vector<GLfloat>>>> kv2d_v, clr2d_v;
+
+  kv2d_v.resize(nthreads);
+  clr2d_v.resize(nthreads);
 
   if (fbz != 1)return;
 
-#pragma omp parallel default(none) \
-  shared(nb,n2d,clr,clr2d,kvp,kv2d,ntri,ntri_th,secvec,secscale,query) \
-  private(ib,itri,i,ithread)
-  {
-    int j, n2d0, sw[3];
-    GLfloat norm[3], a[3][3];
+  *terminal << wxT("    band   # of Fermi-line\n");
+  for (ib = 0; ib < nb; ib++) {
 
-    ithread = get_thread();
-    for (ib = 0; ib < nb; ib++) {
-      if (query == 1) n2d0 = 0;
-      else n2d0 = ntri_th[ib][ithread];
+#pragma omp parallel default(none) \
+shared(nb,ib,clr,clr2d_v,kvp,kv2d_v,ntri,secvec,secscale,axis2d) \
+private(itri,i,j,ithread)
+    {
+      int sw[3];
+      GLfloat norm[3], a[3][3];
+      std::vector<std::vector<GLfloat>> kv2d_0, clr2d_0;
+
+      kv2d_0.resize(2);
+      clr2d_0.resize(2);
+      for (i = 0; i < 2; i++) {
+        kv2d_0.at(i).resize(3);
+        clr2d_0.at(i).resize(4);
+      }
+
+      ithread = get_thread();
+      kv2d_v.at(ithread).resize(0);
+      clr2d_v.at(ithread).resize(0);
+
 #pragma omp for
       for (itri = 0; itri < ntri[ib]; ++itri) {
         /**/
@@ -299,80 +343,71 @@ void calc_section() {
         }/*for (i = 0; i < 3; ++i)*/
          /**/
         if ((norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]]) || (norm[sw[0]] <= 0.0 && 0.0 < norm[sw[1]])) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) {
-              kv2d[ib][i + 0 * 3 + 6 * n2d0]
-                = kvp[ib][itri][sw[1]][i] * a[1][0] + kvp[ib][itri][sw[0]][i] * a[0][1];
-              kv2d[ib][i + 1 * 3 + 6 * n2d0]
-                = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
-            }/*for (i = 0; i < 3; ++i)*/
-            for (i = 0; i < 4; ++i) {
-              clr2d[ib][i + 0 * 4 + 8 * n2d0]
-                = clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][0]
-                + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][1];
-              clr2d[ib][i + 1 * 4 + 8 * n2d0]
-                = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
-                + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
-            }/*for (i = 0; i < 4; ++i)*/
-            proj_2d(&kv2d[ib][0 * 3 + 6 * n2d0]);
-            proj_2d(&kv2d[ib][1 * 3 + 6 * n2d0]);
-          }/*if (query == 0)*/
-          n2d0 += 1;
+          for (i = 0; i < 3; ++i) {
+            kv2d_0.at(0).at(i)
+              = kvp[ib][itri][sw[1]][i] * a[1][0] + kvp[ib][itri][sw[0]][i] * a[0][1];
+            kv2d_0.at(1).at(i)
+              = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
+          }/*for (i = 0; i < 3; ++i)*/
+          for (i = 0; i < 4; ++i) {
+            clr2d_0.at(0).at(i)
+              = clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][0]
+              + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][1];
+            clr2d_0.at(1).at(i)
+              = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
+              + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
+          }/*for (i = 0; i < 4; ++i)*/
+          proj_2d(axis2d, &kv2d_0.at(0).at(0));
+          proj_2d(axis2d, &kv2d_0.at(1).at(0));
+          kv2d_v.at(ithread).push_back(kv2d_0);
+          clr2d_v.at(ithread).push_back(clr2d_0);
         }/*else if (norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]])*/
         else if ((norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]]) || (norm[sw[1]] <= 0.0 && 0.0 < norm[sw[2]])) {
-          if (query == 0) {
-            for (i = 0; i < 3; ++i) {
-              kv2d[ib][i + 0 * 3 + 6 * n2d0] 
-                = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
-              kv2d[ib][i + 1 * 3 + 6 * n2d0]
-                = kvp[ib][itri][sw[2]][i] * a[2][1] + kvp[ib][itri][sw[1]][i] * a[1][2];
-            }/*for (i = 0; i < 3; ++i)*/
-            for (i = 0; i < 4; ++i) {
-              clr2d[ib][i + 0 * 4 + 8 * n2d0]
-                = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
-                + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
-              clr2d[ib][i + 1 * 4 + 8 * n2d0]
-                = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][1]
-                + clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][2];
-            }/*for (i = 0; i < 4; ++i)*/
-            proj_2d(&kv2d[ib][0 * 3 + 6 * n2d0]);
-            proj_2d(&kv2d[ib][1 * 3 + 6 * n2d0]);
-          }/*if (query == 0)*/
-          n2d0 += 1;
+          for (i = 0; i < 3; ++i) {
+            kv2d_0.at(0).at(i)
+              = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
+            kv2d_0.at(1).at(i)
+              = kvp[ib][itri][sw[2]][i] * a[2][1] + kvp[ib][itri][sw[1]][i] * a[1][2];
+          }/*for (i = 0; i < 3; ++i)*/
+          for (i = 0; i < 4; ++i) {
+            clr2d_0.at(0).at(i)
+              = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
+              + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
+            clr2d_0.at(1).at(i)
+              = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][1]
+              + clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][2];
+          }/*for (i = 0; i < 4; ++i)*/
+          proj_2d(axis2d, &kv2d_0.at(0).at(0));
+          proj_2d(axis2d, &kv2d_0.at(1).at(0));
+          kv2d_v.at(ithread).push_back(kv2d_0);
+          clr2d_v.at(ithread).push_back(clr2d_0);
         }/*else if (norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]])*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-      if(query == 1) ntri_th[ib][ithread] = n2d0;
-    }/*for (ib = 0; ib < nb; ib++)*/
-  }/* End of parallel region */
-  /*
-   Allocation of Fermi-lines
-  */
-  if (query == 1) {
+    }/* End of parallel region */
     /*
-    Sum Fermi-lines in all threads
+     Allocation of Fermi-lines
     */
-    for (ib = 0; ib < nb; ib++) {
-      for (ithread = 1; ithread < nthreads; ithread++) {
-        ntri_th[ib][ithread] += ntri_th[ib][ithread - 1];
+    n2d[ib] = 0;
+    for (ithread = 0; ithread < nthreads; ithread++)
+      n2d[ib] += kv2d_v.at(ithread).size();
+
+    *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, n2d[ib]);
+    kv2d[ib] = new GLfloat[6 * n2d[ib]];
+    clr2d[ib] = new GLfloat[8 * n2d[ib]];
+
+    n2d0 = 0;
+    for (ithread = 0; ithread < nthreads; ithread++) {
+      for (itri = 0; itri < kv2d_v.at(ithread).size(); itri++) {
+        for (i = 0; i < 2; i++) {
+          for (j = 0; j < 3; j++) {
+            kv2d[ib][j + i * 3 + 6 * n2d0] = kv2d_v.at(ithread).at(itri).at(i).at(j);
+          }
+          for (j = 0; j < 3; j++) {
+            clr2d[ib][j + i * 4 + 8 * n2d0] = clr2d_v.at(ithread).at(itri).at(i).at(j);
+          }
+        }
+        n2d0 += 1;
       }
-      n2d[ib] = ntri_th[ib][nthreads - 1];
-      for (ithread = nthreads - 1; ithread > 0; ithread--) {
-        ntri_th[ib][ithread] = ntri_th[ib][ithread - 1];
-      }
-      ntri_th[ib][0] = 0;
     }
-    *terminal << wxT("    band   # of Fermi-line\n");
-    for (ib = 0; ib < nb; ib++) {
-      *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, n2d[ib]);
-    }
-    /*
-    Allocation of Fermi-lines
-    */
-    kv2d = new GLfloat*[nb];
-    clr2d = new GLfloat*[nb];
-    for (ib = 0; ib < nb; ++ib) {
-      kv2d[ib] = new GLfloat[6 * n2d[ib]];
-      clr2d[ib] = new GLfloat[8 * n2d[ib]];
-    }/*for (ib = 0; ib < nb; ++ib)*/
-  }/*if (query == 0)*/
+  }/*for (ib = 0; ib < nb; ib++)*/
 }/*void calc_nodeline()*/

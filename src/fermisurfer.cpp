@@ -60,14 +60,14 @@ with a color-plot of the arbitraly matrix element
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
 #if defined(_OPENMP)
 #include <omp.h>
 #endif
 #include <wx/wx.h>
-#include "wx/cmdline.h"
+#include <wx/cmdline.h>
 #include "read_file.hpp"
 #include "menu.hpp"
 #include "operation.hpp"
@@ -134,7 +134,6 @@ int nbragg;             //!< Number of Bragg plane og 1st BZ
  Variables for patchs
 */
 int *ntri;          //!< The number of triangle patch [::nb]
-int **ntri_th;      //!< The number of triangle patch in each thread [::nb]
 int *draw_band;     //!< Switch for drawn bands [::nb]
 GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
 GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
@@ -208,7 +207,6 @@ GLfloat    blue[4] = { 0.0, 0.0, 1.0, 1.0 }; //!< Blue color code
 /*
  Others
 */
-int query;        //!< Query switch
 int corner[6][4]; //!< Corners of tetrahedron
 GLfloat EF = 0.0;       //!< Fermi energy
 enum
@@ -253,9 +251,6 @@ void batch_draw()
 /**
  @brief Main routine of FermiSurfer
 
- Refer: ::query
-
- Modify: ::query, ::nthreads
 */
 bool MyApp::OnInit()
 {
@@ -288,7 +283,9 @@ bool MyApp::OnInit()
   *terminal << wxT("\n");
   *terminal << wxT("  Initialize variables ...\n");
   *terminal << wxT("\n");
-  /**/
+  /*
+  Input from BXSF or FRMSF file
+  */
   if (frmsf_file_name.AfterLast(wxUniChar('.')).CmpNoCase(wxT("bxsf")) == 0) {
     read_bxsf();
   }
@@ -296,17 +293,37 @@ bool MyApp::OnInit()
     color_scale = read_file();
     if (color_scale == 0)color_scale = 4;
   }
-  interpol_energy();
-  init_corner();
-  bragg_vector();
+  /*
+   Malloc only nb
+  */
+  kvp = new GLfloat ***[nb];
+  kvp_rot = new GLfloat *[nb];
+  nmlp = new GLfloat * **[nb];
+  nmlp_rot = new GLfloat *[nb];
+  matp = new GLfloat * **[nb];
+  clr = new GLfloat *[nb];
+  arw = new GLfloat * ***[nb];
+  arw_rot = new GLfloat *[nb];
+  kvnl = new GLfloat * **[nb];
+  kvnl_rot = new GLfloat *[nb];
+  kv2d = new GLfloat * [nb];
+  clr2d = new GLfloat * [nb];
+  kveq = new GLfloat *** [nb];
+  kveq_rot = new GLfloat *[nb];
+  /**/
+  interpol_energy(avec, nb, interpol, ng0, ng,
+    terminal, eig, vf, mat, eig0, mat0);
+  init_corner(itet, corner);
+  bragg_vector(terminal, bvec, bragg, brnrm, &brnrm_min);
   myf->modify_band();
   /*
    Brillouin zone
   */
-  bz_lines();
-  calc_2dbz();
+  bz_lines(terminal, bragg, brnrm, &nbzl, bzl, &nbragg);
+  calc_2dbz(fbz, secvec, secscale, axis2d,
+    &nbzl2d, nbragg, bragg, brnrm, bzl2d, bzl2d_proj);
   /**/
-  max_and_min_bz();
+  max_and_min_bz(terminal, nb, ng0, eig0, mat0);
   /**/
   compute_patch_segment();
   /*

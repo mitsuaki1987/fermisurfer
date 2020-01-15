@@ -24,19 +24,56 @@ THE SOFTWARE.
 /**@file
 @brief Refresh patch
 */
-#include <stdlib.h>
-#include <math.h>
-#include <stdio.h>
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#if defined(_OPENMP)
+#include <omp.h>
+#endif
+#include <wx/wx.h>
+#include <cstdlib>
+#include <cmath>
+#include <cstdio>
 #include "basic_math.hpp"
-#include "variable.hpp"
-
+#include "menu.hpp"
 /**
  @brief Free variables for patch before new patch is computed
 
  Free : ::nmlp, ::matp, ::clr, ::kvp, ::nmlp_rot, ::kvp_rot,
         ::kvnl, ::kvnl_rot, ::kv2d, ::clr2d
 */
-void free_patch() {
+void free_patch(
+  int nb,
+  int refresh_patch,
+  int *ntri,
+  GLfloat ****kvp,
+  GLfloat **kvp_rot,
+  GLfloat ****matp,
+  GLfloat** clr,
+  GLfloat ****nmlp,
+  GLfloat **nmlp_rot,
+  GLfloat *****arw,
+  GLfloat **arw_rot,
+  int refresh_nodeline,
+  int *nnl,
+  GLfloat ****kvnl,
+  GLfloat **kvnl_rot,
+  int refresh_section,
+  GLfloat **kv2d,
+  GLfloat **clr2d,
+  int refresh_equator,
+  int *nequator,
+  GLfloat ****kveq,
+  GLfloat **kveq_rot
+) {
   int ib, i0, i1, i2;
   /*
    Fermi patch
@@ -66,14 +103,6 @@ void free_patch() {
       delete[] kvp_rot[ib];
       delete[] arw_rot[ib];
     }
-    delete[] nmlp;
-    delete[] matp;
-    delete[] clr;
-    delete[] kvp;
-    delete[] arw;
-    delete[] nmlp_rot;
-    delete[] kvp_rot;
-    delete[] arw_rot;
   }/*if (refresh_patch == 1)*/
   /*
    Nodal line
@@ -89,8 +118,6 @@ void free_patch() {
       delete[] kvnl[ib];
       delete[] kvnl_rot[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
-    delete[] kvnl;
-    delete[] kvnl_rot;
   }/*if (refresh_nodeline == 1)*/
   /*
    2D Fermi line
@@ -100,8 +127,6 @@ void free_patch() {
       delete[] kv2d[ib];
       delete[] clr2d[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
-    delete[] kv2d;
-    delete[] clr2d;
   }/*if (refresh_section == 1)*/
   /*
   equator
@@ -117,8 +142,6 @@ void free_patch() {
       delete[] kveq[ib];
       delete[] kveq_rot[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
-    delete[] kveq;
-    delete[] kveq_rot;
   }/*if (refresh_equator == 1)*/
 }/*void free_patch()*/
 /**
@@ -127,7 +150,18 @@ void free_patch() {
 
  Modify : ::clr
 */
-void max_and_min() 
+void max_and_min(
+  int nb,
+  int nthreads,
+  wxTextCtrl *terminal,
+  MyFrame *myf,
+  int color_scale,
+  int *ntri,
+  GLfloat ****matp, 
+  GLfloat *patch_min,
+  GLfloat *patch_max,
+  GLfloat ****nmlp
+) 
 {
   int itri, ithread;
   GLfloat *max_th, *min_th;
@@ -167,11 +201,11 @@ shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    patch_max = max_th[0];
-    patch_min = min_th[0];
+    *patch_max = max_th[0];
+    *patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
-      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
+      if (max_th[ithread] > *patch_max) *patch_max = max_th[ithread];
+      if (min_th[ithread] < *patch_min) *patch_min = min_th[ithread];
     }
   }/*if (color_scale == 0 || color_scale == 4)*/
   else   if (color_scale == 2) {
@@ -198,11 +232,11 @@ shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    patch_min = min_th[0];
-    patch_max = max_th[0];
+    *patch_min = min_th[0];
+    *patch_max = max_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread] < patch_min) patch_min = max_th[ithread];
-      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
+      if (max_th[ithread] < *patch_min) *patch_min = max_th[ithread];
+      if (max_th[ithread] > *patch_max) *patch_max = max_th[ithread];
     }
   }/*if (color_scale == 2)*/
   else   if (color_scale == 3) {
@@ -230,11 +264,11 @@ shared(nb,ntri,matp,min_th,max_th) private(itri,ithread)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    patch_max = max_th[0];
-    patch_min = min_th[0];
+    *patch_max = max_th[0];
+    *patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
-      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
+      if (max_th[ithread] > *patch_max) *patch_max = max_th[ithread];
+      if (min_th[ithread] < *patch_min) *patch_min = min_th[ithread];
     }
   }/*if (color_scale == 3)*/
   else if (color_scale == 4 || color_scale == 7) {
@@ -263,19 +297,19 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    patch_max = max_th[0];
-    patch_min = min_th[0];
+    *patch_max = max_th[0];
+    *patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
-      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
+      if (max_th[ithread] > *patch_max) *patch_max = max_th[ithread];
+      if (min_th[ithread] < *patch_min) *patch_min = min_th[ithread];
     }    
   }/*if (color_scale == 5 || color_scale == 6)*/
 
   delete[] max_th;
   delete[] min_th;
 
-  myf->textbox_min->ChangeValue(wxString::Format(wxT("%f"), patch_min));
-  myf->textbox_max->ChangeValue(wxString::Format(wxT("%f"), patch_max));
+  myf->textbox_min->ChangeValue(wxString::Format(wxT("%f"), *patch_min));
+  myf->textbox_max->ChangeValue(wxString::Format(wxT("%f"), *patch_max));
 }/* max_and_min */
  /**
  @brief Compute Max. & Min. of matrix elements.
@@ -283,7 +317,27 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
 
  Modify : ::clr
  */
-void paint()
+void paint(
+  int nb,
+  int color_scale,
+  int blackback,
+  int *ntri,
+  GLfloat patch_min,
+  GLfloat patch_max,
+  GLfloat ****kvp,
+  GLfloat ****matp,
+  GLfloat **clr,
+  GLfloat ****nmlp,
+  GLfloat *****arw,
+  GLfloat red[4],
+  GLfloat green[4],
+  GLfloat blue[4],
+  GLfloat cyan[4],
+  GLfloat magenta[4],
+  GLfloat yellow[4],
+  GLfloat wgray[4],
+  GLfloat bgray[4]
+)
 {
   int itri, j;
   GLfloat origin[4];

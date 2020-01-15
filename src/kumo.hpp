@@ -21,5 +21,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+#if defined(HAVE_CONFIG_H)
+#include <config.h>
+#endif
+#if defined(HAVE_GL_GL_H)
+#include <GL/gl.h>
+#elif defined(HAVE_OPENGL_GL_H)
+#include <OpenGL/gl.h>
+#endif
+#include <wx/wx.h>
 
-void interpol_energy();
+void interpol_energy(GLfloat avec[3][3], int nb, int interpol, int ng0[3], int ng[3], wxTextCtrl* terminal,
+  GLfloat**** eig, GLfloat***** vf, GLfloat***** mat, GLfloat**** eig0, GLfloat***** mat0);

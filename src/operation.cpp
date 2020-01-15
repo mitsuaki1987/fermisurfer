@@ -34,7 +34,7 @@ THE SOFTWARE.
 #include <OpenGL/glu.h>
 #endif
 
-#include <math.h>
+#include <cmath>
 #include "draw.hpp"
 #include "variable.hpp"
 #include "operation.hpp"

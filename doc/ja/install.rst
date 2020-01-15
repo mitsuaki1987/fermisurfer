@@ -1,8 +1,8 @@
 インストール手順
 ================
 
-Linuxの場合
------------
+Linux, macOSの場合
+------------------
 
 #. 必要なパッケージをインストール(既にパッケージが入っている場合は何も起こりません.)
 
@@ -19,6 +19,18 @@ Linuxの場合
 
           $ sudo yum install wxGTK3-devel.x86_64
                       
+   -  macOS (Homebrew)
+
+      .. code-block:: bash
+
+          $ brew install wxmac
+                      
+   -  macOS (Mac Ports)
+
+      .. code-block:: bash
+
+          $ port install wxWidgets-3.0
+                      
 
 #. インストール
 
@@ -31,11 +43,10 @@ Linuxの場合
 以上で実行可能ファイル ``src/fermisurfer`` が作られ,
 ``/usr/local/bin/`` にコピーされます.
 
-Mac, Windowsの場合
-------------------
+Windowsの場合
+-------------
 
-それぞれのOSに応じたバイナリ実行ファイルをダウンロードする.
+バイナリ実行ファイルをダウンロードする.
 
 またwxWidgetsライブラリをインストールしたのちにFermiSurferを自前でビルドすることも可能.
-MacではLinuxと同様にconfigureを用いてビルドする.
-WindowsではVisualStudio用ファイル ``fermisurfer.vcxproj`` が利用できる.
+VisualStudio用ファイル ``fermisurfer.vcxproj`` が利用できる.
