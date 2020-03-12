@@ -112,7 +112,6 @@ int interpol = 1;     //!< Ratio of interpolation
 /*
  Switch for some modes
 */
-int blackback = 1;   //!< Switch for black background
 int color_scale = 1; //!< Switch for full color scale mode
 int fbz = 1;         //!< Switch for 1st Brillouin zone mode
 int nodeline = 0;    //!< Switch for node lines
@@ -204,6 +203,10 @@ GLfloat  yellow[4] = { 1.0, 1.0, 0.0, 1.0 }; //!< Yellow color code
 GLfloat     red[4] = { 1.0, 0.0, 0.0, 1.0 }; //!< Red color code
 GLfloat   green[4] = { 0.0, 1.0, 0.0, 1.0 }; //!< Green color code
 GLfloat    blue[4] = { 0.0, 0.0, 1.0, 1.0 }; //!< Blue color code
+GLfloat BackGroundColor[4] = { 0.0, 0.0, 0.0, 1.0 };//!< BackGround color code
+GLfloat LineColor[4] = { 1.0, 1.0, 1.0, 1.0 };//!< Line color code
+GLfloat BarColor[5][4] = { { 0.0, 0.0, 1.0, 1.0 } , { 0.0, 1.0, 1.0, 1.0 } ,
+{ 0.0, 1.0, 0.0, 1.0 } ,{ 1.0, 1.0, 0.0, 1.0 } ,{ 1.0, 0.0, 0.0, 1.0 } };
 /*
  Others
 */
@@ -311,19 +314,17 @@ bool MyApp::OnInit()
   kveq = new GLfloat *** [nb];
   kveq_rot = new GLfloat *[nb];
   /**/
-  interpol_energy(avec, nb, interpol, ng0, ng,
-    terminal, eig, vf, mat, eig0, mat0);
-  init_corner(itet, corner);
-  bragg_vector(terminal, bvec, bragg, brnrm, &brnrm_min);
+  interpol_energy();
+  init_corner();
+  bragg_vector();
   myf->modify_band();
   /*
    Brillouin zone
   */
-  bz_lines(terminal, bragg, brnrm, &nbzl, bzl, &nbragg);
-  calc_2dbz(fbz, secvec, secscale, axis2d,
-    &nbzl2d, nbragg, bragg, brnrm, bzl2d, bzl2d_proj);
+  bz_lines();
+  calc_2dbz();
   /**/
-  max_and_min_bz(terminal, nb, ng0, eig0, mat0);
+  max_and_min_bz();
   /**/
   compute_patch_segment();
   /*

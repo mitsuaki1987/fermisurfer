@@ -25,6 +25,7 @@ THE SOFTWARE.
  @brief Compute lines of BZ boundary
 */
 #include "basic_math.hpp"
+#include "variable.hpp"
 #include <wx/wx.h>
 #if defined(HAVE_CONFIG_H)
 #include <config.h>
@@ -107,14 +108,8 @@ static int bragg_vert(
 /**
  @brief Compute real number of Bragg plane at 1st BZ
 */
-static void check_bragg(
-  wxTextCtrl *terminal,
-  int nbzl,
-  GLfloat bzl[676][2][3],
-  GLfloat bragg[26][3],
-  GLfloat brnrm[26],
-  int *nbragg
-) {
+static void check_bragg()
+{
   int ibr, ibzl, ibzc;
   int ii, kk, bzflag, nbzcorner, nn;
   GLfloat thr = (GLfloat)0.0001, prod, bzc[676][3];
@@ -144,7 +139,7 @@ static void check_bragg(
   Then, compute real number Bragg plane of 1st BZ (::nbragg), 
   Re-order ::bragg and ::brnrm
   */
-  *nbragg = 0;
+  nbragg = 0;
   for (ibr = 0; ibr < 26; ibr++) {
     nn = 0;
 
@@ -153,31 +148,25 @@ static void check_bragg(
       if (fabsf(prod - brnrm[ibr]) < thr) nn += 1;
     }
     if (nn >= 3) {
-      for (kk = 0; kk < 3; kk++) bragg[*nbragg][kk] = bragg[ibr][kk];
-      brnrm[*nbragg] = brnrm[ibr];
-      *nbragg += 1;
+      for (kk = 0; kk < 3; kk++) bragg[nbragg][kk] = bragg[ibr][kk];
+      brnrm[nbragg] = brnrm[ibr];
+      nbragg += 1;
     }
   }
-  *terminal << wxString::Format(wxT("    Number of plane of 1st BZ : %d\n"), *nbragg);
+  *terminal << wxString::Format(wxT("    Number of plane of 1st BZ : %d\n"), nbragg);
 }/*static void check_bragg*/
 /**
  @brief Compute Brillouin zone boundariy lines
 
  Modify : ::nbzl, ::bzl
 */
-void bz_lines(
-  wxTextCtrl* terminal,
-  GLfloat bragg[26][3],
-  GLfloat brnrm[26],
-  int *nbzl,
-  GLfloat bzl[676][2][3],
-  int *nbragg
-) {
+void bz_lines()
+{
   /**/
   int ibr, jbr, nbr, i, j, lvert;
   GLfloat vert[2][3];
   /**/
-  *nbzl = 0;
+  nbzl = 0;
   /**/
   for (ibr = 0; ibr < 26; ++ibr) {
     for (jbr = 0; jbr < 26; ++jbr) {
@@ -191,12 +180,12 @@ void bz_lines(
       lvert = bragg_vert(bragg, brnrm, ibr, jbr, nbr, vert[1], vert[0]);
       if (lvert == 0) continue;
       /**/
-      for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) bzl[*nbzl][i][j] = vert[i][j];
-      *nbzl = *nbzl + 1;
+      for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) bzl[nbzl][i][j] = vert[i][j];
+      nbzl = nbzl + 1;
 
     }/*for (jbr = 0; jbr < 26; ++jbr)*/
   }/*for (ibr = 0; ibr < 26; ++ibr)*/
 
-  check_bragg(terminal, *nbzl, bzl, bragg, brnrm, nbragg);
+  check_bragg();
 
 }/*bz_lines*/

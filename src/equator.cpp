@@ -38,23 +38,13 @@ THE SOFTWARE.
 #include <cstdlib>
 #include <cmath>
 #include "basic_math.hpp"
+#include "variable.hpp"
 /**
 @brief Compute equator \f$\{\bf v}_{n k} \cdot {\bf k} = 0\f$
 
  Modify : ::nequator, ::kveq, ::kveq_rot
 */
-void equator(
-int nb,
-int nthreads,
-GLfloat eqvec[3],
-int *ntri,
-GLfloat ****kvp,
-GLfloat ****nmlp,
-wxTextCtrl* terminal,
-int *nequator,
-GLfloat ****kveq,
-GLfloat **kveq_rot
-) {
+void equator() {
   int ib, itri, i, j, ithread, nequator0;
   std::vector<std::vector<std::vector<std::vector<GLfloat>>>> kveq_v;
  

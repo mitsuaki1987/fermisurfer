@@ -38,24 +38,15 @@ THE SOFTWARE.
 #include <cmath>
 #include <vector>
 #include "basic_math.hpp"
-
+#include "variable.hpp"
 /**
 @brief Compute node-line where \f$\Delta_{n k} = 0\f$
 
  Modify : ::nnl, ::kvnl, ::kvnl_rot
 
 */
-void calc_nodeline(
-int nb,
-int *ntri,
-GLfloat ****matp,
-GLfloat ****kvp,
-int nthreads,
-wxTextCtrl *terminal,
-int* nnl,
-GLfloat**** kvnl,
-GLfloat** kvnl_rot
-) {
+void calc_nodeline()
+{
   int ib, itri, i, j, ithread, nnl0;
   std::vector<std::vector<std::vector<std::vector<GLfloat>>>> kvnl_v;
 

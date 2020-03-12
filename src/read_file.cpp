@@ -268,15 +268,8 @@ void read_batch()
       continue;
     }
 
-    if (strcmp(keyword, "background") == 0) {
-      ierr = fscanf(fp, "%s", value);
-      Text2Lower(value);
-      if (strcmp(value, "black") == 0) blackback = 1;
-      else if (strcmp(value, "white") == 0) blackback = 0;
-      else {
-        printf("Error! %s = %s", keyword, value);
-        exit(-1);
-      }
+    if (strcmp(keyword, "backgroundcolor") == 0) {
+      ierr = fscanf(fp, "%f%f%f", &BackGroundColor[0], &BackGroundColor[1], &BackGroundColor[2]);
     }
     else if (strcmp(keyword, "band") == 0) {
       for (ib = 0; ib < nb; ib++)
@@ -320,6 +313,9 @@ void read_batch()
     }
     else if (strcmp(keyword, "interpol") == 0) {
       ierr = fscanf(fp, "%d", &interpol);
+    }
+    else if (strcmp(keyword, "linecolor") == 0) {
+      ierr = fscanf(fp, "%f%f%f", &LineColor[0], &LineColor[1], &LineColor[2]);
     }
     else if (strcmp(keyword, "linewidth") == 0) {
       ierr = fscanf(fp, "%f", &linewidth);
@@ -388,8 +384,7 @@ void read_batch()
   }
   fclose(fp);
 
-  if (blackback == 1) glClearColor(0.0, 0.0, 0.0, 0.0);
-  else glClearColor(1.0, 1.0, 1.0, 0.0);
+  glClearColor(BackGroundColor[0], BackGroundColor[1], BackGroundColor[2], BackGroundColor[2]);
 
   thetax = 3.14159265f / 180.0f * thetax;
   thetay = 3.14159265f / 180.0f * thetay;

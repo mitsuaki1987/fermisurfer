@@ -44,36 +44,15 @@ THE SOFTWARE.
 #include <cstdio>
 #include "basic_math.hpp"
 #include "menu.hpp"
+#include "variable.hpp"
 /**
  @brief Free variables for patch before new patch is computed
 
  Free : ::nmlp, ::matp, ::clr, ::kvp, ::nmlp_rot, ::kvp_rot,
         ::kvnl, ::kvnl_rot, ::kv2d, ::clr2d
 */
-void free_patch(
-  int nb,
-  int refresh_patch,
-  int *ntri,
-  GLfloat ****kvp,
-  GLfloat **kvp_rot,
-  GLfloat ****matp,
-  GLfloat** clr,
-  GLfloat ****nmlp,
-  GLfloat **nmlp_rot,
-  GLfloat *****arw,
-  GLfloat **arw_rot,
-  int refresh_nodeline,
-  int *nnl,
-  GLfloat ****kvnl,
-  GLfloat **kvnl_rot,
-  int refresh_section,
-  GLfloat **kv2d,
-  GLfloat **clr2d,
-  int refresh_equator,
-  int *nequator,
-  GLfloat ****kveq,
-  GLfloat **kveq_rot
-) {
+void free_patch()
+{
   int ib, i0, i1, i2;
   /*
    Fermi patch
@@ -150,18 +129,7 @@ void free_patch(
 
  Modify : ::clr
 */
-void max_and_min(
-  int nb,
-  int nthreads,
-  wxTextCtrl *terminal,
-  MyFrame *myf,
-  int color_scale,
-  int *ntri,
-  GLfloat ****matp, 
-  GLfloat *patch_min,
-  GLfloat *patch_max,
-  GLfloat ****nmlp
-) 
+void max_and_min() 
 {
   int itri, ithread;
   GLfloat *max_th, *min_th;
@@ -201,11 +169,11 @@ shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    *patch_max = max_th[0];
-    *patch_min = min_th[0];
+    patch_max = max_th[0];
+    patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread] > *patch_max) *patch_max = max_th[ithread];
-      if (min_th[ithread] < *patch_min) *patch_min = min_th[ithread];
+      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
+      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
     }
   }/*if (color_scale == 0 || color_scale == 4)*/
   else   if (color_scale == 2) {
@@ -232,11 +200,11 @@ shared(nb,ntri,matp,max_th,min_th) private(itri,ithread)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    *patch_min = min_th[0];
-    *patch_max = max_th[0];
+    patch_min = min_th[0];
+    patch_max = max_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread] < *patch_min) *patch_min = max_th[ithread];
-      if (max_th[ithread] > *patch_max) *patch_max = max_th[ithread];
+      if (max_th[ithread] < patch_min) patch_min = max_th[ithread];
+      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
     }
   }/*if (color_scale == 2)*/
   else   if (color_scale == 3) {
@@ -264,11 +232,11 @@ shared(nb,ntri,matp,min_th,max_th) private(itri,ithread)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    *patch_max = max_th[0];
-    *patch_min = min_th[0];
+    patch_max = max_th[0];
+    patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread] > *patch_max) *patch_max = max_th[ithread];
-      if (min_th[ithread] < *patch_min) *patch_min = min_th[ithread];
+      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
+      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
     }
   }/*if (color_scale == 3)*/
   else if (color_scale == 4 || color_scale == 7) {
@@ -297,19 +265,19 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
       }/*for (ib = 0; ib < nb; ib++)*/
     }/*End of parallel region*/
     /**/
-    *patch_max = max_th[0];
-    *patch_min = min_th[0];
+    patch_max = max_th[0];
+    patch_min = min_th[0];
     for (ithread = 1; ithread < nthreads; ithread++) {
-      if (max_th[ithread] > *patch_max) *patch_max = max_th[ithread];
-      if (min_th[ithread] < *patch_min) *patch_min = min_th[ithread];
+      if (max_th[ithread] > patch_max) patch_max = max_th[ithread];
+      if (min_th[ithread] < patch_min) patch_min = min_th[ithread];
     }    
   }/*if (color_scale == 5 || color_scale == 6)*/
 
   delete[] max_th;
   delete[] min_th;
 
-  myf->textbox_min->ChangeValue(wxString::Format(wxT("%f"), *patch_min));
-  myf->textbox_max->ChangeValue(wxString::Format(wxT("%f"), *patch_max));
+  myf->textbox_min->ChangeValue(wxString::Format(wxT("%f"), patch_min));
+  myf->textbox_max->ChangeValue(wxString::Format(wxT("%f"), patch_max));
 }/* max_and_min */
  /**
  @brief Compute Max. & Min. of matrix elements.
@@ -317,34 +285,14 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
 
  Modify : ::clr
  */
-void paint(
-  int nb,
-  int color_scale,
-  int blackback,
-  int *ntri,
-  GLfloat patch_min,
-  GLfloat patch_max,
-  GLfloat ****kvp,
-  GLfloat ****matp,
-  GLfloat **clr,
-  GLfloat ****nmlp,
-  GLfloat *****arw,
-  GLfloat red[4],
-  GLfloat green[4],
-  GLfloat blue[4],
-  GLfloat cyan[4],
-  GLfloat magenta[4],
-  GLfloat yellow[4],
-  GLfloat wgray[4],
-  GLfloat bgray[4]
-)
+void paint()
 {
   int itri, j;
   GLfloat origin[4];
 
   if (color_scale == 1) {
 #pragma omp parallel default(none) \
-shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red,patch_max,patch_min) \
+shared(nb,ntri,matp,clr,BarColor,patch_max,patch_min) \
 private(itri, j)
     {
       int i, ib;
@@ -359,19 +307,23 @@ private(itri, j)
             mat2 = mat2 * 4.0f;
             /**/
             if (mat2 <= 1.0) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+                = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0f - mat2);
             }
             else if (mat2 <= 2.0) {
               mat2 = mat2 - 1.0f;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
+                = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0f - mat2);
             }
             else if (mat2 <= 3.0) {
               mat2 = mat2 - 2.0f;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
+                = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0f - mat2);
             }
             else {
               mat2 = mat2 - 3.0f;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+                = BarColor[4][j] * mat2 + BarColor[3][j] * (1.0f - mat2);
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -380,11 +332,10 @@ private(itri, j)
   }/*if (color_scale == 1 || color_scale == 2)*/
   else if (color_scale == 2) {
 
-    if (blackback == 1) for (j = 0; j < 4; ++j) origin[j] = wgray[j];
-    else for (j = 0; j < 4; ++j) origin[j] = bgray[j];
+    for (j = 0; j < 4; ++j) origin[j] = 1.0f - BackGroundColor[j];
 
 #pragma omp parallel default(none) \
-shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red,magenta,bgray,wgray,blackback,patch_max,origin) \
+shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red,magenta,bgray,wgray,patch_max,origin) \
 private(itri, j)
     {
       int i, ib;
@@ -441,7 +392,7 @@ private(itri, j)
   }/*if (color_scale == 2)*/
   else if (color_scale == 4) {
 #pragma omp parallel default(none) \
-shared(nb,ntri,nmlp,clr,cyan,blue,green,yellow,red,patch_max,patch_min) \
+shared(nb,ntri,nmlp,clr,BarColor,patch_max,patch_min) \
 private(itri, j)
     {
       int i, ib;
@@ -459,19 +410,23 @@ private(itri, j)
             mat2 = mat2 * 4.0f;
             /**/
             if (mat2 <= 1.0) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
+                = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0f - mat2);
             }
             else if (mat2 <= 2.0) {
               mat2 = mat2 - 1.0f;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+                = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0f - mat2);
             }
             else if (mat2 <= 3.0) {
               mat2 = mat2 - 2.0f;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
+                = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0f - mat2);
             }
             else {
               mat2 = mat2 - 3.0f;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+                = BarColor[4][j] * mat2 + BarColor[3][j] * (1.0f - mat2);
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -480,7 +435,7 @@ private(itri, j)
   }/*if (color_scale == 4)*/
   else if (color_scale == 3 || color_scale == 5) {
 #pragma omp parallel default(none) \
-shared(nb,ntri,matp,clr,cyan,blue,green,yellow,red,color_scale,kvp,arw,patch_max) \
+shared(nb,ntri,matp,clr,BarColor,color_scale,kvp,arw,patch_max) \
 private(itri, j)
     {
       int i, ib;
@@ -496,7 +451,8 @@ private(itri, j)
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
+                = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0f - mat2);
             }
           }
         }
@@ -505,7 +461,8 @@ private(itri, j)
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+                = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0f - mat2);
             }
           }
         }
@@ -514,7 +471,8 @@ private(itri, j)
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+                = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0f - mat2);
             }
           }
         }
@@ -523,7 +481,8 @@ private(itri, j)
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
             for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
+              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+                = BarColor[4][j] * mat2 + BarColor[3][j] * (1.0f - mat2);
             }
           }
         }

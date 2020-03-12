@@ -21,16 +21,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-#include <wx/wx.h>
-#if defined(HAVE_CONFIG_H)
-#include <config.h>
-#endif
-#if defined(HAVE_GL_GL_H)
-#include <GL/gl.h>
-#elif defined(HAVE_OPENGL_GL_H)
-#include <OpenGL/gl.h>
-#endif
-
-void init_corner(int itet, int corner[6][4]);
-void bragg_vector(wxTextCtrl* terminal, GLfloat bvec[3][3], GLfloat bragg[26][3], GLfloat brnrm[26], GLfloat *brnrm_min);
-void max_and_min_bz(wxTextCtrl* terminal, int nb, int ng0[3], GLfloat ****eig0, GLfloat *****mat0);
+void init_corner();
+void bragg_vector();
+void max_and_min_bz();

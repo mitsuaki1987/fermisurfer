@@ -60,7 +60,6 @@ extern int interpol;     //!< Ratio of interpolation
 /*
  Switch for some modes
 */
-extern int blackback;   //!< Switch for black background
 extern int color_scale; //!< Switch for full color scale mode
 extern int fbz;         //!< Switch for 1st Brillouin zone mode
 extern int nodeline;    //!< Switch for node lines
@@ -150,6 +149,9 @@ extern GLfloat  yellow[4]; //!< Yellow color code
 extern GLfloat     red[4]; //!< Red color code
 extern GLfloat   green[4]; //!< Green color code
 extern GLfloat    blue[4]; //!< Blue color code
+extern GLfloat BackGroundColor[4];//!< Background color code
+extern GLfloat LineColor[4];//!< Line color code
+extern GLfloat BarColor[5][4];
 /*
  Others
 */

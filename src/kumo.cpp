@@ -37,6 +37,7 @@ denser @f$k@f$-grid with French-curve (Kumo) interpolation
 #include <cstdlib>
 #include <cstdio>
 #include "basic_math.hpp"
+#include "variable.hpp"
 /**
  @brief Compute coefficient for the French-curve (Kumo) interpolation
  @f[
@@ -62,19 +63,8 @@ static void kumo_coef(
 
  Modify : ::eig, ::mat
 */
-void interpol_energy(
-  GLfloat avec[3][3],
-  int nb,
-  int interpol,
-  int ng0[3],
-  int ng[3],
-  wxTextCtrl *terminal,
-  GLfloat ****eig,
-  GLfloat *****vf,
-  GLfloat *****mat,
-  GLfloat**** eig0,
-  GLfloat***** mat0
-) {
+void interpol_energy() 
+{
   int ib, i0, i1, i2, ii;
 
   *terminal << wxT("    Interpolating ... ");

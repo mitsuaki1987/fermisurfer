@@ -62,12 +62,19 @@ public:
   wxTextCtrl* textbox_min;
   wxTextCtrl* textbox_max;
   wxTextCtrl* textbox_linewidth;
+  wxTextCtrl* textbox_BackGroundR;
+  wxTextCtrl* textbox_BackGroundG;
+  wxTextCtrl* textbox_BackGroundB;
+  wxTextCtrl* textbox_LineColorR;
+  wxTextCtrl* textbox_LineColorG;
+  wxTextCtrl* textbox_LineColorB;
 
 private:
   void OnExit(wxCommandEvent& event);
   void check_band(wxCommandEvent& event);
   void radio_brillouinzone(wxCommandEvent& event);
-  void radio_background(wxCommandEvent& event);
+  void textctrl_BackGround(wxCommandEvent& event);
+  void textctrl_LineColor(wxCommandEvent& event);
   void check_colorbar(wxCommandEvent& event);
   void radiovalue_colorscale(wxCommandEvent& event);
   void checkvalue_equator(wxCommandEvent& event);
@@ -83,6 +90,8 @@ private:
   void textctrl_view(wxCommandEvent& event);
   void button_refresh(wxCommandEvent& event);
   void button_compute(wxCommandEvent& event);
+  void radio_BarColor(wxCommandEvent& event);
+  void button_section(wxCommandEvent& event);
   //wxDECLARE_EVENT_TABLE();
 };
 

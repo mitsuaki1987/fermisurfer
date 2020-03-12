@@ -39,6 +39,7 @@ THE SOFTWARE.
 #include <cstdlib>
 #include <cmath>
 #include "basic_math.hpp"
+#include "variable.hpp"
 /**
  @brief Project 3D \f$k\f$-vector into 2D plane. 
 
@@ -177,18 +178,7 @@ int bragg_vert2d(
 
  Modify : ::nbzl2d, ::bzl2d_proj
 */
-void calc_2dbz(
-int fbz,
-GLfloat secvec[3],
-GLfloat secscale,
-GLfloat axis2d[2][3],
-int *nbzl2d,
-int nbragg,
-GLfloat bragg[26][3],
-GLfloat brnrm[26],
-GLfloat bzl2d[26][3],
-GLfloat bzl2d_proj[26][3]
-) {
+void calc_2dbz() {
   int jbr, nbr, i, j, lvert, ibzl;
   GLfloat vert[2][3], vec[26][2][3], prod, thr;
 
@@ -198,7 +188,7 @@ GLfloat bzl2d_proj[26][3]
   */
   set2daxis(secvec, axis2d);
 
-  *nbzl2d = 0;
+  nbzl2d = 0;
 
   for (jbr = 0; jbr < nbragg; ++jbr) {
     /**/
@@ -211,15 +201,15 @@ GLfloat bzl2d_proj[26][3]
     lvert = bragg_vert2d(nbragg, bragg, brnrm, secvec, secscale, jbr, nbr, vert[1], vert[0]);
     if (lvert == 0) continue;
     /**/
-    for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) vec[*nbzl2d][i][j] = vert[i][j];
-    *nbzl2d += 1;
+    for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) vec[nbzl2d][i][j] = vert[i][j];
+    nbzl2d += 1;
   }/*for (jbr = 0; jbr < nbragg; ++jbr)*/
   /*
    Order bz lines
   */
   for (i = 0; i < 3; i++) bzl2d[0][i] = vec[0][0][i];
   for (i = 0; i < 3; i++) bzl2d[1][i] = vec[0][1][i];
-  for (ibzl = 0; ibzl < *nbzl2d; ibzl++) {
+  for (ibzl = 0; ibzl < nbzl2d; ibzl++) {
 
     thr = 0.0f;
     for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) thr += bzl2d[j][i] * bzl2d[j][i];
@@ -238,21 +228,21 @@ GLfloat bzl2d_proj[26][3]
       for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
   }/*for (ibzl = 1; ibzl < *nbzl2d; ibzl++)*/
 
-  for (jbr = 1; jbr < *nbzl2d - 1; jbr++) {
+  for (jbr = 1; jbr < nbzl2d - 1; jbr++) {
 
     thr = 0.0f;
     for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) thr += bzl2d[jbr][i] * bzl2d[jbr][i];
     thr *= 0.001f;
 
     prod = 0.0;
-    for (ibzl = 0; ibzl < *nbzl2d; ibzl++) for (i = 0; i < 3; i++)
+    for (ibzl = 0; ibzl < nbzl2d; ibzl++) for (i = 0; i < 3; i++)
       prod += vec[ibzl][0][i] * vec[ibzl][0][i];
     if (prod < thr) {
-      *nbzl2d = jbr + 1;
+      nbzl2d = jbr + 1;
       break;
     }
 
-    for (ibzl = 1; ibzl < *nbzl2d; ibzl++) {
+    for (ibzl = 1; ibzl < nbzl2d; ibzl++) {
       prod = (bzl2d[jbr][0] - vec[ibzl][0][0]) * (bzl2d[jbr][0] - vec[ibzl][0][0])
            + (bzl2d[jbr][1] - vec[ibzl][0][1]) * (bzl2d[jbr][1] - vec[ibzl][0][1])
            + (bzl2d[jbr][2] - vec[ibzl][0][2]) * (bzl2d[jbr][2] - vec[ibzl][0][2]);
@@ -273,7 +263,7 @@ GLfloat bzl2d_proj[26][3]
   /*
    Project into 2D plane
   */
-  for (ibzl = 0; ibzl < *nbzl2d; ibzl++) {
+  for (ibzl = 0; ibzl < nbzl2d; ibzl++) {
     for (i = 0; i < 3; i++) bzl2d_proj[ibzl][i] = bzl2d[ibzl][i];
     proj_2d(axis2d, bzl2d_proj[ibzl]);
   }/*for (ibzl = 0; ibzl < *nbzl2d; ibzl++)*/
@@ -283,21 +273,7 @@ GLfloat bzl2d_proj[26][3]
 
  Modify : ::n2d, ::clr2d, ::kv2d
 */
-void calc_section(
-int fbz,
-int nb,
-int nthreads,
-GLfloat secvec[3],
-GLfloat secscale,
-GLfloat axis2d[2][3],
-int *ntri,
-GLfloat ****kvp,
-GLfloat ** clr,
-wxTextCtrl *terminal,
-int *n2d,
-GLfloat **kv2d,
-GLfloat **clr2d
-) {
+void calc_section() {
   int i, j, ib, itri, ithread, n2d0;
   std::vector<std::vector<std::vector<std::vector<GLfloat>>>> kv2d_v, clr2d_v;
 

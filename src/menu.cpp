@@ -52,16 +52,12 @@ THE SOFTWARE.
 
 void compute_patch_segment() {
   if (refresh_interpol == 1){
-    interpol_energy(avec, nb, interpol, ng0, ng,
-      terminal, eig, vf, mat, eig0, mat0);
+    interpol_energy();
     refresh_patch = 1;
     refresh_interpol = 0;
   }
   if (refresh_patch == 1) {
-    fermi_patch(nb, nthreads, ng, ng0, shiftk,
-      fbz, eig, EF, mat, vf, corner, bvec, nbragg,
-      bragg, brnrm, brnrm_min, terminal, ntri, kvp, matp,
-      clr, arw, nmlp, kvp_rot, nmlp_rot, arw_rot);
+    fermi_patch();
     refresh_color = 1;
     refresh_section = 1;
     refresh_equator = 1;
@@ -70,37 +66,28 @@ void compute_patch_segment() {
   }
   if (refresh_color == 1) {
     if (skip_minmax == 1) skip_minmax = 0;
-    else max_and_min(nb, nthreads, terminal, myf, color_scale, ntri, matp,
-      &patch_min, &patch_max, nmlp);
-    paint(nb, color_scale, blackback, ntri, patch_min, patch_max,
-      kvp, matp, clr, nmlp, arw, red, green, blue,
-      cyan, magenta, yellow, wgray, bgray);
+    else max_and_min();
+    paint();
     refresh_section = 1;
     refresh_color = 0;
   }
   if (refresh_nodeline == 1) {
-    calc_nodeline(nb, ntri, matp, kvp, nthreads, terminal, nnl, kvnl, kvnl_rot);
+    calc_nodeline();
     refresh_nodeline = 0;
   }
   if (refresh_section == 1) {
-    calc_2dbz(fbz, secvec, secscale, axis2d,
-      &nbzl2d, nbragg, bragg, brnrm, bzl2d, bzl2d_proj);
-    calc_section(fbz, nb, nthreads, secvec, secscale,
-      axis2d, ntri, kvp, clr, terminal, n2d, kv2d, clr2d);
+    calc_2dbz();
+    calc_section();
     refresh_section = 0;
   }
   if (refresh_equator == 1) {
-    equator(nb, nthreads, eqvec, ntri, kvp,
-      nmlp, terminal, nequator, kveq, kveq_rot);
+    equator();
     refresh_equator = 0;
   }
 }
 
 void refresh_patch_segment() {
-  free_patch(nb, refresh_patch, ntri, kvp, kvp_rot, matp,
-    clr, nmlp, nmlp_rot, arw, arw_rot, refresh_nodeline, nnl, kvnl,
-    kvnl_rot, refresh_section, kv2d, clr2d,
-    refresh_equator, nequator, kveq, kveq_rot);
+  free_patch();
   compute_patch_segment();
 }
 
@@ -138,7 +125,15 @@ enum
   itext_roty,
   itext_rotz,
   ibutton_rotate,
-  icheck_band
+  icheck_band,
+  itext_BackGroundR,
+  itext_BackGroundG,
+  itext_BackGroundB,
+  itext_LineColorR,
+  itext_LineColorG,
+  itext_LineColorB,
+  iradio_BarColor,
+  ibutton_section
 };
 
 void MyFrame::button_refresh(
@@ -150,32 +145,105 @@ void MyFrame::button_refresh(
 void MyFrame::button_compute(
   wxCommandEvent& event//!<[in] Selected menu
 ) {
-  free_patch(nb, refresh_patch, ntri, kvp, kvp_rot, matp,
-    clr, nmlp, nmlp_rot, arw, arw_rot, refresh_nodeline, nnl, kvnl,
-    kvnl_rot, refresh_section, kv2d, clr2d,
-    refresh_equator, nequator, kveq, kveq_rot);
+  free_patch();
   compute_patch_segment();
   Refresh(false);
+}
+void MyFrame::button_section(
+  wxCommandEvent& event//!<[in] Selected menu
+) {
+  int ib, i2d, i, j;
+  FILE *fp;
+  fp = fopen("fermi_line.dat", "w");
+  for (ib = 0; ib < nb; ib++) {
+    if (draw_band[ib] == 1) {
+      for (i2d = 0; i2d < n2d[ib]; i2d++) {
+        for (i = 0; i < 2; i++) {
+          fprintf(fp, "%15.5e %15.5e\n",
+            kv2d[ib][i * 3 + 6 * i2d], 
+            kv2d[ib][1 + i * 3 + 6 * i2d]);
+        }
+        fprintf(fp, "\n\n");
+      }
+    }/*if (draw_band[ib] == 1)*/
+  }/* for (ib = 0; ib < nb; ib++)*/
+  fclose(fp);
+  *terminal << wxT("  fermi_line.dat was written.\n");
+
+  fp = fopen("bz_line.dat", "w");
+  for (i2d = 0; i2d < nbzl2d; i2d++) {
+    fprintf(fp, "%15.5e %15.5e\n",
+      bzl2d_proj[i2d][0], bzl2d_proj[i2d][1]);
+  }
+  fprintf(fp, "%15.5e %15.5e\n",
+    bzl2d_proj[0][0], bzl2d_proj[0][1]);
+  fclose(fp);
+  *terminal << wxT("  bz_line.dat was written.\n");
+}
+/**
+@brief Change Line color color (::blackback)
+*/
+void MyFrame::textctrl_LineColor(
+  wxCommandEvent& event //!<[in] Selected menu
+)
+{
+  int ierr;
+  double dvalue;
+
+  if (event.GetId() == itext_LineColorR) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      LineColor[0] = (GLfloat)dvalue;
+      Refresh(false);
+    }
+  }
+  else  if (event.GetId() == itext_LineColorG) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      LineColor[1] = (GLfloat)dvalue;
+      Refresh(false);
+    }
+  }
+  else  if (event.GetId() == itext_LineColorB) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      LineColor[2] = (GLfloat)dvalue;
+      Refresh(false);
+    }
+  }
 }
 /**
 @brief Change background color (::blackback)
 */
-void MyFrame::radio_background(
+void MyFrame::textctrl_BackGround(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  if (event.GetString().Cmp(wxT("Black")) == 0 && blackback != 1) {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    blackback = 1;
-    // debug if (color_scale == 2 || color_scale == 3) paint();
+  int ierr;
+  double dvalue;
+
+  if (event.GetId() == itext_BackGroundR) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      BackGroundColor[0] = (GLfloat)dvalue;
+      glClearColor(BackGroundColor[0], BackGroundColor[1],
+        BackGroundColor[2], BackGroundColor[3]);
+      Refresh(false);
+    }
   }
-  else if (event.GetString().Cmp(wxT("White")) == 0 && blackback != 0) {
-    glClearColor(1.0, 1.0, 1.0, 0.0);
-    blackback = 0;
-    // debug if (color_scale == 2 || color_scale == 3) paint();
+  else  if (event.GetId() == itext_BackGroundG) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      BackGroundColor[1] = (GLfloat)dvalue;
+      glClearColor(BackGroundColor[0], BackGroundColor[1], 
+        BackGroundColor[2], BackGroundColor[3]);
+      Refresh(false);
+    }
   }
-  Refresh(false);
-}/* bgcolor change*/
+  else  if (event.GetId() == itext_BackGroundB) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      BackGroundColor[2] = (GLfloat)dvalue;
+      glClearColor(BackGroundColor[0], BackGroundColor[1],
+        BackGroundColor[2], BackGroundColor[3]);
+      Refresh(false);
+    }
+  }
+}
  /**
  @brief Toggle the appearance of each band (::draw_band)
 */
@@ -206,6 +274,44 @@ void MyFrame::radio_brillouinzone(
     fbz = -1;
   }
   refresh_patch = 1;
+} /* menu_brillouinzone */
+/**
+ @brief Change Brillouin zone (::fbz)
+*/
+void MyFrame::radio_BarColor(
+  wxCommandEvent& event //!<[in] Selected menu
+)
+{
+  int ii;
+  if (event.GetString().Cmp(wxT("BGR")) == 0) {
+    for (ii = 0; ii < 4; ii++) {
+      BarColor[0][ii] = blue[ii];
+      BarColor[1][ii] = cyan[ii];
+      BarColor[2][ii] = green[ii];
+      BarColor[3][ii] = yellow[ii];
+      BarColor[4][ii] = red[ii];
+    }
+  }
+  else if (event.GetString().Cmp(wxT("CMY")) == 0) {
+    for (ii = 0; ii < 4; ii++) {
+      BarColor[0][ii] = cyan[ii];
+      BarColor[1][ii] = blue[ii];
+      BarColor[2][ii] = magenta[ii];
+      BarColor[3][ii] = red[ii];
+      BarColor[4][ii] = yellow[ii];
+    }
+  }
+  else if (event.GetString().Cmp(wxT("MCY")) == 0) {
+    for (ii = 0; ii < 4; ii++) {
+      BarColor[0][ii] = magenta[ii];
+      BarColor[1][ii] = blue[ii];
+      BarColor[2][ii] = cyan[ii];
+      BarColor[3][ii] = green[ii];
+      BarColor[4][ii] = yellow[ii];
+    }
+  }
+  paint();
+  Refresh(false);
 } /* menu_brillouinzone */
 /**
  @brief Toggle Colorbar (::lcolorbar)
@@ -440,7 +546,7 @@ void MyFrame::radio_tetra(
 )
 {
   itet = wxAtoi(event.GetString()) - 1;
-  init_corner(itet, corner);
+  init_corner();
   refresh_patch = 1;
 }/*menu_tetra*/
  /**
@@ -659,7 +765,7 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxRadioBox(panel, iradio_tetra, wxT("Tetrahedron"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_tetra), choices_tetra,
-    4, wxRA_SPECIFY_COLS), wxGBPosition(3,2), wxGBSpan(4, 2));
+    4, wxRA_SPECIFY_COLS), wxGBPosition(3,2), wxGBSpan(5, 2));
 
   wxString choices_colorscale[] = { wxT("Input (1D)"), wxT("Input (2D)"),
     wxT("Input (3D)"), wxT("Fermi Velocity"), wxT("Band Index"),
@@ -670,91 +776,125 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
     WXSIZEOF(choices_colorscale), choices_colorscale,
     1, wxRA_SPECIFY_COLS);
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radiovalue_colorscale, this, iradio_colorscale);
-  gbsizer->Add(radiobox_color, wxGBPosition(7, 0), wxGBSpan(2, 2));
+  gbsizer->Add(radiobox_color, wxGBPosition(7, 0), wxGBSpan(3, 2));
 
   wxString choices_bz[] = { wxT("First Brillouin zone"), wxT("Primitive Brillouin zone") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_brillouinzone, this, iradio_brillouinzone);
   gbsizer->Add(new wxRadioBox(panel, iradio_brillouinzone, wxT("Brillouin zone"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_bz), choices_bz,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(7, 2), wxGBSpan(1, 2));
+    1, wxRA_SPECIFY_COLS), wxGBPosition(8, 2), wxGBSpan(1, 2));
 
   wxString choices_stereo[] = { wxT("None"), wxT("Parallel"), wxT("Cross") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_stereo, this, iradio_stereo);
   gbsizer->Add(new wxRadioBox(panel, iradio_stereo, wxT("Stereogram"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_stereo), choices_stereo,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(8, 2), wxGBSpan(1, 1));
+    1, wxRA_SPECIFY_COLS), wxGBPosition(9, 2), wxGBSpan(1, 1));
 
   wxString choices_mouse[] = { wxT("Rotate"), wxT("Scale"), wxT("Translate") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_mouse, this, iradio_mouse);
   gbsizer->Add(new wxRadioBox(panel, iradio_mouse, wxT("Mouse Drag"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_mouse), choices_mouse,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(8, 3), wxGBSpan(1, 1));
+    1, wxRA_SPECIFY_COLS), wxGBPosition(9, 3), wxGBSpan(1, 1));
+
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Background (RGB) : ")),
+    wxGBPosition(10, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundR);
+  textbox_BackGroundR = new wxTextCtrl(panel, itext_BackGroundR, wxT(""));
+  gbsizer->Add(textbox_BackGroundR, wxGBPosition(10, 1), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundG);
+  textbox_BackGroundG = new wxTextCtrl(panel, itext_BackGroundG, wxT(""));
+  gbsizer->Add(textbox_BackGroundG, wxGBPosition(10, 2), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundB);
+  textbox_BackGroundB = new wxTextCtrl(panel, itext_BackGroundB, wxT(""));
+  gbsizer->Add(textbox_BackGroundB, wxGBPosition(10, 3), wxGBSpan(1, 1));
+  textbox_BackGroundR->ChangeValue(wxT("0"));
+  textbox_BackGroundG->ChangeValue(wxT("0"));
+  textbox_BackGroundB->ChangeValue(wxT("0"));
+
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line color (RGB) : ")),
+    wxGBPosition(11, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorR);
+  textbox_LineColorR = new wxTextCtrl(panel, itext_LineColorR, wxT(""));
+  gbsizer->Add(textbox_LineColorR, wxGBPosition(11, 1), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorG);
+  textbox_LineColorG = new wxTextCtrl(panel, itext_LineColorG, wxT(""));
+  gbsizer->Add(textbox_LineColorG, wxGBPosition(11, 2), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorB);
+  textbox_LineColorB = new wxTextCtrl(panel, itext_LineColorB, wxT(""));
+  gbsizer->Add(textbox_LineColorB, wxGBPosition(11, 3), wxGBSpan(1, 1));
+  textbox_LineColorR->ChangeValue(wxT("1"));
+  textbox_LineColorG->ChangeValue(wxT("1"));
+  textbox_LineColorB->ChangeValue(wxT("1"));
 
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::textctrl_view, this, ibutton_rotate);
   gbsizer->Add(new wxButton(panel, ibutton_rotate, wxT("Rotate")), 
-    wxGBPosition(9, 0), wxGBSpan(1, 1));
+    wxGBPosition(12, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotx);
   textbox_rotatex = new wxTextCtrl(panel, itext_rotx, wxT(""));
-  gbsizer->Add(textbox_rotatex, wxGBPosition(9, 1), wxGBSpan(1, 1));
+  gbsizer->Add(textbox_rotatex, wxGBPosition(12, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_roty);
   textbox_rotatey = new wxTextCtrl(panel, itext_roty, wxT(""));
-  gbsizer->Add(textbox_rotatey, wxGBPosition(9, 2), wxGBSpan(1, 1));
+  gbsizer->Add(textbox_rotatey, wxGBPosition(12, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotz);
   textbox_rotatez = new wxTextCtrl(panel, itext_rotz, wxT(""));
-  gbsizer->Add(textbox_rotatez, wxGBPosition(9, 3), wxGBSpan(1, 1));
+  gbsizer->Add(textbox_rotatez, wxGBPosition(12, 3), wxGBSpan(1, 1));
   textbox_rotatex->ChangeValue(wxT("0"));
   textbox_rotatey->ChangeValue(wxT("0"));
   textbox_rotatez->ChangeValue(wxT("0"));
 
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Position : ")), 
-    wxGBPosition(10, 1), wxGBSpan(1, 1), wxALIGN_RIGHT);
+    wxGBPosition(13, 1), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positionx);
   textbox_positionx = new wxTextCtrl(panel, itext_positionx, wxT(""));
-  gbsizer->Add(textbox_positionx, wxGBPosition(10, 2), wxGBSpan(1, 1));
+  gbsizer->Add(textbox_positionx, wxGBPosition(13, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positiony);
   textbox_positiony = new wxTextCtrl(panel, itext_positiony, wxT(""));
-  gbsizer->Add(textbox_positiony, wxGBPosition(10, 3), wxGBSpan(1, 1));
+  gbsizer->Add(textbox_positiony, wxGBPosition(13, 3), wxGBSpan(1, 1));
   textbox_positionx->ChangeValue(wxT("0"));
   textbox_positiony->ChangeValue(wxT("0"));
 
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Scale : ")), 
-    wxGBPosition(11, 2), wxGBSpan(1, 1), wxALIGN_RIGHT);
+    wxGBPosition(14, 2), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_scale);
   textbox_scale = new wxTextCtrl(panel, itext_scale, wxT(""));
-  gbsizer->Add(textbox_scale, wxGBPosition(11, 3), wxGBSpan(1, 1));
+  gbsizer->Add(textbox_scale, wxGBPosition(14, 3), wxGBSpan(1, 1));
   textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_colorbar, this, icheck_colorbar);
   wxCheckBox* check = new wxCheckBox(panel, icheck_colorbar, wxT("Color bar"));
-  gbsizer->Add(check, wxGBPosition(11, 1), wxGBSpan(1, 1));
+  gbsizer->Add(check, wxGBPosition(14, 1), wxGBSpan(1, 1));
   check->SetValue(true);
   // debug fileMenu->Check(menu_colorbar_check, true);
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::checkvalue_equator, this, icheck_equator);
-  gbsizer->Add(new wxCheckBox(panel, icheck_equator, wxT("Equator")), wxGBPosition(12, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxCheckBox(panel, icheck_equator, wxT("Equator")), wxGBPosition(15, 1), wxGBSpan(1, 1));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_nodeline, this, icheck_nodeline);
-  gbsizer->Add(new wxCheckBox(panel, icheck_nodeline, wxT("Nodal line")), wxGBPosition(13, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxCheckBox(panel, icheck_nodeline, wxT("Nodal line")), wxGBPosition(16, 1), wxGBSpan(1, 1));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_section);
-  gbsizer->Add(new wxCheckBox(panel, icheck_section, wxT("Section")), wxGBPosition(14, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxCheckBox(panel, icheck_section, wxT("Section")), wxGBPosition(17, 1), wxGBSpan(1, 1));
+
+  Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_section, this, ibutton_section);
+  gbsizer->Add(new wxButton(panel, ibutton_section, wxT("Section file")),
+    wxGBPosition(18, 1), wxGBSpan(1, 1));
 
   wxString choices_light[] = { wxT("Both"), wxT("Unoccupy"), wxT("Occupy") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_lighting, this, iradio_lighting);
   gbsizer->Add(new wxRadioBox(panel, iradio_lighting, wxT("Lighting"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_light), choices_light,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(12, 2), wxGBSpan(3, 1));
+    1, wxRA_SPECIFY_COLS), wxGBPosition(15, 2), wxGBSpan(4, 1));
 
-  wxString choices_bg[] = { wxT("Black"), wxT("White") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_background, this, iradio_background);
-  gbsizer->Add(new wxRadioBox(panel, iradio_background, wxT("Background color"),
+  wxString choices_BarColor[] = { wxT("BGR"), wxT("CMY"), wxT("MCY")};
+  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_BarColor, this, iradio_BarColor);
+  gbsizer->Add(new wxRadioBox(panel, iradio_BarColor, wxT("Bar Color"),
     wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_bg), choices_bg,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(12, 3), wxGBSpan(3, 1));
+    WXSIZEOF(choices_BarColor), choices_BarColor,
+    1, wxRA_SPECIFY_COLS), wxGBPosition(15, 3), wxGBSpan(4, 1));
 
   SetSizer(sizermain);
   SetAutoLayout(true);
@@ -790,7 +930,7 @@ void MyFrame::modify_band() {
     Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_band, this, icheck_band + ib);
     check[ib] = new wxCheckBox(panel, icheck_band + ib, 
       wxString::Format(wxT("Band %d"), ib));
-    gbsizer->Add(check[ib], wxGBPosition(10 + ib, 0), wxGBSpan(1, 1));
+    gbsizer->Add(check[ib], wxGBPosition(13 + ib, 0), wxGBSpan(1, 1));
     check[ib]->SetValue(true);
   }
   gbsizer->Layout();

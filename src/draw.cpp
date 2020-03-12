@@ -53,8 +53,8 @@ static void draw_fermi() {
    First, rotate k-vector and normal vector
   */
 #pragma omp parallel default(none) \
-  shared(nb,draw_band,ntri,rot,nmlp,arw,nmlp_rot,kvp,kvp_rot,arw_rot,trans,side) \
-  private(ib)
+shared(nb,draw_band,ntri,rot,nmlp,arw,nmlp_rot,kvp,kvp_rot,arw_rot,trans,side) \
+private(ib)
   {
     int i, j, l, itri;
 
@@ -104,12 +104,11 @@ static void draw_fermi() {
   /*
   Arrow for 3D value
   */
-  if (blackback == 1) glColor3fv(white);
-  else glColor3fv(black);
   glNormal3f(0.0f, 0.0f, 1.0f);
   if (color_scale == 3) {
     for (ib = 0; ib < nb; ib++) {
       if (draw_band[ib] == 1) {
+        glColor3f(1.0 - clr[ib][0], 1.0 - clr[ib][1], 1.0 - clr[ib][2]);
         glVertexPointer(3, GL_FLOAT, 0, arw_rot[ib]);
         glDrawArrays(GL_LINES, 0, ntri[ib] * 3 * 2);
       }
@@ -214,10 +213,7 @@ static void draw_bz_lines() {
   /*
    Line color is oposit of BG color
   */
-  if (blackback == 1) 
-    for (i = 0; i<4; i++) linecolor[i] = white[i];
-  else
-    for (i = 0; i<4; i++) linecolor[i] = black[i];
+  for (i = 0; i < 4; i++) linecolor[i] = LineColor[i];
   /**/
   glLineWidth(linewidth);
   /*
@@ -301,20 +297,45 @@ static void draw_bz_lines() {
 static void draw_colorbar()
 {
   int i, j, k;
-  GLfloat mat2, vertices[366], colors[488];
-  /**/
+  GLfloat mat2, vertices[366], colors[488], vector[18], vector_color[24],
+    norm;
+
   glEnableClientState(GL_COLOR_ARRAY);
+  /*
+  Reciplocal lattice vectors
+  */
+  for (i = 0; i < 6; i++) {
+    vector[3 * i] = -1.2f;
+    vector[3 * i + 1] = -1.05f;
+    vector[3 * i + 2] = 0.0f;
+  }
+  for (i = 0; i < 3; i++) {
+    norm = sqrtf(bvec[i][0] * bvec[i][0]+ bvec[i][1] * bvec[i][1]+ bvec[i][2] * bvec[i][2]);
+    for (j = 0; j < 3; j++) {
+      vector[j + 6 * i] 
+        += (rot[j][0] * bvec[i][0]
+        + rot[j][1] * bvec[i][1]
+        + rot[j][2] * bvec[i][2]) * 0.2f / norm;
+    }
+    for (j = 0; j < 4; j++) {
+      vector_color[j + 8 * i] = BarColor[i * 2][j];
+      vector_color[j + 8 * i + 4] = BarColor[i * 2][j];
+    }
+  }
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glVertexPointer(3, GL_FLOAT, 0, vector);
+  glColorPointer(4, GL_FLOAT, 0, vector_color);
+  glDrawArrays(GL_LINES, 0, 6);
+  /*
+   Color bar/circle/cube
+  */
   if (color_scale == 1 || color_scale == 4) {
     for (i = 0; i < 5; i++) {
       for (j = 0; j < 2; j++) {
         vertices[0 + j * 3 + i * 6] = -1.0f + 0.5f*(GLfloat)i;
         vertices[1 + j * 3 + i * 6] = -1.0f - 0.1f*(GLfloat)j;
         vertices[2 + j * 3 + i * 6] = 0.0f;
-        if (     i == 0) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = blue[k];
-        else if (i == 1) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = cyan[k];
-        else if (i == 2) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = green[k];
-        else if (i == 3) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = yellow[k];
-        else if (i == 4) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = red[k];
+        for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = BarColor[i][k];
       }
     }/*for (i = 0; i < 10; i++)*/
     glNormal3f(0.0f, 0.0f, 1.0f);
@@ -329,10 +350,7 @@ static void draw_colorbar()
     vertices[0] = 0.0f;
     vertices[1] = -1.0f;
     vertices[2] = 0.0f;
-    if (blackback == 1)
-      for (j = 0; j < 4; j++) colors[j] = wgray[j];
-    else
-      for (j = 0; j < 4; j++) colors[j] = bgray[j];
+    for (j = 0; j < 4; j++) colors[j] = 1.0f - BackGroundColor[j];
     /**/
     for (i = 0; i <= 60; i++) {
       /**/
@@ -408,8 +426,7 @@ static void draw_circles(
     vertices[2 + (i + 1) * 3] = 0.0f;
   }/*for (i = 0; i <= 20; i++)*/
   glNormal3f(0.0f, 0.0f, 1.0f);
-  if (blackback == 1) glColor3fv(white);
-  else glColor3fv(black);
+  glColor3fv(LineColor);
   glVertexPointer(3, GL_FLOAT, 0, vertices);
   glDrawArrays(GL_TRIANGLE_FAN, 0, 22);
   /**/
@@ -431,8 +448,7 @@ static void draw_fermi_line() {
     for (i = 0; i < 3; i++) vertices[i + 3 * ibzl] = bzl2d_proj[ibzl][i];
   }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
   glNormal3f(0.0f, 0.0f, 1.0f);
-  if (blackback == 1)glColor3fv(white);
-  else glColor3fv(black);
+  glColor3fv(LineColor);
   glVertexPointer(3, GL_FLOAT, 0, vertices);
   glDrawArrays(GL_LINE_LOOP, 0, nbzl2d);
   /*

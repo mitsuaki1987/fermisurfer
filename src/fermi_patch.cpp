@@ -38,6 +38,7 @@ THE SOFTWARE.
 #include <cstdio>
 #include <cmath>
 #include "basic_math.hpp"
+#include "variable.hpp"
 /**
  @brief Store triangle patch
 
@@ -77,11 +78,6 @@ static void triangle(
   GLfloat mat1[3][3], //!<[in] The matrix element
   GLfloat kvec1[3][3], //!<[in] @f$k@f$-vector of corners
   GLfloat vf1[3][3], //!<[in] @f$v_f@f$-vector of corners
-  int fbz,
-  int nbragg,
-  GLfloat bragg[26][3],
-  GLfloat brnrm[26],
-  GLfloat brnrm_min,
   std::vector<std::vector<std::vector<GLfloat> > > &kvp_v,
   std::vector<std::vector<std::vector<GLfloat> > > &matp_v,
   std::vector<std::vector<std::vector<GLfloat> > > &nmlp_v
@@ -147,8 +143,7 @@ static void triangle(
             vf2[i][j] = vf1[sw[i]][j];
           }
         }
-        triangle(ibr + 1, mat2, kvec2, vf2, fbz, nbragg,
-          bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+        triangle(ibr + 1, mat2, kvec2, vf2, kvp_v, matp_v, nmlp_v);
         return;
       }
       else if (brnrm[ibr] < prod[sw[1]]) {
@@ -168,8 +163,7 @@ static void triangle(
           vf2[1][i] = vf1[sw[0]][i] * a[0][1] + vf1[sw[1]][i] * a[1][0];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        triangle(ibr + 1, mat2, kvec2, vf2, fbz, nbragg,
-          bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+        triangle(ibr + 1, mat2, kvec2, vf2, kvp_v, matp_v, nmlp_v);
 
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[0]][i] * a[0][1] + kvec1[sw[1]][i] * a[1][0];
@@ -186,8 +180,7 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        triangle(ibr + 1, mat2, kvec2, vf2, fbz, nbragg,
-          bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+        triangle(ibr + 1, mat2, kvec2, vf2, kvp_v, matp_v, nmlp_v);
 
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[2]][i];
@@ -204,8 +197,7 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        triangle(ibr + 1, mat2, kvec2, vf2, fbz, nbragg,
-          bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+        triangle(ibr + 1, mat2, kvec2, vf2, kvp_v, matp_v, nmlp_v);
         return;
       }
       else if (brnrm[ibr] < prod[sw[2]]) {
@@ -227,8 +219,7 @@ static void triangle(
         }/*for (i = 0; i < 3; ++i)*/
         for (i = 0; i < 3; ++i) for (j = 0; j < 3; ++j)
           kvec2[i][j] += bshift * bragg[ibr][j];
-        triangle(ibr + 1, mat2, kvec2, vf2, fbz, nbragg,
-          bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+        triangle(ibr + 1, mat2, kvec2, vf2, kvp_v, matp_v, nmlp_v);
 
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[0]][i];
@@ -243,8 +234,7 @@ static void triangle(
           vf2[1][i] = vf1[sw[1]][i];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        triangle(ibr + 1, mat2, kvec2, vf2, fbz, nbragg,
-          bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+        triangle(ibr + 1, mat2, kvec2, vf2, kvp_v, matp_v, nmlp_v);
 
         for (i = 0; i < 3; ++i) {
           kvec2[0][i] = kvec1[sw[1]][i] * a[1][2] + kvec1[sw[2]][i] * a[2][1];
@@ -259,8 +249,7 @@ static void triangle(
           vf2[1][i] = vf1[sw[1]][i];
           vf2[2][i] = vf1[sw[0]][i] * a[0][2] + vf1[sw[2]][i] * a[2][0];
         }/*for (i = 0; i < 3; ++i)*/
-        triangle(ibr + 1, mat2, kvec2, vf2, fbz, nbragg,
-          bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+        triangle(ibr + 1, mat2, kvec2, vf2, kvp_v, matp_v, nmlp_v);
         return;
       }
       else {
@@ -332,13 +321,6 @@ static void tetrahedron(
   GLfloat mat1[8][3], //!< [in] Matrix elements @f$\Delta_{n k}@f$
   GLfloat kvec1[8][3], //!< [in] @f$k@f$-vectors
   GLfloat vf1[8][3], //!< [in] @f$v_f@f$-vectors
-  int corner[6][4],
-  GLfloat bvec[3][3],
-  int fbz,
-  int nbragg,
-  GLfloat bragg[26][3],
-  GLfloat brnrm[26],
-  GLfloat brnrm_min,
   std::vector<std::vector<std::vector<GLfloat> > > &kvp_v,
   std::vector<std::vector<std::vector<GLfloat> > > &matp_v,
   std::vector<std::vector<std::vector<GLfloat> > > &nmlp_v
@@ -392,8 +374,7 @@ static void tetrahedron(
       }
       
       vol = a[1][0] * a[2][0] * a[3][0];
-      triangle(0, mat3, kvec3, vf3, fbz, nbragg,
-        bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+      triangle(0, mat3, kvec3, vf3, kvp_v, matp_v, nmlp_v);
     }
     else if (eig2[sw[1]] <= 0.0 && 0.0 < eig2[sw[2]]) {
       for (i = 0; i < 3; ++i) {
@@ -411,8 +392,7 @@ static void tetrahedron(
       }
       
       vol = a[1][2] * a[2][0] * a[3][0];
-      triangle(0, mat3, kvec3, vf3, fbz, nbragg,
-        bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+      triangle(0, mat3, kvec3, vf3, kvp_v, matp_v, nmlp_v);
       /**/
       for (i = 0; i < 3; ++i) {
         kvec3[0][i] = kvec2[sw[1]][i] * a[1][3] + kvec2[sw[3]][i] * a[3][1];
@@ -429,8 +409,7 @@ static void tetrahedron(
       }
 
       vol = a[1][3] * a[3][0] * a[2][1];
-      triangle(0, mat3, kvec3, vf3, fbz, nbragg,
-        bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+      triangle(0, mat3, kvec3, vf3, kvp_v, matp_v, nmlp_v);
     }
     else if (eig2[sw[2]] <= 0.0 && 0.0 < eig2[sw[3]]) {
       for (i = 0; i < 3; ++i) {
@@ -448,8 +427,7 @@ static void tetrahedron(
       }
 
       vol = a[0][3] * a[1][3] * a[2][3];
-      triangle(0, mat3, kvec3, vf3, fbz, nbragg,
-        bragg, brnrm, brnrm_min, kvp_v, matp_v, nmlp_v);
+      triangle(0, mat3, kvec3, vf3, kvp_v, matp_v, nmlp_v);
     }
     else {
     }
@@ -460,34 +438,7 @@ static void tetrahedron(
 
  Modify : ::ntri, nmlp, ::matp, ::kvp, ::clr, ::nmlp_rot, ::kvp_rot
 */
-void fermi_patch(
-  int nb,
-  int nthreads,
-  int ng[3],
-  int ng0[3],
-  int shiftk[3],
-  int fbz,
-  GLfloat ****eig,
-  GLfloat EF,
-  GLfloat *****mat,
-  GLfloat *****vf,
-  int corner[6][4],
-  GLfloat bvec[3][3],
-  int nbragg,
-  GLfloat bragg[26][3],
-  GLfloat brnrm[26],
-  GLfloat brnrm_min,
-  wxTextCtrl* terminal,
-  int *ntri,
-  GLfloat ****kvp,
-  GLfloat ****matp,
-  GLfloat **clr,
-  GLfloat *****arw,
-  GLfloat ****nmlp,
-  GLfloat **kvp_rot,
-  GLfloat **nmlp_rot,
-  GLfloat **arw_rot
-  )
+void fermi_patch()
 {
   int ntri0, ib, i0, i1, j0, start[3], last[3];
   int ithread;
@@ -610,8 +561,7 @@ private(j0,i0,i1,ithread)
               vf1[7][j] = vf[ib][ii0][ii1][ii2][j];
             }/*for (j = 0; j < 3; j++)*/
             /**/
-            tetrahedron(eig1, mat1, kvec1, vf1, corner,
-              bvec, fbz, nbragg, bragg, brnrm, brnrm_min, 
+            tetrahedron(eig1, mat1, kvec1, vf1, 
               kvp_v.at(ithread), matp_v.at(ithread), nmlp_v.at(ithread));
           }/*for (j0 = start[0]; j0 < ng[0]; ++j0)*/
         }/*for (j1 = start[1]; j1 < ng[1]; ++j1)*/
