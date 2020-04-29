@@ -120,6 +120,7 @@ int lstereo = 1;     //!< Switch for the stereogram
 int lmouse = 1;      //!< Switch for the mouse function
 int lsection = 0;    //!< Switch for the 2D Fermi lines
 int lequator = 0;    //!< Switch for equator
+int BZ_number[3] = { 1, 1, 1 };
 /*
  Variables for Brillouin zone boundaries
 */

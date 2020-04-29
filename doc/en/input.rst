@@ -55,9 +55,9 @@ The input file is as follows (``mgb2_vfz.fs``):
 
    .. math::
 
-   \begin{align} {\boldsymbol k}_{i,j,k} =
-   x_i {\boldsymbol b}_1 + y_j {\boldsymbol b}_2 + z_k {\boldsymbol b}_3,
-   \end{align}
+     \begin{align} {\boldsymbol k}_{i,j,k} =
+     x_i {\boldsymbol b}_1 + y_j {\boldsymbol b}_2 + z_k {\boldsymbol b}_3,
+     \end{align}
 
    where :math:`i, j, k = 1 \cdots N_1, 1 \cdots N_2, 1 \cdots N_3` , and
    :math:`N_1, N_2, N_3` are the number of :math:`k` in each direction.

@@ -68,6 +68,7 @@ extern int lstereo;     //!< Switch for the stereogram
 extern int lmouse;      //!< Switch for the mouse function
 extern int lsection;    //!< Switch for the 2D Fermi lines
 extern int lequator;    //!< Switch for equator
+extern int BZ_number[3];   //!< Number of BZ
 /*
  Variables for Brillouin zone boundaries
 */
