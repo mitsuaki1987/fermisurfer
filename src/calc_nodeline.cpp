@@ -48,7 +48,7 @@ THE SOFTWARE.
 void calc_nodeline()
 {
   int ib, itri, i, j, ithread, nnl0;
-  std::vector<std::vector<std::vector<std::vector<GLfloat>>>> kvnl_v;
+  std::vector<std::vector<std::vector<std::vector<GLfloat> > > > kvnl_v;
 
   kvnl_v.resize(nthreads);
 

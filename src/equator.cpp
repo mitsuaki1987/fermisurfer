@@ -46,7 +46,7 @@ THE SOFTWARE.
 */
 void equator() {
   int ib, itri, i, j, ithread, nequator0;
-  std::vector<std::vector<std::vector<std::vector<GLfloat>>>> kveq_v;
+  std::vector<std::vector<std::vector<std::vector<GLfloat> > > > kveq_v;
  
   kveq_v.resize(nthreads);
 
@@ -59,7 +59,7 @@ void equator() {
     {
       int sw[3];
       GLfloat a[3][3], prod[3];
-      std::vector<std::vector<GLfloat>> kveq_0;
+      std::vector<std::vector<GLfloat> > kveq_0;
 
       kveq_0.resize(2);
       for (i = 0; i < 2; i++) kveq_0.at(i).resize(3);

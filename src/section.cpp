@@ -275,7 +275,7 @@ void calc_2dbz() {
 */
 void calc_section() {
   int i, j, ib, itri, ithread, n2d0;
-  std::vector<std::vector<std::vector<std::vector<GLfloat>>>> kv2d_v, clr2d_v;
+  std::vector<std::vector<std::vector<std::vector<GLfloat> > > > kv2d_v, clr2d_v;
 
   kv2d_v.resize(nthreads);
   clr2d_v.resize(nthreads);
@@ -291,7 +291,7 @@ private(itri,i,j,ithread)
     {
       int sw[3];
       GLfloat norm[3], a[3][3];
-      std::vector<std::vector<GLfloat>> kv2d_0, clr2d_0;
+      std::vector<std::vector<GLfloat> > kv2d_0, clr2d_0;
 
       kv2d_0.resize(2);
       clr2d_0.resize(2);
