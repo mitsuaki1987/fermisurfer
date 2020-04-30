@@ -31,7 +31,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <AdditionalIncludeDirectories>.;C:\Program Files\wxWidgets\lib\vc_lib\mswu;C:\Program Files\wxWidgets\include\msvc;C:\Program Files\wxWidgets\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>HAVE_GL_GL_H;HAVE_GL_GLU_H;NDEBUG;__WXMSW__;_UNICODE;VERSION="2.0.0";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAVE_GL_GL_H;HAVE_GL_GLU_H;NDEBUG;__WXMSW__;_UNICODE;VERSION="2.1.0";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <OpenMPSupport>true</OpenMPSupport>
       <SDLCheck>false</SDLCheck>
       <ForcedIncludeFiles>Windows.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
