@@ -55,15 +55,27 @@ Here, I will explain all menus.
 Background color
 ----------------
 
-The background color is toggled between black and white; the edge of the
-Brillouin Zone is also toggled between white and black (Fig. :num:`backgroundpng`).
+The background color is specified as RGB.
 
 .. _backgroundpng:
      
 .. figure:: ../figs/background.png
    :width: 500
 
-   The background color is toggled.
+Line width
+----------
+
+Modify the width of the Brillouin-zone boundary, the nodal line, etc.
+   
+Line color
+----------
+
+The line color is specified with RGB.
+
+.. _linecolorpng:
+     
+.. figure:: ../figs/line_color.png
+   :width: 500
 
 Band
 ----
@@ -96,6 +108,17 @@ Primitive Brillouin Zone
    You can change the type of the Brillouin zone with
    "Brillouin zone" menu.
 
+Number of Brillouin zone
+------------------------
+
+We can specify how many zones are displayed along each reciprocal
+lattice vector.
+
+.. _bznumberpng:
+     
+.. figure:: ../figs/bz_number.png
+   :width: 600
+   
 Color bar
 ---------
 
@@ -146,6 +169,19 @@ for 3D line plot by inputting into the text boxes at
    :width: 700
 
    "Color scale mode" menu.
+
+Color sequence for plot
+-----------------------
+
+We can specify the sequence of color plot.
+"BGR" is Blue-Cyan-Green-Yellow-Red,
+"CMY" is Cyan-Blue-Magenta-Red-Yellow,
+"MCY" is Magenta-Blue-Cyan-Green-Yellow.
+
+.. _barcplorpng:
+     
+.. figure:: ../figs/bar_color.png
+   :width: 500
 
 Equator (Update required)
 -------------------------
@@ -199,11 +235,6 @@ Occupy :
 
    Change the lighted side by using the "Lighting" menu.
 
-Line width
-----------
-
-Modify the width of the Brillouin-zone boundary, the nodal line, etc.
-   
 Mouse Drag
 ----------
 
@@ -254,6 +285,22 @@ the section crosses :math:`\Gamma` point.
    :width: 700
 
    Display 2D plot of the Fermi surface (line) with "Section" menu.
+
+Output section of the Brillouine zone
+-------------------------------------
+
+Above section of the Brillouin zone and Fermi surfaces are outputted into files "fermi_line.dat" and "bz_line.dat" by pushing this button.
+
+.. _sectionfilepng:
+     
+.. figure:: ../figs/section_file.png
+   :width: 500
+
+These files are plotted in gnuplot as follows:
+           
+.. code-block:: gnuplot
+
+   plot "fermi_line.dat" w l, "bz_line.dat" w l
 
 Shift Fermi energy (Update required)
 ------------------------------------

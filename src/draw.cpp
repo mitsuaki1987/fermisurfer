@@ -83,7 +83,8 @@ private(ib)
                       arw_rot[ib][j + 3 * l + 6 * i + 18 * itri]
                         = rot[j][0] * (arw[ib][itri][i][l][0] + kshift[0])
                         + rot[j][1] * (arw[ib][itri][i][l][1] + kshift[1])
-                        + rot[j][2] * (arw[ib][itri][i][l][2] + kshift[2]);
+                        + rot[j][2] * (arw[ib][itri][i][l][2] + kshift[2])
+                        + trans[j];
                     }
                   }
                 }/*for (i = 0; i < 3; ++i)*/

@@ -53,12 +53,26 @@ Windowsの場合
 背景色
 ------
 
-背景色を黒または白に切り替えます. Brillouin
-Zoneの枠線も白/黒と切り替わります.
+背景色をRGBで指定する.
 
 .. _backgroundpng:
      
 .. figure:: ../figs/background.png
+   :width: 500
+
+Line width
+----------
+
+ブリルアンゾーンの境界やノーダルライン等の線幅を変更します.
+
+Line color
+----------
+
+線色をRGBで指定する.
+
+.. _linecolorpng:
+     
+.. figure:: ../figs/line_color.png
    :width: 500
 
 バンド毎の表示・非表示の切り替え
@@ -73,8 +87,8 @@ Zoneの枠線も白/黒と切り替わります.
 
    "Band" メニューで3番目のバンドの表示/非表示を切り替える.
 
-Brillouin zone (要Update)
--------------------------
+Brillouin zoneの形式 (要Update)
+-------------------------------
 
 描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
 切り替える事が出来ます (図 :num:`brillouinzonepng`).
@@ -91,6 +105,16 @@ Primitive Brillouine Zone
    :width: 600
 
    "Brillouin zone" メニューでBrillouin領域のとり方を変更する.
+
+Brillouin zoneの数
+------------------
+
+各逆格子ベクトルの方向にいくつ表示するかを指定する.
+
+.. _bznumberpng:
+     
+.. figure:: ../figs/bz_number.png
+   :width: 600
 
 Color bar
 ---------
@@ -138,6 +162,17 @@ Input (1D, Gray), Fermi Velocity (Gray)
    :width: 700
 
    "Color scale mode" メニュー.
+
+カラープロットの配色
+--------------------
+
+カラープロットの配色を次の3つから選ぶことができる.
+"BGR":青→水→緑→黄→赤、"CMY":水→青→桃→赤→黄、"MCY":桃→青→水→緑→黄.
+
+.. _barcplorpng:
+     
+.. figure:: ../figs/bar_color.png
+   :width: 500
 
 Equator (要Update)
 ------------------
@@ -192,11 +227,6 @@ Occupy :
 
    "Lighting"メニューで光を当てるFermi面を変更する.
 
-Line width
-----------
-
-ブリルアンゾーンの境界やノーダルライン等の線幅を変更します.
-
 マウスドラッグをしたときの振る舞い
 ----------------------------------
 
@@ -246,6 +276,23 @@ Brillouin領域を任意の断面で切り取り,
 .. figure:: ../figs/section.png
    :width: 700
 
+ブリルアンゾーン断面のファイル出力
+----------------------------------
+
+このボタンを押すと, 上記フェルミ面およびブリルアンゾーンの断面をGnuplotやIgolなどで図示するためのファイル("fermi_line.dat"と"bz_line.dat")
+を出力する.
+
+.. _sectionfilepng:
+     
+.. figure:: ../figs/section_file.png
+   :width: 500
+
+gnuplotでは次のように使うことができる.
+
+.. code-block:: gnuplot
+
+   plot "fermi_line.dat" w l, "bz_line.dat" w l
+   
 Fermiエネルギーの変更 (要Update)
 --------------------------------
 
