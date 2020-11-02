@@ -320,7 +320,7 @@ function calc_nodeline()
     /*
      Allocation of nodeline
      */
-    nnl[ib] = kvnl[ib].size;
+    nnl[ib] = kvnl[ib].length;
     terminal("    " + toString(ib + 1) + "       " + toString(nnl[ib]) + "\n");
   }/*for (ib = 0; ib < nb; ib++)*/
 }/*function calc_nodeline()*/
@@ -1561,7 +1561,7 @@ let kvnl_rot = []; //!< @f$k@f$-vector of nodeline [::nb][::nnl*2*3]
 */
 let secvec = [0.0, 0.0, 0.0];         //!< @f$k@f$-vector to define section
 let secvec_fr = [0.0, 0.0, 0.0];         //!< @f$k@f$-vector to define section
-let secscale;          //!< 0.0 (across @f$\Gamma@f$) or 1.0
+let secscale = 0.0;          //!< 0.0 (across @f$\Gamma@f$) or 1.0
 let axis2d = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];      //!< @f$k@f$-vector to define section
 let n2d = [];                  //!< Number of line segment
 let kv2d = [];          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
@@ -1637,20 +1637,6 @@ let skip_minmax = 0;
 let windowx = 1100;
 let windowy = 850;
 /**
-  @brief Glut Display function
-  called by glutDisplayFunc
-*/
-function batch_draw()
-{
-  let iminmax = 0;
-  let minmax = [[0.0, 0.0], [0.0, 0.0], [0.0, 0.0]];
-
-  printf("\n  Batch mode.\n");
-
-  read_batch();
-  refresh_patch_segment();
-}
-/**
  @brief Main routine of FermiSurfer
 
 */
@@ -1714,39 +1700,6 @@ function OnInit()
   }
   return true;
 } /* main */
-
-function OnInitCmdLine(parser)
-{
-  OnInitCmdLine(parser);
-
-  parser.AddParam("FRMSF file to plot.",
-    wxCMD_LINE_VAL_STRING, wxCMD_LINE_OPTION_MANDATORY);
-  parser.AddParam("Batch file",
-    wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
-  parser.AddParam("Window Size x",
-    wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
-  parser.AddParam("Window Size y",
-    wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
-}
-
-function OnCmdLineParsed(parser)
-{
-  if (parser.GetParamCount() > 0) {
-    frmsf_file_name = parser.GetParam(0);
-    if (parser.GetParamCount() > 1) {
-      batch_name = parser.GetParam(1);
-      lbatch = 1;
-      if (parser.GetParamCount() > 2) {
-        windowx = wxAtoi(parser.GetParam(2));
-        if (parser.GetParamCount() > 3) {
-          windowy = wxAtoi(parser.GetParam(3));
-        }
-      }
-    }
-  }
-
-  return OnCmdLineParsed(parser);
-}
 /**
  @brief Free variables for patch before new patch is computed
 
@@ -1885,7 +1838,7 @@ function max_and_min()
       for (itri = 0; itri < ntri[ib]; ++itri) {
         for (i = 0; i < 3; ++i) {
           abs = Math.sqrt(matp[ib][itri][i][0] * matp[ib][itri][i][0]
-                    + matp[ib][itri][i][1] * matp[ib][itri][i][1]);
+                        + matp[ib][itri][i][1] * matp[ib][itri][i][1]);
           if (abs > patch_max) patch_max = abs;
           if (abs < patch_min) patch_min = abs;
         }
@@ -1894,20 +1847,20 @@ function max_and_min()
     }/*if (color_scale == 2)*/
   else   if (color_scale == 3) {
 
-      patch_min = 1.0e10;
-      patch_max = -1.0e10;
+    patch_min = 1.0e10;
+    patch_max = -1.0e10;
 
-      for (ib = 0; ib < nb; ib++) {
-        for (itri = 0; itri < ntri[ib]; ++itri) {
-          for (i = 0; i < 3; ++i) {
-            abs = Math.sqrt(matp[ib][itri][i][0] * matp[ib][itri][i][0]
-                      + matp[ib][itri][i][1] * matp[ib][itri][i][1]
-                      + matp[ib][itri][i][2] * matp[ib][itri][i][2]);
-            if (abs > patch_max) patch_max = abs;
-            if (abs < patch_min) patch_min = abs;
-          }
-        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-      }/*for (ib = 0; ib < nb; ib++)*/
+    for (ib = 0; ib < nb; ib++) {
+      for (itri = 0; itri < ntri[ib]; ++itri) {
+        for (i = 0; i < 3; ++i) {
+          abs = Math.sqrt(matp[ib][itri][i][0] * matp[ib][itri][i][0]
+                        + matp[ib][itri][i][1] * matp[ib][itri][i][1]
+                        + matp[ib][itri][i][2] * matp[ib][itri][i][2]);
+          if (abs > patch_max) patch_max = abs;
+          if (abs < patch_min) patch_min = abs;
+        }
+      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+    }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 3)*/
   else if (color_scale == 4 || color_scale == 7) {
 
@@ -1928,8 +1881,8 @@ function max_and_min()
     }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 5 || color_scale == 6)*/
 
-  myf->textbox_min->ChangeValue(wxString::Format(wxT("%f"), patch_min));
-  myf->textbox_max->ChangeValue(wxString::Format(wxT("%f"), patch_max));
+  document.getElementById("scalemin").value = toString(patch_min);
+  document.getElementById("scalemax").value = toString(patch_max);
 }/* max_and_min */
  /**
  @brief Compute Max. & Min. of matrix elements.
@@ -1939,15 +1892,14 @@ function max_and_min()
  */
 function paint()
 {
-  let itri, j;
+  let itri = 0, j = 0;
   let origin = [0.0, 0.0, 0.0, 0.0];
-  let i, ib;
-  let mat2;
+  let i = 0, ib = 0;
+  let mat2 = 0.0;
+  let theta = 0.0, abs = 0.0, theta2 = 0.0;
 
   if (color_scale == 1) {
-
     for (ib = 0; ib < nb; ib++) {
-
       for (itri = 0; itri < ntri[ib]; ++itri) {
         for (i = 0; i < 3; ++i) {
           /**/
@@ -1978,66 +1930,56 @@ function paint()
     }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 1 || color_scale == 2)*/
   else if (color_scale == 2) {
-
     for (j = 0; j < 4; ++j) origin[j] = 1.0 - BackGroundColor[j];
-
-      let i, ib;
-      let theta, abs, theta2;
-
-      for (ib = 0; ib < nb; ib++) {
-        for (itri = 0; itri < ntri[ib]; ++itri) {
-          for (i = 0; i < 3; ++i) {
-            /**/
-            abs = Math.sqrt(matp[ib][itri][i][0] * matp[ib][itri][i][0]
-                      + matp[ib][itri][i][1] * matp[ib][itri][i][1]);
-            if (abs / patch_max < 0.00001) theta = 0.0;
-            else if (matp[ib][itri][i][1] > 0.0) theta = Math.acos(matp[ib][itri][i][0] / abs);
-            else theta = -Math.acos(matp[ib][itri][i][0] / abs);
-            abs /= patch_max;
-            theta = 3.0 * theta / Math.acos(-1.0);
-            /**/
-            if (-3.0 <= theta && theta < -2.0) {
-              theta2 = theta + 3.0;
-              for (j = 0; j < 4; ++j)
-                clr[ib][j + 4 * i + 12 * itri] = blue[j] * theta2 + cyan[j] * (1.0 - theta2);
-            }
-            else if (-2.0 <= theta && theta < -1.0) {
-              theta2 = theta + 2.0;
-              for (j = 0; j < 4; ++j) 
-                clr[ib][j + 4 * i + 12 * itri] = magenta[j] * theta2 + blue[j] * (1.0 - theta2);
-            }
-            else if (-1.0 <= theta && theta < 0.0) {
-              theta2 = theta + 1.0;
-              for (j = 0; j < 4; ++j) 
-                clr[ib][j + 4 * i + 12 * itri] = red[j] * theta2 + magenta[j] * (1.0 - theta2);
-            }
-            else if (0.0 <= theta && theta < 1.0) {
-              theta2 = theta;
-              for (j = 0; j < 4; ++j)
-                clr[ib][j + 4 * i + 12 * itri] = yellow[j] * theta2 + red[j] * (1.0 - theta2);
-            }
-            else if (1.0 <= theta && theta < 2.0) {
-              theta2 = theta - 1.0;
-              for (j = 0; j < 4; ++j)
-                clr[ib][j + 4 * i + 12 * itri] = green[j] * theta2 + yellow[j] * (1.0 - theta2);
-            }
-            else {
-              theta2 = theta - 2.0;
-              for (j = 0; j < 4; ++j) 
-                clr[ib][j + 4 * i + 12 * itri] = cyan[j] * theta2 + green[j] * (1.0 - theta2);
-            }
-            clr[ib][j + 4 * i + 12 * itri] = clr[ib][j + 4 * i + 12 * itri] * abs + origin[j] * (1.0 - abs);
-
-          }/*for (i = 0; i < 3; ++i)*/
-        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-      }/*for (ib = 0; ib < nb; ib++)*/
+    for (ib = 0; ib < nb; ib++) {
+      for (itri = 0; itri < ntri[ib]; ++itri) {
+        for (i = 0; i < 3; ++i) {
+          /**/
+          abs = Math.sqrt(matp[ib][itri][i][0] * matp[ib][itri][i][0]
+                        + matp[ib][itri][i][1] * matp[ib][itri][i][1]);
+          if (abs / patch_max < 0.00001) theta = 0.0;
+          else if (matp[ib][itri][i][1] > 0.0) theta = Math.acos(matp[ib][itri][i][0] / abs);
+          else theta = -Math.acos(matp[ib][itri][i][0] / abs);
+          abs /= patch_max;
+          theta = 3.0 * theta / Math.acos(-1.0);
+          /**/
+          if (-3.0 <= theta && theta < -2.0) {
+            theta2 = theta + 3.0;
+            for (j = 0; j < 4; ++j)
+              clr[ib][j + 4 * i + 12 * itri] = blue[j] * theta2 + cyan[j] * (1.0 - theta2);
+          }
+          else if (-2.0 <= theta && theta < -1.0) {
+            theta2 = theta + 2.0;
+            for (j = 0; j < 4; ++j) 
+              clr[ib][j + 4 * i + 12 * itri] = magenta[j] * theta2 + blue[j] * (1.0 - theta2);
+          }
+          else if (-1.0 <= theta && theta < 0.0) {
+            theta2 = theta + 1.0;
+            for (j = 0; j < 4; ++j) 
+              clr[ib][j + 4 * i + 12 * itri] = red[j] * theta2 + magenta[j] * (1.0 - theta2);
+          }
+          else if (0.0 <= theta && theta < 1.0) {
+            theta2 = theta;
+            for (j = 0; j < 4; ++j)
+              clr[ib][j + 4 * i + 12 * itri] = yellow[j] * theta2 + red[j] * (1.0 - theta2);
+          }
+          else if (1.0 <= theta && theta < 2.0) {
+            theta2 = theta - 1.0;
+            for (j = 0; j < 4; ++j)
+              clr[ib][j + 4 * i + 12 * itri] = green[j] * theta2 + yellow[j] * (1.0 - theta2);
+          }
+          else {
+            theta2 = theta - 2.0;
+            for (j = 0; j < 4; ++j) 
+              clr[ib][j + 4 * i + 12 * itri] = cyan[j] * theta2 + green[j] * (1.0 - theta2);
+          }
+          clr[ib][j + 4 * i + 12 * itri] = clr[ib][j + 4 * i + 12 * itri] * abs + origin[j] * (1.0 - abs);
+        }/*for (i = 0; i < 3; ++i)*/
+      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+    }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 2)*/
   else if (color_scale == 4) {
-      let i, ib;
-      let mat2;
-
       for (ib = 0; ib < nb; ib++) {
-  
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             /**/
@@ -2071,106 +2013,89 @@ function paint()
       }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 4)*/
   else if (color_scale == 3 || color_scale == 5) {
-      let i, ib;
-      let mat2;
-
-      for (ib = 0; ib < nb; ib++) {
-        /**/
-        if (nb == 1) mat2 = 0.5;
-        else mat2 = 1.0 / (nb - 1) * ib;
-        mat2 *= 4.0;
-        /**/
-        if (mat2 <= 1.0) {
-
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
-                = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0 - mat2);
-            }
+    for (ib = 0; ib < nb; ib++) {
+      /**/
+      if (nb == 1) mat2 = 0.5;
+      else mat2 = 1.0 / (nb - 1) * ib;
+      mat2 *= 4.0;
+      /**/
+      if (mat2 <= 1.0) {
+        for (itri = 0; itri < ntri[ib]; ++itri) {
+          for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
+              = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0 - mat2);
           }
         }
-        else if (mat2 <= 2.0) {
-          mat2 = mat2 - 1.0;
-
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-                = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0 - mat2);
-            }
+      }
+      else if (mat2 <= 2.0) {
+        mat2 = mat2 - 1.0;
+        for (itri = 0; itri < ntri[ib]; ++itri) {
+          for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+              = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0 - mat2);
           }
         }
-        else if (mat2 <= 3.0) {
-          mat2 = mat2 - 2.0;
-
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-                = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0 - mat2);
-            }
+      }
+      else if (mat2 <= 3.0) {
+        mat2 = mat2 - 2.0;
+        for (itri = 0; itri < ntri[ib]; ++itri) {
+          for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
+              = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0 - mat2);
           }
         }
-        else {
-          mat2 = mat2 - 3.0;
-
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
+      }
+      else {
+        mat2 = mat2 - 3.0;
+        for (itri = 0; itri < ntri[ib]; ++itri) {
+          for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
                 = BarColor[4][j] * mat2 + BarColor[3][j] * (1.0 - mat2);
-            }
           }
         }
-      }/*for (ib = 0; ib < nb; ib++*/
-
-      if (color_scale == 3) {
-        for (ib = 0; ib < nb; ib++) {
-
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 3; ++j) {
-                arw[ib][itri][i][0][j] = kvp[ib][itri][i][j]
-                               - 0.5 * matp[ib][itri][i][j] / patch_max;
-                arw[ib][itri][i][1][j] = kvp[ib][itri][i][j]
-                               + 0.5 * matp[ib][itri][i][j] / patch_max;
-              }/*for (j = 0; j < 3; ++j)*/
-            }/*for (i = 0; i < 3; ++i)*/
-          }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-        }/*for (ib = 0; ib < nb; ib++)*/
-      }/*if (color_scale == 3)*/
+      }
+    }/*for (ib = 0; ib < nb; ib++*/
+    if (color_scale == 3) {
+      for (ib = 0; ib < nb; ib++) {
+        for (itri = 0; itri < ntri[ib]; ++itri){
+          for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 3; ++j) {
+              arw[ib][itri][i][0][j] = kvp[ib][itri][i][j]
+                              - 0.5 * matp[ib][itri][i][j] / patch_max;
+              arw[ib][itri][i][1][j] = kvp[ib][itri][i][j]
+                              + 0.5 * matp[ib][itri][i][j] / patch_max;
+            }/*for (j = 0; j < 3; ++j)*/
+          }/*for (i = 0; i < 3; ++i)*/
+        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+      }/*for (ib = 0; ib < nb; ib++)*/
+    }/*if (color_scale == 3)*/
   }/*if (color_scale == 5)*/
   else if (color_scale == 6) {
-      let i, ib;
-      let mat2;
-
-      for (ib = 0; ib < nb; ib++) {
-
-        for (itri = 0; itri < ntri[ib]; ++itri) {
-          for (i = 0; i < 3; ++i) {
-            /**/
-            mat2 = (matp[ib][itri][i][0] - patch_min) / (patch_max - patch_min);
-            /**/
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0 - mat2);
-          }/*for (i = 0; i < 3; ++i)*/
-        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-      }/*for (ib = 0; ib < nb; ib++)*/
+    for (ib = 0; ib < nb; ib++) {
+      for (itri = 0; itri < ntri[ib]; ++itri) {
+        for (i = 0; i < 3; ++i) {
+          /**/
+          mat2 = (matp[ib][itri][i][0] - patch_min) / (patch_max - patch_min);
+          /**/
+          for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0 - mat2);
+        }/*for (i = 0; i < 3; ++i)*/
+      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+    }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 6)*/
   else if (color_scale == 7) {
-      let i, ib;
-      let mat2;
-
-      for (ib = 0; ib < nb; ib++) {
-
-        for (itri = 0; itri < ntri[ib]; ++itri) {
-          for (i = 0; i < 3; ++i) {
-            /**/
-           mat2 = 0.0;
-            for (j = 0; j < 3; ++j) mat2 += nmlp[ib][itri][i][j] * nmlp[ib][itri][i][j];
-            mat2 = Math.sqrt(mat2);
-            mat2 = (mat2 - patch_min) / (patch_max - patch_min);
-            /**/
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0 - mat2);
-          }/*for (i = 0; i < 3; ++i)*/
-        }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-      }/*for (ib = 0; ib < nb; ib++)*/
+    for (ib = 0; ib < nb; ib++) {
+      for (itri = 0; itri < ntri[ib]; ++itri) {
+        for (i = 0; i < 3; ++i) {
+          /**/
+          mat2 = 0.0;
+          for (j = 0; j < 3; ++j) mat2 += nmlp[ib][itri][i][j] * nmlp[ib][itri][i][j];
+          mat2 = Math.sqrt(mat2);
+          mat2 = (mat2 - patch_min) / (patch_max - patch_min);
+          /**/
+          for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0 - mat2);
+        }/*for (i = 0; i < 3; ++i)*/
+      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+    }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 7)*/
 }/* paint */
 /**
@@ -2438,7 +2363,31 @@ function kumo_coef(
 */
 function interpol_energy() 
 {
-  let ib, i0, i1, i2, ii;
+  let ib = 0, i0 = 0, i1 = 0, i2 = 0, ii = 0;
+  let j0 = 0, j1 = 0, j2 = 0, jj;
+  let coef = [0.0, 0.0, 0.0, 0.0],
+    mat1 = [], mat2 = [], mat3 = [], eig1 = [], eig2 = [], eig3 = [];
+  let i0p = 0, i0m = 0, i1p = 0, i1m = 0, i2p = 0, i2m = 0;
+  let de = [0.0, 0.0, 0.0];
+
+  for (i0 = 0; i0 < 4; i0++) {
+    mat1.push([]);
+    mat2.push([]);
+    mat3.push([0.0, 0.0, 0.0]);
+    eig1.push([]);
+    eig2.push([]);
+    eig3.push(0.0);
+    for (i1 = 0; i1 < 4; i1++) {
+      mat1[i0].push([]);
+      mat2[i0].push([0.0, 0.0, 0.0]);
+      eig1[i0].push([]);
+      eig2[i0].push(0.0);
+      for (i2 = 0; i2 < 4; i2++) {
+        mat1[i0][i1].push([0.0, 0.0, 0.0]);
+        eig1[i0][i1].push(0.0);
+      }
+    }
+  }
 
   terminal("    Interpolating ... ");
   /*
@@ -2469,20 +2418,21 @@ function interpol_energy()
   for (ii = 0; ii < 3; ii++)ng[ii] = ng0[ii] * interpol;
   /**/
   for (ib = 0; ib < nb; ib++) {
-    eig[ib] = new let**[ng[0]];
-    mat[ib] = new let***[ng[0]];
-    vf[ib] = new let***[ng[0]];
+    eig.push([]);
+    mat.push([]);
+    vf.push([]);
     for (i0 = 0; i0 < ng[0]; i0++) {
-      eig[ib][i0] = new let*[ng[1]];
-      mat[ib][i0] = new let**[ng[1]];
-      vf[ib][i0] = new let**[ng[1]];
+      eig[ib].push([]);
+      mat[ib].push([]);
+      vf[ib].push([]);
       for (i1 = 0; i1 < ng[1]; i1++) {
-        eig[ib][i0][i1] = new let[ng[2]];
-        mat[ib][i0][i1] = new let*[ng[2]];
-        vf[ib][i0][i1] = new let*[ng[2]];
+        eig[ib][i0].push([]);
+        mat[ib][i0].push([]);
+        vf[ib][i0].push([]);
         for (i2 = 0; i2 < ng[2]; i2++) {
-          mat[ib][i0][i1][i2] = new let[3];
-          vf[ib][i0][i1][i2] = new let[3];
+          eig[ib][i0][i1].push(0.0);
+          mat[ib][i0][i1].push([0.0, 0.0, 0.0]);
+          vf[ib][i0][i1].push([0.0, 0.0, 0.0]);
         }
       }/*for (i1 = 0; i1 < ng[1]; i1++)*/
     }/*for (i0 = 0; i0 < ng[0]; i0++)*/
@@ -2490,112 +2440,97 @@ function interpol_energy()
   /*
    3rd order - three dimensional Kumo interpolation
   */
-    let j0, j1, j2, jj;
-    let coef[4], 
-      mat1[4][4][4][3], mat2[4][4][3], mat3[4][3],
-      eig1[4][4][4], eig2[4][4], eig3[4];
-
-    for (ib = 0; ib < nb; ib++) {
-      for (i0 = 0; i0 < ng0[0]; i0++) {
-        //if (ith == 1) continue;
-        for (i1 = 0; i1 < ng0[1]; i1++) {
-          for (i2 = 0; i2 < ng0[2]; i2++) {
-            for (j0 = 0; j0 < 4; j0++) {
-              for (j1 = 0; j1 < 4; j1++) {
-                for (j2 = 0; j2 < 4; j2++) {
-                  eig1[j0][j1][j2] = eig0[ib][modulo(i0 + j0 - 1, ng0[0])]
-                                             [modulo(i1 + j1 - 1, ng0[1])]
-                                             [modulo(i2 + j2 - 1, ng0[2])];
-                  for (jj = 0; jj < 3; jj++) {
+  for (ib = 0; ib < nb; ib++) {
+    for (i0 = 0; i0 < ng0[0]; i0++) {
+      for (i1 = 0; i1 < ng0[1]; i1++) {
+        for (i2 = 0; i2 < ng0[2]; i2++) {
+          for (j0 = 0; j0 < 4; j0++) {
+            for (j1 = 0; j1 < 4; j1++) {
+              for (j2 = 0; j2 < 4; j2++) {
+                eig1[j0][j1][j2] = eig0[ib][modulo(i0 + j0 - 1, ng0[0])]
+                                           [modulo(i1 + j1 - 1, ng0[1])]
+                                           [modulo(i2 + j2 - 1, ng0[2])];
+                for (jj = 0; jj < 3; jj++) {
                     mat1[j0][j1][j2][jj] = mat0[ib][modulo(i0 + j0 - 1, ng0[0])]
                                                    [modulo(i1 + j1 - 1, ng0[1])]
                                                    [modulo(i2 + j2 - 1, ng0[2])][jj];
-                  }
-                }/*for (j2 = 0; j2 < 4; j2++)*/
-              }/*for (j1 = 0; j1 < 4; j1++)*/
-            }/*for (i2 = 0; i2 < ng0[2]; i2++)*/
-            for (j0 = 0; j0 < interpol; j0++) {
-              kumo_coef(j0, &coef[0], interpol);
-              for (j1 = 0; j1 < 4; j1++) {
-                for (j2 = 0; j2 < 4; j2++) {
+                }
+              }/*for (j2 = 0; j2 < 4; j2++)*/
+            }/*for (j1 = 0; j1 < 4; j1++)*/
+          }/*for (i2 = 0; i2 < ng0[2]; i2++)*/
+          for (j0 = 0; j0 < interpol; j0++) {
+              kumo_coef(j0, coef, interpol);
+            for (j1 = 0; j1 < 4; j1++) {
+              for (j2 = 0; j2 < 4; j2++) {
                   eig2[j1][j2] = 0.0;
-                  for (jj = 0; jj < 3; jj++) mat2[j1][j2][jj] = 0.0;
-                  for (ii = 0; ii < 4; ii++) {
-                    eig2[j1][j2] += coef[ii] * eig1[ii][j1][j2];
-                    for (jj = 0; jj < 3; jj++) 
-                      mat2[j1][j2][jj] += coef[ii] * mat1[ii][j1][j2][jj];
-                  }/*for (ii = 0; ii < 4; ii++)*/
-                }/*for (j2 = 0; j2 < 4; j2++)*/
-              }/*for (j1 = 0; j1 < 4; j1++)*/
-              for (j1 = 0; j1 < interpol; j1++) {
-                kumo_coef(j1, &coef[0], interpol);
-                for (j2 = 0; j2 < 4; j2++) {
-                  eig3[j2] = 0.0;
-                  for (jj = 0; jj < 3; jj++) mat3[j2][jj] = 0.0;
-                  for (ii = 0; ii < 4; ii++) {
-                    eig3[j2] += coef[ii] * eig2[ii][j2];
-                    for (jj = 0; jj < 3; jj++)
-                      mat3[j2][jj] += coef[ii] * mat2[ii][j2][jj];
-                  }/*for (ii = 0; ii < 4; ii++)*/
-                }/*for (j2 = 0; j2 < 4; j2++)*/
-                for (j2 = 0; j2 < interpol; j2++) {
-                  kumo_coef(j2, &coef[0], interpol);
-                  eig[ib][i0*interpol + j0]
-                         [i1*interpol + j1]
-                         [i2*interpol + j2] = 0.0;
+                for (jj = 0; jj < 3; jj++) mat2[j1][j2][jj] = 0.0;
+                for (ii = 0; ii < 4; ii++) {
+                  eig2[j1][j2] += coef[ii] * eig1[ii][j1][j2];
+                  for (jj = 0; jj < 3; jj++) 
+                    mat2[j1][j2][jj] += coef[ii] * mat1[ii][j1][j2][jj];
+                }/*for (ii = 0; ii < 4; ii++)*/
+              }/*for (j2 = 0; j2 < 4; j2++)*/
+            }/*for (j1 = 0; j1 < 4; j1++)*/
+            for (j1 = 0; j1 < interpol; j1++) {
+              kumo_coef(j1, coef, interpol);
+              for (j2 = 0; j2 < 4; j2++) {
+                eig3[j2] = 0.0;
+                for (jj = 0; jj < 3; jj++) mat3[j2][jj] = 0.0;
+                for (ii = 0; ii < 4; ii++) {
+                  eig3[j2] += coef[ii] * eig2[ii][j2];
                   for (jj = 0; jj < 3; jj++)
-                    mat[ib][i0*interpol + j0]
-                           [i1*interpol + j1]
-                           [i2*interpol + j2][jj] = 0.0;
-                  for (ii = 0; ii < 4; ii++) {
+                    mat3[j2][jj] += coef[ii] * mat2[ii][j2][jj];
+                }/*for (ii = 0; ii < 4; ii++)*/
+              }/*for (j2 = 0; j2 < 4; j2++)*/
+              for (j2 = 0; j2 < interpol; j2++) {
+                kumo_coef(j2, coef, interpol);
+                eig[ib][i0 * interpol + j0]
+                       [i1 * interpol + j1]
+                       [i2 * interpol + j2] = 0.0;
+                for (jj = 0; jj < 3; jj++)
+                  mat[ib][i0 * interpol + j0]
+                         [i1 * interpol + j1]
+                         [i2*interpol + j2][jj] = 0.0;
+                for (ii = 0; ii < 4; ii++) {
                     eig[ib][i0*interpol + j0]
                            [i1*interpol + j1]
                            [i2*interpol + j2] += coef[ii] * eig3[ii];
-                    for (jj = 0; jj < 3; jj++)
+                  for (jj = 0; jj < 3; jj++)
                       mat[ib][i0*interpol + j0]
                              [i1*interpol + j1]
                              [i2*interpol + j2][jj] += coef[ii] * mat3[ii][jj];
-                  }/*for (ii = 0; ii < 4; ii++)*/
-                }/*for (j2 = 0; j2 < interpol; j2++)*/
-              }/*for (j1 = 0; j1 < interpol; j1++)*/
-            }/*for (j0 = 0; j0 < interpol; j0++)*/
-          }/*for (i2 = 0; i2 < ng0[2]; i2++)*/
-        }/*for (i1 = 0; i1 < ng0[1]; i1++)*/
-      }/*for (i0 = 0; i0 < ng0[0]; i0++)*/
-    }/*for (ib = 0; ib < nb; ib++)*/
+                }/*for (ii = 0; ii < 4; ii++)*/
+              }/*for (j2 = 0; j2 < interpol; j2++)*/
+            }/*for (j1 = 0; j1 < interpol; j1++)*/
+          }/*for (j0 = 0; j0 < interpol; j0++)*/
+        }/*for (i2 = 0; i2 < ng0[2]; i2++)*/
+      }/*for (i1 = 0; i1 < ng0[1]; i1++)*/
+    }/*for (i0 = 0; i0 < ng0[0]; i0++)*/
+  }/*for (ib = 0; ib < nb; ib++)*/
   /*
    Fermi velocity
   */
-#pragma omp parallel default(none) \
-  shared(nb,ng,eig,vf,avec) \
-  private (ib,i0,i1,i2,ii)
-  {
-    let i0p, i0m, i1p, i1m, i2p, i2m;
-    let de[3];
+  for (ib = 0; ib < nb; ib++) {
+    for (i0 = 0; i0 < ng[0]; i0++) {
+      i0p = modulo(i0 + 1, ng[0]);
+      i0m = modulo(i0 - 1, ng[0]);
+      for (i1 = 0; i1 < ng[1]; i1++) {
+        i1p= modulo(i1 + 1, ng[1]);
+        i1m = modulo(i1 - 1, ng[1]);
+        for (i2 = 0; i2 < ng[2]; i2++) {
+          i2p = modulo(i2 + 1, ng[2]);
+          i2m = modulo(i2 - 1, ng[2]);
 
-    for (ib = 0; ib < nb; ib++) {
-      for (i0 = 0; i0 < ng[0]; i0++) {
-        i0p = modulo(i0 + 1, ng[0]);
-        i0m = modulo(i0 - 1, ng[0]);
-        for (i1 = 0; i1 < ng[1]; i1++) {
-          i1p= modulo(i1 + 1, ng[1]);
-          i1m = modulo(i1 - 1, ng[1]);
-          for (i2 = 0; i2 < ng[2]; i2++) {
-            i2p = modulo(i2 + 1, ng[2]);
-            i2m = modulo(i2 - 1, ng[2]);
-
-            de[0] = eig[ib][i0p][i1][i2] - eig[ib][i0m][i1][i2];
-            de[1] = eig[ib][i0][i1p][i2] - eig[ib][i0][i1m][i2];
-            de[2] = eig[ib][i0][i1][i2p] - eig[ib][i0][i1][i2m];
-            for (ii = 0; ii < 3; ii++)de[ii] *= 0.5f * ng[ii];
-            for (ii = 0; ii < 3; ii++) vf[ib][i0][i1][i2][ii] =
-              avec[0][ii] * de[0] + avec[1][ii] * de[1] + avec[2][ii] * de[2];
-
-          }/*for (i2 = 0; i2 < ng[2]; i2++)*/
-        }/*for (i1 = 0; i1 < ng[1]; i1++)*/
-      }/*for (i0 = 0; i0 < ng[0]; i0++)*/
-    }/*for (ib = 0; ib < nb; ib++)*/
-  }/*End of parallel region*/
+          de[0] = eig[ib][i0p][i1][i2] - eig[ib][i0m][i1][i2];
+          de[1] = eig[ib][i0][i1p][i2] - eig[ib][i0][i1m][i2];
+          de[2] = eig[ib][i0][i1][i2p] - eig[ib][i0][i1][i2m];
+          for (ii = 0; ii < 3; ii++)de[ii] *= 0.5 * ng[ii];
+          for (ii = 0; ii < 3; ii++) vf[ib][i0][i1][i2][ii] =
+            avec[0][ii] * de[0] + avec[1][ii] * de[1] + avec[2][ii] * de[2];
+        }/*for (i2 = 0; i2 < ng[2]; i2++)*/
+      }/*for (i1 = 0; i1 < ng[1]; i1++)*/
+    }/*for (i0 = 0; i0 < ng[0]; i0++)*/
+  }/*for (ib = 0; ib < nb; ib++)*/
   terminal("Done\n\n");
 }/*function interpol_energy() */
 
@@ -2634,237 +2569,109 @@ function compute_patch_segment() {
     refresh_equator = 0;
   }
 }
-
-function refresh_patch_segment() {
-  free_patch();
-  compute_patch_segment();
-}
-
-enum
-{
-  ibutton_reflesh,
-  ibutton_compute,
-  iradio_background,
-  iradio_brillouinzone,
-  iradio_lighting,
-  iradio_mouse,
-  iradio_stereo,
-  iradio_tetra,
-  iradio_colorscale,
-  itext_colorscalemin,
-  itext_colorscalemax,
-  icheck_section,
-  icheck_gamma,
-  itext_sectionx,
-  itext_sectiony,
-  itext_sectionz,
-  icheck_nodeline,
-  icheck_colorbar,
-  icheck_equator,
-  itext_equatorx,
-  itext_equatory,
-  itext_equatorz,
-  itext_line,
-  itext_shift,
-  itext_interpol,
-  itext_scale,
-  itext_positionx,
-  itext_positiony,
-  itext_rotx,
-  itext_roty,
-  itext_rotz,
-  ibutton_rotate,
-  icheck_band,
-  itext_BackGroundR,
-  itext_BackGroundG,
-  itext_BackGroundB,
-  itext_LineColorR,
-  itext_LineColorG,
-  itext_LineColorB,
-  iradio_BarColor,
-  ibutton_section,
-  itext_BZ_number0,
-  itext_BZ_number1,
-  itext_BZ_number2
-};
-
-function MyFrame::button_refresh(
-  wxCommandEvent& event//!<[in] Selected menu
-) {
-  Refresh(false);
-}
-
-function MyFrame::button_compute(
-  wxCommandEvent& event//!<[in] Selected menu
-) {
-  free_patch();
-  compute_patch_segment();
-  Refresh(false);
-}
-function MyFrame::button_section(
-  wxCommandEvent& event//!<[in] Selected menu
-) {
-  let ib, i2d, i, j;
-  FILE *fp;
-  fp = fopen("fermi_line.dat", "w");
-  for (ib = 0; ib < nb; ib++) {
-    if (draw_band[ib] == 1) {
-      for (i2d = 0; i2d < n2d[ib]; i2d++) {
-        for (i = 0; i < 2; i++) {
-          fprintf(fp, "%15.5e %15.5e\n",
-            kv2d[ib][i * 3 + 6 * i2d], 
-            kv2d[ib][1 + i * 3 + 6 * i2d]);
-        }
-        fprintf(fp, "\n\n");
-      }
-    }/*if (draw_band[ib] == 1)*/
-  }/* for (ib = 0; ib < nb; ib++)*/
-  fclose(fp);
-  terminal("  fermi_line.dat was written.\n");
-
-  fp = fopen("bz_line.dat", "w");
-  for (i2d = 0; i2d < nbzl2d; i2d++) {
-    fprintf(fp, "%15.5e %15.5e\n",
-      bzl2d_proj[i2d][0], bzl2d_proj[i2d][1]);
-  }
-  fprintf(fp, "%15.5e %15.5e\n",
-    bzl2d_proj[0][0], bzl2d_proj[0][1]);
-  fclose(fp);
-  terminal("  bz_line.dat was written.\n");
-}
-/**
-@brief Change Line color color (::blackback)
-*/
-function MyFrame::textctrl_LineColor(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr;
-  double dvalue;
-
-  if (event.GetId() == itext_LineColorR) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      LineColor[0] = dvalue;
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_LineColorG) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      LineColor[1] = dvalue;
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_LineColorB) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      LineColor[2] = dvalue;
-      Refresh(false);
-    }
-  }
-}
-/**
-@brief Change background color (::blackback)
-*/
-function MyFrame::textctrl_BackGround(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr;
-  double dvalue;
-
-  if (event.GetId() == itext_BackGroundR) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      BackGroundColor[0] = dvalue;
-      glClearColor(BackGroundColor[0], BackGroundColor[1],
-        BackGroundColor[2], BackGroundColor[3]);
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_BackGroundG) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      BackGroundColor[1] = dvalue;
-      glClearColor(BackGroundColor[0], BackGroundColor[1], 
-        BackGroundColor[2], BackGroundColor[3]);
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_BackGroundB) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      BackGroundColor[2] = dvalue;
-      glClearColor(BackGroundColor[0], BackGroundColor[1],
-        BackGroundColor[2], BackGroundColor[3]);
-      Refresh(false);
-    }
-  }
-}
-/**
-@brief Change Number of Brillouin zone
-*/
-function MyFrame::textctrl_BZ_number(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr;
-  double dvalue;
-
-  if (event.GetId() == itext_BZ_number0) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      BZ_number[0] = dvalue;
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_BZ_number1) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      BZ_number[1] = dvalue;
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_BZ_number2) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      BZ_number[2] = dvalue;
-      Refresh(false);
-    }
-  }
-}
- /**
- @brief Toggle the appearance of each band (::draw_band)
-*/
-function MyFrame::check_band(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ib = event.GetId() - icheck_band;
-  if (draw_band[ib] == 0) {
-    draw_band[ib] = 1;
-  }
-  else {
-    draw_band[ib] = 0;
-  }
-  Refresh(false);
-} /* menu_band */
-/**
- @brief Change Brillouin zone (::fbz)
-*/
-function MyFrame::radio_brillouinzone(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  if (event.GetString().Cmp(wxT("First Brillouin zone")) == 0) {
-    fbz = 1;
-  }
-  else if (event.GetString().Cmp(wxT("Primitive Brillouin zone")) == 0) {
-    fbz = -1;
-  }
-  refresh_patch = 1;
-} /* menu_brillouinzone */
-/**
- @brief Change Brillouin zone (::fbz)
-*/
-function MyFrame::radio_BarColor(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ii;
-  if (event.GetString().Cmp(wxT("BGR")) == 0) {
+function button_update() {
+  let ii = 0, jj = 0;
+  /*
+   Line width
+  */
+  linewidth = Number(document.getElementById("linewidth"));
+  /*
+   Section vector
+   */
+  secvec_fr[0] = Number(document.getElementById("sectionv0"));
+  secvec_fr[1] = Number(document.getElementById("sectionv1"));
+  secvec_fr[2] = Number(document.getElementById("sectionv2"));
+  if (document.getElementById("ongamma")) secscale = 0.0;
+  else secscale = 1.0;
+  for (ii = 0; ii < 3; ii++) {
+    secvec[ii] = 0.0;
+    for (jj = 0; jj < 3; jj++) {
+      secvec[ii] += secvec_fr[jj] * bvec[jj][ii];
+    }/*for (jj = 0; jj < 3; jj++)*/
+  }/*for (ii = 0; ii < 3; ii++)*/
+  /*
+   Equator
+   */
+  eqvec_fr[0] = Number(document.getElementById("equatorv0"));
+  eqvec_fr[1] = Number(document.getElementById("equatorv1"));
+  eqvec_fr[2] = Number(document.getElementById("equatorv2"));
+  for (ii = 0; ii < 3; ii++) {
+    eqvec[ii] = 0.0;
+    for (jj = 0; jj < 3; jj++) {
+      eqvec[ii] += eqvec_fr[jj] * bvec[jj][ii];
+    }/*for (jj = 0; jj < 3; jj++)*/
+  }/*for (ii = 0; ii < 3; ii++)*/
+  /*
+   * Interpolation
+  */
+  interpol = Number(document.getElementById("interpol"));
+  /*
+   Fermi energy
+   */
+  EF = Number(document.getElementById("fermienergy"));
+  /*
+   * Min. and Max. of scale
+  */
+  patch_min = Number(document.getElementById("scalemin"));
+  patch_max = Number(document.getElementById("scalemax"));
+  /*  */
+  itet = Number(document.getElementById('tetrahedron').tetrahedron.value);
+  init_corner();
+  /**/
+  color_scale = Number(document.getElementById('colorscalemode').colorscalemode.value);
+  fbz = Number(document.getElementById('brillouinzone').brillouinzone.value);
+  lstereo = Number(document.getElementById('stereogram').stereogram.value);
+  lmouse = Number(document.getElementById('mousedrag').mousedrag.value);
+  /*
+   BZ number
+  */
+  BZ_number[0] = Number(document.getElementById("bznumber0"));
+  BZ_number[1] = Number(document.getElementById("bznumber1"));
+  BZ_number[2] = Number(document.getElementById("bznumber2"));
+  /*
+  Back ground color
+  */
+  BackGroundColor[0] = Number(document.getElementById("backgraoundr"));
+  BackGroundColor[1] = Number(document.getElementById("backgraoundg"));
+  BackGroundColor[2] = Number(document.getElementById("backgraoundb"));
+  glClearColor(BackGroundColor[0], BackGroundColor[1], BackGroundColor[2], BackGroundColor[3]);
+  /*
+  Line color
+  */
+  LineColor[0] = Number(document.getElementById("linecolorr"));
+  LineColor[1] = Number(document.getElementById("linecolorg"));
+  LineColor[2] = Number(document.getElementById("linecolorb"));
+  /*
+  Rotate, scale, translate
+  */
+  thetax = Number(document.getElementById("rotatex"));
+  thetay = Number(document.getElementById("rotatey"));
+  thetaz = Number(document.getElementById("rotatez"));
+  trans[0] = Number(document.getElementById("positionx"));
+  trans[1] = Number(document.getElementById("positiony"));
+  scl = Number(document.getElementById("scale"));
+  rot[0][0] = Math.cos(thetay) * Math.cos(thetaz);
+  rot[0][1] = -Math.cos(thetay) * Math.sin(thetaz);
+  rot[0][2] = Math.sin(thetay);
+  rot[1][0] = Math.cos(thetaz) * Math.sin(thetax) * Math.sin(thetay) + Math.cos(thetax) * Math.sin(thetaz);
+  rot[1][1] = Math.cos(thetax) * Math.cos(thetaz) - Math.sin(thetax) * Math.sin(thetay) * Math.sin(thetaz);
+  rot[1][2] = -Math.cos(thetay) * Math.sin(thetax);
+  rot[2][0] = -Math.cos(thetax) * Math.cos(thetaz) * Math.sin(thetay) + Math.sin(thetax) * Math.sin(thetaz);
+  rot[2][1] = Math.cos(thetaz) * Math.sin(thetax) + Math.cos(thetax) * Math.sin(thetay) * Math.sin(thetaz);
+  rot[2][2] = Math.cos(thetax) * Math.cos(thetay);
+  /**/
+  if (document.getElementById("colorbar")) lcolorbar = 1;
+  else lcolorbar = 0;
+  if (document.getElementById("equator")) lequator = 1;
+  else lequator = 0;
+  if (document.getElementById("nodalline")) nodeline = 1;
+  else nodeline = 0;
+  if (document.getElementById("section")) lsection = 1;
+  else lsection = 0;
+  /**/
+  side = Number(document.getElementById('lighting').mousedrag.value);
+  /**/
+  if (document.getElementById('barcolor').mousedrag.value == "rgb") {
     for (ii = 0; ii < 4; ii++) {
       BarColor[0][ii] = blue[ii];
       BarColor[1][ii] = cyan[ii];
@@ -2873,7 +2680,7 @@ function MyFrame::radio_BarColor(
       BarColor[4][ii] = red[ii];
     }
   }
-  else if (event.GetString().Cmp(wxT("CMY")) == 0) {
+  else if (document.getElementById('barcolor').mousedrag.value == "cmy") {
     for (ii = 0; ii < 4; ii++) {
       BarColor[0][ii] = cyan[ii];
       BarColor[1][ii] = blue[ii];
@@ -2882,7 +2689,7 @@ function MyFrame::radio_BarColor(
       BarColor[4][ii] = yellow[ii];
     }
   }
-  else if (event.GetString().Cmp(wxT("MCY")) == 0) {
+  else if (document.getElementById('barcolor').mousedrag.value == "mcy") {
     for (ii = 0; ii < 4; ii++) {
       BarColor[0][ii] = magenta[ii];
       BarColor[1][ii] = blue[ii];
@@ -2891,689 +2698,13 @@ function MyFrame::radio_BarColor(
       BarColor[4][ii] = yellow[ii];
     }
   }
-  paint();
-  Refresh(false);
-} /* menu_brillouinzone */
-/**
- @brief Toggle Colorbar (::lcolorbar)
-*/
-function MyFrame::check_colorbar(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  if (lcolorbar != 1)  lcolorbar = 1;
-  else lcolorbar = 0;
-  Refresh(false);
-} /* menu_colorbar */
-/**
- @brief Change color scale mode (::color_scale)
-*/
-function MyFrame::radiovalue_colorscale(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr, ii;
-  double dminmax;
-
-  if (event.GetId() == itext_colorscalemin) {
-    if (event.GetString().ToDouble(&dminmax))
-      patch_min = dminmax;
-    skip_minmax = 1;
-  }
-  else if (event.GetId() == itext_colorscalemax) {
-    if (event.GetString().ToDouble(&dminmax))
-      patch_max = dminmax;
-    skip_minmax = 1;
-  }
-  else if (event.GetString().Cmp(wxT("Input (1D)")) == 0) 
-    color_scale = 1;
-  else if (event.GetString().Cmp(wxT("Input (2D)")) == 0)
-    color_scale = 2;
-  else if (event.GetString().Cmp(wxT("Input (3D)")) == 0)
-    color_scale = 3;
-  else if (event.GetString().Cmp(wxT("Fermi Velocity")) == 0)
-    color_scale = 4;
-  else if (event.GetString().Cmp(wxT("Band Index")) == 0)
-    color_scale = 5;
-  else if (event.GetString().Cmp(wxT("Input (1D, Gray Scale)")) == 0)
-    color_scale = 6;
-  else if (event.GetString().Cmp(wxT("Fermi Velocity (Gray Scale)")) == 0)
-    color_scale = 7;
-  refresh_color = 1;
-} /* menu_colorscale */
-/**
- @brief Modify and toggle appearance of equator (::lequator)
-*/
-function MyFrame::checkvalue_equator(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr, ii, jj, ib;
-  double deqvec;
-
-  if (event.GetId() == icheck_equator) {
-    if (lequator != 1) lequator = 1;
-    else lequator = 0;
-    Refresh(false);
-  }/*if (event.GetId() == 1)*/
-  else {
-    if (event.GetId() == itext_equatorx) {
-      if (event.GetString().ToDouble(&deqvec)) eqvec_fr[0] = deqvec;
-    }
-    else if (event.GetId() == itext_equatory) {
-      if (event.GetString().ToDouble(&deqvec)) eqvec_fr[1] = deqvec;
-    }
-    else if (event.GetId() == itext_equatorz) {
-      if (event.GetString().ToDouble(&deqvec)) eqvec_fr[2] = deqvec;
-    }
-    /*
-     Fractional -> Cartecian
-    */
-    for (ii = 0; ii < 3; ii++) {
-      eqvec[ii] = 0.0;
-      for (jj = 0; jj < 3; jj++) {
-        eqvec[ii] += eqvec_fr[jj] * bvec[jj][ii];
-      }/*for (jj = 0; jj < 3; jj++)*/
-    }/*for (ii = 0; ii < 3; ii++)*/
-    refresh_equator = 1;
-  }/*else if (event.GetId() > 1)*/
-} /*function menu_equator*/
-/**
- @brief Modify interpolation ratio
-
- This routine modify interpolation ratio (::interpol) 
- then compute Fermi surfaces, etc.
-*/
-function MyFrame::textctrl_interpol(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr;
-  long let long_interpol;
-
-  if (event.GetString().ToLong(&long_interpol)) {
-    interpol = long_interpol;
-    refresh_interpol = 1;
-  }
-}/*function menu_interpol*/
-/**
- @brief Toggle Lighting
-*/
-function MyFrame::radio_lighting(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  if (event.GetString().Cmp(wxT("Both")) == 0) {
-    side = 1.0;
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-  }
-  if (event.GetString().Cmp(wxT("Unoccupy")) == 0) {
-    side = 1.0;
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-  }
-  if (event.GetString().Cmp(wxT("Occupy")) == 0) {
-    side = -1.0;
-    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_FALSE);
-  }
-  Refresh(false);
-} /* menu_lighting */
-/**
- @brief Line width
-*/
-function MyFrame::textctrl_line(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr;
-  double dlinewidth;
-
-  if (event.GetString().ToDouble(&dlinewidth)) linewidth = dlinewidth;
-  Refresh(false);
-} /* menu_line */
-/**
- @brief Change the function associated to the mouse movement(::lmouse)
-*/
-function MyFrame::radio_mouse(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  if (event.GetString().Cmp(wxT("Rotate")) == 0) lmouse = 1;
-  else if (event.GetString().Cmp(wxT("Scale")) == 0) lmouse = 2;
-  else if (event.GetString().Cmp(wxT("Translate")) == 0) lmouse = 3;
-  Refresh(false);
-} /* menu_mouse */
-/**
- @brief Toggle apearance of nodale-line
-*/
-function MyFrame::check_nodeline(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  if (nodeline != 1) nodeline = 1;
-  else nodeline = 0;
-  Refresh(false);
-}/*menu_nodeline*/
-/**
- @brief Modify and toggle appearance of 2D Fermi lines (::lsection)
-*/
-function MyFrame::radiovalue_section(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr, ii, jj, ib;
-  double dsecvec;
-
-  if (event.GetId() == icheck_section) {
-    if (lsection == 0)lsection = 1;
-    else lsection = 0;
-    Refresh(false);
-  }
-  else if(event.GetId() == icheck_gamma) {
-    if(secscale > 0.5) secscale = 0.0;
-    else secscale = 1.0;
-    refresh_section = 1;
-  }
-  else {
-    if (event.GetId() == itext_sectionx) {
-      if (event.GetString().ToDouble(&dsecvec)) secvec_fr[0] = dsecvec;
-    }
-    else if (event.GetId() == itext_sectiony) {
-      if (event.GetString().ToDouble(&dsecvec)) secvec_fr[1] = dsecvec;
-    }
-    else if (event.GetId() == itext_sectionz) {
-      if (event.GetString().ToDouble(&dsecvec)) secvec_fr[2] = dsecvec;
-    }
-    /*
-     Fractional -> Cartecian
-    */
-    for (ii = 0; ii < 3; ii++) {
-      secvec[ii] = 0.0;
-      for (jj = 0; jj < 3; jj++) {
-        secvec[ii] += secvec_fr[jj] * bvec[jj][ii];
-      }/*for (jj = 0; jj < 3; jj++)*/
-    }/*for (ii = 0; ii < 3; ii++)*/
-    refresh_section = 1;
-  }/*else if (event.GetId() > 1)*/
-} /*function menu_section*/
-/**
- @brief Shift Fermi energy
-*/
-function MyFrame::textctrl_shift(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  double dEF;
-  if (event.GetString().ToDouble(&dEF)) {
-    EF = dEF;
-    refresh_patch = 1;
-  }
-} /* menu_shift */
-/**
- @brief Tern stereogram (::lstereo)
-*/
-function MyFrame::radio_stereo(
-  wxCommandEvent& event //!<[in] Selected menu
-) {
-  if (event.GetString().Cmp(wxT("None")) == 0) lstereo = 1;
-  else if (event.GetString().Cmp(wxT("Parallel")) == 0) lstereo = 2;
-  else if (event.GetString().Cmp(wxT("Cross")) == 0) lstereo = 3;
-  Refresh(false);
-} /* menu_stereo */
-/**
- @brief Change tetrahedron (::itet)
-*/
-function MyFrame::radio_tetra(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  itet = wxAtoi(event.GetString()) - 1;
-  init_corner();
-  refresh_patch = 1;
-}/*menu_tetra*/
- /**
- @brief Setting of view
-
- This modify scale (::scl) & tarnslation (::trans) &
- rotation (::thetax, ::thetay, ::thetaz, ::rot),
- */
-function MyFrame::textctrl_view(
-  wxCommandEvent& event //!<[in] Selected menu
-)
-{
-  let ierr;
-  double dvalue;
-
-  if (event.GetId() == itext_scale) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      linewidth *= dvalue/scl;
-      scl = dvalue;
-      textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_positionx) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      trans[0] = dvalue;
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_positiony) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      trans[1] = dvalue;
-      Refresh(false);
-    }
-  }
-  else  if (event.GetId() == itext_rotx ||
-    event.GetId() == itext_roty ||
-    event.GetId() == itext_rotz) {
-    /*
-    thetay = Math.asin(rot[0][2]);
-    if (Math.cos(thetay) != 0.0) {
-      if (-rot[1][2] / Math.cos(thetay) >= 0.0) thetax = Math.acos(rot[2][2] / Math.cos(thetay));
-      else thetax = 6.283185307f - Math.acos(rot[2][2] / Math.cos(thetay));
-      if (-rot[0][1] / Math.cos(thetay) >= 0.0) thetaz = Math.acos(rot[0][0] / Math.cos(thetay));
-      else thetaz = 6.283185307f - Math.acos(rot[0][0] / Math.cos(thetay));
-    }
-    else {
-      thetax = 0.0;
-      if (rot[1][0] >= 0.0) thetaz = Math.acos(rot[1][1]);
-      else thetaz = 6.283185307f - Math.acos(rot[1][1]);
-    }
-    thetax = 180.0 / 3.14159265f * thetax;
-    thetay = 180.0 / 3.14159265f * thetay;
-    thetaz = 180.0 / 3.14159265f * thetaz;
-    printf("    Current Rotation (theta_x theta_y teta_z) in degree : %f %f %f\n", thetax, thetay, thetaz);
-    printf("        New Rotation (theta_x theta_y teta_z) in degree : ");
-    */
-    if (event.GetId() == itext_rotx) {
-      if (event.GetString().ToDouble(&dvalue))
-        thetax = (dvalue) / 180.0 * 3.14159265;
-    }
-    else if (event.GetId() == itext_roty) {
-      if (event.GetString().ToDouble(&dvalue))
-        thetay = (dvalue) / 180.0 * 3.14159265;
-    }
-    else if (event.GetId() == itext_rotz) {
-      if (event.GetString().ToDouble(&dvalue))
-        thetaz = (dvalue) / 180.0 * 3.14159265;
-    }
-  }
-  else if(event.GetId() == ibutton_rotate){
-    rot[0][0] = Math.cos(thetay)* Math.cos(thetaz);
-    rot[0][1] = -Math.cos(thetay)* Math.sin(thetaz);
-    rot[0][2] = Math.sin(thetay);
-    rot[1][0] = Math.cos(thetaz)* Math.sin(thetax)* Math.sin(thetay) + Math.cos(thetax)* Math.sin(thetaz);
-    rot[1][1] = Math.cos(thetax) * Math.cos(thetaz) - Math.sin(thetax)* Math.sin(thetay)* Math.sin(thetaz);
-    rot[1][2] = -Math.cos(thetay)* Math.sin(thetax);
-    rot[2][0] = -Math.cos(thetax)* Math.cos(thetaz)* Math.sin(thetay) + Math.sin(thetax)* Math.sin(thetaz);
-    rot[2][1] = Math.cos(thetaz)* Math.sin(thetax) + Math.cos(thetax)* Math.sin(thetay)* Math.sin(thetaz);
-    rot[2][2] = Math.cos(thetax)* Math.cos(thetay);
-    Refresh(false);
-  }
-}
-
-MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
-  const wxSize& size, long style)
-  : wxFrame(frame, wxID_ANY, title, pos, size, style),
-  m_canvas(NULL)
-{
-  let ib, itet;
-  char menuname[8];
-
-  SetIcon(wxICON(fermisurfer));
-
-  // Make a menubar
-  //wxMenu* fileMenu = new wxMenu;
-  //wxMenuBar* menuBar = new wxMenuBar;
-  //menuBar->Append(fileMenu, wxT("File"));
-  //SetMenuBar(menuBar);
-  // JACS
-#ifdef __WXMSW__
-  let* gl_attrib = NULL;
-#else
-  let gl_attrib[20] =
-  { WX_GL_RGBA, WX_GL_MIN_RED, 1, WX_GL_MIN_GREEN, 1,
-  WX_GL_MIN_BLUE, 1, WX_GL_DEPTH_SIZE, 1,
-  WX_GL_DOUBLEBUFFER,
-#  if defined(__WXMAC__) || defined(__WXCOCOA__)
-        GL_NONE };
-#  else
-    None
-};
-#  endif
-#endif
-
-  wxBoxSizer* sizermain = new wxBoxSizer(wxVERTICAL);
-
-  splitterV = new wxSplitterWindow(this, wxID_ANY);
-  splitterV->SetSashGravity(1.0);
-  splitterV->SetMinimumPaneSize(0); 
-  sizermain->Add(splitterV, 1, wxEXPAND, 0);
-
-  panel = new wxPanel(splitterV);
-
-  gbsizer = new wxGridBagSizer();
-
-  splitterH = new wxSplitterWindow(splitterV, wxID_ANY);
-  splitterH->SetSashGravity(1.0);
-  splitterH->SetMinimumPaneSize(0);
-
-  m_canvas = new TestGLCanvas(splitterH, wxID_ANY, gl_attrib);
-
-  terminal = new wxTextCtrl(splitterH, wxID_ANY, wxT(""),
-    wxPoint(0, 250), wxSize(100, 0), wxTE_MULTILINE);
-  if (lbatch == 1) splitterH->SplitHorizontally(m_canvas, terminal, -1);
-  else splitterH->SplitHorizontally(m_canvas, terminal, -200);
-  panel->SetSizer(gbsizer);
-
-  if (lbatch == 1)splitterV->SplitVertically(splitterH, panel, -1);
-  else splitterV->SplitVertically(splitterH, panel, 0);
-
-  Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_compute, this, ibutton_compute);
-  gbsizer->Add(new wxButton(panel, ibutton_compute, wxT("Update")), wxGBPosition(0,0), wxGBSpan(1,1));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line width : ")),
-    wxGBPosition(0, 1), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_line, this, itext_line);
-  textbox_linewidth = new wxTextCtrl(panel, itext_line, wxT(""));
-  gbsizer->Add(textbox_linewidth, wxGBPosition(0, 2), wxGBSpan(1, 1));
-  textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_gamma);
-  wxCheckBox *check_ongamma = new wxCheckBox(panel, icheck_gamma, wxT("On Gamma"));
-  gbsizer->Add(check_ongamma, wxGBPosition(0, 3), wxGBSpan(1, 1));
-  check_ongamma->SetValue(true);
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Section-v : ")), 
-    wxGBPosition(1, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectionx);
-  wxTextCtrl* textbox_sectionx = new wxTextCtrl(panel, itext_sectionx, wxT(""));
-  gbsizer->Add(textbox_sectionx, wxGBPosition(1, 1), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectiony);
-  wxTextCtrl* textbox_sectiony = new wxTextCtrl(panel, itext_sectiony, wxT(""));
-  gbsizer->Add(textbox_sectiony, wxGBPosition(1, 2), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectionz);
-  wxTextCtrl* textbox_sectionz = new wxTextCtrl(panel, itext_sectionz, wxT(""));
-  gbsizer->Add(textbox_sectionz, wxGBPosition(1, 3), wxGBSpan(1, 1));
-  textbox_sectionx->ChangeValue(wxT("0"));
-  textbox_sectiony->ChangeValue(wxT("0"));
-  textbox_sectionz->ChangeValue(wxT("1"));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Equator-v : ")), 
-    wxGBPosition(2, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatorx);
-  wxTextCtrl* textbox_equatorx = new wxTextCtrl(panel, itext_equatorx, wxT(""));
-  gbsizer->Add(textbox_equatorx, wxGBPosition(2, 1), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatory);
-  wxTextCtrl* textbox_equatory = new wxTextCtrl(panel, itext_equatory, wxT(""));
-  gbsizer->Add(textbox_equatory, wxGBPosition(2, 2), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatorz);
-  wxTextCtrl* textbox_equatorz = new wxTextCtrl(panel, itext_equatorz, wxT(""));
-  gbsizer->Add(textbox_equatorz, wxGBPosition(2, 3), wxGBSpan(1, 1));
-  textbox_equatorx->ChangeValue(wxT("0"));
-  textbox_equatory->ChangeValue(wxT("0"));
-  textbox_equatorz->ChangeValue(wxT("1"));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Interpol ratio : ")),
-    wxGBPosition(3, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_interpol, this, itext_interpol);
-  wxTextCtrl* textbox_interpol = new wxTextCtrl(panel, itext_interpol, wxT(""));
-  gbsizer->Add(textbox_interpol, wxGBPosition(3, 1), wxGBSpan(1, 1));
-  textbox_interpol->ChangeValue(wxT("1"));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Fermi energy : ")), 
-    wxGBPosition(4, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_shift, this, itext_shift);
-  wxTextCtrl* textbox_shift = new wxTextCtrl(panel, itext_shift, wxT(""));
-  gbsizer->Add(textbox_shift, wxGBPosition(4, 1), wxGBSpan(1, 1));
-  textbox_shift->ChangeValue(wxT("0"));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Min of Scale : ")), 
-    wxGBPosition(5, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_colorscale, this, itext_colorscalemin);
-  textbox_min = new wxTextCtrl(panel, itext_colorscalemin, wxT(""));
-  gbsizer->Add(textbox_min, wxGBPosition(5, 1), wxGBSpan(1, 1));
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Max of Scale : ")),
-    wxGBPosition(6, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_colorscale, this, itext_colorscalemax);
-  textbox_max = new wxTextCtrl(panel, itext_colorscalemax, wxT(""));
-  gbsizer->Add(textbox_max, wxGBPosition(6, 1), wxGBSpan(1, 1));
-
-  wxString choices_tetra[] = { wxT("1"), wxT("2"), wxT("3"), wxT("4"), wxT("5"), wxT("6"), wxT("7") ,
-wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
- wxT("15"), wxT("16") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_tetra, this, iradio_tetra);
-  gbsizer->Add(new wxRadioBox(panel, iradio_tetra, wxT("Tetrahedron"),
-    wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_tetra), choices_tetra,
-    4, wxRA_SPECIFY_COLS), wxGBPosition(3,2), wxGBSpan(5, 2));
-
-  wxString choices_colorscale[] = { wxT("Input (1D)"), wxT("Input (2D)"),
-    wxT("Input (3D)"), wxT("Fermi Velocity"), wxT("Band Index"),
-    wxT("Input (1D, Gray Scale)"), wxT("Fermi Velocity (Gray Scale)") };
-  radiobox_color = new wxRadioBox(panel, iradio_colorscale,
-    wxT("Color scale mode"),
-    wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_colorscale), choices_colorscale,
-    1, wxRA_SPECIFY_COLS);
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radiovalue_colorscale, this, iradio_colorscale);
-  gbsizer->Add(radiobox_color, wxGBPosition(7, 0), wxGBSpan(3, 2));
-
-  wxString choices_bz[] = { wxT("First Brillouin zone"), wxT("Primitive Brillouin zone") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_brillouinzone, this, iradio_brillouinzone);
-  gbsizer->Add(new wxRadioBox(panel, iradio_brillouinzone, wxT("Brillouin zone"),
-    wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_bz), choices_bz,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(8, 2), wxGBSpan(1, 2));
-
-  wxString choices_stereo[] = { wxT("None"), wxT("Parallel"), wxT("Cross") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_stereo, this, iradio_stereo);
-  gbsizer->Add(new wxRadioBox(panel, iradio_stereo, wxT("Stereogram"),
-    wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_stereo), choices_stereo,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(9, 2), wxGBSpan(1, 1));
-
-  wxString choices_mouse[] = { wxT("Rotate"), wxT("Scale"), wxT("Translate") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_mouse, this, iradio_mouse);
-  gbsizer->Add(new wxRadioBox(panel, iradio_mouse, wxT("Mouse Drag"),
-    wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_mouse), choices_mouse,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(9, 3), wxGBSpan(1, 1));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("BZ number : ")),
-    wxGBPosition(10, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BZ_number, this, itext_BZ_number0);
-  textbox_BZ_number0 = new wxTextCtrl(panel, itext_BZ_number0, wxT(""));
-  gbsizer->Add(textbox_BZ_number0, wxGBPosition(10, 1), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BZ_number, this, itext_BZ_number1);
-  textbox_BZ_number1 = new wxTextCtrl(panel, itext_BZ_number1, wxT(""));
-  gbsizer->Add(textbox_BZ_number1, wxGBPosition(10, 2), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BZ_number, this, itext_BZ_number2);
-  textbox_BZ_number2 = new wxTextCtrl(panel, itext_BZ_number2, wxT(""));
-  gbsizer->Add(textbox_BZ_number2, wxGBPosition(10, 3), wxGBSpan(1, 1));
-  textbox_BZ_number0->ChangeValue(wxT("1"));
-  textbox_BZ_number1->ChangeValue(wxT("1"));
-  textbox_BZ_number2->ChangeValue(wxT("1"));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Background (RGB) : ")),
-    wxGBPosition(11, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundR);
-  textbox_BackGroundR = new wxTextCtrl(panel, itext_BackGroundR, wxT(""));
-  gbsizer->Add(textbox_BackGroundR, wxGBPosition(11, 1), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundG);
-  textbox_BackGroundG = new wxTextCtrl(panel, itext_BackGroundG, wxT(""));
-  gbsizer->Add(textbox_BackGroundG, wxGBPosition(11, 2), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundB);
-  textbox_BackGroundB = new wxTextCtrl(panel, itext_BackGroundB, wxT(""));
-  gbsizer->Add(textbox_BackGroundB, wxGBPosition(11, 3), wxGBSpan(1, 1));
-  textbox_BackGroundR->ChangeValue(wxT("0"));
-  textbox_BackGroundG->ChangeValue(wxT("0"));
-  textbox_BackGroundB->ChangeValue(wxT("0"));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line color (RGB) : ")),
-    wxGBPosition(12, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorR);
-  textbox_LineColorR = new wxTextCtrl(panel, itext_LineColorR, wxT(""));
-  gbsizer->Add(textbox_LineColorR, wxGBPosition(12, 1), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorG);
-  textbox_LineColorG = new wxTextCtrl(panel, itext_LineColorG, wxT(""));
-  gbsizer->Add(textbox_LineColorG, wxGBPosition(12, 2), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorB);
-  textbox_LineColorB = new wxTextCtrl(panel, itext_LineColorB, wxT(""));
-  gbsizer->Add(textbox_LineColorB, wxGBPosition(12, 3), wxGBSpan(1, 1));
-  textbox_LineColorR->ChangeValue(wxT("1"));
-  textbox_LineColorG->ChangeValue(wxT("1"));
-  textbox_LineColorB->ChangeValue(wxT("1"));
-
-  Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::textctrl_view, this, ibutton_rotate);
-  gbsizer->Add(new wxButton(panel, ibutton_rotate, wxT("Rotate")), 
-    wxGBPosition(13, 0), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotx);
-  textbox_rotatex = new wxTextCtrl(panel, itext_rotx, wxT(""));
-  gbsizer->Add(textbox_rotatex, wxGBPosition(13, 1), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_roty);
-  textbox_rotatey = new wxTextCtrl(panel, itext_roty, wxT(""));
-  gbsizer->Add(textbox_rotatey, wxGBPosition(13, 2), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotz);
-  textbox_rotatez = new wxTextCtrl(panel, itext_rotz, wxT(""));
-  gbsizer->Add(textbox_rotatez, wxGBPosition(13, 3), wxGBSpan(1, 1));
-  textbox_rotatex->ChangeValue(wxT("0"));
-  textbox_rotatey->ChangeValue(wxT("0"));
-  textbox_rotatez->ChangeValue(wxT("0"));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Position : ")), 
-    wxGBPosition(14, 1), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positionx);
-  textbox_positionx = new wxTextCtrl(panel, itext_positionx, wxT(""));
-  gbsizer->Add(textbox_positionx, wxGBPosition(14, 2), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positiony);
-  textbox_positiony = new wxTextCtrl(panel, itext_positiony, wxT(""));
-  gbsizer->Add(textbox_positiony, wxGBPosition(14, 3), wxGBSpan(1, 1));
-  textbox_positionx->ChangeValue(wxT("0"));
-  textbox_positiony->ChangeValue(wxT("0"));
-
-  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Scale : ")), 
-    wxGBPosition(15, 2), wxGBSpan(1, 1), wxALIGN_RIGHT);
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_scale);
-  textbox_scale = new wxTextCtrl(panel, itext_scale, wxT(""));
-  gbsizer->Add(textbox_scale, wxGBPosition(15, 3), wxGBSpan(1, 1));
-  textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_colorbar, this, icheck_colorbar);
-  wxCheckBox* check = new wxCheckBox(panel, icheck_colorbar, wxT("Color bar"));
-  gbsizer->Add(check, wxGBPosition(15, 1), wxGBSpan(1, 1));
-  check->SetValue(true);
-  // debug fileMenu->Check(menu_colorbar_check, true);
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::checkvalue_equator, this, icheck_equator);
-  gbsizer->Add(new wxCheckBox(panel, icheck_equator, wxT("Equator")), wxGBPosition(16, 1), wxGBSpan(1, 1));
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_nodeline, this, icheck_nodeline);
-  gbsizer->Add(new wxCheckBox(panel, icheck_nodeline, wxT("Nodal line")), wxGBPosition(17, 1), wxGBSpan(1, 1));
-
-  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_section);
-  gbsizer->Add(new wxCheckBox(panel, icheck_section, wxT("Section")), wxGBPosition(18, 1), wxGBSpan(1, 1));
-
-  Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_section, this, ibutton_section);
-  gbsizer->Add(new wxButton(panel, ibutton_section, wxT("Section file")),
-    wxGBPosition(19, 1), wxGBSpan(1, 1));
-
-  wxString choices_light[] = { wxT("Both"), wxT("Unoccupy"), wxT("Occupy") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_lighting, this, iradio_lighting);
-  gbsizer->Add(new wxRadioBox(panel, iradio_lighting, wxT("Lighting"),
-    wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_light), choices_light,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(16, 2), wxGBSpan(4, 1));
-
-  wxString choices_BarColor[] = { wxT("BGR"), wxT("CMY"), wxT("MCY")};
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_BarColor, this, iradio_BarColor);
-  gbsizer->Add(new wxRadioBox(panel, iradio_BarColor, wxT("Bar Color"),
-    wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_BarColor), choices_BarColor,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(16, 3), wxGBSpan(4, 1));
-
-  SetSizer(sizermain);
-  SetAutoLayout(true);
-
-  // Show the frame
-  Show(true);
-  Raise();
-
-  m_canvas->InitGL();
-}
-
-MyFrame::~MyFrame()
-{
-  delete m_canvas;
-}
-
-// Intercept menu commands
-function MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
-{
-  // true is to force the frame to close
-  Close(true);
-}
-
-function MyFrame::modify_band() {
-  let ib, width, height;
-  wxCheckBox** check;
-
-  radiobox_color->SetSelection(color_scale - 1);
-
-  check = new wxCheckBox * [nb];
-
-  for (ib = 0; ib < nb; ib++) {
-    Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_band, this, icheck_band + ib);
-    check[ib] = new wxCheckBox(panel, icheck_band + ib, 
-      wxString::Format(wxT("Band " + toString() + ""), ib));
-    gbsizer->Add(check[ib], wxGBPosition(14 + ib, 0), wxGBSpan(1, 1));
-    check[ib]->SetValue(true);
-  }
-  gbsizer->Layout();
-  if (lbatch == 1) {
-    splitterH->Unsplit();
-    splitterV->Unsplit();
-  }
-  else {
-    splitterV->SetSashPosition(-gbsizer->CalcMin().GetX());
-  }
-  splitterV->Layout();
-  splitterH->Layout();
-  Refresh(false);
-  Raise();
-}
-/**
- @brief Window resize
-
- Modify : ::sx, ::sy
-*/
-function TestGLCanvas::OnSize(wxSizeEvent& event)
-{
-  if (!IsShownOnScreen())
-    return;
-  // This is normally only necessary if there is more than one wxGLCanvas
-  // or more than one wxGLContext in the application.
-  SetCurrent(*m_glRC);
-
-  /*
-   Scale of translation of mousepointer
-  */
-  sx = 1.0 / event.GetSize().x;
-  sy = 1.0 / event.GetSize().y;
-  // It's up to the application code to update the OpenGL viewport settings.
-  // This is OK here only because there is only one canvas that uses the
-  // context. See the cube sample for that case that multiple canvases are
-  // made current with one context.
-  glViewport(0, 0, event.GetSize().x, event.GetSize().y);
   /**/
-  glMatrixMode(GL_PROJECTION);
-  /**/
-  glLoadIdentity();
-  gluPerspective(30.0, event.GetSize().x / event.GetSize().y, 1.0, 100.0);
-  /**/
-  glMatrixMode(GL_MODELVIEW);
+  if (document.getElementById("band0")) draw_band[0] = 1;
+  else draw_band[0] = 0;
+
+  free_patch();
+  compute_patch_segment();
   Refresh(false);
-  //myf->Show(true);
 }
 /**
  @brief Glut mouse function
@@ -3712,102 +2843,26 @@ function TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
     Refresh(false);
   }
 }
-/**
- @brief Glut special key function
-
- Modify : ::trans
-*/
-function TestGLCanvas::OnChar(wxKeyEvent& event)
-{
-  switch (event.GetKeyCode())
-  {
-  case 'a':
-  case WXK_LEFT:
-    trans[0] += - 0.1;
-    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
-    myf->Show(true);
-    Refresh(false);
-    break;
-
-  case 'd':
-  case WXK_RIGHT:
-    trans[0] += 0.1;
-    myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
-    myf->Show(true);
-    Refresh(false);
-    break;
-
-  case 'w':
-  case WXK_UP:
-    trans[1] += 0.1;
-    myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
-    myf->Show(true);
-    Refresh(false);
-    break;
-
-  case 's':
-  case WXK_DOWN:
-    trans[1] += - 0.1;
-    myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
-    myf->Show(true);
-    Refresh(false);
-    break;
-
-  default:
-    event.Skip();
-    return;
-  }
-}
-
-function TestGLCanvas::InitGL()
-{
-  // Make the new context current (activate it for use) with this canvas.
-  SetCurrent(*m_glRC);
-
-  glClearColor(0.0, 0.0, 0.0, 0.0);
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_LIGHTING);
-  glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-  glEnable(GL_LIGHT0);
-  glEnable(GL_LIGHT1);
-  glEnable(GL_NORMALIZE);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnable(GL_COLOR_MATERIAL);
-  PostSizeEventToParent();
-}
-
-TestGLCanvas::TestGLCanvas(wxWindow* parent,
-  wxWindowID id,
-  let* gl_attrib)
-  : wxGLCanvas(parent, id, gl_attrib)
-{
-  // Explicitly create a new rendering context instance for this canvas.
-  m_glRC = new wxGLContext(this);
-}
-
-TestGLCanvas::~TestGLCanvas()
-{
-  delete m_glRC;
-}
 /*
  Allocation of Kohn-Sham energies $ matrix elements
 */
 function allocate_griddata(
-let ng[3],
-let ng0[3]
-) 
+  ng = [0, 0, 0],
+  ng0 = [0, 0, 0]
+)
 {
-  let i, j, ib, i0, i1, i2;
+  let i = 0, j = 0, ib = 0, i0 = 0, i1 = 0, i2 = 0;
 
   for (i = 0; i < 3; i++) ng[i] = ng0[i];
 
-  ntri = new let[nb];
-  nnl = new let[nb];
-  n2d = new let[nb];
-  nequator = new let[nb];
-  draw_band = new let[nb];
-  for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
-
+  for (i = 0; i < nb; i++) {
+    ntri.push(0);
+    nnl.push(0);
+    n2d.push(0);
+    nequator.push(0);
+    draw_band.push(1);
+  }
+  
   scl /= Math.sqrt(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
   linewidth /= scl;
   myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
@@ -3819,8 +2874,8 @@ let ng0[3]
     for (j = 0; j < 3; ++j) avec[i][j] = 0.0;
     avec[i][i] = 1.0;
     solve3(bvec, avec[i]);
-    terminal"    avec " + toString() + " : " + toString() + " " + toString() + " " + toString() + " \n"),
-      i + 1, avec[i][0], avec[i][1], avec[i][2]);
+    terminal("    avec " + toString(i + 1) + " : " + toString(avec[i][0]) + " "
+      + toString(avec[i][1]) + " " + toString(avec[i][2]) + " \n");
   }/*for (i = 0; i < 3; ++i)*/
   for (i = 0; i < 3; ++i) {
     secvec[i] = bvec[2][i];
@@ -3832,33 +2887,30 @@ let ng0[3]
   secvec_fr[2] = 1.0;
   secscale = 0.0;
 
-  eig0 = new let * **[nb];
-  eig = new let * **[nb];
-  mat0 = new let * ***[nb];
-  mat = new let * ***[nb];
-  vf = new let * ***[nb];
   for (ib = 0; ib < nb; ib++) {
-    eig0[ib] = new let * *[ng0[0]];
-    eig[ib] = new let * *[ng0[0]];
-    mat0[ib] = new let * **[ng0[0]];
-    mat[ib] = new let * **[ng0[0]];
-    vf[ib] = new let * **[ng0[0]];
+    eig0.psuh([]);
+    eig.psuh([]);
+    mat0.psuh([]);
+    mat.psuh([]);
+    vf.psuh([]);
     for (i0 = 0; i0 < ng0[0]; i0++) {
-      eig0[ib][i0] = new let * [ng0[1]];
-      eig[ib][i0] = new let * [ng0[1]];
-      mat0[ib][i0] = new let * *[ng0[1]];
-      mat[ib][i0] = new let * *[ng0[1]];
-      vf[ib][i0] = new let * *[ng0[1]];
+      eig0[ib].psuh([]);
+      eig[ib].psuh([]);
+      mat0[ib].psuh([]);
+      mat[ib].psuh([]);
+      vf[ib].psuh([]);
       for (i1 = 0; i1 < ng0[1]; i1++) {
-        eig0[ib][i0][i1] = new let[ng0[2]];
-        eig[ib][i0][i1] = new let[ng0[2]];
-        mat0[ib][i0][i1] = new let * [ng0[2]];
-        mat[ib][i0][i1] = new let * [ng0[2]];
-        vf[ib][i0][i1] = new let * [ng0[2]];
+        eig0[ib][i0].psuh([]);
+        eig[ib][i0].psuh([]);
+        mat0[ib][i0].psuh([]);
+        mat[ib][i0].psuh([]);
+        vf[ib][i0].psuh([]);
         for (i2 = 0; i2 < ng0[2]; ++i2) {
-          mat0[ib][i0][i1][i2] = new let[3];
-          mat[ib][i0][i1][i2] = new let[3];
-          vf[ib][i0][i1][i2] = new let[3];
+          eig0[ib][i0][i1].psuh(0.0);
+          eig[ib][i0][i1].psuh(0.0);
+          mat0[ib][i0][i1].psuh([0.0, 0.0, 0.0]);
+          mat[ib][i0][i1].psuh([0.0, 0.0, 0.0]);
+          vf[ib][i0][i1].psuh([0.0, 0.0, 0.0]);
         }
       }
     }
@@ -3867,13 +2919,20 @@ let ng0[3]
 /**
  @brief Input from Fermi surface file
 */
-let read_file()
+function read_file()
 {
-  let ib, i, j, i0, i1, i2, ii0, ii1, ii2, ierr, iaxis;
-  FILE *fp;
-  char* ctemp1;
-  char ctemp2[256];
+  let ib, i, j, i0, i1, i2, ii0, ii1, ii2, iaxis, icount;
   let lshift; //!< Switch for shifted Brillouin zone
+
+  const selectedFile = document.getElementById('input').files[0];
+  var reader = new FileReader();
+  reader.onload = function (evt) {
+    console.log(evt.target.result);
+  };
+  reader.readAsText(selectedFile);
+
+  let datas = reader.result.replace('\n', '\s').split('\s+');
+  icount = 0;
   /*
    Open input file.
   */
@@ -3890,17 +2949,17 @@ let read_file()
   /*
    k-point grid
   */
-  ctemp1 = fgets(ctemp2, 256, fp);
-  ierr = sscanf(ctemp2, "%d%d%d", &ng0[0], &ng0[1], &ng0[2]);
+  for (i = 0; i < 3; i++) {
+    ng0[i] =  Number(datas[icount]);
+    icount += 1;
+  }
 
-  if (ierr == 0) terminal("error ! reading ng\n");
-  terminal"    k point grid : " + toString() + " " + toString() + " " + toString() + "\n"),
-    ng0[0], ng0[1], ng0[2]);
+  terminal("    k point grid : " + toString(ng0[0]) + " " + toString(ng0[1]) + " " + toString(ng0[2]) + "\n");
   /*
    Shift of k-point grid
   */
-  ierr = fscanf(fp, "%d", &lshift);
-  if (ierr == 0) terminal("error ! reading lshift\n");
+  lshift = Number(datas[icount]);
+  icount += 1;
 
   if (lshift == 0) {
     terminal("    k point grid is the Monkhorst-Pack grid.\n");
@@ -3920,16 +2979,18 @@ let read_file()
   /*
    # of bands
   */
-  ierr = fscanf(fp, "%d", &nb);
-  if (ierr == 0) terminal("error ! reading nb\n");
-  terminal"    # of bands : " + toString() + "\n"), nb);
+  nb = Number(datas[icount]);
+  icount += 1;
+  terminal("    # of bands : " + toString(nb) + "\n");
   /*
    Reciplocal lattice vectors
   */
   for (i = 0; i < 3; ++i) {
-    ierr = fscanf(fp, "%e%e%e", &bvec[i][0], &bvec[i][1], &bvec[i][2]);
-    if (ierr == 0) terminal("error ! reading bvec\n");
-    terminal"    bvec " + toString() + " : " + toString() + " " + toString() + " " + toString() + " \n"), i + 1, bvec[i][0], bvec[i][1], bvec[i][2]);
+    for (j = 0; j < 3; j++) {
+      bvec[i][j] = Number(datas[icount]);
+      icount += 1;
+    }
+    terminal("    bvec " + toString(i + 1) + " : " + toString(bvec[i][0]) + " " + toString(bvec[i][1]) + " " + toString(bvec[i][2]) + " \n");
   }/*for (i = 0; i < 3; ++i)*/
   allocate_griddata(ng, ng0);
   /*
@@ -3945,7 +3006,8 @@ let read_file()
         for (i2 = 0; i2 < ng0[2]; ++i2) {
           if (lshift != 0) ii2 = i2;
           else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
-          ierr = fscanf(fp, "%e", &eig0[ib][ii0][ii1][ii2]);
+          eig0[ib][ii0][ii1][ii2] = Number(datas[icount]);
+          icount += 1;
         }
       }
     }
@@ -3953,7 +3015,7 @@ let read_file()
   /*
    Matrix elements
   */
-  for (iaxis = 0; iaxis < 3; iaxis++) {
+  for (iaxis = 0; iaxis < 1; iaxis++) {
     for (ib = 0; ib < nb; ++ib) {
       for (i0 = 0; i0 < ng0[0]; ++i0) {
         if (lshift != 0) ii0 = i0;
@@ -3964,107 +3026,15 @@ let read_file()
           for (i2 = 0; i2 < ng0[2]; ++i2) {
             if (lshift != 0) ii2 = i2;
             else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
-            ierr = fscanf(fp, "%e", &mat0[ib][ii0][ii1][ii2][iaxis]);
-            if (ierr == EOF) {
-              fclose(fp);
-              return iaxis;
-            }
+            mat0[ib][ii0][ii1][ii2][iaxis] = Number(datas[icount]);
+            icount += 1;
           }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
         }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
       }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
     }/*for (ib = 0; ib < nb; ++ib)*/
   }
-  fclose(fp);
-  return 3;
+  return 1;
 } /* read_file */
-/*
-  @brief Make all characters lower
-*/
-function Text2Lower(char *value //!<[inout] @brief Keyword or value
-) {
-  char value2;
-  let valuelen, ii;
-
-  valuelen = strlen(value);
-  for (ii = 0; ii < valuelen; ii++) {
-    value2 = tolower(value[ii]);
-    value[ii] = value2;
-  }
-}/*function Text2Lower*/
-function read_bxsf()
-{
-  FILE* fp;
-  char ctmp[256], ctmpEF1[16], ctmpEF2[16];
-  let ierr, ii, ib, i0, i1, i2, ii0, ii1, ii2;
-  char* cerr;
-  double EF;
-
-  if ((fp = fopen(frmsf_file_name.mb_str(), "r")) == NULL) {
-    printf("file open error!!\n");
-    printf("  Press any key to exit.\n");
-    ierr = getchar();
-    exit(EXIT_FAILURE);
-  }
-  terminal("\n#####  Reading BXSF file ") 
-    << frmsf_file_name << wxT(" #####\n\n");
-
-  cerr = fgets(ctmp, 256, fp);
-  while (strstr(ctmp, "Fermi Energy:") == NULL) {
-    cerr = fgets(ctmp, 256, fp);
-  }
-  ierr = sscanf(ctmp, "%s %s %lf", ctmpEF1, ctmpEF2, &EF);
-  terminal"  Fermi energy : %le\n"), EF);
-
-  cerr = fgets(ctmp, 256, fp);
-  while (strstr(ctmp, "BEGIN_BLOCK_BANDGRID_3D") == NULL) {
-    cerr = fgets(ctmp, 256, fp);
-  }
-  cerr = fgets(ctmp, 256, fp);
-  cerr = fgets(ctmp, 256, fp);
-
-  cerr = fgets(ctmp, 256, fp);
-  ierr = sscanf(ctmp, "%d", &nb);
-  terminal"  Number of bands : " + toString() + "\n"), nb);
-  cerr = fgets(ctmp, 256, fp);
-  ierr = sscanf(ctmp, "%d%d%d", &ng0[0], &ng0[1], &ng0[2]);
-  for (ii = 0; ii < 3; ii++) ng0[ii] -= 1;
-  terminal"  k point grid : " + toString() + " " + toString() + " " + toString() + "\n"), 
-    ng0[0], ng0[1], ng0[2]);
-
-  cerr = fgets(ctmp, 256, fp);
-  for (ii = 0; ii < 3; ++ii) {
-    cerr = fgets(ctmp, 256, fp);
-    ierr = sscanf(ctmp, "%e%e%e", &bvec[ii][0], &bvec[ii][1], &bvec[ii][2]);
-    terminal("  Bvec " + toString(ii) + " : " + toString(bvec[ii][0]) + " " + toString(bvec[ii][1]) + " " + toString(bvec[ii][2]) + "\n");
-  }
-  allocate_griddata(ng, ng0);
-
-  for (ib = 0; ib < nb; ib++) {
-    cerr = fgets(ctmp, 256, fp);
-    terminal"  Reading %s"), ctmp);
-
-    for (i0 = 0; i0 <= ng0[0]; i0++) {
-      if (i0 == ng0[0]) ii0 = 0;
-      else ii0 = i0;
-      for (i1 = 0; i1 <= ng0[1]; i1++) {
-        if (i1 == ng0[1]) ii1 = 0;
-        else ii1 = i1;
-        for (i2 = 0; i2 <= ng0[2]; i2++) {
-          if (i2 == ng0[2]) ii2 = 0;
-          else ii2 = i2;
-
-          ierr = fscanf(fp, "%e", &eig0[ib][ii0][ii1][ii2]);
-          eig0[ib][ii0][ii1][ii2] -= EF;
-        }/*for (i2 = 0; i2 < Ng[2]; i2++)*/
-      }/*for (i1 = 0; i1 < Ng[1]; i1++)*/
-    }/*for (i0 = 0; i0 < Ng[0]; i0++)*/
-
-    cerr = fgets(ctmp, 256, fp);
-
-  }/*for (ib = 0; ib < Nb; ib++)*/
-  for (ii = 0; ii < 3; ii++) shiftk[ii] = 0;
-  color_scale = 4;
-}/*function read_bxsf*/
 /**
  @brief Project 3D \f$k\f$-vector into 2D plane. 
 
@@ -4130,20 +3100,20 @@ function set2daxis(
 /**
  @brief Judge wheser this line is the edge of 1st BZ (or the premitive BZ)
 */
-let bragg_vert2d(
-  let nbragg,
-  let bragg[26][3],
-  let brnrm[26],
-  let secvec[3],
-  let secscale,
-  let jbr, //!< [in] Index of a Bragg plane
-  let nbr, //!< [in]
-  let vert[3], //!< [inout] start point of line
-  let vert2[3] //!< [in] end point of line
+function bragg_vert2d(
+  nbragg = 0,
+  bragg=[],
+  brnrm=[],
+  secvec = [0.0, 0.0, 0.0],
+  secscale=0.0,
+  jbr =0, //!< [in] Index of a Bragg plane
+  nbr = 0, //!< [in]
+  vert = [0.0, 0.0, 0.0], //!< [inout] start point of line
+  vert2 = [0.0, 0.0, 0.0] //!< [in] end point of line
 )
 {
   let kbr, i, lbr, nbr0;
-  let bmat[3][3], rhs[3], prod, thr, det;
+  let bmat = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], rhs = [0.0, 0.0, 0.0], prod = 0.0, thr = 0.0, det = 0.0;
   /**/
   nbr0 = nbr;
   /**/
@@ -4204,8 +3174,8 @@ let bragg_vert2d(
  Modify : ::nbzl2d, ::bzl2d_proj
 */
 function calc_2dbz() {
-  let jbr, nbr, i, j, lvert, ibzl;
-  let vert[2][3], vec[26][2][3], prod, thr;
+  let jbr = 0, nbr = 0, i = 0, j = 0, lvert = 0, ibzl = 0;
+  let vert = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], vec = [], prod = 0.0, thr = 0.0;
 
   if (fbz != 1)return;
   /*
@@ -4226,7 +3196,11 @@ function calc_2dbz() {
     lvert = bragg_vert2d(nbragg, bragg, brnrm, secvec, secscale, jbr, nbr, vert[1], vert[0]);
     if (lvert == 0) continue;
     /**/
-    for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) vec[nbzl2d][i][j] = vert[i][j];
+    vec.push([]);
+    for (i = 0; i < 2; ++i) {
+      vec[nbzl2d].push([]);
+      for (j = 0; j < 3; ++j) vec[nbzl2d][i].push(vert[i][j]);
+    }
     nbzl2d += 1;
   }/*for (jbr = 0; jbr < nbragg; ++jbr)*/
   /*
@@ -4299,116 +3273,77 @@ function calc_2dbz() {
  Modify : ::n2d, ::clr2d, ::kv2d
 */
 function calc_section() {
-  let i, j, ib, itri, ithread, n2d0;
-  std::vector<std::vector<std::vector<std::vector<let> > > > kv2d_v, clr2d_v;
-
-  kv2d_v.resize(nthreads);
-  clr2d_v.resize(nthreads);
+  let i = 0, j = 0, ib = 0, itri = 0;
+  let kv2d_0 = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], clr2d_0 = [[0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0]];
+  let sw = [0, 0, 0];
+  let norm = [0.0, 0.0, 0.0], a = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
 
   if (fbz != 1)return;
 
   terminal("    band   # of Fermi-line\n");
   for (ib = 0; ib < nb; ib++) {
 
-#pragma omp parallel default(none) \
-shared(nb,ib,clr,clr2d_v,kvp,kv2d_v,ntri,secvec,secscale,axis2d) \
-private(itri,i,j,ithread)
-    {
-      let sw[3];
-      let norm[3], a[3][3];
-      std::vector<std::vector<let> > kv2d_0, clr2d_0;
+    kv2d.push([]);
 
-      kv2d_0.resize(2);
-      clr2d_0.resize(2);
-      for (i = 0; i < 2; i++) {
-        kv2d_0[i).resize(3);
-        clr2d_0[i).resize(4);
+    for (itri = 0; itri < ntri[ib]; ++itri) {
+      /**/
+      for (i = 0; i < 3; i++) {
+         norm[i] = 0.0;
+        for (j = 0; j < 3; j++) norm[i] += secvec[j] * (kvp[ib][itri][i][j] - secscale * secvec[j]);
       }
-
-      ithread = get_thread();
-      kv2d_v[ithread).resize(0);
-      clr2d_v[ithread).resize(0);
-
-#pragma omp for
-      for (itri = 0; itri < ntri[ib]; ++itri) {
-        /**/
-        for (i = 0; i < 3; i++) {
-          norm[i] = 0.0;
-          for (j = 0; j < 3; j++) norm[i] += secvec[j] * (kvp[ib][itri][i][j] - secscale * secvec[j]);
-        }
-        eigsort(3, norm, sw);
+      eigsort(3, norm, sw);
+      for (i = 0; i < 3; ++i) {
+        for (j = 0; j < 3; ++j) {
+          a[i][j] = (0.0 - norm[sw[j]]) / (norm[sw[i]] - norm[sw[j]]);
+        }/*for (j = 0; j < 3; ++j)*/
+      }/*for (i = 0; i < 3; ++i)*/
+      /**/
+      if ((norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]]) || (norm[sw[0]] <= 0.0 && 0.0 < norm[sw[1]])) {
         for (i = 0; i < 3; ++i) {
-          for (j = 0; j < 3; ++j) {
-            a[i][j] = (0.0 - norm[sw[j]]) / (norm[sw[i]] - norm[sw[j]]);
-          }/*for (j = 0; j < 3; ++j)*/
-        }/*for (i = 0; i < 3; ++i)*/
-         /**/
-        if ((norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]]) || (norm[sw[0]] <= 0.0 && 0.0 < norm[sw[1]])) {
-          for (i = 0; i < 3; ++i) {
-            kv2d_0[0)[i)
+          kv2d_0[0][i]
               = kvp[ib][itri][sw[1]][i] * a[1][0] + kvp[ib][itri][sw[0]][i] * a[0][1];
-            kv2d_0[1)[i)
-              = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
-          }/*for (i = 0; i < 3; ++i)*/
-          for (i = 0; i < 4; ++i) {
-            clr2d_0[0)[i)
-              = clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][0]
-              + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][1];
-            clr2d_0[1)[i)
-              = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
-              + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
-          }/*for (i = 0; i < 4; ++i)*/
-          proj_2d(axis2d, &kv2d_0[0)[0));
-          proj_2d(axis2d, &kv2d_0[1)[0));
-          kv2d_v[ithread).push_back(kv2d_0);
-          clr2d_v[ithread).push_back(clr2d_0);
-        }/*else if (norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]])*/
-        else if ((norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]]) || (norm[sw[1]] <= 0.0 && 0.0 < norm[sw[2]])) {
-          for (i = 0; i < 3; ++i) {
-            kv2d_0[0)[i)
-              = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
-            kv2d_0[1)[i)
-              = kvp[ib][itri][sw[2]][i] * a[2][1] + kvp[ib][itri][sw[1]][i] * a[1][2];
-          }/*for (i = 0; i < 3; ++i)*/
-          for (i = 0; i < 4; ++i) {
-            clr2d_0[0)[i)
-              = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
-              + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
-            clr2d_0[1)[i)
-              = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][1]
-              + clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][2];
-          }/*for (i = 0; i < 4; ++i)*/
-          proj_2d(axis2d, &kv2d_0[0)[0));
-          proj_2d(axis2d, &kv2d_0[1)[0));
-          kv2d_v[ithread).push_back(kv2d_0);
-          clr2d_v[ithread).push_back(clr2d_0);
-        }/*else if (norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]])*/
-      }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
-    }/* End of parallel region */
+          kv2d_0[1][i]
+            = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
+        }/*for (i = 0; i < 3; ++i)*/
+        for (i = 0; i < 4; ++i) {
+          clr2d_0[0][i]
+            = clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][0]
+            + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][1];
+          clr2d_0[1][i]
+            = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
+            + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
+        }/*for (i = 0; i < 4; ++i)*/
+        proj_2d(axis2d, kv2d_0[0]);
+        proj_2d(axis2d, kv2d_0[1]);
+        kv2d[ib].push(kv2d_0);
+        clr2d[ib].push(clr2d_0);
+      }/*else if (norm[sw[0]] < 0.0 && 0.0 <= norm[sw[1]])*/
+      else if ((norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]]) || (norm[sw[1]] <= 0.0 && 0.0 < norm[sw[2]])) {
+        for (i = 0; i < 3; ++i) {
+          kv2d_0[0][i]
+            = kvp[ib][itri][sw[2]][i] * a[2][0] + kvp[ib][itri][sw[0]][i] * a[0][2];
+          kv2d_0[1][i]
+            = kvp[ib][itri][sw[2]][i] * a[2][1] + kvp[ib][itri][sw[1]][i] * a[1][2];
+        }/*for (i = 0; i < 3; ++i)*/
+        for (i = 0; i < 4; ++i) {
+          clr2d_0[0][i]
+            = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][0]
+            + clr[ib][i + 4 * sw[0] + 12 * itri] * a[0][2];
+          clr2d_0[1][i]
+            = clr[ib][i + 4 * sw[2] + 12 * itri] * a[2][1]
+            + clr[ib][i + 4 * sw[1] + 12 * itri] * a[1][2];
+        }/*for (i = 0; i < 4; ++i)*/
+        proj_2d(axis2d, kv2d_0[0]);
+        proj_2d(axis2d, kv2d_0[1]);
+        kv2d[ib].push(kv2d_0);
+        clr2d[ib].push(clr2d_0);
+      }/*else if (norm[sw[1]] < 0.0 && 0.0 <= norm[sw[2]])*/
+    }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
     /*
      Allocation of Fermi-lines
     */
-    n2d[ib] = 0;
-    for (ithread = 0; ithread < nthreads; ithread++)
-      n2d[ib] += kv2d_v[ithread).size();
+    n2d[ib] =  kv2d[ib].length;
 
-    terminal"    " + toString() + "       " + toString() + "\n"), ib + 1, n2d[ib]);
-    kv2d[ib] = new let[6 * n2d[ib]];
-    clr2d[ib] = new let[8 * n2d[ib]];
-
-    n2d0 = 0;
-    for (ithread = 0; ithread < nthreads; ithread++) {
-      for (itri = 0; itri < kv2d_v[ithread).size(); itri++) {
-        for (i = 0; i < 2; i++) {
-          for (j = 0; j < 3; j++) {
-            kv2d[ib][j + i * 3 + 6 * n2d0] = kv2d_v[ithread)[itri)[i)[j);
-          }
-          for (j = 0; j < 3; j++) {
-            clr2d[ib][j + i * 4 + 8 * n2d0] = clr2d_v[ithread)[itri)[i)[j);
-          }
-        }
-        n2d0 += 1;
-      }
-    }
+    terminal("    " + toString(ib + 1) + "       " + toString(n2d[ib]) + "\n");
   }/*for (ib = 0; ib < nb; ib++)*/
 }/*function calc_nodeline()*/
