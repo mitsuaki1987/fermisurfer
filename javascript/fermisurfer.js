@@ -21,6 +21,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+function test() {
+  terminal("test");
+}
+function terminal(msg) {
+  var p = document.getElementById('log');
+  p.innerHTML += "\n" + msg;
+}
 /**@file
 @brief Mathematical operations used in various step
 */
@@ -213,7 +220,7 @@ function check_bragg()
 
     }/*for (ii = 0; ii < 2; ii++)*/
   }/*for (ibzl = 0; ibzl < nbzl; ibzl++)*/
-  terminal("    Number of corners of 1st BZ : " + toString(nbzcorner) + "\n");
+  terminal("    Number of corners of 1st BZ : " + String(nbzcorner) + "\n");
   /**@brief
   Then, compute real number Bragg plane of 1st BZ (::nbragg), 
   Re-order ::bragg and ::brnrm
@@ -232,7 +239,7 @@ function check_bragg()
       nbragg += 1;
     }
   }
-  terminal("    Number of plane of 1st BZ : " + toString(nbragg) + "\n");
+  terminal("    Number of plane of 1st BZ : " + String(nbragg) + "\n");
 }/*function check_bragg*/
 /**
  @brief Compute Brillouin zone boundariy lines
@@ -321,7 +328,7 @@ function calc_nodeline()
      Allocation of nodeline
      */
     nnl[ib] = kvnl[ib].length;
-    terminal("    " + toString(ib + 1) + "       " + toString(nnl[ib]) + "\n");
+    terminal("    " + String(ib + 1) + "       " + String(nnl[ib]) + "\n");
   }/*for (ib = 0; ib < nb; ib++)*/
 }/*function calc_nodeline()*/
 /**
@@ -937,7 +944,7 @@ function equator() {
      Sum node-lines in all threads
     */
     nequator.push(kveq[ib].size);
-    terminal("    " + toString(ib + 1) + "       " + toString(nequator[ib])+ "\n");
+    terminal("    " + String(ib + 1) + "       " + String(nequator[ib])+ "\n");
   }/*for (ib = 0; ib < nb; ib++)*/
 }/*function equator()*/
 /**
@@ -1881,8 +1888,8 @@ function max_and_min()
     }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 5 || color_scale == 6)*/
 
-  document.getElementById("scalemin").value = toString(patch_min);
-  document.getElementById("scalemax").value = toString(patch_max);
+  document.getElementById("scalemin").value = String(patch_min);
+  document.getElementById("scalemax").value = String(patch_max);
 }/* max_and_min */
  /**
  @brief Compute Max. & Min. of matrix elements.
@@ -2302,7 +2309,7 @@ function bragg_vector()
   for (ibr = 1; ibr < 26; ibr++) {
     if (brnrm_min > brnrm[ibr]) brnrm_min = brnrm[ibr];
   }
-  terminal("    Minimum Bragg norm : " + toString(brnrm_min) + "\n");
+  terminal("    Minimum Bragg norm : " + String(brnrm_min) + "\n");
 }/* bragg_vector */
 /**
  @brief Print max and minimum @f$\varepsilon_{n k}, \Delta_{n k}@f$
@@ -2332,8 +2339,8 @@ function max_and_min_bz()
         }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
       }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
     }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
-    terminal("    " + toString(ib + 1) + "     " + toString(eigmin) + "     " +
-      toString(eigmax) + "     " + toString(matmin) + "     " + toString(matmax) + "\n");
+    terminal("    " + String(ib + 1) + "     " + String(eigmin) + "     " +
+      String(eigmax) + "     " + String(matmin) + "     " + String(matmax) + "\n");
   }/*for (ib = 0; ib < nb; ib++)*/
 }/* max_and_min_bz */
 /**
@@ -2711,6 +2718,7 @@ function button_update() {
 
  Modify : ::cx, ::cy, ::scl
 */
+/*
 function TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
 {
   static let dragging = 0;
@@ -2730,27 +2738,27 @@ function TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
     }
     else
     {
-      /*
-       Translation of mousepointer from starting point
-      */
+      //
+      // Translation of mousepointer from starting point
+      //
       dx = (event.GetX() - last_x) * sx;
       dy = (event.GetY() - last_y) * sy;
-      /*
-       Distanse from starting point
-      */
+      //
+      // Distanse from starting point
+      //
       a = Math.sqrt(dx * dx + dy * dy);
-      /**/
+      //
       if (lmouse == 1) {
-        /**/
+        //
         if (a != 0.0) {
-          /*
-           Compute rotational matrix from translation of mousepointer
-          */
+          //
+          // Compute rotational matrix from translation of mousepointer
+          //
           ax = -dy;
           ay = dx;
-          /**/
+          //
           a = a * 10.0;
-          /**/
+          //
           rot0[0][0] = (ax * ax + ay * ay * Math.cos(a)) / (ax * ax + ay * ay);
           rot0[0][1] = ax * ay * (Math.cos(a) - 1.0) / (ax * ax + ay * ay);
           rot0[0][2] = ay * Math.sin(a) / Math.sqrt(ax * ax + ay * ay);
@@ -2760,9 +2768,9 @@ function TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
           rot0[2][0] = -ay * Math.sin(a) / Math.sqrt(ax * ax + ay * ay);
           rot0[2][1] = -ax * Math.sin(a) / Math.sqrt(ax * ax + ay * ay);
           rot0[2][2] = Math.cos(a);
-          /**/
+          //
           for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
-          /**/
+          //
           for (i = 0; i < 3; i++) {
             for (j = 0; j < 3; j++) {
               rot[i][j] = rot0[i][0] * rot1[0][j]
@@ -2770,9 +2778,9 @@ function TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
                         + rot0[i][2] * rot1[2][j];
             }
           }
-          /*
-          Print angle to text Box
-          */
+          //
+          //Print angle to text Box
+          //
           thetay = Math.asin(rot[0][2]);
           if (Math.cos(thetay) != 0.0) {
             if (-rot[1][2] / Math.cos(thetay) >= 0.0) thetax = Math.acos(rot[2][2] / Math.cos(thetay));
@@ -2843,6 +2851,7 @@ function TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
     Refresh(false);
   }
 }
+*/
 /*
  Allocation of Kohn-Sham energies $ matrix elements
 */
@@ -2865,8 +2874,8 @@ function allocate_griddata(
   
   scl /= Math.sqrt(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
   linewidth /= scl;
-  myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
-  myf->textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
+  document.getElementById("scale").value = String(scl);
+  document.getElementById("linewidth").value = String(linewidth);
   /*
    Direct lattice vector
   */
@@ -2874,8 +2883,8 @@ function allocate_griddata(
     for (j = 0; j < 3; ++j) avec[i][j] = 0.0;
     avec[i][i] = 1.0;
     solve3(bvec, avec[i]);
-    terminal("    avec " + toString(i + 1) + " : " + toString(avec[i][0]) + " "
-      + toString(avec[i][1]) + " " + toString(avec[i][2]) + " \n");
+    terminal("    avec " + String(i + 1) + " : " + String(avec[i][0]) + " "
+      + String(avec[i][1]) + " " + String(avec[i][2]) + " \n");
   }/*for (i = 0; i < 3; ++i)*/
   for (i = 0; i < 3; ++i) {
     secvec[i] = bvec[2][i];
@@ -2924,98 +2933,65 @@ function read_file()
   let ib, i, j, i0, i1, i2, ii0, ii1, ii2, iaxis, icount;
   let lshift; //!< Switch for shifted Brillouin zone
 
-  const selectedFile = document.getElementById('input').files[0];
+  const selectedFile = document.getElementById('inputfile').files[0];
   var reader = new FileReader();
-  reader.onload = function (evt) {
-    console.log(evt.target.result);
-  };
   reader.readAsText(selectedFile);
-
-  let datas = reader.result.replace('\n', '\s').split('\s+');
-  icount = 0;
-  /*
-   Open input file.
-  */
-  terminal("  Openning ") << frmsf_file_name << wxT(" ...\n");
-  if ((fp = fopen(frmsf_file_name.mb_str(), "r")) == NULL) {
-    terminal("file open error!!\n");
-    terminal("  Press any key to exit.\n");
-    ierr = getchar();
-    exit(EXIT_FAILURE);
-  }
-  terminal("\n");
-  terminal("  ##  Brillouin zone informations  ###########\n");
-  terminal("\n");
-  /*
-   k-point grid
-  */
-  for (i = 0; i < 3; i++) {
-    ng0[i] =  Number(datas[icount]);
-    icount += 1;
-  }
-
-  terminal("    k point grid : " + toString(ng0[0]) + " " + toString(ng0[1]) + " " + toString(ng0[2]) + "\n");
-  /*
-   Shift of k-point grid
-  */
-  lshift = Number(datas[icount]);
-  icount += 1;
-
-  if (lshift == 0) {
-    terminal("    k point grid is the Monkhorst-Pack grid.\n");
-    for (i = 0; i < 3; i++) shiftk[i] = (ng0[i] + 1) % 2;
-  }
-  else if (lshift == 1) {
-    terminal("    k point grid starts from Gamma.\n");
-    for (i = 0; i < 3; i++) shiftk[i] = 0;
-  }
-  else if (lshift == 2) {
-    terminal("    k point grid starts from Gamma + a half grid.\n");
-    for (i = 0; i < 3; i++) shiftk[i] = 1;
-  }
-  else {
-    exit(0);
-  }
-  /*
-   # of bands
-  */
-  nb = Number(datas[icount]);
-  icount += 1;
-  terminal("    # of bands : " + toString(nb) + "\n");
-  /*
-   Reciplocal lattice vectors
-  */
-  for (i = 0; i < 3; ++i) {
-    for (j = 0; j < 3; j++) {
-      bvec[i][j] = Number(datas[icount]);
+  reader.onload = function (event) {
+    var result = event.target.result;
+    let datas = result.replace(/\n/g, ' ').replace(/^ +/, '').split(/ +/);
+    icount = 0;
+    terminal("\n");
+    terminal("  ##  Brillouin zone informations  ###########\n");
+    terminal("\n");
+    /*
+     k-point grid
+    */
+    for (i = 0; i < 3; i++) {
+      ng0[i] = Number(datas[icount]);
       icount += 1;
     }
-    terminal("    bvec " + toString(i + 1) + " : " + toString(bvec[i][0]) + " " + toString(bvec[i][1]) + " " + toString(bvec[i][2]) + " \n");
-  }/*for (i = 0; i < 3; ++i)*/
-  allocate_griddata(ng, ng0);
-  /*
-   Kohn-Sham energies
-  */
-  for (ib = 0; ib < nb; ++ib) {
-    for (i0 = 0; i0 < ng0[0]; ++i0) {
-      if (lshift != 0) ii0 = i0;
-      else ii0 = modulo(i0 + (ng0[0] + 1) / 2, ng0[0]);
-      for (i1 = 0; i1 < ng0[1]; ++i1) {
-        if (lshift != 0) ii1 = i1;
-        else ii1 = modulo(i1 + (ng0[1] + 1) / 2, ng0[1]);
-        for (i2 = 0; i2 < ng0[2]; ++i2) {
-          if (lshift != 0) ii2 = i2;
-          else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
-          eig0[ib][ii0][ii1][ii2] = Number(datas[icount]);
-          icount += 1;
-        }
-      }
+    terminal("    k point grid : " + String(ng0[0]) + " " + String(ng0[1]) + " " + String(ng0[2]) + "\n");
+    /*
+     Shift of k-point grid
+    */
+    lshift = Number(datas[icount]);
+    icount += 1;
+
+    if (lshift == 0) {
+      terminal("    k point grid is the Monkhorst-Pack grid.\n");
+      for (i = 0; i < 3; i++) shiftk[i] = (ng0[i] + 1) % 2;
     }
-  }
-  /*
-   Matrix elements
-  */
-  for (iaxis = 0; iaxis < 1; iaxis++) {
+    else if (lshift == 1) {
+      terminal("    k point grid starts from Gamma.\n");
+      for (i = 0; i < 3; i++) shiftk[i] = 0;
+    }
+    else if (lshift == 2) {
+      terminal("    k point grid starts from Gamma + a half grid.\n");
+      for (i = 0; i < 3; i++) shiftk[i] = 1;
+    }
+    else {
+      exit(0);
+    }
+    /*
+     # of bands
+    */
+    nb = Number(datas[icount]);
+    icount += 1;
+    terminal("    # of bands : " + String(nb) + "\n");
+    /*
+     Reciplocal lattice vectors
+    */
+    for (i = 0; i < 3; ++i) {
+      for (j = 0; j < 3; j++) {
+        bvec[i][j] = Number(datas[icount]);
+        icount += 1;
+      }
+      terminal("    bvec " + String(i + 1) + " : " + String(bvec[i][0]) + " " + String(bvec[i][1]) + " " + String(bvec[i][2]) + " \n");
+    }/*for (i = 0; i < 3; ++i)*/
+    allocate_griddata(ng, ng0);
+    /*
+     Kohn-Sham energies
+    */
     for (ib = 0; ib < nb; ++ib) {
       for (i0 = 0; i0 < ng0[0]; ++i0) {
         if (lshift != 0) ii0 = i0;
@@ -3026,13 +3002,39 @@ function read_file()
           for (i2 = 0; i2 < ng0[2]; ++i2) {
             if (lshift != 0) ii2 = i2;
             else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
-            mat0[ib][ii0][ii1][ii2][iaxis] = Number(datas[icount]);
+            eig0[ib][ii0][ii1][ii2] = Number(datas[icount]);
             icount += 1;
-          }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
-        }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
-      }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
-    }/*for (ib = 0; ib < nb; ++ib)*/
-  }
+          }
+        }
+      }
+    }
+    /*
+     Matrix elements
+    */
+    for (iaxis = 0; iaxis < 1; iaxis++) {
+      for (ib = 0; ib < nb; ++ib) {
+        for (i0 = 0; i0 < ng0[0]; ++i0) {
+          if (lshift != 0) ii0 = i0;
+          else ii0 = modulo(i0 + (ng0[0] + 1) / 2, ng0[0]);
+          for (i1 = 0; i1 < ng0[1]; ++i1) {
+            if (lshift != 0) ii1 = i1;
+            else ii1 = modulo(i1 + (ng0[1] + 1) / 2, ng0[1]);
+            for (i2 = 0; i2 < ng0[2]; ++i2) {
+              if (lshift != 0) ii2 = i2;
+              else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
+              mat0[ib][ii0][ii1][ii2][iaxis] = Number(datas[icount]);
+              icount += 1;
+            }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
+          }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
+        }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
+      }/*for (ib = 0; ib < nb; ++ib)*/
+    }
+  };
+  reader.onerror = function () {
+    terminal("File can not be loaded.");
+  };
+
+
   return 1;
 } /* read_file */
 /**
@@ -3344,6 +3346,6 @@ function calc_section() {
     */
     n2d[ib] =  kv2d[ib].length;
 
-    terminal("    " + toString(ib + 1) + "       " + toString(n2d[ib]) + "\n");
+    terminal("    " + String(ib + 1) + "       " + String(n2d[ib]) + "\n");
   }/*for (ib = 0; ib < nb; ib++)*/
 }/*function calc_nodeline()*/

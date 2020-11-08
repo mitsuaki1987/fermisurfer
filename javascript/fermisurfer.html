@@ -4,15 +4,18 @@
     <title>FermiSurfer on Web</title>
   </head>
   <body>
+    <script type="text/javascript" src="./fermisurfer.js"></script>
+      File: <input type="file" id="inputfile" name="inputfile">
+    <input type="button" value="read" onclick="read_file();">
     <table border="0">
       <tr align="left">
         <td><canvas id="canvas" width="600" height="600" style="border:solid black 1px;"></canvas></td>
         <td>
           <table border="0">
             <tr align="left">
-              <td><input type="button" value="update" onclick=""></td>
+              <td><input type="button" value="update" onclick="test();"></td>
               <td>Line width :</td>
-              <td><input type="number" name="linewidth" id="linewidth" value="1"></td>
+              <td><input type="number" name="linewidth" id="linewidth" onclick="test();" value="1"></td>
               <td><input type="checkbox" name="ongamma" id="ongamma" value="ongamma" checked="checked">On Gamma</td>
             </tr>
             <tr align="left">
@@ -152,8 +155,8 @@
         </td>
       </tr>
     </table>
-    
-    <pre id="log" style="border: 1px solid #ccc;"></pre>
+
+    <pre id="log" style="border: 1px solid #ccc; max-width: 80em; overflow: auto; max-height: 10em;"></pre>
     <script type="text/javascript">
       function startup() {
         var el = document.getElementById("canvas");
