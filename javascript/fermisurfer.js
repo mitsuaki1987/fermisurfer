@@ -26,7 +26,7 @@ function test() {
 }
 function terminal(msg) {
   var p = document.getElementById('log');
-  p.innerHTML += "\n" + msg;
+  p.innerHTML += msg;
 }
 /**@file
 @brief Mathematical operations used in various step
@@ -253,7 +253,7 @@ function bz_lines()
   let vert = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
   /**/
   nbzl = 0;
-
+  bzl = [];
   /**/
   for (ibr = 0; ibr < 26; ++ibr) {
     for (jbr = 0; jbr < 26; ++jbr) {
@@ -267,8 +267,12 @@ function bz_lines()
       lvert = bragg_vert(bragg, brnrm, ibr, jbr, nbr, vert[1], vert[0]);
       if (lvert == 0) continue;
       /**/
-      for (i = 0; i < 2; ++i) for (j = 0; j < 3; ++j) bzl[nbzl][i][j] = vert[i][j];
-      nbzl = nbzl + 1;
+      bzl.push([]);
+      for (i = 0; i < 2; ++i) {
+        bzl[nbzl].push([]);
+        for (j = 0; j < 3; ++j) bzl[nbzl][i].push(vert[i][j]);
+      }
+      nbzl += 1;
 
     }/*for (jbr = 0; jbr < 26; ++jbr)*/
   }/*for (ibr = 0; ibr < 26; ++ibr)*/
@@ -901,11 +905,13 @@ function draw()
  Modify : ::nequator, ::kveq, ::kveq_rot
 */
 function equator() {
-  let ib = 0, itri = 0, i = 0, j = 0, nequator0 = 0;
+  let ib = 0, itri = 0, i = 0, j = 0;
   let sw = [0,0,0];
   let a = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], prod = [0.0, 0.0, 0.0];
   let kveq_0 = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
 
+  kveq = [];
+  nequator = [];
   terminal("    band   # of equator\n");
   for (ib = 0; ib < nb; ib++) {
     kveq.push([]);
@@ -943,7 +949,7 @@ function equator() {
     /*
      Sum node-lines in all threads
     */
-    nequator.push(kveq[ib].size);
+    nequator.push(kveq[ib].length);
     terminal("    " + String(ib + 1) + "       " + String(nequator[ib])+ "\n");
   }/*for (ib = 0; ib < nb; ib++)*/
 }/*function equator()*/
@@ -1034,7 +1040,7 @@ function triangle(
           a[i][j] = (brnrm[ibr] - prod[sw[j]]) / (prod[sw[i]] - prod[sw[j]]);
         }/*for (j = 0; j < 3; ++j)*/
       }/*for (i = 0; i < 3; ++i)*/
-      i = (0.5 * ((prod[sw[2]] / brnrm[ibr]) + 1.0));
+      i = Math.floor(0.5 * ((prod[sw[2]] / brnrm[ibr]) + 1.0));
       bshift = -2.0 *i;
 
       if (brnrm[ibr] + thr > prod[sw[2]]) continue;
@@ -1354,7 +1360,7 @@ function tetrahedron(
 */
 function fermi_patch()
 {
-  let ntri0 = 0, ib = 0, i0 = 0, i1 = 0, j0 = 0, start = [0, 0, 0], last = [0, 0, 0];
+  let ib = 0, i0 = 0, i1 = 0, j0 = 0, start = [0, 0, 0], last = [0, 0, 0];
   let i = 0, j = 0, i2 = 0, j1 = 0, j2 = 0, ii0 = 0, ii1 = 0, ii2 = 0;
   let kvec1 = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
   [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],
@@ -1382,8 +1388,16 @@ function fermi_patch()
   }
   terminal("    Computing patch ...\n");
   terminal("      band   # of patchs\n");
-  /**/
+/**/
+  kvp = [];
+  matp = [];
+  nmlp = [];
+  ntri = [];
   for (ib = 0; ib < nb; ++ib) {
+    kvp.push([]);
+    matp.push([]);
+    nmlp.push([]);
+    ntri.push([]);
     for (j0 = start[0]; j0 < last[0]; ++j0) {
       for (j1 = start[1]; j1 < last[1]; ++j1) {
         for (j2 = start[2]; j2 < last[2]; ++j2) {
@@ -1467,6 +1481,8 @@ function fermi_patch()
         }/*for (j0 = start[0]; j0 < ng[0]; ++j0)*/
       }/*for (j1 = start[1]; j1 < ng[1]; ++j1)*/
     }/*for (j0 = start[0]; j0 < ng[0]; ++j0)*/
+    ntri[ib] = kvp[ib].length;
+    terminal("      " + String(ib + 1) + "       " + String(ntri[ib]) + "\n");
   }/*for (ib = 0; ib < nb; ++ib)*/
   terminal("    ... Done\n");
 } /* fermi_patch */
@@ -1633,7 +1649,6 @@ let batch_name;
 let frmsf_file_name;
 let lbatch = 0;
 
-wxTextCtrl* terminal;
 let refresh_interpol = 0;
 let refresh_patch = 1;
 let refresh_color = 1;
@@ -1651,37 +1666,20 @@ function OnInit()
 {
   let ierr;
 
-  myf = new MyFrame(NULL, argv[1], wxDefaultPosition, wxSize(windowx, windowy));
 
   terminal("\n");
-  terminal("#####  Welocome to FermiSurfer ver. ") << 
-    wxT(VERSION) << wxT("  #####\n");
-  terminal("\n");
-  if (argc < 2) {
-    printf("\n");
-    printf("  Input file is not specified !\n");
-    printf("    Press any key to exit.\n");
-    ierr = getchar();
-    exit(-1);
-  }
-  /**/
+   /**/
   terminal("  Initialize variables ...\n");
   terminal("\n");
   /*
   Input from BXSF or FRMSF file
   */
-  if (frmsf_file_name.AfterLast(wxUniChar('.')).CmpNoCase(wxT("bxsf")) == 0) {
-    read_bxsf();
-  }
-  else {
-    color_scale = read_file();
-    if (color_scale == 0)color_scale = 4;
-  }
+  color_scale = read_file();
+  if (color_scale == 0)color_scale = 4;
   /**/
   interpol_energy();
   init_corner();
   bragg_vector();
-  modify_band();
   /*
    Brillouin zone
   */
@@ -1702,9 +1700,6 @@ function OnInit()
   terminal("    cursorkey or w,a,s,d : Move objects\n");
   terminal("\n");
   /**/
-  if (lbatch == 1) {
-    batch_draw();
-  }
   return true;
 } /* main */
 /**
@@ -1905,8 +1900,10 @@ function paint()
   let mat2 = 0.0;
   let theta = 0.0, abs = 0.0, theta2 = 0.0;
 
+  clr = [];
   if (color_scale == 1) {
     for (ib = 0; ib < nb; ib++) {
+      clr.push([]);
       for (itri = 0; itri < ntri[ib]; ++itri) {
         for (i = 0; i < 3; ++i) {
           /**/
@@ -1914,23 +1911,19 @@ function paint()
           mat2 = mat2 * 4.0;
           /**/
           if (mat2 <= 1.0) {
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-              = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0 - mat2);
+            for (j = 0; j < 4; ++j) clr[ib].push(BarColor[1][j] * mat2 + BarColor[0][j] * (1.0 - mat2));
           }
           else if (mat2 <= 2.0) {
             mat2 = mat2 - 1.0;
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
-              = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0 - mat2);
+            for (j = 0; j < 4; ++j) clr[ib].push(BarColor[2][j] * mat2 + BarColor[1][j] * (1.0 - mat2));
           }
           else if (mat2 <= 3.0) {
             mat2 = mat2 - 2.0;
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
-              = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0 - mat2);
+            for (j = 0; j < 4; ++j) clr[ib].push(BarColor[3][j] * mat2 + BarColor[2][j] * (1.0 - mat2));
           }
           else {
             mat2 = mat2 - 3.0;
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-              = BarColor[4][j] * mat2 + BarColor[3][j] * (1.0 - mat2);
+            for (j = 0; j < 4; ++j) clr[ib].push(BarColor[4][j] * mat2 + BarColor[3][j] * (1.0 - mat2));
           }
         }/*for (i = 0; i < 3; ++i)*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -1939,6 +1932,7 @@ function paint()
   else if (color_scale == 2) {
     for (j = 0; j < 4; ++j) origin[j] = 1.0 - BackGroundColor[j];
     for (ib = 0; ib < nb; ib++) {
+      clr.push([]);
       for (itri = 0; itri < ntri[ib]; ++itri) {
         for (i = 0; i < 3; ++i) {
           /**/
@@ -1953,32 +1947,32 @@ function paint()
           if (-3.0 <= theta && theta < -2.0) {
             theta2 = theta + 3.0;
             for (j = 0; j < 4; ++j)
-              clr[ib][j + 4 * i + 12 * itri] = blue[j] * theta2 + cyan[j] * (1.0 - theta2);
+              clr[ib].push(blue[j] * theta2 + cyan[j] * (1.0 - theta2));
           }
           else if (-2.0 <= theta && theta < -1.0) {
             theta2 = theta + 2.0;
             for (j = 0; j < 4; ++j) 
-              clr[ib][j + 4 * i + 12 * itri] = magenta[j] * theta2 + blue[j] * (1.0 - theta2);
+              clr[ib].push(magenta[j] * theta2 + blue[j] * (1.0 - theta2));
           }
           else if (-1.0 <= theta && theta < 0.0) {
             theta2 = theta + 1.0;
             for (j = 0; j < 4; ++j) 
-              clr[ib][j + 4 * i + 12 * itri] = red[j] * theta2 + magenta[j] * (1.0 - theta2);
+              clr[ib].push(red[j] * theta2 + magenta[j] * (1.0 - theta2));
           }
           else if (0.0 <= theta && theta < 1.0) {
             theta2 = theta;
             for (j = 0; j < 4; ++j)
-              clr[ib][j + 4 * i + 12 * itri] = yellow[j] * theta2 + red[j] * (1.0 - theta2);
+              clr[ib].push(yellow[j] * theta2 + red[j] * (1.0 - theta2));
           }
           else if (1.0 <= theta && theta < 2.0) {
             theta2 = theta - 1.0;
             for (j = 0; j < 4; ++j)
-              clr[ib][j + 4 * i + 12 * itri] = green[j] * theta2 + yellow[j] * (1.0 - theta2);
+              clr[ib].push(green[j] * theta2 + yellow[j] * (1.0 - theta2));
           }
           else {
             theta2 = theta - 2.0;
             for (j = 0; j < 4; ++j) 
-              clr[ib][j + 4 * i + 12 * itri] = cyan[j] * theta2 + green[j] * (1.0 - theta2);
+              clr[ib].push(cyan[j] * theta2 + green[j] * (1.0 - theta2));
           }
           clr[ib][j + 4 * i + 12 * itri] = clr[ib][j + 4 * i + 12 * itri] * abs + origin[j] * (1.0 - abs);
         }/*for (i = 0; i < 3; ++i)*/
@@ -1987,6 +1981,7 @@ function paint()
   }/*if (color_scale == 2)*/
   else if (color_scale == 4) {
       for (ib = 0; ib < nb; ib++) {
+        clr.push([]);
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
             /**/
@@ -1997,23 +1992,19 @@ function paint()
             mat2 = mat2 * 4.0;
             /**/
             if (mat2 <= 1.0) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
-                = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib].push(BarColor[1][j] * mat2 + BarColor[0][j] * (1.0 - mat2));
             }
             else if (mat2 <= 2.0) {
               mat2 = mat2 - 1.0;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-                = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib].push(BarColor[2][j] * mat2 + BarColor[1][j] * (1.0 - mat2));
             }
             else if (mat2 <= 3.0) {
               mat2 = mat2 - 2.0;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
-                = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib].push(BarColor[3][j] * mat2 + BarColor[2][j] * (1.0 - mat2));
             }
             else {
               mat2 = mat2 - 3.0;
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-                = BarColor[4][j] * mat2 + BarColor[3][j] * (1.0 - mat2);
+              for (j = 0; j < 4; ++j) clr[ib].push(BarColor[4][j] * mat2 + BarColor[3][j] * (1.0 - mat2));
             }
           }/*for (i = 0; i < 3; ++i)*/
         }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -2021,6 +2012,7 @@ function paint()
   }/*if (color_scale == 4)*/
   else if (color_scale == 3 || color_scale == 5) {
     for (ib = 0; ib < nb; ib++) {
+      clr.push([]);
       /**/
       if (nb == 1) mat2 = 0.5;
       else mat2 = 1.0 / (nb - 1) * ib;
@@ -2029,8 +2021,7 @@ function paint()
       if (mat2 <= 1.0) {
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
-              = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0 - mat2);
+            for (j = 0; j < 4; ++j) clr[ib].push(BarColor[1][j] * mat2 + BarColor[0][j] * (1.0 - mat2));
           }
         }
       }
@@ -2038,8 +2029,7 @@ function paint()
         mat2 = mat2 - 1.0;
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-              = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0 - mat2);
+            for (j = 0; j < 4; ++j) clr[ib].push(BarColor[2][j] * mat2 + BarColor[1][j] * (1.0 - mat2));
           }
         }
       }
@@ -2047,8 +2037,7 @@ function paint()
         mat2 = mat2 - 2.0;
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
-              = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0 - mat2);
+            for (j = 0; j < 4; ++j) clr[ib].push(BarColor[3][j] * mat2 + BarColor[2][j] * (1.0 - mat2));
           }
         }
       }
@@ -2056,14 +2045,14 @@ function paint()
         mat2 = mat2 - 3.0;
         for (itri = 0; itri < ntri[ib]; ++itri) {
           for (i = 0; i < 3; ++i) {
-            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-                = BarColor[4][j] * mat2 + BarColor[3][j] * (1.0 - mat2);
+            for (j = 0; j < 4; ++j) clr[ib].push(BarColor[4][j] * mat2 + BarColor[3][j] * (1.0 - mat2));
           }
         }
       }
     }/*for (ib = 0; ib < nb; ib++*/
     if (color_scale == 3) {
       for (ib = 0; ib < nb; ib++) {
+        clr.push([]);
         for (itri = 0; itri < ntri[ib]; ++itri){
           for (i = 0; i < 3; ++i) {
             for (j = 0; j < 3; ++j) {
@@ -2079,18 +2068,20 @@ function paint()
   }/*if (color_scale == 5)*/
   else if (color_scale == 6) {
     for (ib = 0; ib < nb; ib++) {
+      clr.push([]);
       for (itri = 0; itri < ntri[ib]; ++itri) {
         for (i = 0; i < 3; ++i) {
           /**/
           mat2 = (matp[ib][itri][i][0] - patch_min) / (patch_max - patch_min);
           /**/
-          for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0 - mat2);
+          for (j = 0; j < 4; ++j) clr[ib].push(wgray[j] * mat2 + bgray[j] * (1.0 - mat2));
         }/*for (i = 0; i < 3; ++i)*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
     }/*for (ib = 0; ib < nb; ib++)*/
   }/*if (color_scale == 6)*/
   else if (color_scale == 7) {
     for (ib = 0; ib < nb; ib++) {
+      clr.push([]);
       for (itri = 0; itri < ntri[ib]; ++itri) {
         for (i = 0; i < 3; ++i) {
           /**/
@@ -2099,7 +2090,7 @@ function paint()
           mat2 = Math.sqrt(mat2);
           mat2 = (mat2 - patch_min) / (patch_max - patch_min);
           /**/
-          for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = wgray[j] * mat2 + bgray[j] * (1.0 - mat2);
+          for (j = 0; j < 4; ++j) clr[ib].push(wgray[j] * mat2 + bgray[j] * (1.0 - mat2));
         }/*for (i = 0; i < 3; ++i)*/
       }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
     }/*for (ib = 0; ib < nb; ib++)*/
@@ -2276,7 +2267,9 @@ function bragg_vector()
   let i0, i1, i2, i, ibr;
   /**/
   ibr = 0;
-  /**/
+  //
+  bragg = [];
+  brnrm = [];
   for (i0 = -1; i0 <= 1; ++i0) {
     for (i1 = -1; i1 <= 1; ++i1) {
       for (i2 = -1; i2 <= 1; ++i2) {
@@ -2287,18 +2280,19 @@ function bragg_vector()
         /*
          Fractional -> Cartecian
         */
+        bragg.push([]);
         for (i = 0; i < 3; ++i)
-          bragg[ibr][i] = (i0 * bvec[0][i]
+          bragg[ibr].push((i0 * bvec[0][i]
                         +  i1 * bvec[1][i]
-                        +  i2 * bvec[2][i]) * 0.5;
+                        +  i2 * bvec[2][i]) * 0.5);
         /*
          And its norm
         */
-        brnrm[ibr] = bragg[ibr][0] * bragg[ibr][0]
-                   + bragg[ibr][1] * bragg[ibr][1]
-                   + bragg[ibr][2] * bragg[ibr][2];
+        brnrm.push(bragg[ibr][0] * bragg[ibr][0]
+                 + bragg[ibr][1] * bragg[ibr][1]
+                 + bragg[ibr][2] * bragg[ibr][2]);
         /**/
-        ibr = ibr + 1;
+        ibr += 1;
       }/*for (i2 = -1; i2 <= 1; ++i2)*/
     }/*for (i1 = -1; i1 <= 1; ++i1)*/
   }/*for (i0 = -1; i0 <= 1; ++i0)*/
@@ -2896,30 +2890,35 @@ function allocate_griddata(
   secvec_fr[2] = 1.0;
   secscale = 0.0;
 
+  eig0 = [];
+  eig = [];
+  mat0 = [];
+  mat = [];
+  vf = [];
   for (ib = 0; ib < nb; ib++) {
-    eig0.psuh([]);
-    eig.psuh([]);
-    mat0.psuh([]);
-    mat.psuh([]);
-    vf.psuh([]);
+    eig0.push([]);
+    eig.push([]);
+    mat0.push([]);
+    mat.push([]);
+    vf.push([]);
     for (i0 = 0; i0 < ng0[0]; i0++) {
-      eig0[ib].psuh([]);
-      eig[ib].psuh([]);
-      mat0[ib].psuh([]);
-      mat[ib].psuh([]);
-      vf[ib].psuh([]);
+      eig0[ib].push([]);
+      eig[ib].push([]);
+      mat0[ib].push([]);
+      mat[ib].push([]);
+      vf[ib].push([]);
       for (i1 = 0; i1 < ng0[1]; i1++) {
-        eig0[ib][i0].psuh([]);
-        eig[ib][i0].psuh([]);
-        mat0[ib][i0].psuh([]);
-        mat[ib][i0].psuh([]);
-        vf[ib][i0].psuh([]);
+        eig0[ib][i0].push([]);
+        eig[ib][i0].push([]);
+        mat0[ib][i0].push([]);
+        mat[ib][i0].push([]);
+        vf[ib][i0].push([]);
         for (i2 = 0; i2 < ng0[2]; ++i2) {
-          eig0[ib][i0][i1].psuh(0.0);
-          eig[ib][i0][i1].psuh(0.0);
-          mat0[ib][i0][i1].psuh([0.0, 0.0, 0.0]);
-          mat[ib][i0][i1].psuh([0.0, 0.0, 0.0]);
-          vf[ib][i0][i1].psuh([0.0, 0.0, 0.0]);
+          eig0[ib][i0][i1].push(0.0);
+          eig[ib][i0][i1].push(0.0);
+          mat0[ib][i0][i1].push([0.0, 0.0, 0.0]);
+          mat[ib][i0][i1].push([0.0, 0.0, 0.0]);
+          vf[ib][i0][i1].push([0.0, 0.0, 0.0]);
         }
       }
     }
@@ -3028,13 +3027,24 @@ function read_file()
           }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
         }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
       }/*for (ib = 0; ib < nb; ++ib)*/
-    }
+    }//for (iaxis = 0; iaxis < 1; iaxis++)
+    //
+    interpol_energy();
+    init_corner();
+    bragg_vector();
+    //
+    //Brillouin zone
+    //
+    bz_lines();
+    calc_2dbz();
+    //
+    max_and_min_bz();
+    //
+    compute_patch_segment();
   };
   reader.onerror = function () {
     terminal("File can not be loaded.");
   };
-
-
   return 1;
 } /* read_file */
 /**
@@ -3186,7 +3196,7 @@ function calc_2dbz() {
   set2daxis(secvec, axis2d);
 
   nbzl2d = 0;
-
+  vec = [];
   for (jbr = 0; jbr < nbragg; ++jbr) {
     /**/
     for (i = 0; i < 3; ++i) vert[1][i] = 0.0;
@@ -3208,8 +3218,9 @@ function calc_2dbz() {
   /*
    Order bz lines
   */
-  for (i = 0; i < 3; i++) bzl2d[0][i] = vec[0][0][i];
-  for (i = 0; i < 3; i++) bzl2d[1][i] = vec[0][1][i];
+  bzl2d = [[], []];
+  for (i = 0; i < 3; i++) bzl2d[0].push(vec[0][0][i]);
+  for (i = 0; i < 3; i++) bzl2d[1].push(vec[0][1][i]);
   for (ibzl = 0; ibzl < nbzl2d; ibzl++) {
 
     thr = 0.0;
@@ -3248,6 +3259,7 @@ function calc_2dbz() {
            + (bzl2d[jbr][1] - vec[ibzl][0][1]) * (bzl2d[jbr][1] - vec[ibzl][0][1])
            + (bzl2d[jbr][2] - vec[ibzl][0][2]) * (bzl2d[jbr][2] - vec[ibzl][0][2]);
       if (prod < thr) {
+        bzl2d.push([]);
         for (i = 0; i < 3; i++) bzl2d[jbr + 1][i] = vec[ibzl][1][i];
         for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
       }
@@ -3256,7 +3268,8 @@ function calc_2dbz() {
            + (bzl2d[jbr][1] - vec[ibzl][1][1]) * (bzl2d[jbr][1] - vec[ibzl][1][1])
            + (bzl2d[jbr][2] - vec[ibzl][1][2]) * (bzl2d[jbr][2] - vec[ibzl][1][2]);
       if (prod < thr) {
-        for (i = 0; i < 3; i++) bzl2d[jbr + 1][i] = vec[ibzl][0][i];
+        bzl2d.push([]);
+        for (i = 0; i < 3; i++) bzl2d[jbr + 1].push(vec[ibzl][0][i]);
         for (j = 0; j < 2; j++) for (i = 0; i < 3; i++) vec[ibzl][j][i] = 0.0;
       }
     }/*for (ibzl = 1; ibzl < *nbzl2d; ibzl++)*/
@@ -3264,8 +3277,10 @@ function calc_2dbz() {
   /*
    Project into 2D plane
   */
+  bzl2d_proj = [];
   for (ibzl = 0; ibzl < nbzl2d; ibzl++) {
-    for (i = 0; i < 3; i++) bzl2d_proj[ibzl][i] = bzl2d[ibzl][i];
+    bzl2d_proj.push([]);
+    for (i = 0; i < 3; i++) bzl2d_proj[ibzl].push(bzl2d[ibzl][i]);
     proj_2d(axis2d, bzl2d_proj[ibzl]);
   }/*for (ibzl = 0; ibzl < *nbzl2d; ibzl++)*/
 }/*calc_2dbz()*/
@@ -3283,9 +3298,12 @@ function calc_section() {
   if (fbz != 1)return;
 
   terminal("    band   # of Fermi-line\n");
+  kv2d = [];
+  clr2d = [];
   for (ib = 0; ib < nb; ib++) {
 
     kv2d.push([]);
+    clr2d.push([]);
 
     for (itri = 0; itri < ntri[ib]; ++itri) {
       /**/
