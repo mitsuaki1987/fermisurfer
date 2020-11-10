@@ -21,6 +21,456 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
+let gl; //test
+let programInfo;
+let rotatex = 0.0, rotatey = 0.0;
+
+//
+// Start here
+//
+function main() {
+  let canvas = document.querySelector('#glcanvas');
+
+  gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+
+  // If we don't have a GL context, give up now
+
+  if (!gl) {
+    alert('Unable to initialize WebGL. Your browser or machine may not support it.');
+    return;
+  }
+
+  // Vertex shader program
+
+  let vsSource = `
+    attribute vec4 aVertexPosition;
+    attribute vec3 aVertexNormal;
+    attribute vec4 aVertexColor;
+
+    uniform mat4 uNormalMatrix;
+    uniform mat4 uModelViewMatrix;
+    uniform mat4 uProjectionMatrix;
+
+    varying lowp vec4 vColor;
+    varying highp vec3 vLighting;
+
+    void main(void) {
+      gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+      vColor = aVertexColor;
+
+      // Apply lighting effect
+
+      highp vec3 ambientLight = vec3(0.6, 0.6, 0.6);
+      highp vec3 directionalLightColor = vec3(1, 1, 1);
+      highp vec3 directionalVector = normalize(vec3(0.8, 0.8, 0.8));
+
+      highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
+
+      highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+      vLighting = ambientLight + (directionalLightColor * directional);
+    }
+  `;
+
+  // Fragment shader program
+
+  let fsSource = `
+    varying lowp vec4 vColor;
+    varying highp vec3 vLighting;
+
+    void main(void) {
+      gl_FragColor = vec4(vColor.rgb * vLighting, vColor.a);
+    }
+  `;
+
+  // Initialize a shader program; this is where all the lighting
+  // for the vertices and so forth is established.
+  let shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+
+  // Collect all the info needed to use the shader program.
+  // Look up which attributes our shader program is using
+  // for aVertexPosition, aVevrtexColor and also
+  // look up uniform locations.
+  programInfo = {
+    program: shaderProgram,
+    attribLocations: {
+      vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+      vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
+      vertexColor: gl.getAttribLocation(shaderProgram, 'aVertexColor'),
+    },
+    uniformLocations: {
+      projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+      modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+      normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
+    }
+  };
+
+  // Here's where we call the routine that builds all the
+  // objects we'll be drawing.
+
+  drawScene(programInfo, 0.5, 1.8);
+
+  var el = document.getElementById("glcanvas");
+  el.addEventListener("touchstart", handleStart, false);
+  el.addEventListener("touchend", handleEnd, false);
+  el.addEventListener("touchcancel", handleCancel, false);
+  el.addEventListener("touchmove", handleMove, false);
+  el.addEventListener("mousemove", mouseMove, false);
+
+}
+
+//
+// initBuffers
+//
+// Initialize the buffers we'll need. For this demo, we just
+// have one object -- a simple three-dimensional cube.
+//
+function initBuffers() {
+  let itri = 0;
+
+  // Create a buffer for the cube's vertex positions.
+  // Select the positionBuffer as the one to apply buffer
+  // operations to from here out.
+  // Now create an array of positions for the cube.
+
+  let nkvp = ntri[0] * 3 * 3;
+  let positions = new Float32Array(nkvp);
+  icount = 0;
+  for (itri = 0; itri < ntri[0]; itri++) {
+    for (ii = 0; ii < 3; ii++) {
+      for (jj = 0; jj < 3; jj++) {
+        positions[icount] = kvp[0][itri][ii][jj];
+        icount += 1;
+      }
+    }
+  }
+
+  // Now pass the list of positions into WebGL to build the
+  // shape. We do this by creating a Float32Array from the
+  // JavaScript array, then use it to fill the current buffer.
+
+  let positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+  // Set up the normals for the vertices, so that we can compute lighting.
+
+  let nnmlp = ntri[0] * 3 * 3;
+  let vertexNormals = new Float32Array(nnmlp);
+  icount = 0;
+  for (itri = 0; itri < ntri[0]; itri++) {
+    for (ii = 0; ii < 3; ii++) {
+      for (jj = 0; jj < 3; jj++) {
+        vertexNormals[icount] = nmlp[0][itri][ii][jj];
+        icount += 1;
+      }
+    }
+  }
+
+  let normalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, vertexNormals, gl.STATIC_DRAW);
+
+  // Now set up the colors for the faces. We'll use solid colors
+  // for each face.
+
+  let nclr = ntri[0] * 3 * 4;
+  let colors = new Float32Array(nclr);
+  icount = 0;
+  for (itri = 0; itri < ntri[0]; itri++) {
+    for (ii = 0; ii < 3; ii++) {
+      for (jj = 0; jj < 4; jj++) {
+        colors[icount] = clr[0][jj + 4 * ii + 12 * itri];
+        icount += 1;
+      }
+    }
+  }
+
+  let colorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+
+  return {
+    position: positionBuffer,
+    normal: normalBuffer,
+    color: colorBuffer,
+  };
+}
+
+//
+// Draw the scene.
+//
+function drawScene(programInfo, rotatex, rotatey) {
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
+  gl.clearDepth(1.0);                 // Clear everything
+  gl.enable(gl.DEPTH_TEST);           // Enable depth testing
+  gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
+
+  // Clear the canvas before we start drawing on it.
+
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  // Create a perspective matrix, a special matrix that is
+  // used to simulate the distortion of perspective in a camera.
+  // Our field of view is 45 degrees, with a width/height
+  // ratio that matches the display size of the canvas
+  // and we only want to see objects between 0.1 units
+  // and 100 units away from the camera.
+
+  let fieldOfView = 45 * Math.PI / 180;   // in radians
+  let aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+  let zNear = 0.1;
+  let zFar = 100.0;
+  let projectionMatrix = mat4.create();
+
+  // note: glmatrix.js always has the first argument
+  // as the destination to receive the result.
+  mat4.perspective(projectionMatrix,
+    fieldOfView,
+    aspect,
+    zNear,
+    zFar);
+
+  // Set the drawing position to the "identity" point, which is
+  // the center of the scene.
+  let modelViewMatrix = mat4.create();
+
+  // Now move the drawing position a bit to where we want to
+  // start drawing the square.
+
+  mat4.translate(modelViewMatrix,     // destination matrix
+    modelViewMatrix,     // matrix to translate
+    [-0.0, 0.0, -6.0]);  // amount to translate
+  mat4.rotate(modelViewMatrix,  // destination matrix
+    modelViewMatrix,  // matrix to rotate
+    rotatey,     // amount to rotate in radians
+    [0, 0, 1]);       // axis to rotate around (Z)
+  mat4.rotate(modelViewMatrix,  // destination matrix
+    modelViewMatrix,  // matrix to rotate
+    rotatex * .7,// amount to rotate in radians
+    [0, 1, 0]);       // axis to rotate around (X)
+  let normalMatrix = mat4.create();
+  mat4.invert(normalMatrix, modelViewMatrix);
+  mat4.transpose(normalMatrix, normalMatrix);
+
+  buffers = initBuffers();
+
+  // Tell WebGL how to pull out the positions from the position
+  // buffer into the vertexPosition attribute
+  {
+    let numComponents = 3;
+    let type = gl.FLOAT;
+    let normalize = false;
+    let stride = 0;
+    let offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+    gl.vertexAttribPointer(
+      programInfo.attribLocations.vertexPosition,
+      numComponents,
+      type,
+      normalize,
+      stride,
+      offset);
+    gl.enableVertexAttribArray(
+      programInfo.attribLocations.vertexPosition);
+  }
+
+  // Tell WebGL how to pull out the colors from the color buffer
+  // into the vertexColor attribute.
+  {
+    let numComponents = 4;
+    let type = gl.FLOAT;
+    let normalize = false;
+    let stride = 0;
+    let offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
+    gl.vertexAttribPointer(
+      programInfo.attribLocations.vertexColor,
+      numComponents,
+      type,
+      normalize,
+      stride,
+      offset);
+    gl.enableVertexAttribArray(
+      programInfo.attribLocations.vertexColor);
+  }
+
+  // Tell WebGL how to pull out the normals from
+  // the normal buffer into the vertexNormal attribute.
+  {
+    let numComponents = 3;
+    let type = gl.FLOAT;
+    let normalize = false;
+    let stride = 0;
+    let offset = 0;
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
+    gl.vertexAttribPointer(
+      programInfo.attribLocations.vertexNormal,
+      numComponents,
+      type,
+      normalize,
+      stride,
+      offset);
+    gl.enableVertexAttribArray(
+      programInfo.attribLocations.vertexNormal);
+  }
+
+  // Tell WebGL to use our program when drawing
+
+  gl.useProgram(programInfo.program);
+
+  // Set the shader uniforms
+
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.projectionMatrix,
+    false,
+    projectionMatrix);
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.modelViewMatrix,
+    false,
+    modelViewMatrix);
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.normalMatrix,
+    false,
+    normalMatrix);
+
+  {
+    let vertexCount = ntri[0]*3;
+    let offset = 0;
+    gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
+  }
+}
+
+//
+// Initialize a shader program, so WebGL knows how to draw our data
+//
+function initShaderProgram(gl, vsSource, fsSource) {
+  let vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
+  let fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+  // Create the shader program
+
+  let shaderProgram = gl.createProgram();
+  gl.attachShader(shaderProgram, vertexShader);
+  gl.attachShader(shaderProgram, fragmentShader);
+  gl.linkProgram(shaderProgram);
+
+  // If creating the shader program failed, alert
+
+  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+    alert('Unable to initialize the shader program: ' + gl.getProgramInfoLog(shaderProgram));
+    return null;
+  }
+
+  return shaderProgram;
+}
+
+//
+// creates a shader of the given type, uploads the source and
+// compiles it.
+//
+function loadShader(gl, type, source) {
+  let shader = gl.createShader(type);
+
+  // Send the source to the shader object
+
+  gl.shaderSource(shader, source);
+
+  // Compile the shader program
+
+  gl.compileShader(shader);
+
+  // See if it compiled successfully
+
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    alert('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
+    gl.deleteShader(shader);
+    return null;
+  }
+
+  return shader;
+}
+
+var ongoingTouches = [];
+
+function handleStart(evt) {
+  evt.preventDefault();
+  var touches = evt.changedTouches;
+
+  for (var i = 0; i < touches.length; i++) {
+    ongoingTouches.push(copyTouch(touches[i]));
+  }
+}
+
+function handleMove(evt) {
+  evt.preventDefault();
+  var touches = evt.changedTouches;
+
+  for (var i = 0; i < touches.length; i++) {
+    var idx = ongoingTouchIndexById(touches[i].identifier);
+
+    if (idx == 0) {
+      rotatex += -0.01 * (touches[i].clientX - ongoingTouches[idx].clientX);
+      rotatey += 0.01 * (touches[i].clientY - ongoingTouches[idx].clientY);
+      drawScene(programInfo, rotatex, rotatey);
+      ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+    }
+  }
+}
+function handleEnd(evt) {
+  evt.preventDefault();
+  var touches = evt.changedTouches;
+
+  //log("touchend");
+  for (var i = 0; i < touches.length; i++) {
+    var idx = ongoingTouchIndexById(touches[i].identifier);
+
+    if (idx >= 0) {
+      ongoingTouches.splice(idx, 1);  // remove it; we're done
+    }
+  }
+}
+function handleCancel(evt) {
+  evt.preventDefault();
+  var touches = evt.changedTouches;
+
+  for (var i = 0; i < touches.length; i++) {
+    var idx = ongoingTouchIndexById(touches[i].identifier);
+    ongoingTouches.splice(idx, 1);  // remove it; we're done
+  }
+}
+function copyTouch({ identifier, clientX, clientY }) {
+  return { identifier, clientX, clientY };
+}
+
+function ongoingTouchIndexById(idToFind) {
+  for (var i = 0; i < ongoingTouches.length; i++) {
+    var id = ongoingTouches[i].identifier;
+
+    if (id == idToFind) {
+      return i;
+    }
+  }
+  return -1;    // not found
+}
+
+function mouseMove(evt) {
+  rotatex += -0.01 * evt.movementX;
+  rotatey += 0.01 * evt.movementY;
+  drawScene(programInfo, rotatex, rotatey);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 function test() {
   terminal("test");
 }
@@ -3041,6 +3491,9 @@ function read_file()
     max_and_min_bz();
     //
     compute_patch_segment();
+
+    main();
+
   };
   reader.onerror = function () {
     terminal("File can not be loaded.");
