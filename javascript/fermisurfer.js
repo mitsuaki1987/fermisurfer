@@ -60,9 +60,9 @@ function main() {
 
       // Apply lighting effect
 
-      highp vec3 ambientLight = vec3(0.6, 0.6, 0.6);
+      highp vec3 ambientLight = vec3(0.5, 0.5, 0.5);
       highp vec3 directionalLightColor = vec3(1, 1, 1);
-      highp vec3 directionalVector = normalize(vec3(0.8, 0.8, 0.8));
+      highp vec3 directionalVector = normalize(vec3(-1, -1, -1));
 
       highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
 
@@ -107,99 +107,22 @@ function main() {
   // Here's where we call the routine that builds all the
   // objects we'll be drawing.
 
-  drawScene(programInfo, 0.5, 1.8);
+  drawScene();
 
   var el = document.getElementById("glcanvas");
   el.addEventListener("touchstart", handleStart, false);
   el.addEventListener("touchend", handleEnd, false);
   el.addEventListener("touchcancel", handleCancel, false);
   el.addEventListener("touchmove", handleMove, false);
-  el.addEventListener("mousemove", mouseMove, false);
+  //el.addEventListener("mousemove", mouseMove, false);
 
 }
-
-//
-// initBuffers
-//
-// Initialize the buffers we'll need. For this demo, we just
-// have one object -- a simple three-dimensional cube.
-//
-function initBuffers() {
-  let itri = 0;
-
-  // Create a buffer for the cube's vertex positions.
-  // Select the positionBuffer as the one to apply buffer
-  // operations to from here out.
-  // Now create an array of positions for the cube.
-
-  let nkvp = ntri[0] * 3 * 3;
-  let positions = new Float32Array(nkvp);
-  icount = 0;
-  for (itri = 0; itri < ntri[0]; itri++) {
-    for (ii = 0; ii < 3; ii++) {
-      for (jj = 0; jj < 3; jj++) {
-        positions[icount] = kvp[0][itri][ii][jj];
-        icount += 1;
-      }
-    }
-  }
-
-  // Now pass the list of positions into WebGL to build the
-  // shape. We do this by creating a Float32Array from the
-  // JavaScript array, then use it to fill the current buffer.
-
-  let positionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-
-  // Set up the normals for the vertices, so that we can compute lighting.
-
-  let nnmlp = ntri[0] * 3 * 3;
-  let vertexNormals = new Float32Array(nnmlp);
-  icount = 0;
-  for (itri = 0; itri < ntri[0]; itri++) {
-    for (ii = 0; ii < 3; ii++) {
-      for (jj = 0; jj < 3; jj++) {
-        vertexNormals[icount] = nmlp[0][itri][ii][jj];
-        icount += 1;
-      }
-    }
-  }
-
-  let normalBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, vertexNormals, gl.STATIC_DRAW);
-
-  // Now set up the colors for the faces. We'll use solid colors
-  // for each face.
-
-  let nclr = ntri[0] * 3 * 4;
-  let colors = new Float32Array(nclr);
-  icount = 0;
-  for (itri = 0; itri < ntri[0]; itri++) {
-    for (ii = 0; ii < 3; ii++) {
-      for (jj = 0; jj < 4; jj++) {
-        colors[icount] = clr[0][jj + 4 * ii + 12 * itri];
-        icount += 1;
-      }
-    }
-  }
-
-  let colorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
-
-  return {
-    position: positionBuffer,
-    normal: normalBuffer,
-    color: colorBuffer,
-  };
-}
-
 //
 // Draw the scene.
 //
-function drawScene(programInfo, rotatex, rotatey) {
+function drawScene() {
+  let ib = 0, ii = 0, jj = 0;
+
   gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
   gl.enable(gl.DEPTH_TEST);           // Enable depth testing
@@ -252,7 +175,116 @@ function drawScene(programInfo, rotatex, rotatey) {
   mat4.invert(normalMatrix, modelViewMatrix);
   mat4.transpose(normalMatrix, normalMatrix);
 
-  buffers = initBuffers();
+  {
+    let vertexCount = 0;
+    for (ib = 0; ib < nb; ib++) {
+      if (draw_band[ib] == 1) vertexCount += ntri[ib] * 3;
+    }
+
+    let nkvp = vertexCount * 3;
+    let positions = new Float32Array(nkvp);
+    icount = 0;
+    for (ib = 0; ib < nb; ib++) {
+      for (itri = 0; itri < ntri[ib]; itri++) {
+        for (ii = 0; ii < 3; ii++) {
+          for (jj = 0; jj < 3; jj++) {
+            positions[icount] = (
+                rot[jj][0] * kvp[ib][itri][ii][0]
+              + rot[jj][1] * kvp[ib][itri][ii][1]
+              + rot[jj][2] * kvp[ib][itri][ii][2]) * scl
+                              + trans[jj];
+            icount += 1;
+          }
+        }
+      }
+    }
+
+    let nnmlp = vertexCount * 3;
+    let vertexNormals = new Float32Array(nnmlp);
+    icount = 0;
+    for (ib = 0; ib < nb; ib++) {
+      for (itri = 0; itri < ntri[ib]; itri++) {
+        for (ii = 0; ii < 3; ii++) {
+          for (jj = 0; jj < 3; jj++) {
+            vertexNormals[icount] = rot[jj][0] * nmlp[ib][itri][ii][0]
+                                  + rot[jj][1] * nmlp[ib][itri][ii][1]
+                                  + rot[jj][2] * nmlp[ib][itri][ii][2];
+            icount += 1;
+          }
+        }
+      }
+    }
+
+    let nclr = vertexCount * 4;
+    let colors = new Float32Array(nclr);
+    icount = 0;
+    for (ib = 0; ib < nb; ib++) {
+      for (itri = 0; itri < ntri[ib]; itri++) {
+        for (ii = 0; ii < 3; ii++) {
+          for (jj = 0; jj < 4; jj++) {
+            colors[icount] = clr[ib][jj + 4 * ii + 12 * itri];
+            icount += 1;
+          }
+        }
+      }
+    }
+
+    draw2(projectionMatrix, modelViewMatrix, normalMatrix,
+      vertexCount, gl.TRIANGLES,
+      positions, colors, vertexNormals);
+  }
+
+  {
+    let ibzl = 0, i = 0, j = 0, icount = 0;
+
+    let vertexCount = 2*nbzl;
+    let nkvp = vertexCount * 3;
+    let nnmlp = vertexCount * 3;
+    let nclr = vertexCount * 4;
+    let positions = new Float32Array(nkvp);
+    let colors = new Float32Array(nclr);
+    let vertexNormals = new Float32Array(nnmlp);
+
+    //
+    //First Brillouin zone mode
+    //
+    icount = 0;
+    for (ibzl = 0; ibzl < nbzl; ++ibzl) {
+      for (i = 0; i < 2; ++i) {
+        vertexNormals[icount] = -1.0;
+        vertexNormals[icount + 1] = -1.0;
+        vertexNormals[icount + 2] = -1.0;
+        for (j = 0; j < 3; ++j) {
+          positions[icount] = (rot[j][0] * bzl[ibzl][i][0]
+            + rot[j][1] * bzl[ibzl][i][1]
+            + rot[j][2] * bzl[ibzl][i][2])*scl
+            + trans[j];
+          icount += 1;
+        }
+      }//for (i = 0; i< 2; ++i)
+    }//for (ibzl = 0; ibzl < nbzl; ++ibzl)
+    for (i = 0; i < nclr; ++i) colors[i] = 1.0;
+
+    draw2(projectionMatrix, modelViewMatrix, normalMatrix,
+      vertexCount, gl.LINES,
+      new Float32Array(positions), new Float32Array(colors), new Float32Array(vertexNormals));
+  }
+}
+function draw2(projectionMatrix, modelViewMatrix, normalMatrix,
+  vertexCount, drawtype,
+  positions, colors, vertexNormals) {
+
+  let positionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+  let colorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+
+  let normalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, vertexNormals, gl.STATIC_DRAW);
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute
@@ -262,7 +294,7 @@ function drawScene(programInfo, rotatex, rotatey) {
     let normalize = false;
     let stride = 0;
     let offset = 0;
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.vertexAttribPointer(
       programInfo.attribLocations.vertexPosition,
       numComponents,
@@ -282,7 +314,7 @@ function drawScene(programInfo, rotatex, rotatey) {
     let normalize = false;
     let stride = 0;
     let offset = 0;
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.color);
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
     gl.vertexAttribPointer(
       programInfo.attribLocations.vertexColor,
       numComponents,
@@ -302,7 +334,7 @@ function drawScene(programInfo, rotatex, rotatey) {
     let normalize = false;
     let stride = 0;
     let offset = 0;
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffers.normal);
+    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
     gl.vertexAttribPointer(
       programInfo.attribLocations.vertexNormal,
       numComponents,
@@ -334,12 +366,10 @@ function drawScene(programInfo, rotatex, rotatey) {
     normalMatrix);
 
   {
-    let vertexCount = ntri[0]*3;
     let offset = 0;
-    gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
+    gl.drawArrays(drawtype, offset, vertexCount);
   }
 }
-
 //
 // Initialize a shader program, so WebGL knows how to draw our data
 //
@@ -363,7 +393,6 @@ function initShaderProgram(gl, vsSource, fsSource) {
 
   return shaderProgram;
 }
-
 //
 // creates a shader of the given type, uploads the source and
 // compiles it.
@@ -411,7 +440,7 @@ function handleMove(evt) {
     if (idx == 0) {
       rotatex += -0.01 * (touches[i].clientX - ongoingTouches[idx].clientX);
       rotatey += 0.01 * (touches[i].clientY - ongoingTouches[idx].clientY);
-      drawScene(programInfo, rotatex, rotatey);
+      drawScene();
       ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
     }
   }
@@ -453,27 +482,111 @@ function ongoingTouchIndexById(idToFind) {
   return -1;    // not found
 }
 
-function mouseMove(evt) {
-  rotatex += -0.01 * evt.movementX;
-  rotatey += 0.01 * evt.movementY;
-  drawScene(programInfo, rotatex, rotatey);
+let isDrawing = false;
+let x = 0;
+let y = 0;
+
+const myPics = document.getElementById('glcanvas');
+
+myPics.addEventListener('mousedown', e => {
+  x = e.offsetX;
+  y = e.offsetY;
+  isDrawing = true;
+});
+
+myPics.addEventListener('mousemove', e => {
+  if (isDrawing === true) {
+    let dx = e.offsetX - x;
+    let dy = e.offsetY - y;
+    dx *= 0.001;
+    dy *= 0.001;
+    mouserotation(dx, dy)
+    drawScene();
+    x = e.offsetX;
+    y = e.offsetY;
+  }
+});
+
+window.addEventListener('mouseup', e => {
+  if (isDrawing === true) {
+    let dx = e.offsetX - x;
+    let dy = e.offsetY - y;
+    dx *= 0.001;
+    dy *= 0.001;
+    mouserotation(dx, dy)
+    drawScene();
+    x = 0;
+    y = 0;
+    isDrawing = false;
+  }
+});
+
+myPics.addEventListener('wheel', zoom);
+
+function zoom(evt) {
+  scl -= evt.deltaY*0.001;
+  document.getElementById("scale").value = String(scl);
+  drawScene();
 }
 
+function mouserotation(dx, dy) {
+  let i = 0, j = 0;
+  let a = Math.sqrt(dx * dx + dy * dy);
+  let rot0 = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
+  let rot1 = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
 
-
-
-
-
-
-
-
-
-
-
-
-function test() {
-  terminal("test");
+  if (a != 0.0) {
+    //
+    // Compute rotational matrix from translation of mousepointer
+    //
+    let ax = -dy;
+    let ay = dx;
+    //
+    a = a * 10.0;
+    //
+    rot0[0][0] = (ax * ax + ay * ay * Math.cos(a)) / (ax * ax + ay * ay);
+    rot0[0][1] = ax * ay * (Math.cos(a) - 1.0) / (ax * ax + ay * ay);
+    rot0[0][2] = ay * Math.sin(a) / Math.sqrt(ax * ax + ay * ay);
+    rot0[1][0] = ax * ay * (Math.cos(a) - 1.0) / (ax * ax + ay * ay);
+    rot0[1][1] = (ax * ax * Math.cos(a) + ay * ay) / (ax * ax + ay * ay);
+    rot0[1][2] = ax * Math.sin(a) / Math.sqrt(ax * ax + ay * ay);
+    rot0[2][0] = -ay * Math.sin(a) / Math.sqrt(ax * ax + ay * ay);
+    rot0[2][1] = -ax * Math.sin(a) / Math.sqrt(ax * ax + ay * ay);
+    rot0[2][2] = Math.cos(a);
+    //
+    for (i = 0; i < 3; i++) for (j = 0; j < 3; j++) rot1[i][j] = rot[i][j];
+    //
+    for (i = 0; i < 3; i++) {
+      for (j = 0; j < 3; j++) {
+        rot[i][j] = rot0[i][0] * rot1[0][j]
+                  + rot0[i][1] * rot1[1][j]
+                  + rot0[i][2] * rot1[2][j];
+      }
+    }
+    //
+    //Print angle to text Box
+    //
+    thetay = Math.asin(rot[0][2]);
+    if (Math.cos(thetay) != 0.0) {
+      if (-rot[1][2] / Math.cos(thetay) >= 0.0) thetax = Math.acos(rot[2][2] / Math.cos(thetay));
+      else thetax = 2.0 * Math.PI - Math.acos(rot[2][2] / Math.cos(thetay));
+      if (-rot[0][1] / Math.cos(thetay) >= 0.0) thetaz = Math.acos(rot[0][0] / Math.cos(thetay));
+      else thetaz = 2.0 * Math.PI - Math.acos(rot[0][0] / Math.cos(thetay));
+    }
+    else {
+      thetax = 0.0;
+      if (rot[1][0] >= 0.0) thetaz = Math.acos(rot[1][1]);
+      else thetaz = 2.0 * Math.PI - Math.acos(rot[1][1]);
+    }
+    thetax *= 180.0 / Math.PI;
+    thetay *= 180.0 / Math.PI;
+    thetaz *= 180.0 / Math.PI;
+    document.getElementById("rotatex").value = String(thetax);
+    document.getElementById("rotatey").value = String(thetay);
+    document.getElementById("rotatez").value = String(thetaz);
+  }
 }
+
 function terminal(msg) {
   var p = document.getElementById('log');
   p.innerHTML += msg;
@@ -3374,73 +3487,83 @@ function allocate_griddata(
     }
   }
 }
-/**
- @brief Input from Fermi surface file
-*/
-function read_file()
-{
+function read_from_text(datas) {
   let ib, i, j, i0, i1, i2, ii0, ii1, ii2, iaxis, icount;
   let lshift; //!< Switch for shifted Brillouin zone
 
-  const selectedFile = document.getElementById('inputfile').files[0];
-  var reader = new FileReader();
-  reader.readAsText(selectedFile);
-  reader.onload = function (event) {
-    var result = event.target.result;
-    let datas = result.replace(/\n/g, ' ').replace(/^ +/, '').split(/ +/);
-    icount = 0;
-    terminal("\n");
-    terminal("  ##  Brillouin zone informations  ###########\n");
-    terminal("\n");
-    /*
-     k-point grid
-    */
-    for (i = 0; i < 3; i++) {
-      ng0[i] = Number(datas[icount]);
+  icount = 0;
+  terminal("\n");
+  terminal("  ##  Brillouin zone informations  ###########\n");
+  terminal("\n");
+  /*
+   k-point grid
+  */
+  for (i = 0; i < 3; i++) {
+    ng0[i] = Number(datas[icount]);
+    icount += 1;
+  }
+  terminal("    k point grid : " + String(ng0[0]) + " " + String(ng0[1]) + " " + String(ng0[2]) + "\n");
+  /*
+   Shift of k-point grid
+  */
+  lshift = Number(datas[icount]);
+  icount += 1;
+
+  if (lshift == 0) {
+    terminal("    k point grid is the Monkhorst-Pack grid.\n");
+    for (i = 0; i < 3; i++) shiftk[i] = (ng0[i] + 1) % 2;
+  }
+  else if (lshift == 1) {
+    terminal("    k point grid starts from Gamma.\n");
+    for (i = 0; i < 3; i++) shiftk[i] = 0;
+  }
+  else if (lshift == 2) {
+    terminal("    k point grid starts from Gamma + a half grid.\n");
+    for (i = 0; i < 3; i++) shiftk[i] = 1;
+  }
+  else {
+    exit(0);
+  }
+  /*
+   # of bands
+  */
+  nb = Number(datas[icount]);
+  icount += 1;
+  terminal("    # of bands : " + String(nb) + "\n");
+  /*
+   Reciplocal lattice vectors
+  */
+  for (i = 0; i < 3; ++i) {
+    for (j = 0; j < 3; j++) {
+      bvec[i][j] = Number(datas[icount]);
       icount += 1;
     }
-    terminal("    k point grid : " + String(ng0[0]) + " " + String(ng0[1]) + " " + String(ng0[2]) + "\n");
-    /*
-     Shift of k-point grid
-    */
-    lshift = Number(datas[icount]);
-    icount += 1;
-
-    if (lshift == 0) {
-      terminal("    k point grid is the Monkhorst-Pack grid.\n");
-      for (i = 0; i < 3; i++) shiftk[i] = (ng0[i] + 1) % 2;
-    }
-    else if (lshift == 1) {
-      terminal("    k point grid starts from Gamma.\n");
-      for (i = 0; i < 3; i++) shiftk[i] = 0;
-    }
-    else if (lshift == 2) {
-      terminal("    k point grid starts from Gamma + a half grid.\n");
-      for (i = 0; i < 3; i++) shiftk[i] = 1;
-    }
-    else {
-      exit(0);
-    }
-    /*
-     # of bands
-    */
-    nb = Number(datas[icount]);
-    icount += 1;
-    terminal("    # of bands : " + String(nb) + "\n");
-    /*
-     Reciplocal lattice vectors
-    */
-    for (i = 0; i < 3; ++i) {
-      for (j = 0; j < 3; j++) {
-        bvec[i][j] = Number(datas[icount]);
-        icount += 1;
+    terminal("    bvec " + String(i + 1) + " : " + String(bvec[i][0]) + " " + String(bvec[i][1]) + " " + String(bvec[i][2]) + " \n");
+  }/*for (i = 0; i < 3; ++i)*/
+  allocate_griddata(ng, ng0);
+  /*
+   Kohn-Sham energies
+  */
+  for (ib = 0; ib < nb; ++ib) {
+    for (i0 = 0; i0 < ng0[0]; ++i0) {
+      if (lshift != 0) ii0 = i0;
+      else ii0 = modulo(i0 + (ng0[0] + 1) / 2, ng0[0]);
+      for (i1 = 0; i1 < ng0[1]; ++i1) {
+        if (lshift != 0) ii1 = i1;
+        else ii1 = modulo(i1 + (ng0[1] + 1) / 2, ng0[1]);
+        for (i2 = 0; i2 < ng0[2]; ++i2) {
+          if (lshift != 0) ii2 = i2;
+          else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
+          eig0[ib][ii0][ii1][ii2] = Number(datas[icount]);
+          icount += 1;
+        }
       }
-      terminal("    bvec " + String(i + 1) + " : " + String(bvec[i][0]) + " " + String(bvec[i][1]) + " " + String(bvec[i][2]) + " \n");
-    }/*for (i = 0; i < 3; ++i)*/
-    allocate_griddata(ng, ng0);
-    /*
-     Kohn-Sham energies
-    */
+    }
+  }
+  /*
+   Matrix elements
+  */
+  for (iaxis = 0; iaxis < 1; iaxis++) {
     for (ib = 0; ib < nb; ++ib) {
       for (i0 = 0; i0 < ng0[0]; ++i0) {
         if (lshift != 0) ii0 = i0;
@@ -3451,49 +3574,42 @@ function read_file()
           for (i2 = 0; i2 < ng0[2]; ++i2) {
             if (lshift != 0) ii2 = i2;
             else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
-            eig0[ib][ii0][ii1][ii2] = Number(datas[icount]);
+            mat0[ib][ii0][ii1][ii2][iaxis] = Number(datas[icount]);
             icount += 1;
-          }
-        }
-      }
-    }
-    /*
-     Matrix elements
-    */
-    for (iaxis = 0; iaxis < 1; iaxis++) {
-      for (ib = 0; ib < nb; ++ib) {
-        for (i0 = 0; i0 < ng0[0]; ++i0) {
-          if (lshift != 0) ii0 = i0;
-          else ii0 = modulo(i0 + (ng0[0] + 1) / 2, ng0[0]);
-          for (i1 = 0; i1 < ng0[1]; ++i1) {
-            if (lshift != 0) ii1 = i1;
-            else ii1 = modulo(i1 + (ng0[1] + 1) / 2, ng0[1]);
-            for (i2 = 0; i2 < ng0[2]; ++i2) {
-              if (lshift != 0) ii2 = i2;
-              else ii2 = modulo(i2 + (ng0[2] + 1) / 2, ng0[2]);
-              mat0[ib][ii0][ii1][ii2][iaxis] = Number(datas[icount]);
-              icount += 1;
-            }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
-          }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
-        }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
-      }/*for (ib = 0; ib < nb; ++ib)*/
-    }//for (iaxis = 0; iaxis < 1; iaxis++)
-    //
-    interpol_energy();
-    init_corner();
-    bragg_vector();
-    //
-    //Brillouin zone
-    //
-    bz_lines();
-    calc_2dbz();
-    //
-    max_and_min_bz();
-    //
-    compute_patch_segment();
+          }/*for (i2 = 0; i2 < ng0[2]; ++i2)*/
+        }/*for (i1 = 0; i1 < ng0[1]; ++i1)*/
+      }/*for (i0 = 0; i0 < ng0[0]; ++i0)*/
+    }/*for (ib = 0; ib < nb; ++ib)*/
+  }//for (iaxis = 0; iaxis < 1; iaxis++)
+  //
+  interpol_energy();
+  init_corner();
+  bragg_vector();
+  //
+  //Brillouin zone
+  //
+  bz_lines();
+  calc_2dbz();
+  //
+  max_and_min_bz();
+  //
+  compute_patch_segment();
 
-    main();
+  main();
+}
+/**
+ @brief Input from Fermi surface file
+*/
+function read_file()
+{
+  const selectedFile = document.getElementById('inputfile').files[0];
+  var reader = new FileReader();
+  reader.readAsText(selectedFile);
+  reader.onload = function (event) {
+    var result = event.target.result;
+    let datas = result.replace(/\n/g, ' ').replace(/^ +/, '').split(/ +/);
 
+    read_from_text(datas);
   };
   reader.onerror = function () {
     terminal("File can not be loaded.");
@@ -3820,3 +3936,8 @@ function calc_section() {
     terminal("    " + String(ib + 1) + "       " + String(n2d[ib]) + "\n");
   }/*for (ib = 0; ib < nb; ib++)*/
 }/*function calc_nodeline()*/
+
+if (frmsf != "") {
+  let datas = frmsf.replace(/\n/g, ' ').replace(/^ +/, '').split(/ +/);
+  read_from_text(datas);
+}
