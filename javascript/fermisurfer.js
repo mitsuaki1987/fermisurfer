@@ -66,7 +66,7 @@ function main() {
 
       highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
 
-      highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
+      highp float directional = abs(dot(transformedNormal.xyz, directionalVector));
       vLighting = ambientLight + (directionalLightColor * directional);
     }
   `;
@@ -123,7 +123,7 @@ function main() {
 function drawScene() {
   let ib = 0, ii = 0, jj = 0;
 
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);  // Clear to black, fully opaque
+  gl.clearColor(BackGroundColor[0], BackGroundColor[1], BackGroundColor[2], BackGroundColor[3]);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
   gl.enable(gl.DEPTH_TEST);           // Enable depth testing
   gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
@@ -174,6 +174,8 @@ function drawScene() {
   let normalMatrix = mat4.create();
   mat4.invert(normalMatrix, modelViewMatrix);
   mat4.transpose(normalMatrix, normalMatrix);
+
+  gl.lineWidth(linewidth);
 
   {
     let vertexCount = 0;
@@ -263,8 +265,15 @@ function drawScene() {
         }
       }//for (i = 0; i< 2; ++i)
     }//for (ibzl = 0; ibzl < nbzl; ++ibzl)
-    for (i = 0; i < nclr; ++i) colors[i] = 1.0;
-
+    icount = 0;
+    for (ibzl = 0; ibzl < nbzl; ++ibzl) {
+      for (i = 0; i < 2; ++i) {
+        for (j = 0; j < 3; ++j) {
+          colors[icount] = LineColor[j];
+          icount += 1;
+        }
+      }
+    }
     draw2(projectionMatrix, modelViewMatrix, normalMatrix,
       vertexCount, gl.LINES,
       new Float32Array(positions), new Float32Array(colors), new Float32Array(vertexNormals));
@@ -3133,12 +3142,66 @@ function compute_patch_segment() {
     refresh_equator = 0;
   }
 }
+function update_delay() {
+  terminal("uptedate\n");
+  compute_patch_segment()
+  drawScene();
+}
+function update_now() {
+  linewidth = document.getElementById("linewidth").value;
+  /*
+   Line color
+  */
+  LineColor[0] = document.getElementById("linecolorr").value;
+  LineColor[1] = document.getElementById("linecolorg").value;
+  LineColor[2] = document.getElementById("linecolorb").value;
+  //
+  // Back ground color
+  //
+  BackGroundColor[0] = document.getElementById("backgraoundr").value;
+  BackGroundColor[1] = document.getElementById("backgraoundg").value;
+  BackGroundColor[2] = document.getElementById("backgraoundb").value;
+  //
+  //Rotate, scale, translate
+  //
+  thetax = document.getElementById("rotatex").value;
+  thetay = document.getElementById("rotatey").value;
+  thetaz = document.getElementById("rotatez").value;
+  trans[0] = document.getElementById("positionx").value;
+  trans[1] = document.getElementById("positiony").value;
+  rot[0][0] = Math.cos(thetay) * Math.cos(thetaz);
+  rot[0][1] = -Math.cos(thetay) * Math.sin(thetaz);
+  rot[0][2] = Math.sin(thetay);
+  rot[1][0] = Math.cos(thetaz) * Math.sin(thetax) * Math.sin(thetay) + Math.cos(thetax) * Math.sin(thetaz);
+  rot[1][1] = Math.cos(thetax) * Math.cos(thetaz) - Math.sin(thetax) * Math.sin(thetay) * Math.sin(thetaz);
+  rot[1][2] = -Math.cos(thetay) * Math.sin(thetax);
+  rot[2][0] = -Math.cos(thetax) * Math.cos(thetaz) * Math.sin(thetay) + Math.sin(thetax) * Math.sin(thetaz);
+  rot[2][1] = Math.cos(thetaz) * Math.sin(thetax) + Math.cos(thetax) * Math.sin(thetay) * Math.sin(thetaz);
+  rot[2][2] = Math.cos(thetax) * Math.cos(thetay);
+  scl = document.getElementById("scale").value;
+
+  drawScene();
+}
+function update_interpol() {
+  interpol = document.getElementById("interpol").value;
+  refresh_interpol = 1;
+}
+function update_efermi(){
+  EF = document.getElementById("fermienergy").value;
+  refresh_patch = 1;
+}
+function update_color() {
+  color_scale = Number(document.getElementById('colorscalemode').colorscalemode.value);
+  refresh_color = 1;
+}
+function update_minmax() {
+  patch_min = document.getElementById("scalemin").value;
+  patch_max = document.getElementById("scalemax").value;
+  refresh_color = 1;
+  skip_minmax = 1;
+}
 function button_update() {
   let ii = 0, jj = 0;
-  /*
-   Line width
-  */
-  linewidth = Number(document.getElementById("linewidth"));
   /*
    Section vector
    */
@@ -3164,25 +3227,11 @@ function button_update() {
     for (jj = 0; jj < 3; jj++) {
       eqvec[ii] += eqvec_fr[jj] * bvec[jj][ii];
     }/*for (jj = 0; jj < 3; jj++)*/
-  }/*for (ii = 0; ii < 3; ii++)*/
-  /*
-   * Interpolation
-  */
-  interpol = Number(document.getElementById("interpol"));
-  /*
-   Fermi energy
-   */
-  EF = Number(document.getElementById("fermienergy"));
-  /*
-   * Min. and Max. of scale
-  */
-  patch_min = Number(document.getElementById("scalemin"));
-  patch_max = Number(document.getElementById("scalemax"));
+  }/*for (ii = 0; ii < 3; ii++)*/  
   /*  */
   itet = Number(document.getElementById('tetrahedron').tetrahedron.value);
   init_corner();
   /**/
-  color_scale = Number(document.getElementById('colorscalemode').colorscalemode.value);
   fbz = Number(document.getElementById('brillouinzone').brillouinzone.value);
   lstereo = Number(document.getElementById('stereogram').stereogram.value);
   lmouse = Number(document.getElementById('mousedrag').mousedrag.value);
@@ -3192,37 +3241,7 @@ function button_update() {
   BZ_number[0] = Number(document.getElementById("bznumber0"));
   BZ_number[1] = Number(document.getElementById("bznumber1"));
   BZ_number[2] = Number(document.getElementById("bznumber2"));
-  /*
-  Back ground color
-  */
-  BackGroundColor[0] = Number(document.getElementById("backgraoundr"));
-  BackGroundColor[1] = Number(document.getElementById("backgraoundg"));
-  BackGroundColor[2] = Number(document.getElementById("backgraoundb"));
   glClearColor(BackGroundColor[0], BackGroundColor[1], BackGroundColor[2], BackGroundColor[3]);
-  /*
-  Line color
-  */
-  LineColor[0] = Number(document.getElementById("linecolorr"));
-  LineColor[1] = Number(document.getElementById("linecolorg"));
-  LineColor[2] = Number(document.getElementById("linecolorb"));
-  /*
-  Rotate, scale, translate
-  */
-  thetax = Number(document.getElementById("rotatex"));
-  thetay = Number(document.getElementById("rotatey"));
-  thetaz = Number(document.getElementById("rotatez"));
-  trans[0] = Number(document.getElementById("positionx"));
-  trans[1] = Number(document.getElementById("positiony"));
-  scl = Number(document.getElementById("scale"));
-  rot[0][0] = Math.cos(thetay) * Math.cos(thetaz);
-  rot[0][1] = -Math.cos(thetay) * Math.sin(thetaz);
-  rot[0][2] = Math.sin(thetay);
-  rot[1][0] = Math.cos(thetaz) * Math.sin(thetax) * Math.sin(thetay) + Math.cos(thetax) * Math.sin(thetaz);
-  rot[1][1] = Math.cos(thetax) * Math.cos(thetaz) - Math.sin(thetax) * Math.sin(thetay) * Math.sin(thetaz);
-  rot[1][2] = -Math.cos(thetay) * Math.sin(thetax);
-  rot[2][0] = -Math.cos(thetax) * Math.cos(thetaz) * Math.sin(thetay) + Math.sin(thetax) * Math.sin(thetaz);
-  rot[2][1] = Math.cos(thetaz) * Math.sin(thetax) + Math.cos(thetax) * Math.sin(thetay) * Math.sin(thetaz);
-  rot[2][2] = Math.cos(thetax) * Math.cos(thetay);
   /**/
   if (document.getElementById("colorbar")) lcolorbar = 1;
   else lcolorbar = 0;
