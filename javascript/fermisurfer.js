@@ -1946,8 +1946,8 @@ function fermi_patch()
     terminal("\n");
     terminal("  ##  First Brillouin zone mode  #######\n");
     for (i0 = 0; i0 < 3; ++i0) {
-      start[i0] = ng[i0] / 2 - ng[i0];
-      last[i0] = ng[i0] / 2;
+      start[i0] = Math.floor(ng[i0] / 2) - ng[i0];
+      last[i0] = Math.floor(ng[i0] / 2);
     }
   }
   else {
@@ -2019,6 +2019,7 @@ function fermi_patch()
           ii1 = modulo(ii1, ng[1]);
           ii2 = modulo(ii2, ng[2]);
           /**/
+          terminal(String(i0) + String(i1) + String(i2));
           eig1[0] = eig[ib][i0][i1][i2] - EF;
           eig1[1] = eig[ib][i0][i1][ii2] - EF;
           eig1[2] = eig[ib][i0][ii1][i2] - EF;
