@@ -17,6 +17,7 @@ Welcome to FermiSurfer's documentation!
    batch
    qe
    android
+   onweb
    ack
    copy
    contact

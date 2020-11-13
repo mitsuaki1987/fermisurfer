@@ -1,3 +1,5 @@
+.. _ops:
+
 Control FermiSurfer
 ===================
 

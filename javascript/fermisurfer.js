@@ -2019,7 +2019,6 @@ function fermi_patch()
           ii1 = modulo(ii1, ng[1]);
           ii2 = modulo(ii2, ng[2]);
           /**/
-          terminal(String(i0) + String(i1) + String(i2));
           eig1[0] = eig[ib][i0][i1][i2] - EF;
           eig1[1] = eig[ib][i0][i1][ii2] - EF;
           eig1[2] = eig[ib][i0][ii1][i2] - EF;
