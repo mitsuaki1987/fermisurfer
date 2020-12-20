@@ -111,11 +111,7 @@ function main() {
 
   var el = document.getElementById("glcanvas");
   el.addEventListener("touchstart", handleStart, false);
-  el.addEventListener("touchend", handleEnd, false);
-  el.addEventListener("touchcancel", handleCancel, false);
   el.addEventListener("touchmove", handleMove, false);
-  //el.addEventListener("mousemove", mouseMove, false);
-
 }
 //
 // Draw the scene.
@@ -268,7 +264,7 @@ function drawScene() {
     icount = 0;
     for (ibzl = 0; ibzl < nbzl; ++ibzl) {
       for (i = 0; i < 2; ++i) {
-        for (j = 0; j < 3; ++j) {
+        for (j = 0; j < 4; ++j) {
           colors[icount] = LineColor[j];
           icount += 1;
         }
@@ -428,67 +424,53 @@ function loadShader(gl, type, source) {
   return shader;
 }
 
-var ongoingTouches = [];
+let touch0x = 0.0;
+let touch0y = 0.0;
+let touch1x = 0.0;
+let touch1y = 0.0;
 
 function handleStart(evt) {
   evt.preventDefault();
   var touches = evt.changedTouches;
 
-  for (var i = 0; i < touches.length; i++) {
-    ongoingTouches.push(copyTouch(touches[i]));
+  for (i = 0; i < touches.length; i++) {
+    if (touches[i].identifier == 0) {
+      touch0x = touches[i].clientX;
+      touch0y = touches[i].clientY;
+    }
+    else if (touches[i].identifier == 1) {
+      touch1x = touches[i].clientX;
+      touch1y = touches[i].clientY;
+    }
   }
 }
 
 function handleMove(evt) {
   evt.preventDefault();
   var touches = evt.changedTouches;
+  let dx = 0.0, dy = 0.0, dold = 0.0, dnew = 0.;
 
-  for (var i = 0; i < touches.length; i++) {
-    var idx = ongoingTouchIndexById(touches[i].identifier);
-
-    if (idx == 0) {
-      rotatex += -0.01 * (touches[i].clientX - ongoingTouches[idx].clientX);
-      rotatey += 0.01 * (touches[i].clientY - ongoingTouches[idx].clientY);
+  if (touches.length == 1) {
+    if (touches[0].identifier == 0) {
+      dx = 0.001 * (touches[0].clientX - touch0x);
+      dy = 0.001 * (touches[0].clientY - touch0y);
+      mouserotation(dx, dy)
       drawScene();
-      ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+      touch0x = touches[0].clientX;
+      touch0y = touches[0].clientY;
     }
   }
-}
-function handleEnd(evt) {
-  evt.preventDefault();
-  var touches = evt.changedTouches;
-
-  //log("touchend");
-  for (var i = 0; i < touches.length; i++) {
-    var idx = ongoingTouchIndexById(touches[i].identifier);
-
-    if (idx >= 0) {
-      ongoingTouches.splice(idx, 1);  // remove it; we're done
-    }
+  else if (touches.length == 2) {
+    dold = Math.sqrt((touch1x - touch0x) * (touch1x - touch0x) + (touch1y - touch0y) * (touch1y - touch0y));
+    touch0x = touches[0].clientX;
+    touch0y = touches[0].clientY;
+    touch1x = touches[1].clientX;
+    touch1y = touches[1].clientY;
+    dnew = Math.sqrt((touch1x - touch0x) * (touch1x - touch0x) + (touch1y - touch0y) * (touch1y - touch0y));
+    scl += 0.001 * (dnew - dold);
+    document.getElementById("scale").value = String(scl);
+    drawScene();
   }
-}
-function handleCancel(evt) {
-  evt.preventDefault();
-  var touches = evt.changedTouches;
-
-  for (var i = 0; i < touches.length; i++) {
-    var idx = ongoingTouchIndexById(touches[i].identifier);
-    ongoingTouches.splice(idx, 1);  // remove it; we're done
-  }
-}
-function copyTouch({ identifier, clientX, clientY }) {
-  return { identifier, clientX, clientY };
-}
-
-function ongoingTouchIndexById(idToFind) {
-  for (var i = 0; i < ongoingTouches.length; i++) {
-    var id = ongoingTouches[i].identifier;
-
-    if (id == idToFind) {
-      return i;
-    }
-  }
-  return -1;    // not found
 }
 
 let isDrawing = false;
@@ -3143,32 +3125,31 @@ function compute_patch_segment() {
   }
 }
 function update_delay() {
-  terminal("uptedate\n");
   compute_patch_segment()
   drawScene();
 }
 function update_now() {
-  linewidth = document.getElementById("linewidth").value;
-  /*
-   Line color
-  */
-  LineColor[0] = document.getElementById("linecolorr").value;
-  LineColor[1] = document.getElementById("linecolorg").value;
-  LineColor[2] = document.getElementById("linecolorb").value;
+  linewidth = Number(document.getElementById("linewidth").value);
+  //
+  // Line color
+  //
+  LineColor[0] = Number(document.getElementById("linecolorr").value);
+  LineColor[1] = Number(document.getElementById("linecolorg").value);
+  LineColor[2] = Number(document.getElementById("linecolorb").value);
   //
   // Back ground color
   //
-  BackGroundColor[0] = document.getElementById("backgraoundr").value;
-  BackGroundColor[1] = document.getElementById("backgraoundg").value;
-  BackGroundColor[2] = document.getElementById("backgraoundb").value;
+  BackGroundColor[0] = Number(document.getElementById("backgraoundr").value);
+  BackGroundColor[1] = Number(document.getElementById("backgraoundg").value);
+  BackGroundColor[2] = Number(document.getElementById("backgraoundb").value);
   //
   //Rotate, scale, translate
   //
-  thetax = document.getElementById("rotatex").value;
-  thetay = document.getElementById("rotatey").value;
-  thetaz = document.getElementById("rotatez").value;
-  trans[0] = document.getElementById("positionx").value;
-  trans[1] = document.getElementById("positiony").value;
+  trans[0] = Number(document.getElementById("positionx").value);
+  trans[1] = Number(document.getElementById("positiony").value);
+  thetax = Number(document.getElementById("rotatex").value);
+  thetay = Number(document.getElementById("rotatey").value);
+  thetaz = Number(document.getElementById("rotatez").value);
   rot[0][0] = Math.cos(thetay) * Math.cos(thetaz);
   rot[0][1] = -Math.cos(thetay) * Math.sin(thetaz);
   rot[0][2] = Math.sin(thetay);
@@ -3178,16 +3159,15 @@ function update_now() {
   rot[2][0] = -Math.cos(thetax) * Math.cos(thetaz) * Math.sin(thetay) + Math.sin(thetax) * Math.sin(thetaz);
   rot[2][1] = Math.cos(thetaz) * Math.sin(thetax) + Math.cos(thetax) * Math.sin(thetay) * Math.sin(thetaz);
   rot[2][2] = Math.cos(thetax) * Math.cos(thetay);
-  scl = document.getElementById("scale").value;
-
+  scl = Number(document.getElementById("scale").value);
   drawScene();
 }
 function update_interpol() {
-  interpol = document.getElementById("interpol").value;
+  interpol = Number(document.getElementById("interpol").value);
   refresh_interpol = 1;
 }
 function update_efermi(){
-  EF = document.getElementById("fermienergy").value;
+  EF = Number(document.getElementById("fermienergy").value);
   refresh_patch = 1;
 }
 function update_color() {
@@ -3195,8 +3175,8 @@ function update_color() {
   refresh_color = 1;
 }
 function update_minmax() {
-  patch_min = document.getElementById("scalemin").value;
-  patch_max = document.getElementById("scalemax").value;
+  patch_min = Number(document.getElementById("scalemin").value);
+  patch_max = Number(document.getElementById("scalemax").value);
   refresh_color = 1;
   skip_minmax = 1;
 }
