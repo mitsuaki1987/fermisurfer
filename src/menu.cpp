@@ -125,7 +125,6 @@ enum
   itext_roty,
   itext_rotz,
   ibutton_rotate,
-  icheck_band,
   itext_BackGroundR,
   itext_BackGroundG,
   itext_BackGroundB,
@@ -136,7 +135,11 @@ enum
   ibutton_section,
   itext_BZ_number0,
   itext_BZ_number1,
-  itext_BZ_number2
+  itext_BZ_number2,
+  itext_SectionR,
+  itext_SectionG,
+  itext_SectionB,
+  icheck_band
 };
 
 void MyFrame::button_refresh(
@@ -213,6 +216,68 @@ void MyFrame::textctrl_LineColor(
   }
 }
 /**
+@brief Change section color (::blackback)
+*/
+void MyFrame::textctrl_Section(
+  wxCommandEvent& event //!<[in] Selected menu
+)
+{
+  int ierr;
+  double dvalue;
+
+  if (event.GetId() == itext_SectionR) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      SectionColor[0] = (GLfloat)dvalue;
+      Refresh(false);
+    }
+  }
+  else  if (event.GetId() == itext_SectionG) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      SectionColor[1] = (GLfloat)dvalue;
+      Refresh(false);
+    }
+  }
+  else  if (event.GetId() == itext_SectionB) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      SectionColor[2] = (GLfloat)dvalue;
+      Refresh(false);
+    }
+  }
+}
+/**
+@brief Change band color (::blackback)
+*/
+void MyFrame::textctrl_Band(
+  wxCommandEvent& event //!<[in] Selected menu
+)
+{
+  int ierr;
+  double dvalue;
+  int ib = (event.GetId() - icheck_band) / 4;
+
+  if (event.GetId() == icheck_band + 4 * ib + 1) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      rgb_band[ib][0] = (GLfloat)dvalue;
+      paint();
+      Refresh(false);
+    }
+  }
+  else  if (event.GetId() == icheck_band + 4 * ib + 2) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      rgb_band[ib][1] = (GLfloat)dvalue;
+      paint();
+      Refresh(false);
+    }
+  }
+  else  if (event.GetId() == icheck_band + 4 * ib + 3) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      rgb_band[ib][2] = (GLfloat)dvalue;
+      paint();
+      Refresh(false);
+    }
+  }
+}
+/**
 @brief Change background color (::blackback)
 */
 void MyFrame::textctrl_BackGround(
@@ -283,7 +348,7 @@ void MyFrame::check_band(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ib = event.GetId() - icheck_band;
+  int ib = (event.GetId() - icheck_band) / 4;
   if (draw_band[ib] == 0) {
     draw_band[ib] = 1;
   }
@@ -912,36 +977,51 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_colorbar, this, icheck_colorbar);
   wxCheckBox* check = new wxCheckBox(panel, icheck_colorbar, wxT("Color bar"));
-  gbsizer->Add(check, wxGBPosition(15, 1), wxGBSpan(1, 1));
+  gbsizer->Add(check, wxGBPosition(16, 2), wxGBSpan(1, 1));
   check->SetValue(true);
   // debug fileMenu->Check(menu_colorbar_check, true);
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::checkvalue_equator, this, icheck_equator);
-  gbsizer->Add(new wxCheckBox(panel, icheck_equator, wxT("Equator")), wxGBPosition(16, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxCheckBox(panel, icheck_equator, wxT("Equator")), wxGBPosition(17, 2), wxGBSpan(1, 1));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_nodeline, this, icheck_nodeline);
-  gbsizer->Add(new wxCheckBox(panel, icheck_nodeline, wxT("Nodal line")), wxGBPosition(17, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxCheckBox(panel, icheck_nodeline, wxT("Nodal line")), wxGBPosition(18, 2), wxGBSpan(1, 1));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_section);
-  gbsizer->Add(new wxCheckBox(panel, icheck_section, wxT("Section")), wxGBPosition(18, 1), wxGBSpan(1, 1));
+  gbsizer->Add(new wxCheckBox(panel, icheck_section, wxT("Section")), wxGBPosition(16, 3), wxGBSpan(1, 1));
 
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_section, this, ibutton_section);
   gbsizer->Add(new wxButton(panel, ibutton_section, wxT("Section file")),
-    wxGBPosition(19, 1), wxGBSpan(1, 1));
+    wxGBPosition(17, 3), wxGBSpan(1, 1));
 
   wxString choices_light[] = { wxT("Both"), wxT("Unoccupy"), wxT("Occupy") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_lighting, this, iradio_lighting);
   gbsizer->Add(new wxRadioBox(panel, iradio_lighting, wxT("Lighting"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_light), choices_light,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(16, 2), wxGBSpan(4, 1));
+    1, wxRA_SPECIFY_COLS), wxGBPosition(15, 0), wxGBSpan(4, 1));
 
   wxString choices_BarColor[] = { wxT("BGR"), wxT("CMY"), wxT("MCY")};
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_BarColor, this, iradio_BarColor);
   gbsizer->Add(new wxRadioBox(panel, iradio_BarColor, wxT("Bar Color"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_BarColor), choices_BarColor,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(16, 3), wxGBSpan(4, 1));
+    1, wxRA_SPECIFY_COLS), wxGBPosition(15, 1), wxGBSpan(4, 1));
+
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Section (RGB) : ")),
+    wxGBPosition(19, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Section, this, itext_SectionR);
+  textbox_SectionR = new wxTextCtrl(panel, itext_SectionR, wxT(""));
+  gbsizer->Add(textbox_SectionR, wxGBPosition(19, 1), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Section, this, itext_SectionG);
+  textbox_SectionG = new wxTextCtrl(panel, itext_SectionG, wxT(""));
+  gbsizer->Add(textbox_SectionG, wxGBPosition(19, 2), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Section, this, itext_SectionB);
+  textbox_SectionB = new wxTextCtrl(panel, itext_SectionB, wxT(""));
+  gbsizer->Add(textbox_SectionB, wxGBPosition(19, 3), wxGBSpan(1, 1));
+  textbox_SectionR->ChangeValue(wxT("0.5"));
+  textbox_SectionG->ChangeValue(wxT("0.5"));
+  textbox_SectionB->ChangeValue(wxT("0.5"));
 
   SetSizer(sizermain);
   SetAutoLayout(true);
@@ -966,19 +1046,56 @@ void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 }
 
 void MyFrame::modify_band() {
-  int ib, width, height;
+  int ib, width, height, j;
   wxCheckBox** check;
+  wxTextCtrl** textbox_BandR, ** textbox_BandG, ** textbox_BandB;
+  GLfloat mat2;
 
   radiobox_color->SetSelection(color_scale - 1);
 
   check = new wxCheckBox * [nb];
+  textbox_BandR = new wxTextCtrl * [nb];
+  textbox_BandG = new wxTextCtrl * [nb];
+  textbox_BandB = new wxTextCtrl * [nb];
 
   for (ib = 0; ib < nb; ib++) {
-    Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_band, this, icheck_band + ib);
-    check[ib] = new wxCheckBox(panel, icheck_band + ib, 
-      wxString::Format(wxT("Band %d"), ib));
-    gbsizer->Add(check[ib], wxGBPosition(14 + ib, 0), wxGBSpan(1, 1));
+    Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_band, this, icheck_band + 4*ib);
+    check[ib] = new wxCheckBox(panel, icheck_band + 4*ib,
+      wxString::Format(wxT("Band %d, RGB :"), ib));
+    gbsizer->Add(check[ib], wxGBPosition(20 + ib, 0), wxGBSpan(1, 1));
     check[ib]->SetValue(true);
+
+    if (nb == 1) mat2 = 0.5f;
+    else mat2 = 1.0f / (GLfloat)(nb - 1) * (GLfloat)ib;
+    mat2 *= 4.0f;
+    if (mat2 <= 1.0) {
+      for (j = 0; j < 4; ++j) rgb_band[ib][j] = cyan[j] * mat2 + blue[j] * (1.0f - mat2);
+    }
+    else if (mat2 <= 2.0) {
+      mat2 = mat2 - 1.0f;
+      for (j = 0; j < 4; ++j) rgb_band[ib][j] = green[j] * mat2 + cyan[j] * (1.0f - mat2);
+    }
+    else if (mat2 <= 3.0) {
+      mat2 = mat2 - 2.0f;
+      for (j = 0; j < 4; ++j) rgb_band[ib][j] = yellow[j] * mat2 + green[j] * (1.0f - mat2);
+    }
+    else {
+      mat2 = mat2 - 3.0f;
+      for (j = 0; j < 4; ++j) rgb_band[ib][j] = red[j] * mat2 + yellow[j] * (1.0f - mat2);
+    }
+
+    Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+1);
+    textbox_BandR[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+1, wxT(""));
+    gbsizer->Add(textbox_BandR[ib], wxGBPosition(20 + ib, 1), wxGBSpan(1, 1));
+    Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+2);
+    textbox_BandG[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+2, wxT(""));
+    gbsizer->Add(textbox_BandG[ib], wxGBPosition(20 + ib, 2), wxGBSpan(1, 1));
+    Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+3);
+    textbox_BandB[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+3, wxT(""));
+    gbsizer->Add(textbox_BandB[ib], wxGBPosition(20 + ib, 3), wxGBSpan(1, 1));
+    textbox_BandR[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][0]));
+    textbox_BandG[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][1]));
+    textbox_BandB[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][2]));
   }
   gbsizer->Layout();
   if (lbatch == 1) {

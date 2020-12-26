@@ -83,6 +83,7 @@ extern int nbragg;             //!< Number of Bragg plane og 1st BZ
 */
 extern int *ntri;          //!< The number of triangle patch [::nb]
 extern int *draw_band;     //!< Switch for drawn bands [::nb]
+extern GLfloat** rgb_band;     //!< Switch for drawn bands [::nb]
 extern GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
 extern GLfloat***** arw;
 extern GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
@@ -152,6 +153,7 @@ extern GLfloat   green[4]; //!< Green color code
 extern GLfloat    blue[4]; //!< Blue color code
 extern GLfloat BackGroundColor[4];//!< Background color code
 extern GLfloat LineColor[4];//!< Line color code
+extern GLfloat SectionColor[4];//!< Line color code
 extern GLfloat BarColor[5][4];
 /*
  Others

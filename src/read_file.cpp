@@ -57,7 +57,11 @@ int ng0[3]
   n2d = new int[nb];
   nequator = new int[nb];
   draw_band = new int[nb];
-  for (ib = 0; ib < nb; ib++) draw_band[ib] = 1;
+  rgb_band = new GLfloat *[nb];
+  for (ib = 0; ib < nb; ib++) {
+    draw_band[ib] = 1;
+    rgb_band[ib] = new GLfloat [4];
+  }
 
   scl /= sqrtf(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
   linewidth /= scl;

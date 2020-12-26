@@ -308,7 +308,7 @@ static void draw_bz_lines() {
                 + trans[j];
       for (j = 0; j < 3; j++)vertices[j + 3 * ibzl] = bzl2[j];
     }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
-    glColor3fv(gray);
+    glColor3fv(SectionColor);
     glNormal3fv(secvec2);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
     glDrawArrays(GL_TRIANGLE_FAN, 0, nbzl2d);

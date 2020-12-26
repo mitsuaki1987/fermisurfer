@@ -71,6 +71,9 @@ public:
   wxTextCtrl* textbox_BZ_number0;
   wxTextCtrl* textbox_BZ_number1;
   wxTextCtrl* textbox_BZ_number2;
+  wxTextCtrl* textbox_SectionR;
+  wxTextCtrl* textbox_SectionG;
+  wxTextCtrl* textbox_SectionB;
 
 private:
   void OnExit(wxCommandEvent& event);
@@ -96,6 +99,8 @@ private:
   void radio_BarColor(wxCommandEvent& event);
   void button_section(wxCommandEvent& event);
   void textctrl_BZ_number(wxCommandEvent& event);
+  void textctrl_Section(wxCommandEvent& event);
+  void textctrl_Band(wxCommandEvent& event);
   //wxDECLARE_EVENT_TABLE();
 };
 

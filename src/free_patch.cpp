@@ -439,51 +439,13 @@ shared(nb,ntri,matp,clr,BarColor,color_scale,kvp,arw,patch_max) \
 private(itri, j)
     {
       int i, ib;
-      GLfloat mat2;
 
       for (ib = 0; ib < nb; ib++) {
         /**/
-        if (nb == 1) mat2 = 0.5f;
-        else mat2 = 1.0f / (GLfloat)(nb - 1) * (GLfloat)ib;
-        mat2 *= 4.0f;
-        /**/
-        if (mat2 <= 1.0) {
 #pragma omp for nowait
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri]
-                = BarColor[1][j] * mat2 + BarColor[0][j] * (1.0f - mat2);
-            }
-          }
-        }
-        else if (mat2 <= 2.0) {
-          mat2 = mat2 - 1.0f;
-#pragma omp for nowait
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-                = BarColor[2][j] * mat2 + BarColor[1][j] * (1.0f - mat2);
-            }
-          }
-        }
-        else if (mat2 <= 3.0) {
-          mat2 = mat2 - 2.0f;
-#pragma omp for nowait
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-                = BarColor[3][j] * mat2 + BarColor[2][j] * (1.0f - mat2);
-            }
-          }
-        }
-        else {
-          mat2 = mat2 - 3.0f;
-#pragma omp for nowait
-          for (itri = 0; itri < ntri[ib]; ++itri) {
-            for (i = 0; i < 3; ++i) {
-              for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] 
-                = BarColor[4][j] * mat2 + BarColor[3][j] * (1.0f - mat2);
-            }
+        for (itri = 0; itri < ntri[ib]; ++itri) {
+          for (i = 0; i < 3; ++i) {
+            for (j = 0; j < 4; ++j) clr[ib][j + 4 * i + 12 * itri] = rgb_band[ib][j];
           }
         }
       }/*for (ib = 0; ib < nb; ib++*/
