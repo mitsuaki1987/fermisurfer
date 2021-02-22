@@ -1,4 +1,5 @@
-#   background  black
+backgroundcolor  1 1 0
+linecolor 0 0 1
          band  0 0 1
 #brillouinzone  primitive
      colorbar  1

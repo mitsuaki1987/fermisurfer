@@ -21,10 +21,177 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-let gl; //test
-let programInfo;
-let rotatex = 0.0, rotatey = 0.0;
+/**@file
+ @brief Main routine
+*/
+/**@mainpage FermiSurfer Main Page
 
+Fermisurfer displays Fermi surfaces 
+with a color-plot of the arbitraly matrix element
+
+@section Notation
+ 
+- @f$\varepsilon_{n k}@f$ : Energy
+- @f$\Delta_{n k}@f$ : Any @f$(n, k)@f$-dependent value for the color-plot.
+- @f$N_b@f$ : Number of bands
+ 
+@section sec_routine Important routines
+- Main routine: main()
+- Right click menu : FS_CreateMenu(), FS_ModifyMenu(let status)
+
+@section sec_file Important files
+- Main routine : fermisurfer.cpp
+- Global valiable : variable.hpp
+
+@section sec_flow Flow
+
+- main() :
+  - read_file() : Read .frmsf file
+  - compute_patch_segment() : Compute patch and segment
+    - fermi_patch() : Compute patches constructing Fermi surface
+  - display() : Display figures with OpenGL
+
+*/
+/*
+ Input variables
+*/
+let ng0 = [0, 0, 0];         //!< @f$k@f$-point grid in the input file
+let shiftk = [0, 0, 0];      //!< Wherether @f$k@f$-grid is shifted or not
+let nb = 0;             //!< The number of Bands
+let avec = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]; //!< Direct lattice vector
+let bvec = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]; //!< Reciprocal lattice vector
+let eig0 = [];   //!< Eigenvalues @f$\varepsilon_{n k}@f$[::nb][::ng0[0]][::ng0[1]][::ng0[2]]
+let mat0 = [];   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]][3]
+/*
+ Interpolation
+*/
+let ng = [0, 0, 0];        //!< @b Interpolated @f$k@f$-grids
+let eig = [];  //!< Eigenvalues @f$\varepsilon_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
+let mat = []; //!< Matrix element @f$\delta_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
+let vf = [];  //!< Matrix element @f$\{\bf v}_{{\rm f} n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
+let interpol = 1;     //!< Ratio of interpolation
+/*
+ Switch for some modes
+*/
+let color_scale = 1; //!< Switch for full color scale mode
+let fbz = 1;         //!< Switch for 1st Brillouin zone mode
+let nodeline = 0;    //!< Switch for node lines
+let lcolorbar = 1;   //!< Switch for colorbar
+let lstereo = 1;     //!< Switch for the stereogram
+let lmouse = 1;      //!< Switch for the mouse function
+let lsection = 0;    //!< Switch for the 2D Fermi lines
+let lequator = 0;    //!< Switch for equator
+let BZ_number = [1, 1, 1];
+/*
+ Variables for Brillouin zone boundaries
+*/
+let nbzl = 1;      //!< The number of Lines of 1st Brillouin zone
+let bzl = []; //!< Lines of 1st BZ [nbzl(max:26*26=676)][2][3]
+let bragg = [];   //!< Bragg plane vectors
+let brnrm = [];      //!< Norms of Bragg plane vectors
+let brnrm_min = 0.0;     //!< Minimum scale of the reciplocal space
+let nbragg = 0;             //!< Number of Bragg plane og 1st BZ
+/*
+ Variables for patchs
+*/
+let ntri = [];          //!< The number of triangle patch [::nb]
+let draw_band = [];     //!< Switch for drawn bands [::nb]
+let nmlp = [];    //!< Normal vector of patchs [::nb][::ntri][3][3]
+let kvp = [];    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
+let arw = [];
+let nmlp_rot = []; //!< Normal vector of patchs [::nb][::ntri*3*3]
+let kvp_rot = [];  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
+let arw_rot = [];
+let matp = [];    //!< Matrix elements of points [::nb][::ntri][3][3]
+let clr = [];      //!< Colors of points [::nb][::ntri*3*4]
+let itet = 0;           //!< Counter for tetrahedron
+let side = 1.0;       //!< Which side is lighted
+let patch_max = 0.0;  //!< Max value across patch
+let patch_min = 0.0;  //!< Max value across patch
+/*
+  Variables for nodeline
+*/
+let nnl = [];             //!< The number of nodeline
+let kvnl = [];     //!< @f$k@f$-vector of nodeline [::nb][::nnl][2][3]
+let kvnl_rot = []; //!< @f$k@f$-vector of nodeline [::nb][::nnl*2*3]
+/*
+ 2D Fermi line
+*/
+let secvec = [0.0, 0.0, 0.0];         //!< @f$k@f$-vector to define section
+let secvec_fr = [0.0, 0.0, 0.0];         //!< @f$k@f$-vector to define section
+let secscale = 0.0;          //!< 0.0 (across @f$\Gamma@f$) or 1.0
+let axis2d = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];      //!< @f$k@f$-vector to define section
+let n2d = [];                  //!< Number of line segment
+let kv2d = [];          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
+let clr2d = [];         //!< Matrix element for 2D plot [::nb][::n2d*2*4]
+let nbzl2d = 0;                //!< The number of Lines of 1st Brillouin zone
+let bzl2d = [];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
+let bzl2d_proj = []; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
+/*
+ Equator
+*/
+let eqvec = [0.0, 0.0, 0.0]; //!<  @f$k@f$-vector for equator
+let eqvec_fr = [0.0, 0.0, 0.0]; //!<  @f$k@f$-vector for equator
+let nequator = [];             //!< The number of equator
+let kveq = [];     //!< @f$k@f$-vector of equator [::nb][::nequator][2][3]
+let kveq_rot = []; //!< @f$k@f$-vector of equator [::nb][::nequator*2*3]
+/*
+  Variables for mouse  & cursorkey
+*/
+let sx = 0.0;        //!< Scale of mouse movement
+let sy = 0.0;        //!< Scale of mouse movement
+let cx = 0.0;            //!< Starting point of drug
+let cy = 0.0;            //!< Starting point of drug
+let scl = 1.0;       //!< Initial scale
+let trans = [0.0, 0.0, 0.0];  //!< Translation
+let rot = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]; //!< Rotation matrix
+let thetax = 0.0;    //!< Rotation angle
+let thetay = 0.0;    //!< Rotation angle
+let thetaz = 0.0;    //!< Rotation angle
+let linewidth = 3.0; //!< BZ/nodal-line/Fermiline width
+/*
+ Colors
+*/
+let black = [0.0, 0.0, 0.0, 1.0]; //!< Black color code
+let gray = [0.5, 0.5, 0.5, 1.0]; //!< Gray color code
+let wgray = [0.9, 0.9, 0.9, 1.0]; //!< Gray color code
+let bgray = [0.1, 0.1, 0.1, 1.0]; //!< Gray color code
+let white = [1.0, 1.0, 1.0, 1.0]; //!< White color code
+let cyan = [0.0, 1.0, 1.0, 1.0]; //!< Cyan color code
+let magenta = [1.0, 0.0, 1.0, 1.0]; //!< Magenta color code
+let yellow = [1.0, 1.0, 0.0, 1.0]; //!< Yellow color code
+let red = [1.0, 0.0, 0.0, 1.0]; //!< Red color code
+let green = [0.0, 1.0, 0.0, 1.0]; //!< Green color code
+let blue = [0.0, 0.0, 1.0, 1.0]; //!< Blue color code
+let BackGroundColor = [0.0, 0.0, 0.0, 1.0];//!< BackGround color code
+let LineColor = [1.0, 1.0, 1.0, 1.0];//!< Line color code
+let BarColor = [[0.0, 0.0, 1.0, 1.0], [0.0, 1.0, 1.0, 1.0],
+[0.0, 1.0, 0.0, 1.0], [1.0, 1.0, 0.0, 1.0], [1.0, 0.0, 0.0, 1.0]];
+/*
+ Others
+*/
+let corner = [[0.0, 0.0, 0.0, 0.0],
+[0.0, 0.0, 0.0, 0.0],
+[0.0, 0.0, 0.0, 0.0],
+[0.0, 0.0, 0.0, 0.0],
+[0.0, 0.0, 0.0, 0.0],
+[0.0, 0.0, 0.0, 0.0]]; //!< Corners of tetrahedron
+let EF = 0.0;       //!< Fermi energy
+/*
+Batch mode
+*/
+let refresh_interpol = 0;
+let refresh_patch = 1;
+let refresh_color = 1;
+let refresh_nodeline = 1;
+let refresh_equator = 1;
+let refresh_section = 1;
+let skip_minmax = 0;
+let windowx = 1100;
+let windowy = 850;
+
+let gl;
+let programInfo;
 //
 // Start here
 //
@@ -110,8 +277,12 @@ function main() {
   drawScene();
 
   var el = document.getElementById("glcanvas");
-  el.addEventListener("touchstart", handleStart, false);
-  el.addEventListener("touchmove", handleMove, false);
+  el.addEventListener("touchstart", touch_start, false);
+  el.addEventListener("touchmove", touch_move, false);
+  el.addEventListener("mousedown", mouse_down, false);
+  el.addEventListener("mousemove", mouse_move, false);
+  el.addEventListener("mouseup", mouse_up, false);
+  el.addEventListener("wheel", zoom, false);
 }
 //
 // Draw the scene.
@@ -161,11 +332,11 @@ function drawScene() {
     [-0.0, 0.0, -6.0]);  // amount to translate
   mat4.rotate(modelViewMatrix,  // destination matrix
     modelViewMatrix,  // matrix to rotate
-    rotatey,     // amount to rotate in radians
+    0.0,     // amount to rotate in radians
     [0, 0, 1]);       // axis to rotate around (Z)
   mat4.rotate(modelViewMatrix,  // destination matrix
     modelViewMatrix,  // matrix to rotate
-    rotatex * .7,// amount to rotate in radians
+    0.0,// amount to rotate in radians
     [0, 1, 0]);       // axis to rotate around (X)
   let normalMatrix = mat4.create();
   mat4.invert(normalMatrix, modelViewMatrix);
@@ -429,7 +600,7 @@ let touch0y = 0.0;
 let touch1x = 0.0;
 let touch1y = 0.0;
 
-function handleStart(evt) {
+function touch_start(evt) {
   evt.preventDefault();
   var touches = evt.changedTouches;
 
@@ -445,7 +616,7 @@ function handleStart(evt) {
   }
 }
 
-function handleMove(evt) {
+function touch_move(evt) {
   evt.preventDefault();
   var touches = evt.changedTouches;
   let dx = 0.0, dy = 0.0, dold = 0.0, dnew = 0.;
@@ -474,45 +645,39 @@ function handleMove(evt) {
 }
 
 let isDrawing = false;
-let x = 0;
-let y = 0;
 
-const myPics = document.getElementById('glcanvas');
-
-myPics.addEventListener('mousedown', e => {
-  x = e.offsetX;
-  y = e.offsetY;
+function mouse_down(evt){
+  touch0x = evt.offsetX;
+  touch0y = evt.offsetY;
   isDrawing = true;
-});
+};
 
-myPics.addEventListener('mousemove', e => {
+function mouse_move(evt){
   if (isDrawing === true) {
-    let dx = e.offsetX - x;
-    let dy = e.offsetY - y;
+    let dx = evt.offsetX - touch0x;
+    let dy = evt.offsetY - touch0y;
     dx *= 0.001;
     dy *= 0.001;
     mouserotation(dx, dy)
     drawScene();
-    x = e.offsetX;
-    y = e.offsetY;
+    touch0x = evt.offsetX;
+    touch0y = evt.offsetY;
   }
-});
+};
 
-window.addEventListener('mouseup', e => {
+function mouse_up(evt){
   if (isDrawing === true) {
-    let dx = e.offsetX - x;
-    let dy = e.offsetY - y;
+    let dx = evt.offsetX - touch0x;
+    let dy = evt.offsetY - touch0y;
     dx *= 0.001;
     dy *= 0.001;
     mouserotation(dx, dy)
     drawScene();
-    x = 0;
-    y = 0;
+    touch0x = 0;
+    touch0y = 0;
     isDrawing = false;
   }
-});
-
-myPics.addEventListener('wheel', zoom);
+};
 
 function zoom(evt) {
   scl -= evt.deltaY*0.001;
@@ -2040,222 +2205,6 @@ function fermi_patch()
   }/*for (ib = 0; ib < nb; ++ib)*/
   terminal("    ... Done\n");
 } /* fermi_patch */
-/**@file
- @brief Main routine
-*/
-/**@mainpage FermiSurfer Main Page
-
-Fermisurfer displays Fermi surfaces 
-with a color-plot of the arbitraly matrix element
-
-@section Notation
- 
-- @f$\varepsilon_{n k}@f$ : Energy
-- @f$\Delta_{n k}@f$ : Any @f$(n, k)@f$-dependent value for the color-plot.
-- @f$N_b@f$ : Number of bands
- 
-@section sec_routine Important routines
-- Main routine: main()
-- Right click menu : FS_CreateMenu(), FS_ModifyMenu(let status)
-
-@section sec_file Important files
-- Main routine : fermisurfer.cpp
-- Global valiable : variable.hpp
-
-@section sec_flow Flow
-
-- main() :
-  - read_file() : Read .frmsf file
-  - compute_patch_segment() : Compute patch and segment
-    - fermi_patch() : Compute patches constructing Fermi surface
-  - display() : Display figures with OpenGL
-
-*/
-/*
- Input variables
-*/
-let ng0 = [0, 0, 0];         //!< @f$k@f$-point grid in the input file
-let shiftk = [0, 0, 0];      //!< Wherether @f$k@f$-grid is shifted or not
-let nb = 0;             //!< The number of Bands
-let avec = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]; //!< Direct lattice vector
-let bvec = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]; //!< Reciprocal lattice vector
-let eig0 = [];   //!< Eigenvalues @f$\varepsilon_{n k}@f$[::nb][::ng0[0]][::ng0[1]][::ng0[2]]
-let mat0 = [];   //!< Matrix element [::nb][::ng0[0]][::ng0[1]][::ng0[2]][3]
-/*
- Interpolation
-*/
-let ng = [0, 0, 0];        //!< @b Interpolated @f$k@f$-grids
-let eig = [];  //!< Eigenvalues @f$\varepsilon_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]]
-let mat =[]; //!< Matrix element @f$\delta_{n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
-let vf =[];  //!< Matrix element @f$\{\bf v}_{{\rm f} n k}@f$ [::nb][::ng[0]][::ng[1]][::ng[2]][3]
-let interpol = 1;     //!< Ratio of interpolation
-/*
- Switch for some modes
-*/
-let color_scale = 1; //!< Switch for full color scale mode
-let fbz = 1;         //!< Switch for 1st Brillouin zone mode
-let nodeline = 0;    //!< Switch for node lines
-let lcolorbar = 1;   //!< Switch for colorbar
-let lstereo = 1;     //!< Switch for the stereogram
-let lmouse = 1;      //!< Switch for the mouse function
-let lsection = 0;    //!< Switch for the 2D Fermi lines
-let lequator = 0;    //!< Switch for equator
-let BZ_number = [1, 1, 1];
-/*
- Variables for Brillouin zone boundaries
-*/
-let nbzl = 1;      //!< The number of Lines of 1st Brillouin zone
-let bzl = []; //!< Lines of 1st BZ [nbzl(max:26*26=676)][2][3]
-let bragg = [];   //!< Bragg plane vectors
-let brnrm = [];      //!< Norms of Bragg plane vectors
-let brnrm_min = 0.0;     //!< Minimum scale of the reciplocal space
-let nbragg = 0;             //!< Number of Bragg plane og 1st BZ
-/*
- Variables for patchs
-*/
-let ntri = [];          //!< The number of triangle patch [::nb]
-let draw_band = [];     //!< Switch for drawn bands [::nb]
-let nmlp = [];    //!< Normal vector of patchs [::nb][::ntri][3][3]
-let kvp = [];    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
-let arw = [];
-let nmlp_rot = []; //!< Normal vector of patchs [::nb][::ntri*3*3]
-let kvp_rot = [];  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
-let arw_rot = [];
-let matp = [];    //!< Matrix elements of points [::nb][::ntri][3][3]
-let clr = [];      //!< Colors of points [::nb][::ntri*3*4]
-let itet = 0;           //!< Counter for tetrahedron
-let side = 1.0;       //!< Which side is lighted
-let patch_max = 0.0;  //!< Max value across patch
-let patch_min = 0.0;  //!< Max value across patch
-/*
-  Variables for nodeline
-*/
-let nnl = [];             //!< The number of nodeline
-let kvnl = [];     //!< @f$k@f$-vector of nodeline [::nb][::nnl][2][3]
-let kvnl_rot = []; //!< @f$k@f$-vector of nodeline [::nb][::nnl*2*3]
-/*
- 2D Fermi line
-*/
-let secvec = [0.0, 0.0, 0.0];         //!< @f$k@f$-vector to define section
-let secvec_fr = [0.0, 0.0, 0.0];         //!< @f$k@f$-vector to define section
-let secscale = 0.0;          //!< 0.0 (across @f$\Gamma@f$) or 1.0
-let axis2d = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];      //!< @f$k@f$-vector to define section
-let n2d = [];                  //!< Number of line segment
-let kv2d = [];          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
-let clr2d = [];         //!< Matrix element for 2D plot [::nb][::n2d*2*4]
-let nbzl2d = 0;                //!< The number of Lines of 1st Brillouin zone
-let bzl2d = [];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
-let bzl2d_proj = []; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
-/*
- Equator
-*/
-let eqvec = [0.0, 0.0, 0.0]; //!<  @f$k@f$-vector for equator
-let eqvec_fr = [0.0, 0.0, 0.0]; //!<  @f$k@f$-vector for equator
-let nequator = [];             //!< The number of equator
-let kveq = [];     //!< @f$k@f$-vector of equator [::nb][::nequator][2][3]
-let kveq_rot = []; //!< @f$k@f$-vector of equator [::nb][::nequator*2*3]
-/*
-  Variables for mouse  & cursorkey
-*/
-let sx = 0.0;        //!< Scale of mouse movement
-let sy = 0.0;        //!< Scale of mouse movement
-let cx = 0.0;            //!< Starting point of drug
-let cy = 0.0;            //!< Starting point of drug
-let scl = 1.0;       //!< Initial scale
-let trans = [0.0, 0.0, 0.0];  //!< Translation
-let rot = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]; //!< Rotation matrix
-let thetax = 0.0;    //!< Rotation angle
-let thetay = 0.0;    //!< Rotation angle
-let thetaz = 0.0;    //!< Rotation angle
-let linewidth = 3.0; //!< BZ/nodal-line/Fermiline width
-/*
- Colors
-*/
-let black = [0.0, 0.0, 0.0, 1.0]; //!< Black color code
-let gray = [0.5, 0.5, 0.5, 1.0]; //!< Gray color code
-let wgray = [0.9, 0.9, 0.9, 1.0]; //!< Gray color code
-let bgray = [0.1, 0.1, 0.1, 1.0]; //!< Gray color code
-let white = [1.0, 1.0, 1.0, 1.0]; //!< White color code
-let cyan = [0.0, 1.0, 1.0, 1.0]; //!< Cyan color code
-let magenta = [1.0, 0.0, 1.0, 1.0]; //!< Magenta color code
-let yellow = [1.0, 1.0, 0.0, 1.0]; //!< Yellow color code
-let red = [1.0, 0.0, 0.0, 1.0]; //!< Red color code
-let green = [0.0, 1.0, 0.0, 1.0]; //!< Green color code
-let blue = [0.0, 0.0, 1.0, 1.0]; //!< Blue color code
-let BackGroundColor = [0.0, 0.0, 0.0, 1.0];//!< BackGround color code
-let LineColor = [1.0, 1.0, 1.0, 1.0];//!< Line color code
-let BarColor = [[0.0, 0.0, 1.0, 1.0], [0.0, 1.0, 1.0, 1.0],
-[0.0, 1.0, 0.0, 1.0], [1.0, 1.0, 0.0, 1.0], [1.0, 0.0, 0.0, 1.0]];
-/*
- Others
-*/
-let corner = [[0.0, 0.0, 0.0, 0.0],
-  [0.0, 0.0, 0.0, 0.0],
-  [0.0, 0.0, 0.0, 0.0],
-  [0.0, 0.0, 0.0, 0.0],
-  [0.0, 0.0, 0.0, 0.0],
-  [0.0, 0.0, 0.0, 0.0]]; //!< Corners of tetrahedron
-let EF = 0.0;       //!< Fermi energy
-/*
-Batch mode
-*/
-let batch_name;
-let frmsf_file_name;
-let lbatch = 0;
-
-let refresh_interpol = 0;
-let refresh_patch = 1;
-let refresh_color = 1;
-let refresh_nodeline = 1;
-let refresh_equator = 1;
-let refresh_section = 1;
-let skip_minmax = 0;
-let windowx = 1100;
-let windowy = 850;
-/**
- @brief Main routine of FermiSurfer
-
-*/
-function OnInit()
-{
-  let ierr;
-
-
-  terminal("\n");
-   /**/
-  terminal("  Initialize variables ...\n");
-  terminal("\n");
-  /*
-  Input from BXSF or FRMSF file
-  */
-  color_scale = read_file();
-  if (color_scale == 0)color_scale = 4;
-  /**/
-  interpol_energy();
-  init_corner();
-  bragg_vector();
-  /*
-   Brillouin zone
-  */
-  bz_lines();
-  calc_2dbz();
-  /**/
-  max_and_min_bz();
-  /**/
-  compute_patch_segment();
-  /*
-    Description
-  */
-  terminal("\n");
-  terminal("  ##  How to handle  ###################\n");
-  terminal("\n");
-  terminal("              mouse drag : Rotate objects\n");
-  terminal("              mousewheel : Resize objects\n");
-  terminal("    cursorkey or w,a,s,d : Move objects\n");
-  terminal("\n");
-  /**/
-  return true;
-} /* main */
 /**
  @brief Free variables for patch before new patch is computed
 
