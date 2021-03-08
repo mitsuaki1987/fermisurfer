@@ -74,6 +74,15 @@ public:
   wxTextCtrl* textbox_SectionR;
   wxTextCtrl* textbox_SectionG;
   wxTextCtrl* textbox_SectionB;
+  wxTextCtrl* textbox_ArrowStart0;
+  wxTextCtrl* textbox_ArrowStart1;
+  wxTextCtrl* textbox_ArrowStart2;
+  wxTextCtrl* textbox_ArrowEnd0;
+  wxTextCtrl* textbox_ArrowEnd1;
+  wxTextCtrl* textbox_ArrowEnd2;
+  wxTextCtrl* textbox_ArrowDiff0;
+  wxTextCtrl* textbox_ArrowDiff1;
+  wxTextCtrl* textbox_ArrowDiff2;
 
 private:
   void OnExit(wxCommandEvent& event);
@@ -101,6 +110,7 @@ private:
   void textctrl_BZ_number(wxCommandEvent& event);
   void textctrl_Section(wxCommandEvent& event);
   void textctrl_Band(wxCommandEvent& event);
+  void textctrl_Arrow(wxCommandEvent& event);
   //wxDECLARE_EVENT_TABLE();
 };
 

@@ -435,7 +435,7 @@ private(itri, j)
   }/*if (color_scale == 4)*/
   else if (color_scale == 3 || color_scale == 5) {
 #pragma omp parallel default(none) \
-shared(nb,ntri,matp,clr,BarColor,color_scale,kvp,arw,patch_max) \
+shared(nb,ntri,matp,clr,BarColor,color_scale,kvp,arw,patch_max,rgb_band) \
 private(itri, j)
     {
       int i, ib;

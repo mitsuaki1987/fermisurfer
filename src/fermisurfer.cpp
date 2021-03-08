@@ -210,6 +210,7 @@ GLfloat LineColor[4] = { 1.0, 1.0, 1.0, 1.0 };//!< Line color code
 GLfloat SectionColor[4] = { 0.5f, 0.5f, 0.5f, 1.0 };//!< Line color code
 GLfloat BarColor[5][4] = { { 0.0, 0.0, 1.0, 1.0 } , { 0.0, 1.0, 1.0, 1.0 } ,
 { 0.0, 1.0, 0.0, 1.0 } ,{ 1.0, 1.0, 0.0, 1.0 } ,{ 1.0, 0.0, 0.0, 1.0 } };
+GLfloat arrow[2][3];
 /*
  Others
 */

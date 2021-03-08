@@ -3129,6 +3129,11 @@ function update_minmax() {
   refresh_color = 1;
   skip_minmax = 1;
 }
+function update_tetra() {
+  itet = Number(document.getElementById('tetrahedron').tetrahedron.value);
+  init_corner();
+  refresh_patch = 1;
+}
 function button_update() {
   let ii = 0, jj = 0;
   /*
@@ -3158,8 +3163,6 @@ function button_update() {
     }/*for (jj = 0; jj < 3; jj++)*/
   }/*for (ii = 0; ii < 3; ii++)*/  
   /*  */
-  itet = Number(document.getElementById('tetrahedron').tetrahedron.value);
-  init_corner();
   /**/
   fbz = Number(document.getElementById('brillouinzone').brillouinzone.value);
   lstereo = Number(document.getElementById('stereogram').stereogram.value);

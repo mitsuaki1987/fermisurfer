@@ -219,19 +219,19 @@ static void draw_bz_lines() {
   int ibzl, i, j, a0, a1, a2, ia;
   GLfloat bzl2[3], bvec2[3][3], linecolor[4], secvec2[3], kshift[3];
   GLfloat vertices[300];
-  /*
-   Line color is oposit of BG color
-  */
+  //
+  // Line color is oposit of BG color
+  //
   for (i = 0; i < 4; i++) linecolor[i] = LineColor[i];
-  /**/
+  //
   glLineWidth(linewidth);
   for (a0 = 0; a0 < BZ_number[0]; a0++) {
     for (a1 = 0; a1 < BZ_number[1]; a1++) {
       for (a2 = 0; a2 < BZ_number[2]; a2++) {
         for (ia = 0; ia < 3; ia++) kshift[ia] = bvec[0][ia] * a0 + bvec[1][ia] * a1 + bvec[2][ia] * a2;
-        /*
-        First Brillouin zone mode
-        */
+        //
+        // First Brillouin zone mode
+        //
         if (fbz == 1) {
           for (ibzl = 0; ibzl < nbzl; ++ibzl) {
             for (i = 0; i < 2; ++i) {
@@ -249,9 +249,9 @@ static void draw_bz_lines() {
           }/*for (ibzl = 0; ibzl < nbzl; ++ibzl)*/
         }/*if (fbz == 1)*/
         else {
-          /*
-           Premitive BZ mode
-          */
+          //
+          //  Premitive BZ mode
+          //
           for (i = 0; i < 3; ++i) {
             for (j = 0; j < 3; ++j) {
               bvec2[i][j] = rot[j][0] * bvec[i][0]
@@ -292,9 +292,23 @@ static void draw_bz_lines() {
       }
     }
   }
-  /*
-  Section for the 2D Fermi line
-  */
+  //
+  // Arrow
+  //
+  for (i = 0; i < 2; ++i) {
+    for (j = 0; j < 3; ++j)
+      vertices[j + 3 * i] = rot[j][0] * arrow[i][0]
+                          + rot[j][1] * arrow[i][1]
+                          + rot[j][2] * arrow[i][2]
+                          + trans[j];
+  }/*for (i = 0; i< 2; ++i)*/
+  glColor3fv(linecolor);
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glVertexPointer(3, GL_FLOAT, 0, vertices);
+  glDrawArrays(GL_LINES, 0, 2);
+  //
+  // Section for the 2D Fermi line
+  //
   if (lsection == 1 && fbz == 1) {
     for (j = 0; j < 3; ++j)
       secvec2[j] = rot[j][0] * secvec[0]

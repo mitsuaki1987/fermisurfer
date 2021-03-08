@@ -67,10 +67,16 @@
           </tr>
           <tr align="left">
             <form id="tetrahedron">
-              <td><input type="radio" name="tetrahedron" value="1" checked="checked">1</td>
-              <td><input type="radio" name="tetrahedron" value="2">2</td>
-              <td><input type="radio" name="tetrahedron" value="3">3</td>
-              <td><input type="radio" name="tetrahedron" value="3">4</td>
+              <td><input type="radio" name="tetrahedron" value="0" checked="checked" onchange="update_tetra();">0
+                  <input type="radio" name="tetrahedron" value="1" onchange="update_tetra();">1
+                  <input type="radio" name="tetrahedron" value="2" onchange="update_tetra();">2</td>
+              <td><input type="radio" name="tetrahedron" value="3" onchange="update_tetra();">3
+                  <input type="radio" name="tetrahedron" value="4" onchange="update_tetra();">4
+                  <input type="radio" name="tetrahedron" value="5" onchange="update_tetra();">5</td>
+              <td><input type="radio" name="tetrahedron" value="6" onchange="update_tetra();">6
+                  <input type="radio" name="tetrahedron" value="7" onchange="update_tetra();">7</td>
+              <td><input type="radio" name="tetrahedron" value="8" onchange="update_tetra();">8
+                  <input type="radio" name="tetrahedron" value="9" onchange="update_tetra();">9</td>
             </form>
           </tr>
           <tr align="left">
@@ -130,10 +136,10 @@
             <td><input type="number" name="linecolobr" id="linecolorb" value="1" onchange="update_now();" step="0.1" min="0" max="1"></td>
           </tr>
           <tr align="left">
-            <td><input type="button" value="Rotate"></td>
-            <td><input type="number" name="rotatex" id="rotatex" value="0" onchange="update_now();"></td>
-            <td><input type="number" name="rotatey" id="rotatey" value="0" onchange="update_now();"></td>
-            <td><input type="number" name="rotatez" id="rotatez" value="0" onchange="update_now();"></td>
+            <td><input type="button" value="Rotate" onclick="update_now();"></td>
+            <td><input type="number" name="rotatex" id="rotatex" value="0"></td>
+            <td><input type="number" name="rotatey" id="rotatey" value="0"></td>
+            <td><input type="number" name="rotatez" id="rotatez" value="0"></td>
           </tr>
           <tr align="left">
             <td>Scale : <input type="number" name="scale" id="scale" value="1" onchange="update_now();" step="0.1" min="0"></td>
