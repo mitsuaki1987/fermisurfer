@@ -167,7 +167,7 @@ void MyFrame::button_compute(
 void MyFrame::button_section(
   wxCommandEvent& event//!<[in] Selected menu
 ) {
-  int ib, i2d, i, j;
+  int ib, i2d, i;
   FILE *fp;
   fp = fopen("fermi_line.dat", "w");
   for (ib = 0; ib < nb; ib++) {
@@ -202,72 +202,80 @@ void MyFrame::textctrl_Arrow(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
+  int ii, jj;
   double dvalue;
 
   if (event.GetId() == itext_ArrowStart0) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[0][0] = (GLfloat)dvalue;
-      textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow[1][0] - arrow[0][0]));
+      arrow_f[0][0] = (GLfloat)dvalue;
+      textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0] - arrow_f[0][0]));
       Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowStart1) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[0][1] = (GLfloat)dvalue;
-      textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow[1][1] - arrow[0][1]));
+      arrow_f[0][1] = (GLfloat)dvalue;
+      textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1] - arrow_f[0][1]));
       Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowStart2) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[0][2] = (GLfloat)dvalue;
-      textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow[1][2] - arrow[0][2]));
+      arrow_f[0][2] = (GLfloat)dvalue;
+      textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2] - arrow_f[0][2]));
       Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowEnd0) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[1][0] = (GLfloat)dvalue;
-      textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow[1][0] - arrow[0][0]));
+      arrow_f[1][0] = (GLfloat)dvalue;
+      textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0] - arrow_f[0][0]));
       Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowEnd1) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[1][1] = (GLfloat)dvalue;
-      textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow[1][1] - arrow[0][1]));
+      arrow_f[1][1] = (GLfloat)dvalue;
+      textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1] - arrow_f[0][1]));
       Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowEnd2) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[1][2] = (GLfloat)dvalue;
-      textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow[1][2] - arrow[0][2]));
+      arrow_f[1][2] = (GLfloat)dvalue;
+      textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2] - arrow_f[0][2]));
       Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowDiff0) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[1][0] = arrow[0][0] + (GLfloat)dvalue;
-      textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow[1][0]));
+      arrow_f[1][0] = arrow_f[0][0] + (GLfloat)dvalue;
+      textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0]));
       Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowDiff1) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[1][1] = arrow[0][1] + (GLfloat)dvalue;
-      textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow[1][1]));
+      arrow_f[1][1] = arrow_f[0][1] + (GLfloat)dvalue;
+      textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1]));
       Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowDiff2) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow[1][2] = arrow[0][2] + (GLfloat)dvalue;
-      textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow[1][2]));
+      arrow_f[1][2] = arrow_f[0][2] + (GLfloat)dvalue;
+      textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2]));
       Refresh(false);
     }
   }
+  //
+  // Fractional -> Cartesian
+  //
+  for (ii = 0; ii < 2; ++ii)
+    for (jj = 0; jj < 3; ++jj)
+      arrow_c[ii][jj] = bvec[0][jj] * arrow_f[ii][0]
+                      + bvec[1][jj] * arrow_f[ii][1]
+                      + bvec[2][jj] * arrow_f[ii][2];
 }
 /**
 @brief Change Line color color (::blackback)
@@ -276,7 +284,6 @@ void MyFrame::textctrl_LineColor(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
   double dvalue;
 
   if (event.GetId() == itext_LineColorR) {
@@ -305,7 +312,6 @@ void MyFrame::textctrl_Section(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
   double dvalue;
 
   if (event.GetId() == itext_SectionR) {
@@ -334,7 +340,6 @@ void MyFrame::textctrl_Band(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
   double dvalue;
   int ib = (event.GetId() - icheck_band) / 4;
 
@@ -367,7 +372,6 @@ void MyFrame::textctrl_BackGround(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
   double dvalue;
 
   if (event.GetId() == itext_BackGroundR) {
@@ -402,7 +406,6 @@ void MyFrame::textctrl_BZ_number(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
   double dvalue;
 
   if (event.GetId() == itext_BZ_number0) {
@@ -490,6 +493,15 @@ void MyFrame::radio_BarColor(
       BarColor[4][ii] = yellow[ii];
     }
   }
+  else if (event.GetString().Cmp(wxT("BWR")) == 0) {
+    for (ii = 0; ii < 4; ii++) {
+      BarColor[0][ii] = blue[ii];
+      BarColor[1][ii] = 0.5f * (blue[ii] + wgray[ii]);
+      BarColor[2][ii] = wgray[ii];
+      BarColor[3][ii] = 0.5f * (red[ii] + wgray[ii]);
+      BarColor[4][ii] = red[ii];
+    }
+  }
   paint();
   Refresh(false);
 } /* menu_brillouinzone */
@@ -511,7 +523,6 @@ void MyFrame::radiovalue_colorscale(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr, ii;
   double dminmax;
 
   if (event.GetId() == itext_colorscalemin) {
@@ -547,7 +558,7 @@ void MyFrame::checkvalue_equator(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr, ii, jj, ib;
+  int ii, jj;
   double deqvec;
 
   if (event.GetId() == icheck_equator) {
@@ -587,7 +598,6 @@ void MyFrame::textctrl_interpol(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
   long int long_interpol;
 
   if (event.GetString().ToLong(&long_interpol)) {
@@ -623,7 +633,6 @@ void MyFrame::textctrl_line(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
   double dlinewidth;
 
   if (event.GetString().ToDouble(&dlinewidth)) linewidth = (GLfloat)dlinewidth;
@@ -659,7 +668,7 @@ void MyFrame::radiovalue_section(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr, ii, jj, ib;
+  int ii, jj;
   double dsecvec;
 
   if (event.GetId() == icheck_section) {
@@ -739,7 +748,6 @@ void MyFrame::textctrl_view(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ierr;
   double dvalue;
 
   if (event.GetId() == itext_scale) {
@@ -816,9 +824,6 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   : wxFrame(frame, wxID_ANY, title, pos, size, style),
   m_canvas(NULL)
 {
-  int ib, itet;
-  char menuname[8];
-
   SetIcon(wxICON(fermisurfer));
 
   // Make a menubar
@@ -1082,14 +1087,14 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxRadioBox(panel, iradio_lighting, wxT("Lighting"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_light), choices_light,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(15, 0), wxGBSpan(4, 1));
+    1, wxRA_SPECIFY_COLS), wxGBPosition(15, 1), wxGBSpan(4, 1));
 
-  wxString choices_BarColor[] = { wxT("BGR"), wxT("CMY"), wxT("MCY")};
+  wxString choices_BarColor[] = { wxT("BGR"), wxT("CMY"), wxT("MCY"), wxT("BWR") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_BarColor, this, iradio_BarColor);
   gbsizer->Add(new wxRadioBox(panel, iradio_BarColor, wxT("Bar Color"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_BarColor), choices_BarColor,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(15, 1), wxGBSpan(4, 1));
+    1, wxRA_SPECIFY_COLS), wxGBPosition(14, 0), wxGBSpan(5, 1));
   //
   // Section color
   //
@@ -1182,7 +1187,7 @@ void MyFrame::OnExit(wxCommandEvent& WXUNUSED(event))
 }
 
 void MyFrame::modify_band() {
-  int ib, width, height, j;
+  int ib, j;
   wxCheckBox** check;
   wxTextCtrl** textbox_BandR, ** textbox_BandG, ** textbox_BandB;
   GLfloat mat2;

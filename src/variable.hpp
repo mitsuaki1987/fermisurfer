@@ -155,7 +155,8 @@ extern GLfloat BackGroundColor[4];//!< Background color code
 extern GLfloat LineColor[4];//!< Line color code
 extern GLfloat SectionColor[4];//!< Line color code
 extern GLfloat BarColor[5][4];
-extern GLfloat arrow[2][3];
+extern GLfloat arrow_f[2][3];
+extern GLfloat arrow_c[2][3];
 /*
  Others
 */

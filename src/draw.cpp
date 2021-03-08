@@ -297,9 +297,9 @@ static void draw_bz_lines() {
   //
   for (i = 0; i < 2; ++i) {
     for (j = 0; j < 3; ++j)
-      vertices[j + 3 * i] = rot[j][0] * arrow[i][0]
-                          + rot[j][1] * arrow[i][1]
-                          + rot[j][2] * arrow[i][2]
+      vertices[j + 3 * i] = rot[j][0] * arrow_c[i][0]
+                          + rot[j][1] * arrow_c[i][1]
+                          + rot[j][2] * arrow_c[i][2]
                           + trans[j];
   }/*for (i = 0; i< 2; ++i)*/
   glColor3fv(linecolor);
@@ -360,6 +360,7 @@ static void draw_colorbar()
       vector_color[j + 8 * i + 4] = BarColor[i * 2][j];
     }
   }
+  glLineWidth(linewidth);
   glNormal3f(0.0f, 0.0f, 1.0f);
   glVertexPointer(3, GL_FLOAT, 0, vector);
   glColorPointer(4, GL_FLOAT, 0, vector_color);
