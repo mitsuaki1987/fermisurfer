@@ -75,6 +75,7 @@ void TestGLCanvas::OnSize(wxSizeEvent& event)
   /**/
   glLoadIdentity();
   gluPerspective(30.0, (GLfloat)event.GetSize().x / (GLfloat)event.GetSize().y, 1.0, 100.0);
+  //glOrtho(-1, 1, -(GLfloat)event.GetSize().y / (GLfloat)event.GetSize().x, (GLfloat)event.GetSize().y / (GLfloat)event.GetSize().x, 1.0, 100.0);
   /**/
   glMatrixMode(GL_MODELVIEW);
   Refresh(false);
