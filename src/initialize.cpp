@@ -34,6 +34,7 @@ THE SOFTWARE.
 #include <OpenGL/gl.h>
 #endif
 #include "variable.hpp"
+#include "basic_math.hpp"
 /**
  @brief Specify corners of tetrahedron
 
@@ -202,7 +203,8 @@ void init_corner()
 */
 void bragg_vector()
 {
-  int i0, i1, i2, i, ibr;
+  int i0, i1, i2, i, ibr, sw[4];
+  float ldiag[4], bdiag[4][3];
   /**/
   ibr = 0;
   /**/
@@ -239,6 +241,19 @@ void bragg_vector()
     if (brnrm_min > brnrm[ibr]) brnrm_min = brnrm[ibr];
   }
   *terminal << wxString::Format(wxT("    Minimum Bragg norm : %f\n"), brnrm_min);
+  //
+  // Serch shortest diagonal line
+  //
+  for (i = 0; i < 3; i++) {
+    bdiag[0][i] =  bvec[0][i] / (float)ng0[0] + bvec[1][i] / (float)ng0[1] + bvec[2][i] / (float)ng0[2];
+    bdiag[1][i] =  bvec[0][i] / (float)ng0[0] + bvec[1][i] / (float)ng0[1] - bvec[2][i] / (float)ng0[2];
+    bdiag[2][i] =  bvec[0][i] / (float)ng0[0] - bvec[1][i] / (float)ng0[1] + bvec[2][i] / (float)ng0[2];
+    bdiag[3][i] = -bvec[0][i] / (float)ng0[0] + bvec[1][i] / (float)ng0[1] + bvec[2][i] / (float)ng0[2];
+  }
+  for (i = 0; i < 4; i++)
+    ldiag[i] = bdiag[i][0] * bdiag[i][0] + bdiag[i][1] * bdiag[i][1] + bdiag[i][2] * bdiag[i][2];
+  eigsort(4, ldiag, sw);
+  itet = sw[0];
 }/* bragg_vector */
 /**
  @brief Print max and minimum @f$\varepsilon_{n k}, \Delta_{n k}@f$

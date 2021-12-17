@@ -320,8 +320,8 @@ bool MyApp::OnInit()
   kveq_rot = new GLfloat *[nb];
   /**/
   interpol_energy();
-  init_corner();
   bragg_vector();
+  init_corner();
   myf->modify_band();
   /*
    Brillouin zone

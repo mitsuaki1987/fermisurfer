@@ -48,6 +48,7 @@ public:
   wxGridBagSizer* gbsizer;
   wxPanel* panel;
   wxRadioBox* radiobox_color;
+  wxRadioBox* radiobox_tetra;
   wxSplitterWindow* splitterV;
   wxSplitterWindow* splitterH;
   /*

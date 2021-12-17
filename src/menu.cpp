@@ -946,11 +946,12 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   wxString choices_tetra[] = { wxT("1"), wxT("2"), wxT("3"), wxT("4"), wxT("5"), wxT("6"), wxT("7") ,
 wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
  wxT("15"), wxT("16") };
-  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_tetra, this, iradio_tetra);
-  gbsizer->Add(new wxRadioBox(panel, iradio_tetra, wxT("Tetrahedron"),
+  radiobox_tetra = new wxRadioBox(panel, iradio_tetra, wxT("Tetrahedron"),
     wxDefaultPosition, wxDefaultSize,
     WXSIZEOF(choices_tetra), choices_tetra,
-    4, wxRA_SPECIFY_COLS), wxGBPosition(3,2), wxGBSpan(5, 2));
+    4, wxRA_SPECIFY_COLS);
+  Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_tetra, this, iradio_tetra);
+  gbsizer->Add(radiobox_tetra, wxGBPosition(3,2), wxGBSpan(5, 2));
 
   wxString choices_colorscale[] = { wxT("Input (1D)"), wxT("Input (2D)"),
     wxT("Input (3D)"), wxT("Fermi Velocity"), wxT("Band Index"),
@@ -1193,6 +1194,7 @@ void MyFrame::modify_band() {
   GLfloat mat2;
 
   radiobox_color->SetSelection(color_scale - 1);
+  radiobox_tetra->SetSelection(itet);
 
   check = new wxCheckBox * [nb];
   textbox_BandR = new wxTextCtrl * [nb];
