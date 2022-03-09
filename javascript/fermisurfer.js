@@ -27,7 +27,7 @@ THE SOFTWARE.
 /**@mainpage FermiSurfer Main Page
 
 Fermisurfer displays Fermi surfaces 
-with a color-plot of the arbitraly matrix element
+with a color-plot of the arbitrary matrix element
 
 @section Notation
  
@@ -41,7 +41,7 @@ with a color-plot of the arbitraly matrix element
 
 @section sec_file Important files
 - Main routine : fermisurfer.cpp
-- Global valiable : variable.hpp
+- Global variable : variable.hpp
 
 @section sec_flow Flow
 
@@ -56,7 +56,7 @@ with a color-plot of the arbitraly matrix element
  Input variables
 */
 let ng0 = [0, 0, 0];         //!< @f$k@f$-point grid in the input file
-let shiftk = [0, 0, 0];      //!< Wherether @f$k@f$-grid is shifted or not
+let shiftk = [0, 0, 0];      //!< Whether @f$k@f$-grid is shifted or not
 let nb = 0;             //!< The number of Bands
 let avec = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]; //!< Direct lattice vector
 let bvec = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]; //!< Reciprocal lattice vector
@@ -92,7 +92,7 @@ let brnrm = [];      //!< Norms of Bragg plane vectors
 let brnrm_min = 0.0;     //!< Minimum scale of the reciplocal space
 let nbragg = 0;             //!< Number of Bragg plane og 1st BZ
 /*
- Variables for patchs
+ Variables for patches
 */
 let ntri = [];          //!< The number of triangle patch [::nb]
 let draw_band = [];     //!< Switch for drawn bands [::nb]
@@ -156,7 +156,6 @@ let black = [0.0, 0.0, 0.0, 1.0]; //!< Black color code
 let gray = [0.5, 0.5, 0.5, 1.0]; //!< Gray color code
 let wgray = [0.9, 0.9, 0.9, 1.0]; //!< Gray color code
 let bgray = [0.1, 0.1, 0.1, 1.0]; //!< Gray color code
-let white = [1.0, 1.0, 1.0, 1.0]; //!< White color code
 let cyan = [0.0, 1.0, 1.0, 1.0]; //!< Cyan color code
 let magenta = [1.0, 0.0, 1.0, 1.0]; //!< Magenta color code
 let yellow = [1.0, 1.0, 0.0, 1.0]; //!< Yellow color code
@@ -288,7 +287,7 @@ function main() {
 // Draw the scene.
 //
 function drawScene() {
-  let ib = 0, ii = 0, jj = 0;
+  let ib = 0, ii = 0, jj = 0, icount = 0, itri = 0;
 
   gl.clearColor(BackGroundColor[0], BackGroundColor[1], BackGroundColor[2], BackGroundColor[3]);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
@@ -347,22 +346,24 @@ function drawScene() {
   {
     let vertexCount = 0;
     for (ib = 0; ib < nb; ib++) {
-      if (draw_band[ib] == 1) vertexCount += ntri[ib] * 3;
+      if (draw_band[ib] === 1) vertexCount += ntri[ib] * 3;
     }
 
     let nkvp = vertexCount * 3;
     let positions = new Float32Array(nkvp);
     icount = 0;
     for (ib = 0; ib < nb; ib++) {
-      for (itri = 0; itri < ntri[ib]; itri++) {
-        for (ii = 0; ii < 3; ii++) {
-          for (jj = 0; jj < 3; jj++) {
-            positions[icount] = (
-                rot[jj][0] * kvp[ib][itri][ii][0]
-              + rot[jj][1] * kvp[ib][itri][ii][1]
-              + rot[jj][2] * kvp[ib][itri][ii][2]) * scl
-                              + trans[jj];
-            icount += 1;
+      if (draw_band[ib] === 1) {
+        for (itri = 0; itri < ntri[ib]; itri++) {
+          for (ii = 0; ii < 3; ii++) {
+            for (jj = 0; jj < 3; jj++) {
+              positions[icount] = (
+                      rot[jj][0] * kvp[ib][itri][ii][0]
+                      + rot[jj][1] * kvp[ib][itri][ii][1]
+                      + rot[jj][2] * kvp[ib][itri][ii][2]) * scl
+                  + trans[jj];
+              icount += 1;
+            }
           }
         }
       }
@@ -372,13 +373,15 @@ function drawScene() {
     let vertexNormals = new Float32Array(nnmlp);
     icount = 0;
     for (ib = 0; ib < nb; ib++) {
-      for (itri = 0; itri < ntri[ib]; itri++) {
-        for (ii = 0; ii < 3; ii++) {
-          for (jj = 0; jj < 3; jj++) {
-            vertexNormals[icount] = rot[jj][0] * nmlp[ib][itri][ii][0]
-                                  + rot[jj][1] * nmlp[ib][itri][ii][1]
-                                  + rot[jj][2] * nmlp[ib][itri][ii][2];
-            icount += 1;
+      if (draw_band[ib] === 1) {
+        for (itri = 0; itri < ntri[ib]; itri++) {
+          for (ii = 0; ii < 3; ii++) {
+            for (jj = 0; jj < 3; jj++) {
+              vertexNormals[icount] = rot[jj][0] * nmlp[ib][itri][ii][0]
+                  + rot[jj][1] * nmlp[ib][itri][ii][1]
+                  + rot[jj][2] * nmlp[ib][itri][ii][2];
+              icount += 1;
+            }
           }
         }
       }
@@ -388,11 +391,13 @@ function drawScene() {
     let colors = new Float32Array(nclr);
     icount = 0;
     for (ib = 0; ib < nb; ib++) {
-      for (itri = 0; itri < ntri[ib]; itri++) {
-        for (ii = 0; ii < 3; ii++) {
-          for (jj = 0; jj < 4; jj++) {
-            colors[icount] = clr[ib][jj + 4 * ii + 12 * itri];
-            icount += 1;
+      if (draw_band[ib] === 1) {
+        for (itri = 0; itri < ntri[ib]; itri++) {
+          for (ii = 0; ii < 3; ii++) {
+            for (jj = 0; jj < 4; jj++) {
+              colors[icount] = clr[ib][jj + 4 * ii + 12 * itri];
+              icount += 1;
+            }
           }
         }
       }
@@ -605,11 +610,11 @@ function touch_start(evt) {
   var touches = evt.changedTouches;
 
   for (i = 0; i < touches.length; i++) {
-    if (touches[i].identifier == 0) {
+    if (touches[i].identifier === 0) {
       touch0x = touches[i].clientX;
       touch0y = touches[i].clientY;
     }
-    else if (touches[i].identifier == 1) {
+    else if (touches[i].identifier === 1) {
       touch1x = touches[i].clientX;
       touch1y = touches[i].clientY;
     }
@@ -621,8 +626,8 @@ function touch_move(evt) {
   var touches = evt.changedTouches;
   let dx = 0.0, dy = 0.0, dold = 0.0, dnew = 0.;
 
-  if (touches.length == 1) {
-    if (touches[0].identifier == 0) {
+  if (touches.length === 1) {
+    if (touches[0].identifier === 0) {
       dx = 0.001 * (touches[0].clientX - touch0x);
       dy = 0.001 * (touches[0].clientY - touch0y);
       mouserotation(dx, dy)
@@ -631,7 +636,7 @@ function touch_move(evt) {
       touch0y = touches[0].clientY;
     }
   }
-  else if (touches.length == 2) {
+  else if (touches.length === 2) {
     dold = Math.sqrt((touch1x - touch0x) * (touch1x - touch0x) + (touch1y - touch0y) * (touch1y - touch0y));
     touch0x = touches[0].clientX;
     touch0y = touches[0].clientY;
@@ -650,7 +655,7 @@ function mouse_down(evt){
   touch0x = evt.offsetX;
   touch0y = evt.offsetY;
   isDrawing = true;
-};
+}
 
 function mouse_move(evt){
   if (isDrawing === true) {
@@ -663,7 +668,7 @@ function mouse_move(evt){
     touch0x = evt.offsetX;
     touch0y = evt.offsetY;
   }
-};
+}
 
 function mouse_up(evt){
   if (isDrawing === true) {
@@ -677,7 +682,7 @@ function mouse_up(evt){
     touch0y = 0;
     isDrawing = false;
   }
-};
+}
 
 function zoom(evt) {
   scl -= evt.deltaY*0.001;
@@ -691,7 +696,7 @@ function mouserotation(dx, dy) {
   let rot0 = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
   let rot1 = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
 
-  if (a != 0.0) {
+  if (a !== 0.0) {
     //
     // Compute rotational matrix from translation of mousepointer
     //
@@ -2761,13 +2766,14 @@ function init_corner()
   }
 }
 /**
- @brief Compute Bragg vetor
+ @brief Compute Bragg vector
 
  Modify : ::bragg, ::brnrm
 */
 function bragg_vector()
 {
-  let i0, i1, i2, i, ibr;
+  let i0, i1, i2, i, ibr, sw = [0, 0, 0, 0];
+  let ldiag = [0.0, 0.0, 0.0, 0.0], bdiag = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]];
   /**/
   ibr = 0;
   //
@@ -2777,11 +2783,11 @@ function bragg_vector()
     for (i1 = -1; i1 <= 1; ++i1) {
       for (i2 = -1; i2 <= 1; ++i2) {
         /*
-         Excepte Gamma points
+         Except Gamma points
         */
         if (i0 == 0 && i1 == 0 && i2 == 0) continue;
         /*
-         Fractional -> Cartecian
+         Fractional -> Cartesian
         */
         bragg.push([]);
         for (i = 0; i < 3; ++i)
@@ -2807,6 +2813,20 @@ function bragg_vector()
     if (brnrm_min > brnrm[ibr]) brnrm_min = brnrm[ibr];
   }
   terminal("    Minimum Bragg norm : " + String(brnrm_min) + "\n");
+  //
+  // Search the shortest diagonal line
+  //
+  for (i = 0; i < 3; i++) {
+      bdiag[0][i] =  bvec[0][i] / ng0[0] + bvec[1][i] / ng0[1] + bvec[2][i] / ng0[2];
+      bdiag[1][i] =  bvec[0][i] / ng0[0] + bvec[1][i] / ng0[1] - bvec[2][i] / ng0[2];
+      bdiag[2][i] =  bvec[0][i] / ng0[0] - bvec[1][i] / ng0[1] + bvec[2][i] / ng0[2];
+      bdiag[3][i] = -bvec[0][i] / ng0[0] + bvec[1][i] / ng0[1] + bvec[2][i] / ng0[2];
+    }
+    for (i = 0; i < 4; i++)
+      ldiag[i] = bdiag[i][0] * bdiag[i][0] + bdiag[i][1] * bdiag[i][1] + bdiag[i][2] * bdiag[i][2];
+    eigsort(4, ldiag, sw);
+    itet = sw[0];
+    document.getElementById("tetrahedron").tetrahedron.value = String(itet);
 }/* bragg_vector */
 /**
  @brief Print max and minimum @f$\varepsilon_{n k}, \Delta_{n k}@f$
@@ -3078,6 +3098,8 @@ function update_delay() {
   drawScene();
 }
 function update_now() {
+  let ib = 0, i0 = 0, i1 =0, i2 = 0;
+
   linewidth = Number(document.getElementById("linewidth").value);
   //
   // Line color
@@ -3086,7 +3108,7 @@ function update_now() {
   LineColor[1] = Number(document.getElementById("linecolorg").value);
   LineColor[2] = Number(document.getElementById("linecolorb").value);
   //
-  // Back ground color
+  // Background color
   //
   BackGroundColor[0] = Number(document.getElementById("backgraoundr").value);
   BackGroundColor[1] = Number(document.getElementById("backgraoundg").value);
@@ -3109,6 +3131,23 @@ function update_now() {
   rot[2][1] = Math.cos(thetaz) * Math.sin(thetax) + Math.cos(thetax) * Math.sin(thetay) * Math.sin(thetaz);
   rot[2][2] = Math.cos(thetax) * Math.cos(thetay);
   scl = Number(document.getElementById("scale").value);
+  //
+  //Band
+  //
+  i0 = Number(document.getElementById("band").value);
+  i1 = 10;
+  for (ib = 0; ib < nb; ib++) {
+    i2 = i0 % i1;
+    if (i2 === 0){
+      draw_band[ib] = 0;
+    }
+    else{
+      draw_band[ib] = 1;
+    }
+    i0 += -i2;
+    i1 *= 10;
+  }
+
   drawScene();
 }
 function update_interpol() {
@@ -3214,8 +3253,6 @@ function button_update() {
     }
   }
   /**/
-  if (document.getElementById("band0")) draw_band[0] = 1;
-  else draw_band[0] = 0;
 
   free_patch();
   compute_patch_segment();
@@ -3372,13 +3409,18 @@ function allocate_griddata(
 
   for (i = 0; i < 3; i++) ng[i] = ng0[i];
 
+  i0 = 0;
+  i1 = 1;
   for (i = 0; i < nb; i++) {
     ntri.push(0);
     nnl.push(0);
     n2d.push(0);
     nequator.push(0);
     draw_band.push(1);
+    i0 += i1;
+    i1 *= 10;
   }
+  document.getElementById("band").value = String(i0);
   
   scl /= Math.sqrt(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
   linewidth /= scl;
@@ -3534,8 +3576,8 @@ function read_from_text(datas) {
   }//for (iaxis = 0; iaxis < 1; iaxis++)
   //
   interpol_energy();
-  init_corner();
   bragg_vector();
+  init_corner();
   //
   //Brillouin zone
   //
@@ -3891,4 +3933,12 @@ function calc_section() {
 if (frmsf != "") {
   let datas = frmsf.replace(/\n/g, ' ').replace(/^ +/, '').split(/ +/);
   read_from_text(datas);
+}
+function resizeCanvas() {
+  let el = document.getElementById("glcanvas");
+  let width = document.getElementById('width').value;
+  let height = document.getElementById('height').value;
+
+  el.setAttribute("width", width);
+  el.setAttribute("height", height);
 }
