@@ -269,10 +269,10 @@ void max_and_min_bz()
   *terminal << wxT("\n");
   *terminal << wxT("    Band   Eig_Min.      Eig_Max      Mat_Min      Mat_Max\n");
   for (ib = 0; ib < nb; ib++) {
-    eigmax = eig0[0][0][0][0];
-    eigmin = eig0[0][0][0][0];
-    matmax = mat0[0][0][0][0][0];
-    matmin = mat0[0][0][0][0][0];
+    eigmax = eig0[ib][0][0][0];
+    eigmin = eig0[ib][0][0][0];
+    matmax = mat0[ib][0][0][0][0];
+    matmin = mat0[ib][0][0][0][0];
     for (i0 = 0; i0 < ng0[0]; ++i0) {
       for (i1 = 0; i1 < ng0[1]; ++i1) {
         for (i2 = 0; i2 < ng0[2]; ++i2) {
