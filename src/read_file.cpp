@@ -433,9 +433,9 @@ void read_bxsf()
   while (strstr(ctmp, "BEGIN_BLOCK_BANDGRID_3D") == NULL) {
     cerr = fgets(ctmp, 256, fp);
   }
-  cerr = fgets(ctmp, 256, fp);
-  cerr = fgets(ctmp, 256, fp);
-
+  while (strstr(ctmp, "BEGIN_BANDGRID_3D") == NULL) {
+    cerr = fgets(ctmp, 256, fp);
+  }
   cerr = fgets(ctmp, 256, fp);
   ierr = sscanf(ctmp, "%d", &nb);
   *terminal << wxString::Format(wxT("  Number of bands : %d\n"), nb);
@@ -456,6 +456,9 @@ void read_bxsf()
 
   for (ib = 0; ib < nb; ib++) {
     cerr = fgets(ctmp, 256, fp);
+    while (strstr(ctmp, "BAND:") == NULL) {
+      cerr = fgets(ctmp, 256, fp);
+    }
     *terminal << wxString::Format(wxT("  Reading %s"), ctmp);
 
     for (i0 = 0; i0 <= ng0[0]; i0++) {
