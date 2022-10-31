@@ -842,7 +842,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
 #  if defined(__WXMAC__) || defined(__WXCOCOA__)
         GL_NONE };
 #  else
-    None
+    0
 };
 #  endif
 #endif
