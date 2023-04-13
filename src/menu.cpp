@@ -148,6 +148,19 @@ enum
   itext_ArrowDiff0,
   itext_ArrowDiff1,
   itext_ArrowDiff2,
+  itext_ArrowStartX,
+  itext_ArrowStartY,
+  itext_ArrowStartZ,
+  itext_ArrowEndX,
+  itext_ArrowEndY,
+  itext_ArrowEndZ,
+  itext_ArrowDiffX,
+  itext_ArrowDiffY,
+  itext_ArrowDiffZ,
+  itext_sphereX,
+  itext_sphereY,
+  itext_sphereZ,
+  itext_sphereR,
   icheck_band
 };
 
@@ -196,86 +209,249 @@ void MyFrame::button_section(
   *terminal << wxT("  bz_line.dat was written.\n");
 }
 /**
-@brief Change Line color color (::blackback)
+@brief Change arrow (::blackback)
 */
 void MyFrame::textctrl_Arrow(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
   int ii, jj;
-  double dvalue;
+  double dvalue, diff;
 
   if (event.GetId() == itext_ArrowStart0) {
     if (event.GetString().ToDouble(&dvalue)) {
+      arrow_f[1][0] += (GLfloat)dvalue - arrow_f[0][0];
       arrow_f[0][0] = (GLfloat)dvalue;
-      textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0] - arrow_f[0][0]));
-      Refresh(false);
+      textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0]));
     }
   }
   else  if (event.GetId() == itext_ArrowStart1) {
     if (event.GetString().ToDouble(&dvalue)) {
+      arrow_f[1][1] += (GLfloat)dvalue - arrow_f[0][1];
       arrow_f[0][1] = (GLfloat)dvalue;
-      textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1] - arrow_f[0][1]));
-      Refresh(false);
+      textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1]));
     }
   }
   else  if (event.GetId() == itext_ArrowStart2) {
     if (event.GetString().ToDouble(&dvalue)) {
+      arrow_f[1][2] += (GLfloat)dvalue - arrow_f[0][2];
       arrow_f[0][2] = (GLfloat)dvalue;
-      textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2] - arrow_f[0][2]));
-      Refresh(false);
+      textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2]));
     }
   }
   else  if (event.GetId() == itext_ArrowEnd0) {
     if (event.GetString().ToDouble(&dvalue)) {
       arrow_f[1][0] = (GLfloat)dvalue;
       textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0] - arrow_f[0][0]));
-      Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowEnd1) {
     if (event.GetString().ToDouble(&dvalue)) {
       arrow_f[1][1] = (GLfloat)dvalue;
       textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1] - arrow_f[0][1]));
-      Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowEnd2) {
     if (event.GetString().ToDouble(&dvalue)) {
       arrow_f[1][2] = (GLfloat)dvalue;
       textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2] - arrow_f[0][2]));
-      Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowDiff0) {
     if (event.GetString().ToDouble(&dvalue)) {
       arrow_f[1][0] = arrow_f[0][0] + (GLfloat)dvalue;
       textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0]));
-      Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowDiff1) {
     if (event.GetString().ToDouble(&dvalue)) {
       arrow_f[1][1] = arrow_f[0][1] + (GLfloat)dvalue;
       textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1]));
-      Refresh(false);
     }
   }
   else  if (event.GetId() == itext_ArrowDiff2) {
     if (event.GetString().ToDouble(&dvalue)) {
       arrow_f[1][2] = arrow_f[0][2] + (GLfloat)dvalue;
       textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2]));
-      Refresh(false);
+    }
+  }
+  else  if (event.GetId() == itext_ArrowStartX) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][0] += (GLfloat)dvalue - arrow_c[0][0];
+      arrow_c[0][0] = (GLfloat)dvalue;
+      textbox_ArrowEndX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0]));
+    }
+  }
+  else  if (event.GetId() == itext_ArrowStartY) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][1] += (GLfloat)dvalue - arrow_c[0][1];
+      arrow_c[0][1] = (GLfloat)dvalue;
+      textbox_ArrowEndY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1]));
+    }
+  }
+  else  if (event.GetId() == itext_ArrowStartZ) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][2] += (GLfloat)dvalue - arrow_c[0][2];
+      arrow_c[0][2] = (GLfloat)dvalue;
+      textbox_ArrowEndZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2]));
+    }
+  }
+  else  if (event.GetId() == itext_ArrowEndX) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][0] = (GLfloat)dvalue;
+      textbox_ArrowDiffX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0] - arrow_c[0][0]));
+    }
+  }
+  else  if (event.GetId() == itext_ArrowEndY) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][1] = (GLfloat)dvalue;
+      textbox_ArrowDiffY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1] - arrow_c[0][1]));
+    }
+  }
+  else  if (event.GetId() == itext_ArrowEndZ) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][2] = (GLfloat)dvalue;
+      textbox_ArrowDiffZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2] - arrow_c[0][2]));
+    }
+  }
+  else  if (event.GetId() == itext_ArrowDiffX) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][0] = arrow_c[0][0] + (GLfloat)dvalue;
+      textbox_ArrowEndX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0]));
+    }
+  }
+  else  if (event.GetId() == itext_ArrowDiffY) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][1] = arrow_c[0][1] + (GLfloat)dvalue;
+      textbox_ArrowEndY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1]));
+    }
+  }
+  else  if (event.GetId() == itext_ArrowDiffZ) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arrow_c[1][2] = arrow_c[0][2] + (GLfloat)dvalue;
+      textbox_ArrowEndZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2]));
     }
   }
   //
   // Fractional -> Cartesian
   //
-  for (ii = 0; ii < 2; ++ii)
-    for (jj = 0; jj < 3; ++jj)
-      arrow_c[ii][jj] = bvec[0][jj] * arrow_f[ii][0]
-                      + bvec[1][jj] * arrow_f[ii][1]
-                      + bvec[2][jj] * arrow_f[ii][2];
+  switch(event.GetId()){
+  case itext_ArrowStart0:
+  case itext_ArrowStart1:
+  case itext_ArrowStart2:
+  case itext_ArrowEnd0:
+  case itext_ArrowEnd1:
+  case itext_ArrowEnd2:
+  case itext_ArrowDiff0:
+  case itext_ArrowDiff1:
+  case itext_ArrowDiff2:
+    for (ii = 0; ii < 2; ++ii)
+      for (jj = 0; jj < 3; ++jj)
+        arrow_c[ii][jj] = bvec[0][jj] * arrow_f[ii][0]
+                        + bvec[1][jj] * arrow_f[ii][1]
+                        + bvec[2][jj] * arrow_f[ii][2];
+    textbox_ArrowStartX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[0][0]));
+    textbox_ArrowStartY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[0][1]));
+    textbox_ArrowStartZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[0][2]));
+    textbox_ArrowEndX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0]));
+    textbox_ArrowEndY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1]));
+    textbox_ArrowEndZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2]));
+    textbox_ArrowDiffX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0] - arrow_c[0][0]));
+    textbox_ArrowDiffY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1] - arrow_c[0][1]));
+    textbox_ArrowDiffZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2] - arrow_c[0][2]));
+    break;
+  case itext_ArrowStartX:
+  case itext_ArrowStartY:
+  case itext_ArrowStartZ:
+  case itext_ArrowEndX:
+  case itext_ArrowEndY:
+  case itext_ArrowEndZ:
+  case itext_ArrowDiffX:
+  case itext_ArrowDiffY:
+  case itext_ArrowDiffZ:
+    for (ii = 0; ii < 2; ++ii)
+      for (jj = 0; jj < 3; ++jj)
+        arrow_f[ii][jj] = avec[jj][0] * arrow_c[ii][0]
+                        + avec[jj][1] * arrow_c[ii][1]
+                        + avec[jj][2] * arrow_c[ii][2];
+    textbox_ArrowStart0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[0][0]));
+    textbox_ArrowStart1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[0][1]));
+    textbox_ArrowStart2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[0][2]));
+    textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0]));
+    textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1]));
+    textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2]));
+    textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0] - arrow_f[0][0]));
+    textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1] - arrow_f[0][1]));
+    textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2] - arrow_f[0][2]));
+    break;
+  }
+  //
+  Refresh(false);
+}
+/**
+@brief Change Line color color (::blackback)
+*/
+void MyFrame::textctrl_sphere(
+  wxCommandEvent& event //!<[in] Selected menu
+)
+{
+  int ii, jj, icount;
+  double dvalue, diff, theta1, theta2, phi1, phi2;
+
+  if (event.GetId() == itext_sphereX) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      sphere_c[0] = (GLfloat)dvalue;
+    }
+  }
+  else if (event.GetId() == itext_sphereY) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      sphere_c[1] = (GLfloat)dvalue;
+    }
+  }
+  else if (event.GetId() == itext_sphereZ) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      sphere_c[2] = (GLfloat)dvalue;
+    }
+  }
+  else if (event.GetId() == itext_sphereR) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      sphere_r = (GLfloat)dvalue;
+    }
+  }
+  //
+  // Vertex of wireflame sphere
+  //
+  icount = 0;
+  for (ii = 0; ii < 10; ii++) {
+    phi1 = 2.0 * M_PI * (double)ii * 0.1;
+    for (jj = 0; jj < 10; jj++) {
+      theta1 = M_PI * (double)jj * 0.1;
+      theta2 = M_PI * (double)(jj + 1) * 0.1;
+      sphere_v[icount][0][0] = sphere_c[0] + sphere_r * (GLfloat)(sin(theta1) * cos(phi1));
+      sphere_v[icount][0][1] = sphere_c[1] + sphere_r * (GLfloat)(sin(theta1) * sin(phi1));
+      sphere_v[icount][0][2] = sphere_c[2] + sphere_r * (GLfloat)cos(theta1);
+      sphere_v[icount][1][0] = sphere_c[0] + sphere_r * (GLfloat)(sin(theta2) * cos(phi1));
+      sphere_v[icount][1][1] = sphere_c[1] + sphere_r * (GLfloat)(sin(theta2) * sin(phi1));
+      sphere_v[icount][1][2] = sphere_c[2] + sphere_r * (GLfloat)cos(theta2);
+      icount += 1;
+    }
+  }
+  for (ii = 0; ii < 10; ii++) {
+    phi1 = 2.0 * M_PI * (double)ii * 0.1;
+    phi2 = 2.0 * M_PI * (double)(ii + 1) * 0.1;
+    for (jj = 1; jj < 10; jj++) {
+      theta1 = M_PI * (double)jj * 0.1;
+      sphere_v[icount][0][0] = sphere_c[0] + sphere_r * (GLfloat)(sin(theta1) * cos(phi1));
+      sphere_v[icount][0][1] = sphere_c[1] + sphere_r * (GLfloat)(sin(theta1) * sin(phi1));
+      sphere_v[icount][0][2] = sphere_c[2] + sphere_r * (GLfloat)cos(theta1);
+      sphere_v[icount][1][0] = sphere_c[0] + sphere_r * (GLfloat)(sin(theta1) * cos(phi2));
+      sphere_v[icount][1][1] = sphere_c[1] + sphere_r * (GLfloat)(sin(theta1) * sin(phi2));
+      sphere_v[icount][1][2] = sphere_c[2] + sphere_r * (GLfloat)cos(theta1);
+      icount += 1;
+    }
+  }
+  //
+  Refresh(false);
 }
 /**
 @brief Change Line color color (::blackback)
@@ -1131,6 +1307,19 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_ArrowStart1->ChangeValue(wxT("0.0"));
   textbox_ArrowStart2->ChangeValue(wxT("0.0"));
   //
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStartX);
+  textbox_ArrowStartX = new wxTextCtrl(panel, itext_ArrowStartX, wxT(""));
+  gbsizer->Add(textbox_ArrowStartX, wxGBPosition(20, 4), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStartY);
+  textbox_ArrowStartY = new wxTextCtrl(panel, itext_ArrowStartY, wxT(""));
+  gbsizer->Add(textbox_ArrowStartY, wxGBPosition(20, 5), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStartZ);
+  textbox_ArrowStartZ = new wxTextCtrl(panel, itext_ArrowStartZ, wxT(""));
+  gbsizer->Add(textbox_ArrowStartZ, wxGBPosition(20, 6), wxGBSpan(1, 1));
+  textbox_ArrowStartX->ChangeValue(wxT("0.0"));
+  textbox_ArrowStartY->ChangeValue(wxT("0.0"));
+  textbox_ArrowStartZ->ChangeValue(wxT("0.0"));
+  //
   // Arrow End
   //
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Arrow (End) : ")),
@@ -1147,6 +1336,19 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_ArrowEnd0->ChangeValue(wxT("0.0"));
   textbox_ArrowEnd1->ChangeValue(wxT("0.0"));
   textbox_ArrowEnd2->ChangeValue(wxT("0.0"));
+  //
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEndX);
+  textbox_ArrowEndX = new wxTextCtrl(panel, itext_ArrowEndX, wxT(""));
+  gbsizer->Add(textbox_ArrowEndX, wxGBPosition(21, 4), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEndY);
+  textbox_ArrowEndY = new wxTextCtrl(panel, itext_ArrowEndY, wxT(""));
+  gbsizer->Add(textbox_ArrowEndY, wxGBPosition(21, 5), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEndZ);
+  textbox_ArrowEndZ = new wxTextCtrl(panel, itext_ArrowEndZ, wxT(""));
+  gbsizer->Add(textbox_ArrowEndZ, wxGBPosition(21, 6), wxGBSpan(1, 1));
+  textbox_ArrowEndX->ChangeValue(wxT("0.0"));
+  textbox_ArrowEndY->ChangeValue(wxT("0.0"));
+  textbox_ArrowEndZ->ChangeValue(wxT("0.0"));
   //
   // Arrow Diff
   //
@@ -1165,6 +1367,42 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_ArrowDiff1->ChangeValue(wxT("0.0"));
   textbox_ArrowDiff2->ChangeValue(wxT("0.0"));
   //
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiffX);
+  textbox_ArrowDiffX = new wxTextCtrl(panel, itext_ArrowDiffX, wxT(""));
+  gbsizer->Add(textbox_ArrowDiffX, wxGBPosition(22, 4), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiffY);
+  textbox_ArrowDiffY = new wxTextCtrl(panel, itext_ArrowDiffY, wxT(""));
+  gbsizer->Add(textbox_ArrowDiffY, wxGBPosition(22, 5), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiffZ);
+  textbox_ArrowDiffZ = new wxTextCtrl(panel, itext_ArrowDiffZ, wxT(""));
+  gbsizer->Add(textbox_ArrowDiffZ, wxGBPosition(22, 6), wxGBSpan(1, 1));
+  textbox_ArrowDiffX->ChangeValue(wxT("0.0"));
+  textbox_ArrowDiffY->ChangeValue(wxT("0.0"));
+  textbox_ArrowDiffZ->ChangeValue(wxT("0.0"));
+  //
+  // Wireframe sphere
+  //
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Sphere center : ")),
+    wxGBPosition(23, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_sphere, this, itext_sphereX);
+  textbox_sphereX = new wxTextCtrl(panel, itext_sphereX, wxT(""));
+  gbsizer->Add(textbox_sphereX, wxGBPosition(23, 1), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_sphere, this, itext_sphereY);
+  textbox_sphereY = new wxTextCtrl(panel, itext_sphereY, wxT(""));
+  gbsizer->Add(textbox_sphereY, wxGBPosition(23, 2), wxGBSpan(1, 1));
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_sphere, this, itext_sphereZ);
+  textbox_sphereZ = new wxTextCtrl(panel, itext_sphereZ, wxT(""));
+  gbsizer->Add(textbox_sphereZ, wxGBPosition(23, 3), wxGBSpan(1, 1));
+  textbox_sphereX->ChangeValue(wxT("0.0"));
+  textbox_sphereY->ChangeValue(wxT("0.0"));
+  textbox_sphereZ->ChangeValue(wxT("0.0"));
+  //
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Sphere radius : ")),
+    wxGBPosition(24, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_sphere, this, itext_sphereR);
+  textbox_sphereR = new wxTextCtrl(panel, itext_sphereR, wxT(""));
+  gbsizer->Add(textbox_sphereR, wxGBPosition(24, 1), wxGBSpan(1, 1));
+  textbox_sphereR->ChangeValue(wxT("0.0"));
   SetSizer(sizermain);
   SetAutoLayout(true);
 
@@ -1205,7 +1443,7 @@ void MyFrame::modify_band() {
     Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_band, this, icheck_band + 4*ib);
     check[ib] = new wxCheckBox(panel, icheck_band + 4*ib,
       wxString::Format(wxT("Band %d, RGB :"), ib));
-    gbsizer->Add(check[ib], wxGBPosition(23 + ib, 0), wxGBSpan(1, 1));
+    gbsizer->Add(check[ib], wxGBPosition(25 + ib, 0), wxGBSpan(1, 1));
     check[ib]->SetValue(true);
 
     if (nb == 1) mat2 = 0.5f;
@@ -1229,13 +1467,13 @@ void MyFrame::modify_band() {
 
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+1);
     textbox_BandR[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+1, wxT(""));
-    gbsizer->Add(textbox_BandR[ib], wxGBPosition(23 + ib, 1), wxGBSpan(1, 1));
+    gbsizer->Add(textbox_BandR[ib], wxGBPosition(25 + ib, 1), wxGBSpan(1, 1));
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+2);
     textbox_BandG[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+2, wxT(""));
-    gbsizer->Add(textbox_BandG[ib], wxGBPosition(23 + ib, 2), wxGBSpan(1, 1));
+    gbsizer->Add(textbox_BandG[ib], wxGBPosition(25 + ib, 2), wxGBSpan(1, 1));
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+3);
     textbox_BandB[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+3, wxT(""));
-    gbsizer->Add(textbox_BandB[ib], wxGBPosition(23 + ib, 3), wxGBSpan(1, 1));
+    gbsizer->Add(textbox_BandB[ib], wxGBPosition(25 + ib, 3), wxGBSpan(1, 1));
     textbox_BandR[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][0]));
     textbox_BandG[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][1]));
     textbox_BandB[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][2]));

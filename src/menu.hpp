@@ -84,6 +84,19 @@ public:
   wxTextCtrl* textbox_ArrowDiff0;
   wxTextCtrl* textbox_ArrowDiff1;
   wxTextCtrl* textbox_ArrowDiff2;
+  wxTextCtrl* textbox_ArrowStartX;
+  wxTextCtrl* textbox_ArrowStartY;
+  wxTextCtrl* textbox_ArrowStartZ;
+  wxTextCtrl* textbox_ArrowEndX;
+  wxTextCtrl* textbox_ArrowEndY;
+  wxTextCtrl* textbox_ArrowEndZ;
+  wxTextCtrl* textbox_ArrowDiffX;
+  wxTextCtrl* textbox_ArrowDiffY;
+  wxTextCtrl* textbox_ArrowDiffZ;
+  wxTextCtrl* textbox_sphereX;
+  wxTextCtrl* textbox_sphereY;
+  wxTextCtrl* textbox_sphereZ;
+  wxTextCtrl* textbox_sphereR;
 
 private:
   void OnExit(wxCommandEvent& event);
@@ -112,6 +125,7 @@ private:
   void textctrl_Section(wxCommandEvent& event);
   void textctrl_Band(wxCommandEvent& event);
   void textctrl_Arrow(wxCommandEvent& event);
+  void textctrl_sphere(wxCommandEvent& event);
   //wxDECLARE_EVENT_TABLE();
 };
 

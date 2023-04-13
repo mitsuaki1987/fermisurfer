@@ -217,6 +217,9 @@ GLfloat arrow_c[2][3];
 */
 int corner[6][4]; //!< Corners of tetrahedron
 GLfloat EF = 0.0;       //!< Fermi energy
+GLfloat sphere_v[190][2][3]; //!< Vertices for wisreflame sphere
+GLfloat sphere_r;//!< Radius of wireflame sphere
+GLfloat sphere_c[3];//!< Center of wireflame sphere
 enum
 {
   MOUSE_SCROLL_UP = 3,  //!< Mouse wheel up
@@ -262,7 +265,7 @@ void batch_draw()
 */
 bool MyApp::OnInit()
 {
-  int ierr;
+  int ierr, i0, i1, i2;
 
   if (!wxApp::OnInit()) return false;
 
@@ -342,7 +345,16 @@ bool MyApp::OnInit()
   *terminal << wxT("              mousewheel : Resize objects\n");
   *terminal << wxT("    cursorkey or w,a,s,d : Move objects\n");
   *terminal << wxT("\n");
-  /**/
+  //
+  // Variables for wireflame sphere
+  //
+  for (i0 = 0; i0 < 190; i0++)
+    for (i1 = 0; i1 < 2; i1++)
+      for (i2 = 0; i2 < 3; i2++)
+        sphere_v[i0][i1][i2] = 0.0f;
+  for (i0 = 0; i0 < 3; i0++) sphere_c[i0] = 0.0f;
+  sphere_r = 0.0f;
+  //
   if (lbatch == 1) {
     batch_draw();
   }

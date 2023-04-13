@@ -216,9 +216,9 @@ private(ib)
  @brief Draw lines of BZ boundaries
 */
 static void draw_bz_lines() {
-  int ibzl, i, j, a0, a1, a2, ia;
+  int ibzl, i, j, a0, a1, a2, ia, icount;
   GLfloat bzl2[3], bvec2[3][3], linecolor[4], secvec2[3], kshift[3];
-  GLfloat vertices[300];
+  GLfloat vertices[300], sphere_v2[1140]/*190*2*3*/;
   //
   // Line color is oposit of BG color
   //
@@ -327,6 +327,22 @@ static void draw_bz_lines() {
     glVertexPointer(3, GL_FLOAT, 0, vertices);
     glDrawArrays(GL_TRIANGLE_FAN, 0, nbzl2d);
   }/*if (lsection == 1)*/
+  //
+  // Wireflame Sphere 
+  //
+  for (ibzl = 0; ibzl < 190; ibzl++) {
+    for (i = 0; i < 2; ++i) {
+      for (j = 0; j < 3; ++j)
+        sphere_v2[j + 3 * i + 6 * ibzl] = rot[j][0] * sphere_v[ibzl][i][0]
+                                        + rot[j][1] * sphere_v[ibzl][i][1]
+                                        + rot[j][2] * sphere_v[ibzl][i][2]
+                                        + trans[j];
+    }/*for (i = 0; i< 2; ++i)*/
+  }
+  glColor3fv(linecolor);
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glVertexPointer(3, GL_FLOAT, 0, sphere_v2);
+  glDrawArrays(GL_LINES, 0, 380);
 }/*draw bz_lines */
 /**
  @brief Draw color-bar or colr-circle (periodic) 
@@ -352,8 +368,30 @@ static void draw_colorbar()
     for (j = 0; j < 3; j++) {
       vector[j + 6 * i] 
         += (rot[j][0] * bvec[i][0]
-        + rot[j][1] * bvec[i][1]
-        + rot[j][2] * bvec[i][2]) * 0.2f / norm;
+          + rot[j][1] * bvec[i][1]
+          + rot[j][2] * bvec[i][2]) * 0.2f / norm;
+    }
+    for (j = 0; j < 4; j++) {
+      vector_color[j + 8 * i] = BarColor[i * 2][j];
+      vector_color[j + 8 * i + 4] = BarColor[i * 2][j];
+    }
+  }
+  glLineWidth(linewidth);
+  glNormal3f(0.0f, 0.0f, 1.0f);
+  glVertexPointer(3, GL_FLOAT, 0, vector);
+  glColorPointer(4, GL_FLOAT, 0, vector_color);
+  glDrawArrays(GL_LINES, 0, 6);
+  /*
+  Cartesian (XYZ) flame
+  */
+  for (i = 0; i < 6; i++) {
+    vector[3 * i] = 1.2f;
+    vector[3 * i + 1] = -1.05f;
+    vector[3 * i + 2] = 0.0f;
+  }
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 3; j++) {
+      vector[j + 6 * i] += rot[j][i] * 0.2f;
     }
     for (j = 0; j < 4; j++) {
       vector_color[j + 8 * i] = BarColor[i * 2][j];

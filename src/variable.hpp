@@ -168,6 +168,9 @@ enum
   MOUSE_SCROLL_DOWN = 4 //!< Mouse wheel down
 };
 extern int nthreads;//!< Number of OpenMP threads
+extern GLfloat sphere_v[190][2][3];//!< Vertex for wireflame sphere: 10*10+10*90
+extern GLfloat sphere_r;//!< Radius of wireflame sphere
+extern GLfloat sphere_c[3];//!< Center of wireflame sphere
 /*
 Batch mode
 */
