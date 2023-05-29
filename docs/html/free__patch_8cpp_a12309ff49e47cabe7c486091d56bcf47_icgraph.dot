@@ -1,0 +1,19 @@
+digraph "max_and_min"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="RL";
+  Node1 [label="max_and_min",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Compute Max. & Min. of matrix elements. Compute color of each patch."];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="compute_patch_segment",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$menu_8hpp.html#a3281d6fac7f0edb03da537a8614ad4f7",tooltip=" "];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="MyFrame::button_compute",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_my_frame.html#af0577d3c50593fe302ec6871f674f5de",tooltip=" "];
+  Node2 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="MyApp::OnInit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_my_app.html#a79fa75d1155f0e85e20f2869538296d6",tooltip="Main routine of FermiSurfer."];
+  Node2 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="refresh_patch_segment",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$menu_8hpp.html#adce1554f6b0b639a496fb5852473e593",tooltip=" "];
+  Node5 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="batch_draw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$fermisurfer_8cpp.html#a4e176182333ca88389c99e9052900ec0",tooltip="Glut Display function called by glutDisplayFunc."];
+  Node6 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

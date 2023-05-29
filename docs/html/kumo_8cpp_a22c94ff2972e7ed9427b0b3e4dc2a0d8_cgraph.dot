@@ -1,0 +1,12 @@
+digraph "interpol_energy"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="interpol_energy",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Interpolation of energy and matrix with the French-curve (Kumo) interpolation."];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="kumo_coef",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$kumo_8cpp.html#afbe527a7fa2e8328580e1b151383dff5",tooltip="Compute coefficient for the French-curve (Kumo) interpolation."];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="modulo",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$basic__math_8cpp.html#a9d3683294ca31a578ccbb2e371ef0676",tooltip="Work as Modulo function of fortran."];
+}

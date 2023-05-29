@@ -1,0 +1,38 @@
+digraph "menu.hpp"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="menu.hpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="variable.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$variable_8hpp.html",tooltip="Global variables."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="bz_lines.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bz__lines_8cpp.html",tooltip="Compute lines of BZ boundary."];
+  Node2 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="calc_nodeline.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$calc__nodeline_8cpp.html",tooltip="Compute nodal lines."];
+  Node2 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="draw.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$draw_8cpp.html",tooltip="Functions for actual displaying."];
+  Node2 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="equator.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$equator_8cpp.html",tooltip="Compute nodal lines."];
+  Node2 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="fermi_patch.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$fermi__patch_8cpp.html",tooltip="Functions for computing patch of Fermi surface."];
+  Node2 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="free_patch.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$free__patch_8cpp.html",tooltip="Refresh patch."];
+  Node2 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="initialize.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$initialize_8cpp.html",tooltip="Functions that initilize variables."];
+  Node2 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="kumo.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$kumo_8cpp.html",tooltip="Compute  on denser -grid with French-curve (Kumo) interpolation."];
+  Node2 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node11 [label="menu.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$menu_8cpp.html",tooltip="Create & modify right-click menu. And operate their function."];
+  Node2 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node12 [label="operation.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$operation_8cpp.html",tooltip="Handle operations associated to mouse drag and window resize."];
+  Node2 -> Node13 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node13 [label="read_file.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$read__file_8cpp.html",tooltip="Read .frmsf file."];
+  Node2 -> Node14 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node14 [label="section.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$section_8cpp.html",tooltip="Functions for the 2D Fermi line."];
+  Node1 -> Node15 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node15 [label="fermisurfer.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$fermisurfer_8cpp.html",tooltip="Main routine."];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node11 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node12 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

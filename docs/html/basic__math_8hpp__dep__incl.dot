@@ -1,0 +1,25 @@
+digraph "basic_math.hpp"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="basic_math.hpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bz_lines.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bz__lines_8cpp.html",tooltip="Compute lines of BZ boundary."];
+  Node1 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="calc_nodeline.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$calc__nodeline_8cpp.html",tooltip="Compute nodal lines."];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="equator.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$equator_8cpp.html",tooltip="Compute nodal lines."];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="fermi_patch.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$fermi__patch_8cpp.html",tooltip="Functions for computing patch of Fermi surface."];
+  Node1 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="free_patch.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$free__patch_8cpp.html",tooltip="Refresh patch."];
+  Node1 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="initialize.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$initialize_8cpp.html",tooltip="Functions that initilize variables."];
+  Node1 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="kumo.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$kumo_8cpp.html",tooltip="Compute  on denser -grid with French-curve (Kumo) interpolation."];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="read_file.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$read__file_8cpp.html",tooltip="Read .frmsf file."];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="section.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$section_8cpp.html",tooltip="Functions for the 2D Fermi line."];
+}

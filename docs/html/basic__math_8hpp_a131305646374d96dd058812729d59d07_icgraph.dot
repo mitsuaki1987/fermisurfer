@@ -1,0 +1,30 @@
+digraph "eigsort"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="RL";
+  Node1 [label="eigsort",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Simple sort."];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bragg_vector",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$initialize_8hpp.html#a9331e243c28751db983d937d3a8e4ddc",tooltip="Compute Bragg vetor."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="MyApp::OnInit",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_my_app.html#a79fa75d1155f0e85e20f2869538296d6",tooltip="Main routine of FermiSurfer."];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="calc_nodeline",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$calc__nodeline_8hpp.html#ab1cb3507c64f260c9af13ebc05d00fae",tooltip="Compute node-line where ."];
+  Node4 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="compute_patch_segment",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$menu_8hpp.html#a3281d6fac7f0edb03da537a8614ad4f7",tooltip=" "];
+  Node5 -> Node6 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="MyFrame::button_compute",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$class_my_frame.html#af0577d3c50593fe302ec6871f674f5de",tooltip=" "];
+  Node5 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 -> Node7 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node7 [label="refresh_patch_segment",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$menu_8hpp.html#adce1554f6b0b639a496fb5852473e593",tooltip=" "];
+  Node7 -> Node8 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node8 [label="batch_draw",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$fermisurfer_8cpp.html#a4e176182333ca88389c99e9052900ec0",tooltip="Glut Display function called by glutDisplayFunc."];
+  Node8 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node9 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node9 [label="calc_section",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$section_8hpp.html#a66580d80e18936d71c50ca786f891b08",tooltip="Compute Fermi-line."];
+  Node9 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node1 -> Node10 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node10 [label="equator",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$equator_8hpp.html#a4aaaf24cb79c0d95feb9c8f66c5bd105",tooltip="Compute equator ."];
+  Node10 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+}

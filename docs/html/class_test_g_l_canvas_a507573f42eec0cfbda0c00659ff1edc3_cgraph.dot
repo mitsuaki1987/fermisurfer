@@ -1,0 +1,18 @@
+digraph "TestGLCanvas::OnPaint"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="TestGLCanvas::OnPaint",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Glut Display function called by glutDisplayFunc."];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="draw_bz_lines",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$draw_8cpp.html#ae07c4da7cf95e45fae3914c10b4c1219",tooltip="Draw lines of BZ boundaries."];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="draw_circles",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$draw_8cpp.html#a2165069edf435eec65afeb5e9f99ae17",tooltip="Draw eye-points for the stereogram."];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="draw_colorbar",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$draw_8cpp.html#a00c9f8af52ccbd1dd215a227b35ab1f4",tooltip="Draw color-bar or colr-circle (periodic) as a color scale."];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="draw_fermi",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$draw_8cpp.html#ae72df8decb53892ce8b2175d24bc96ef",tooltip="Draw Fermi surfaces."];
+  Node1 -> Node6 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node6 [label="draw_fermi_line",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$draw_8cpp.html#ae8103219ad7f4bf2181eb8804773617d",tooltip="Draw 2D Fermi lines."];
+}

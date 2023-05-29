@@ -1,0 +1,10 @@
+digraph "MyFrame::radio_BarColor"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="MyFrame::radio_BarColor",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Change Brillouin zone (fbz)"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="paint",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$free__patch_8cpp.html#a40932c8612a3d3328258dbfc602da943",tooltip="Compute Max. & Min. of matrix elements. Compute color of each patch."];
+}

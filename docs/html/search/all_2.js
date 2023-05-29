@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['calc_5f2dbz_32',['calc_2dbz',['../section_8cpp.html#a6685b50602d6d924229e4aac556d743d',1,'calc_2dbz():&#160;section.cpp'],['../section_8hpp.html#a6685b50602d6d924229e4aac556d743d',1,'calc_2dbz():&#160;section.cpp']]],
+  ['calc_5fnodeline_33',['calc_nodeline',['../calc__nodeline_8cpp.html#ab1cb3507c64f260c9af13ebc05d00fae',1,'calc_nodeline():&#160;calc_nodeline.cpp'],['../calc__nodeline_8hpp.html#ab1cb3507c64f260c9af13ebc05d00fae',1,'calc_nodeline():&#160;calc_nodeline.cpp']]],
+  ['calc_5fnodeline_2ecpp_34',['calc_nodeline.cpp',['../calc__nodeline_8cpp.html',1,'']]],
+  ['calc_5fnodeline_2ehpp_35',['calc_nodeline.hpp',['../calc__nodeline_8hpp.html',1,'']]],
+  ['calc_5fsection_36',['calc_section',['../section_8cpp.html#a66580d80e18936d71c50ca786f891b08',1,'calc_section():&#160;section.cpp'],['../section_8hpp.html#a66580d80e18936d71c50ca786f891b08',1,'calc_section():&#160;section.cpp']]],
+  ['check_5fband_37',['check_band',['../class_my_frame.html#a96942f397fd9315ab52099dd9a3e4e82',1,'MyFrame']]],
+  ['check_5fbragg_38',['check_bragg',['../bz__lines_8cpp.html#afa51307a795d2a0befab00d3b0f780d7',1,'bz_lines.cpp']]],
+  ['check_5fcolorbar_39',['check_colorbar',['../class_my_frame.html#acd63d548ef17fc4bc51fa2140e80d771',1,'MyFrame']]],
+  ['check_5fnodeline_40',['check_nodeline',['../class_my_frame.html#a3fdfac01f4e82219d7d28dbe93970e7c',1,'MyFrame']]],
+  ['checkvalue_5fequator_41',['checkvalue_equator',['../class_my_frame.html#ae4790bec7be1c1894c72be83817e1cd3',1,'MyFrame']]],
+  ['clr_42',['clr',['../fermisurfer_8cpp.html#ab1442561df558bda972fb3fe023fecbb',1,'clr():&#160;fermisurfer.cpp'],['../variable_8hpp.html#ab1442561df558bda972fb3fe023fecbb',1,'clr():&#160;fermisurfer.cpp']]],
+  ['clr2d_43',['clr2d',['../fermisurfer_8cpp.html#acfa12c286a75e986c7295c55ca6c2e9e',1,'clr2d():&#160;fermisurfer.cpp'],['../variable_8hpp.html#acfa12c286a75e986c7295c55ca6c2e9e',1,'clr2d():&#160;fermisurfer.cpp']]],
+  ['color_5fscale_44',['color_scale',['../fermisurfer_8cpp.html#afdd08677b69e5c4bf50834edd963cbbd',1,'color_scale():&#160;fermisurfer.cpp'],['../variable_8hpp.html#afdd08677b69e5c4bf50834edd963cbbd',1,'color_scale():&#160;fermisurfer.cpp']]],
+  ['compute_5fpatch_5fsegment_45',['compute_patch_segment',['../menu_8cpp.html#a3281d6fac7f0edb03da537a8614ad4f7',1,'compute_patch_segment():&#160;menu.cpp'],['../menu_8hpp.html#a3281d6fac7f0edb03da537a8614ad4f7',1,'compute_patch_segment():&#160;menu.cpp']]],
+  ['corner_46',['corner',['../fermisurfer_8cpp.html#a39967b7ccb02894416871af22177611b',1,'corner():&#160;fermisurfer.cpp'],['../variable_8hpp.html#a39967b7ccb02894416871af22177611b',1,'corner():&#160;fermisurfer.cpp']]],
+  ['cx_47',['cx',['../fermisurfer_8cpp.html#af905a9989361d094908ad04e08f6429d',1,'cx():&#160;fermisurfer.cpp'],['../variable_8hpp.html#af905a9989361d094908ad04e08f6429d',1,'cx():&#160;fermisurfer.cpp']]],
+  ['cy_48',['cy',['../fermisurfer_8cpp.html#ad36501a70b25e18bcf48dd6e03392305',1,'cy():&#160;fermisurfer.cpp'],['../variable_8hpp.html#ad36501a70b25e18bcf48dd6e03392305',1,'cy():&#160;fermisurfer.cpp']]],
+  ['cyan_49',['cyan',['../fermisurfer_8cpp.html#abf1805088446a2bfd13f4e88c261c585',1,'cyan():&#160;fermisurfer.cpp'],['../variable_8hpp.html#abf1805088446a2bfd13f4e88c261c585',1,'cyan():&#160;fermisurfer.cpp']]]
+];

@@ -1,0 +1,14 @@
+digraph "bz_lines"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="bz_lines",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Compute Brillouin zone boundariy lines."];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="bragg_vert",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bz__lines_8cpp.html#ab93ff778d34639b0e5638946b2ec9a6b",tooltip="Judge wheser this line is the edge of 1st BZ."];
+  Node2 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="solve3",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$basic__math_8cpp.html#ae3f623df79bd4c9f9753cb1a94bf9c59",tooltip="Solve linear system."];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="check_bragg",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$bz__lines_8cpp.html#afa51307a795d2a0befab00d3b0f780d7",tooltip="Compute real number of Bragg plane at 1st BZ."];
+}
