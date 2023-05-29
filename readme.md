@@ -11,8 +11,8 @@ scalar quantities such as magnitude of Fermi velocities and superconducting gap.
  * bin/ : Executable (binary) files for Windows
  * configure : Script for the installation
  * src/ : Source code directory
- * doc/ : Directory for User's manual
-   * doc/index.html : Index of documentation
+ * docs/ : Directory for User's manual
+   * docs/index.html : Index of documentation
  * examples/ : Sample input files (Pb and MgB2)
 
 # Installation

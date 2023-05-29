@@ -52,8 +52,8 @@
   <ItemGroup>
     <None Include="javascript/fermisurfer.html" />
     <None Include="javascript/fermisurfer.js" />
-    <None Include="doc/index.html" />
-    <Page Include="doc/index.html.ja">
+    <None Include="docs/index.html" />
+    <Page Include="docs/index.html.ja">
       <FileType>Document</FileType>
     </Page>
   </ItemGroup>

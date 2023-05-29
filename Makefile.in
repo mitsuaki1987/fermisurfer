@@ -805,16 +805,16 @@ uninstall-am:
 
 
 docs:
-	cd doc/ja/;make latexpdf; make html
-	cd doc/en/;make latexpdf; make html
+	cd docs/ja/;make latexpdf; make html
+	cd docs/en/;make latexpdf; make html
 
 pngdocs:
-	cd doc/ja/;sed -i -e "s/mathjax/imgmath/g" conf.py; make latexpdf; make html
-	cd doc/en/;sed -i -e "s/mathjax/imgmath/g" conf.py; make latexpdf; make html
+	cd docs/ja/;sed -i -e "s/mathjax/imgmath/g" conf.py; make latexpdf; make html
+	cd docs/en/;sed -i -e "s/mathjax/imgmath/g" conf.py; make latexpdf; make html
 
 docs-clean:
-	cd doc/ja/; make clean; sed -i -e "s/imgmath/mathjax/g" conf.py
-	cd doc/en/; make clean; sed -i -e "s/imgmath/mathjax/g" conf.py
+	cd docs/ja/; make clean; sed -i -e "s/imgmath/mathjax/g" conf.py
+	cd docs/en/; make clean; sed -i -e "s/imgmath/mathjax/g" conf.py
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
