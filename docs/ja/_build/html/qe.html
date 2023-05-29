@@ -1,0 +1,298 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Quantum ESPRESSOを用いたチュートリアル &#8212; fermisurfer 2.2.1 ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/translations.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="FermiSurfer for Android" href="android.html" />
+    <link rel="prev" title="バッチ・モード" href="batch.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="android.html" title="FermiSurfer for Android"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="batch.html" title="バッチ・モード"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.2.1 ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Quantum ESPRESSOを用いたチュートリアル</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="quantum-espresso">
+<h1>Quantum ESPRESSOを用いたチュートリアル<a class="headerlink" href="#quantum-espresso" title="この見出しへのパーマリンク">¶</a></h1>
+<p>Quantum ESPRESSO version 6.2 から, FermiSurferで読み込む事が出来るデータ形式での
+ファイルを出力出来るようになった.
+FermiSurferでプロット出来るのは次の量である.</p>
+<ul class="simple">
+<li><p>Fermi速度の絶対値 <span class="math notranslate nohighlight">\(|{\bf v}_{\rm F}|\)</span> (<code class="docutils literal notranslate"><span class="pre">fermi_velocity.x</span></code>)</p></li>
+<li><p>各原子軌道への射影 <span class="math notranslate nohighlight">\(|\langle \phi_{n l m} | \psi_{n k} \rangle|^2\)</span> (<code class="docutils literal notranslate"><span class="pre">fermi_proj.x</span></code>)</p></li>
+</ul>
+<section id="postprocess">
+<h2><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code> ツールのビルド<a class="headerlink" href="#postprocess" title="この見出しへのパーマリンク">¶</a></h2>
+<p>上記の量をFermiSurferで描画するためには, 次のようにしてQuantumESPRESSO内の <code class="docutils literal notranslate"><span class="pre">PostProcess</span></code> ツール
+(バンド図や電子密度をプロットするためのツール群)をビルドする必要がある.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>pp
+</pre></div>
+</div>
+</section>
+<section id="scf">
+<h2>SCF計算<a class="headerlink" href="#scf" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ここからチュートリアルに入る.
+まず初めに <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> プログラムを用いて電子状態計算をおこなう.
+MgB<sub>2</sub>を題材として扱う.
+入力ファイルは次の通りである.</p>
+<p><a class="reference download internal" download="" href="_downloads/17aaf7e6ac31000e9d83654588fc4b63/scf.in"><code class="xref download docutils literal notranslate"><span class="pre">scf.in</span></code></a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">CONTROL</span>
+ <span class="n">calculation</span> <span class="o">=</span> <span class="s1">&#39;scf&#39;</span><span class="p">,</span>
+  <span class="n">pseudo_dir</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span><span class="p">,</span>
+      <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;mgb2&#39;</span> <span class="p">,</span>
+      <span class="n">outdir</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+<span class="o">/</span>
+<span class="o">&amp;</span><span class="n">SYSTEM</span>
+       <span class="n">ibrav</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+   <span class="n">celldm</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="mf">5.808563789</span><span class="p">,</span>
+   <span class="n">celldm</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">=</span> <span class="mf">1.145173082</span><span class="p">,</span>
+         <span class="n">nat</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="n">ntyp</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+     <span class="n">ecutwfc</span> <span class="o">=</span> <span class="mf">50.0</span> <span class="p">,</span>
+     <span class="n">ecutrho</span> <span class="o">=</span> <span class="mf">500.0</span> <span class="p">,</span>
+ <span class="n">occupations</span> <span class="o">=</span> <span class="s1">&#39;tetrahedra_opt&#39;</span><span class="p">,</span>
+<span class="o">/</span>
+<span class="o">&amp;</span><span class="n">ELECTRONS</span>
+<span class="o">/</span>
+<span class="n">ATOMIC_SPECIES</span>
+ <span class="n">Mg</span>    <span class="mf">24.3050</span>   <span class="n">Mg</span><span class="o">.</span><span class="n">pbe</span><span class="o">-</span><span class="n">n</span><span class="o">-</span><span class="n">kjpaw_psl</span><span class="mf">.0.3.0</span><span class="o">.</span><span class="n">upf</span>
+  <span class="n">B</span>    <span class="mf">10.811</span>    <span class="n">B</span><span class="o">.</span><span class="n">pbe</span><span class="o">-</span><span class="n">n</span><span class="o">-</span><span class="n">kjpaw_psl</span><span class="mf">.0.1</span><span class="o">.</span><span class="n">upf</span>
+<span class="n">ATOMIC_POSITIONS</span> <span class="n">crystal</span>
+ <span class="n">Mg</span>    <span class="mf">0.000000000</span>    <span class="mf">0.000000000</span>    <span class="mf">0.000000000</span>    
+  <span class="n">B</span>    <span class="mf">0.333333333</span>    <span class="mf">0.666666667</span>    <span class="mf">0.500000000</span>    
+  <span class="n">B</span>    <span class="mf">0.666666667</span>    <span class="mf">0.333333333</span>    <span class="mf">0.500000000</span>    
+<span class="n">K_POINTS</span> <span class="n">automatic</span> 
+<span class="mi">16</span> <span class="mi">16</span> <span class="mi">12</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>この計算で使われている擬ポテンシャルファイルは
+<a class="reference external" href="http://theossrv1.epfl.ch/Main/Pseudopotentials">PS Library</a> に含まれているものであり,
+以下のアドレスからダウンロードできる.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://theossrv1.epfl.ch/uploads/Main/NoBackup/Mg.pbe-n-kjpaw_psl.0.3.0.upf">http://theossrv1.epfl.ch/uploads/Main/NoBackup/Mg.pbe-n-kjpaw_psl.0.3.0.upf</a></p></li>
+<li><p><a class="reference external" href="http://theossrv1.epfl.ch/uploads/Main/NoBackup/B.pbe-n-kjpaw_psl.0.1.upf">http://theossrv1.epfl.ch/uploads/Main/NoBackup/B.pbe-n-kjpaw_psl.0.1.upf</a></p></li>
+</ul>
+<p>入力ファイルと擬ポテンシャルファイルを同じディレクトリに置き,
+そのディレクトリで <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> を実行する.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>pw.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">4</span><span class="w"> </span>-in<span class="w"> </span>scf.in
+</pre></div>
+</div>
+<p>プロセス数, <em>k</em> 点並列数(<code class="docutils literal notranslate"><span class="pre">npool</span></code>)は自由.
+お好みで, 異なる <em>k</em> グリッドでNon-scf計算を行っても良い.</p>
+</section>
+<section id="fermi">
+<h2>Fermi速度の計算と描画<a class="headerlink" href="#fermi" title="この見出しへのパーマリンク">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">fermi_velocity.x</span></code> プログラムを実行する.
+入力ファイルは <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> のものと同一である.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">1</span><span class="w"> </span>fermi_velocity.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">1</span><span class="w"> </span>-in<span class="w"> </span>scf.in
+</pre></div>
+</div>
+<p>このとき, <em>k</em> 点並列数(<code class="docutils literal notranslate"><span class="pre">npool</span></code>)は1(もしくは指定しない)でなければならない.
+これにより, Fermi速度のファイル <code class="docutils literal notranslate"><span class="pre">vfermi.frmsf</span></code> が作られるので,
+それをFermiSurferで読み込む.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>vfermi.frmsf
+</pre></div>
+</div>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/qe_vf.png"><img alt="_images/qe_vf.png" src="_images/qe_vf.png" style="width: 30%;" /></a>
+</figure>
+<p>なお, コリニアスピン計算では各スピンについてそれぞれ <code class="docutils literal notranslate"><span class="pre">vfermi1.frmsf</span></code>, <code class="docutils literal notranslate"><span class="pre">vfermi2.frmsf</span></code>
+の2つのファイルが出力される.</p>
+</section>
+<section id="id1">
+<h2>原子軌道射影の計算と描画<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<p>原子軌道射影の描画では, まず部分状態密度等を計算するプログラム
+<code class="docutils literal notranslate"><span class="pre">projwfc.x</span></code> を実行する.
+入力ファイルは次の通りである.</p>
+<p><a class="reference download internal" download="" href="_downloads/1ef59c60b8ac26fd25b1db02c5d8fb93/proj.in"><code class="xref download docutils literal notranslate"><span class="pre">proj.in</span></code></a></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">PROJWFC</span>
+   <span class="n">outdir</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;mgb2&#39;</span>
+    <span class="n">Emin</span><span class="o">=-</span><span class="mf">0.3422</span><span class="p">,</span> 
+    <span class="n">Emax</span><span class="o">=</span><span class="mf">10.0578</span><span class="p">,</span> 
+    <span class="n">DeltaE</span><span class="o">=</span><span class="mf">0.1</span>
+<span class="o">/</span>
+<span class="mi">2</span>
+<span class="mi">6</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">PROJWFC</span></code> ネームリストの終わり(<code class="docutils literal notranslate"><span class="pre">/</span></code>)以降は <code class="docutils literal notranslate"><span class="pre">projwfc.x</span></code> では使われず,
+後で <code class="docutils literal notranslate"><span class="pre">fermi_proj.x</span></code> を実行するときのみ使われる.
+<code class="docutils literal notranslate"><span class="pre">projwfc.x</span></code> を実行するときのプロセス数, <em>k</em> 点並列数(<code class="docutils literal notranslate"><span class="pre">npool</span></code>)は
+直前の <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> の実行時と同じ値にしなければならない.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>projwfc.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">4</span><span class="w"> </span>-in<span class="w"> </span>proj.in
+</pre></div>
+</div>
+<p>ただし, <code class="docutils literal notranslate"><span class="pre">wf_collect=.true.</span></code> としていたときは除く.</p>
+<p><code class="docutils literal notranslate"><span class="pre">projwfc.x</span></code> の標準出力のはじめの方に次のような箇所がある.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Atomic</span> <span class="n">states</span> <span class="n">used</span> <span class="k">for</span> <span class="n">projection</span>
+<span class="p">(</span><span class="n">read</span> <span class="kn">from</span> <span class="nn">pseudopotential</span> <span class="n">files</span><span class="p">):</span>
+
+<span class="n">state</span> <span class="c1">#   1: atom   1 (Mg ), wfc  1 (l=0 m= 1)</span>
+<span class="n">state</span> <span class="c1">#   2: atom   1 (Mg ), wfc  2 (l=1 m= 1)</span>
+<span class="n">state</span> <span class="c1">#   3: atom   1 (Mg ), wfc  2 (l=1 m= 2)</span>
+<span class="n">state</span> <span class="c1">#   4: atom   1 (Mg ), wfc  2 (l=1 m= 3)</span>
+<span class="n">state</span> <span class="c1">#   5: atom   2 (B  ), wfc  1 (l=0 m= 1)</span>
+<span class="n">state</span> <span class="c1">#   6: atom   2 (B  ), wfc  2 (l=1 m= 1)</span>
+<span class="n">state</span> <span class="c1">#   7: atom   2 (B  ), wfc  2 (l=1 m= 2)</span>
+<span class="n">state</span> <span class="c1">#   8: atom   2 (B  ), wfc  2 (l=1 m= 3)</span>
+<span class="n">state</span> <span class="c1">#   9: atom   3 (B  ), wfc  1 (l=0 m= 1)</span>
+<span class="n">state</span> <span class="c1">#  10: atom   3 (B  ), wfc  2 (l=1 m= 1)</span>
+<span class="n">state</span> <span class="c1">#  11: atom   3 (B  ), wfc  2 (l=1 m= 2)</span>
+<span class="n">state</span> <span class="c1">#  12: atom   3 (B  ), wfc  2 (l=1 m= 3)</span>
+</pre></div>
+</div>
+<p>これは各原子軌道の番号(<code class="docutils literal notranslate"><span class="pre">state</span> <span class="pre">#</span></code>)とその中身
+(詳しくはQEに付属の <code class="docutils literal notranslate"><span class="pre">INPUT_PROJWFC.html</span></code> 等を参照)を表している.
+この後でFermi面上で描画する原子軌道射影を選ぶ時にはこの番号を用いる.
+具体的な例を示す. 上記の <code class="docutils literal notranslate"><span class="pre">proj.in</span></code> を用いて</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">1</span><span class="w"> </span>fermi_proj.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">1</span><span class="w"> </span>-in<span class="w"> </span>proj.in
+</pre></div>
+</div>
+<p>のように実行してFermiSurfer用ファイル <code class="docutils literal notranslate"><span class="pre">proj.frmsf</span></code> を得るのだが,
+このとき <code class="docutils literal notranslate"><span class="pre">proj.in</span></code> の <code class="docutils literal notranslate"><span class="pre">/</span></code> 以降</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">2</span>
+<span class="mi">6</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>では, 最初の数字 (<code class="docutils literal notranslate"><span class="pre">2</span></code>) が足し合わされる原子軌道射影の総数を表し,
+その後に足し合わされる原子軌道射影に対応する番号が列挙される.
+この場合は1番目のB原子の2pz軌道(<code class="docutils literal notranslate"><span class="pre">6</span></code>)と2番目のB原子の2pz軌道(<code class="docutils literal notranslate"><span class="pre">10</span></code>)
+を足したもの</p>
+<div class="math notranslate nohighlight">
+\[|\langle \phi_{B_1 2pz} | \psi_{nk} \rangle|^2
++ |\langle \phi_{B_2 2pz} | \psi_{nk} \rangle|^2\]</div>
+<p>が出力される.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>proj.frmsf
+</pre></div>
+</div>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/qe_proj_pz.png"><img alt="_images/qe_proj_pz.png" src="_images/qe_proj_pz.png" style="width: 30%;" /></a>
+</figure>
+<p>また例えば, すべてのB原子の2px, 2py軌道からの寄与を合わせたものをプロットしたい場合には,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&amp;</span><span class="n">PROJWFC</span>
+<span class="n">outdir</span> <span class="o">=</span> <span class="s1">&#39;./&#39;</span>
+<span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;mgb2&#39;</span>
+<span class="n">Emin</span><span class="o">=-</span><span class="mf">0.3422</span><span class="p">,</span>
+<span class="n">Emax</span><span class="o">=</span><span class="mf">10.0578</span><span class="p">,</span>
+<span class="n">DeltaE</span><span class="o">=</span><span class="mf">0.1</span>
+<span class="o">/</span>
+<span class="mi">4</span>
+<span class="mi">7</span> <span class="mi">8</span> <span class="mi">11</span> <span class="mi">12</span>
+</pre></div>
+</div>
+<p>のように <code class="docutils literal notranslate"><span class="pre">proj.in</span></code> を書き換えて, <code class="docutils literal notranslate"><span class="pre">fermi_proj.x</span></code> をもう一度実行すれば良い.
+<code class="docutils literal notranslate"><span class="pre">projwfc.x</span></code> を再度実行する必要は無い.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/qe_proj_pxy.png"><img alt="_images/qe_proj_pxy.png" src="_images/qe_proj_pxy.png" style="width: 30%;" /></a>
+</figure>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/fermisurfer.png" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Quantum ESPRESSOを用いたチュートリアル</a><ul>
+<li><a class="reference internal" href="#postprocess"><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code> ツールのビルド</a></li>
+<li><a class="reference internal" href="#scf">SCF計算</a></li>
+<li><a class="reference internal" href="#fermi">Fermi速度の計算と描画</a></li>
+<li><a class="reference internal" href="#id1">原子軌道射影の計算と描画</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="batch.html"
+                          title="前の章へ">バッチ・モード</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="android.html"
+                          title="次の章へ">FermiSurfer for Android</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/qe.rst.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="android.html" title="FermiSurfer for Android"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="batch.html" title="バッチ・モード"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.2.1 ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Quantum ESPRESSOを用いたチュートリアル</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+    </div>
+  </body>
+</html>

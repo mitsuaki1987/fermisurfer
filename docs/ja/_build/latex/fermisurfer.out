@@ -1,0 +1,56 @@
+%このファイルは日本語文字を含みます.
+\BOOKMARK [0][-]{chapter.1}{はじめに}{}% 1
+\BOOKMARK [0][-]{chapter.2}{ディレクトリと主なファイル}{}% 2
+\BOOKMARK [0][-]{chapter.3}{インストール手順}{}% 3
+\BOOKMARK [1][-]{section.3.1}{Linux, macOSの場合}{chapter.3}% 4
+\BOOKMARK [1][-]{section.3.2}{Windowsの場合}{chapter.3}% 5
+\BOOKMARK [0][-]{chapter.4}{Input file}{}% 6
+\BOOKMARK [1][-]{section.4.1}{input fileの書式}{chapter.4}% 7
+\BOOKMARK [1][-]{section.4.2}{BXSF形式}{chapter.4}% 8
+\BOOKMARK [1][-]{section.4.3}{C/fortranでの入力ファイルの書き出し方}{chapter.4}% 9
+\BOOKMARK [1][-]{section.4.4}{2次元量のカラープロットを行う場合}{chapter.4}% 10
+\BOOKMARK [1][-]{section.4.5}{カラープロットしたい量を省略する場合}{chapter.4}% 11
+\BOOKMARK [0][-]{chapter.5}{操作方法}{}% 12
+\BOOKMARK [1][-]{section.5.1}{起動}{chapter.5}% 13
+\BOOKMARK [2][-]{subsection.5.1.1}{Linux・Unix・Macの場合}{section.5.1}% 14
+\BOOKMARK [2][-]{subsection.5.1.2}{Windowsの場合}{section.5.1}% 15
+\BOOKMARK [1][-]{section.5.2}{背景色}{chapter.5}% 16
+\BOOKMARK [1][-]{section.5.3}{Line width}{chapter.5}% 17
+\BOOKMARK [1][-]{section.5.4}{Line color}{chapter.5}% 18
+\BOOKMARK [1][-]{section.5.5}{バンド毎の表示・非表示の切り替え}{chapter.5}% 19
+\BOOKMARK [1][-]{section.5.6}{Brillouin zoneの形式 \(要Update\)}{chapter.5}% 20
+\BOOKMARK [1][-]{section.5.7}{Brillouin zoneの数}{chapter.5}% 21
+\BOOKMARK [1][-]{section.5.8}{Color bar}{chapter.5}% 22
+\BOOKMARK [1][-]{section.5.9}{カラープロットの種類と範囲 \(要Update\)}{chapter.5}% 23
+\BOOKMARK [1][-]{section.5.10}{カラープロットの配色}{chapter.5}% 24
+\BOOKMARK [1][-]{section.5.11}{Equator \(要Update\)}{chapter.5}% 25
+\BOOKMARK [1][-]{section.5.12}{補間の細かさ \(要Update\)}{chapter.5}% 26
+\BOOKMARK [1][-]{section.5.13}{Fermi面のどちら側に光を当てるか}{chapter.5}% 27
+\BOOKMARK [1][-]{section.5.14}{マウスドラッグをしたときの振る舞い}{chapter.5}% 28
+\BOOKMARK [1][-]{section.5.15}{ノーダルライン}{chapter.5}% 29
+\BOOKMARK [1][-]{section.5.16}{ブリルアンゾーンの断面 \(要Update\)}{chapter.5}% 30
+\BOOKMARK [1][-]{section.5.17}{ブリルアンゾーン断面のファイル出力}{chapter.5}% 31
+\BOOKMARK [1][-]{section.5.18}{Fermiエネルギーの変更 \(要Update\)}{chapter.5}% 32
+\BOOKMARK [1][-]{section.5.19}{立体視}{chapter.5}% 33
+\BOOKMARK [1][-]{section.5.20}{四面体の切り方 \(要Update\)}{chapter.5}% 34
+\BOOKMARK [1][-]{section.5.21}{サイズ・角度・位置の数値での調整}{chapter.5}% 35
+\BOOKMARK [1][-]{section.5.22}{画像の保存方法}{chapter.5}% 36
+\BOOKMARK [0][-]{chapter.6}{バッチ・モード}{}% 37
+\BOOKMARK [0][-]{chapter.7}{Quantum ESPRESSOを用いたチュートリアル}{}% 38
+\BOOKMARK [1][-]{section.7.1}{PostProcess ツールのビルド}{chapter.7}% 39
+\BOOKMARK [1][-]{section.7.2}{SCF計算}{chapter.7}% 40
+\BOOKMARK [1][-]{section.7.3}{Fermi速度の計算と描画}{chapter.7}% 41
+\BOOKMARK [1][-]{section.7.4}{原子軌道射影の計算と描画}{chapter.7}% 42
+\BOOKMARK [0][-]{chapter.8}{FermiSurfer for Android}{}% 43
+\BOOKMARK [1][-]{section.8.1}{インストール}{chapter.8}% 44
+\BOOKMARK [1][-]{section.8.2}{入力ファイル}{chapter.8}% 45
+\BOOKMARK [1][-]{section.8.3}{実行}{chapter.8}% 46
+\BOOKMARK [0][-]{chapter.9}{FermiSurfer on Web}{}% 47
+\BOOKMARK [1][-]{section.9.1}{操作方法}{chapter.9}% 48
+\BOOKMARK [1][-]{section.9.2}{ファイル入力}{chapter.9}% 49
+\BOOKMARK [1][-]{section.9.3}{Web上のファイルを開く}{chapter.9}% 50
+\BOOKMARK [0][-]{chapter.10}{謝辞}{}% 51
+\BOOKMARK [0][-]{chapter.11}{プログラムの再配布}{}% 52
+\BOOKMARK [1][-]{section.11.1}{自分のプログラムにFermiSurferを含める}{chapter.11}% 53
+\BOOKMARK [1][-]{section.11.2}{MIT ライセンス}{chapter.11}% 54
+\BOOKMARK [0][-]{chapter.12}{問い合わせ先}{}% 55

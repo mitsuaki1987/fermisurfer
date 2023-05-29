@@ -194,7 +194,7 @@ latex_elements = {
 #'pointsize': '10pt',
 
 # Additional stuff for the LaTeX preamble.
-'preamble': '\usepackage{pxjahyper}',
+'preamble': '\\usepackage{pxjahyper}',
     'classoptions': ',dvipdfmx,openany'
 }
 

@@ -1,8 +1,5 @@
 src/fermisurfer
 src/bxsf2frmsf
-doc/ja/_build/
-doc/en/_build/
-doc/html/
 *.o
 autom4te.cache/
 windows/

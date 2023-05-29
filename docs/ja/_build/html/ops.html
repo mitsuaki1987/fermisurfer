@@ -1,0 +1,442 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>操作方法 &#8212; fermisurfer 2.2.1 ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/translations.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="バッチ・モード" href="batch.html" />
+    <link rel="prev" title="Input file" href="input.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="batch.html" title="バッチ・モード"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="input.html" title="Input file"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.2.1 ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">操作方法</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="ops">
+<span id="id1"></span><h1>操作方法<a class="headerlink" href="#ops" title="この見出しへのパーマリンク">¶</a></h1>
+<section id="id2">
+<h2>起動<a class="headerlink" href="#id2" title="この見出しへのパーマリンク">¶</a></h2>
+<section id="linuxunixmac">
+<h3>Linux・Unix・Macの場合<a class="headerlink" href="#linuxunixmac" title="この見出しへのパーマリンク">¶</a></h3>
+<p>作成した実行可能ファイル <code class="docutils literal notranslate"><span class="pre">fermisurfer</span></code> にパスが通っている状態で</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>mgb2_vfz.frmsf
+</pre></div>
+</div>
+<p>とコマンド, スペース, 入力ファイル名とタイプします.
+(サンプルファイルの中身はMgB<sub>2</sub>のFermi速度の <span class="math notranslate nohighlight">\(z\)</span> 方向成分です. )</p>
+</section>
+<section id="windows">
+<h3>Windowsの場合<a class="headerlink" href="#windows" title="この見出しへのパーマリンク">¶</a></h3>
+<p>入力ファイル(この場合は <code class="docutils literal notranslate"><span class="pre">mgb2_vfz.frmsf</span></code>)を右クリックし,
+メニューから「プログラムから開く」を選択し,
+実行ファイルを <code class="docutils literal notranslate"><span class="pre">fermisurfer.exe</span></code> に設定してください.</p>
+<p>次に操作方法が出力され, Fermi面が描画されます(図 <a href="#startpng">1</a> ).</p>
+<figure class="align-default" id="id15">
+<span id="startpng"></span><a class="reference internal image-reference" href="_images/start.png"><img alt="_images/start.png" src="_images/start.png" style="width: 500px;" /></a>
+<figcaption>
+<p><span class="caption-text">Fermisurferを起動した直後の画面.</span><a class="headerlink" href="#id15" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+<ul class="simple">
+<li><p>マウスのドラッグによる回転が出来る.</p></li>
+<li><p>マウスのホイールを使っての拡大・縮小が出来る.</p></li>
+<li><p>ウィンドウの大きさを変えることもできる.</p></li>
+<li><p>カーソルキー(Windowsではwasd)を使ってウィンドウ内で上下左右に図を動かせる.</p></li>
+<li><p>右側のパネルを用いて様々な操作ができる.</p></li>
+</ul>
+<p>次から右側のパネルでの操作をを説明する.</p>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>いくつかの操作はすぐに反映されず「Update」ボタンを押すことによって反映される.
+そのような操作については「要Update」と明記してある.</p>
+</div>
+</section>
+</section>
+<section id="id3">
+<h2>背景色<a class="headerlink" href="#id3" title="この見出しへのパーマリンク">¶</a></h2>
+<p>背景色をRGBで指定する.</p>
+<figure class="align-default" id="backgroundpng">
+<a class="reference internal image-reference" href="_images/background.png"><img alt="_images/background.png" src="_images/background.png" style="width: 500px;" /></a>
+</figure>
+</section>
+<section id="line-width">
+<h2>Line width<a class="headerlink" href="#line-width" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ブリルアンゾーンの境界やノーダルライン等の線幅を変更します.</p>
+</section>
+<section id="line-color">
+<h2>Line color<a class="headerlink" href="#line-color" title="この見出しへのパーマリンク">¶</a></h2>
+<p>線色をRGBで指定する.</p>
+<figure class="align-default" id="linecolorpng">
+<a class="reference internal image-reference" href="_images/line_color.png"><img alt="_images/line_color.png" src="_images/line_color.png" style="width: 500px;" /></a>
+</figure>
+</section>
+<section id="id4">
+<h2>バンド毎の表示・非表示の切り替え<a class="headerlink" href="#id4" title="この見出しへのパーマリンク">¶</a></h2>
+<p>バンド毎の表示on/offを切り替えます(図 <a href="#bandpng">4</a>).</p>
+<figure class="align-default" id="id16">
+<span id="bandpng"></span><a class="reference internal image-reference" href="_images/band.png"><img alt="_images/band.png" src="_images/band.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Band&quot; メニューで3番目のバンドの表示/非表示を切り替える.</span><a class="headerlink" href="#id16" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="brillouin-zone-update">
+<h2>Brillouin zoneの形式 (要Update)<a class="headerlink" href="#brillouin-zone-update" title="この見出しへのパーマリンク">¶</a></h2>
+<p>描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
+切り替える事が出来ます (図 <a href="#brillouinzonepng">5</a>).</p>
+<dl class="simple">
+<dt>Fisrst Brillouin Zone</dt><dd><p><span class="math notranslate nohighlight">\({\rm \Gamma}\)</span> 点から一番近いBragg面で囲まれた領域</p>
+</dd>
+<dt>Primitive Brillouine Zone</dt><dd><p>逆格子ベクトルを辺とする平行6面体領域</p>
+</dd>
+</dl>
+<figure class="align-default" id="id17">
+<span id="brillouinzonepng"></span><a class="reference internal image-reference" href="_images/brillouinzone.png"><img alt="_images/brillouinzone.png" src="_images/brillouinzone.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Brillouin zone&quot; メニューでBrillouin領域のとり方を変更する.</span><a class="headerlink" href="#id17" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="brillouin-zone">
+<h2>Brillouin zoneの数<a class="headerlink" href="#brillouin-zone" title="この見出しへのパーマリンク">¶</a></h2>
+<p>各逆格子ベクトルの方向にいくつ表示するかを指定する.</p>
+<figure class="align-default" id="bznumberpng">
+<a class="reference internal image-reference" href="_images/bz_number.png"><img alt="_images/bz_number.png" src="_images/bz_number.png" style="width: 600px;" /></a>
+</figure>
+</section>
+<section id="color-bar">
+<h2>Color bar<a class="headerlink" href="#color-bar" title="この見出しへのパーマリンク">¶</a></h2>
+<p>カラーバーの表示/非表示を切り替えます(図 <a href="#colorbarpng">7</a>).</p>
+<figure class="align-default" id="id18">
+<span id="colorbarpng"></span><a class="reference internal image-reference" href="_images/colorbar.png"><img alt="_images/colorbar.png" src="_images/colorbar.png" style="width: 600px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Color bar On/Off&quot; メニューでカラーバーの表示/非表示を切り替える.</span><a class="headerlink" href="#id18" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="update">
+<h2>カラープロットの種類と範囲 (要Update)<a class="headerlink" href="#update" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Fermi面の色表示のさせ方を変更します(図 <a href="#colorscalepng">8</a>).</p>
+<dl class="simple">
+<dt>Input (1D) (入力ファイルのデータが1個のときのデフォルト) :</dt><dd><p>青→緑→赤の範囲でカラープロットする.</p>
+</dd>
+<dt>Input (2D) (入力ファイルのデータが2個のときのデフォルト) :</dt><dd><p>カラーサークル(図参照)上の色でカラープロットする.</p>
+</dd>
+<dt>Input (3D) (入力ファイルのデータが3個のときのデフォルト) :</dt><dd><p>フェルミ面上の線としてプロットする.
+フェルミ面の色は「Band Index」の場合と同様.</p>
+</dd>
+<dt>Fermi Velocity (入力ファイルのデータがエネルギーだけのときのデフォルト) :</dt><dd><p>エネルギーの差分からFermi速度 <span class="math notranslate nohighlight">\({\bf v}_{\rm F} = \nabla_k \varepsilon_k\)</span>
+を計算し, その絶対値をカラープロットする.</p>
+</dd>
+<dt>Band Index :</dt><dd><p>物理量に関係なく, 各バンド毎に単色でFermi面を塗る.</p>
+</dd>
+<dt>Input (1D, Gray), Fermi Velocity (Gray)</dt><dd><p>黒色の濃淡でプロットする.</p>
+</dd>
+</dl>
+<p>また, カラープロットの色の範囲や3D線プロットの線の長さは
+「Min of Scale」および 「Max of Scale」のテキストボックスに入力することで変更できる.</p>
+<figure class="align-default" id="id19">
+<span id="colorscalepng"></span><a class="reference internal image-reference" href="_images/colorscale.png"><img alt="_images/colorscale.png" src="_images/colorscale.png" style="width: 700px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Color scale mode&quot; メニュー.</span><a class="headerlink" href="#id19" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id5">
+<h2>カラープロットの配色<a class="headerlink" href="#id5" title="この見出しへのパーマリンク">¶</a></h2>
+<p>カラープロットの配色を次の3つから選ぶことができる.
+&quot;BGR&quot;:青→水→緑→黄→赤、&quot;CMY&quot;:水→青→桃→赤→黄、&quot;MCY&quot;:桃→青→水→緑→黄.</p>
+<figure class="align-default" id="barcplorpng">
+<a class="reference internal image-reference" href="_images/bar_color.png"><img alt="_images/bar_color.png" src="_images/bar_color.png" style="width: 500px;" /></a>
+</figure>
+</section>
+<section id="equator-update">
+<h2>Equator (要Update)<a class="headerlink" href="#equator-update" title="この見出しへのパーマリンク">¶</a></h2>
+<p>ある <span class="math notranslate nohighlight">\({\bf k}\)</span> に対して,
+<span class="math notranslate nohighlight">\({\bf v}_{\rm F} \cdot {\bf k} = 0\)</span> となる線
+(Equator:極軌道, もしくはExtremal orbit)を表示, 変更する.
+(図 <a href="#equatorpng">10</a>).
+「Equator」チェックボックスで表示・非表示を切り替える.
+この時「Update」を押す必要はない.
+「Equator-v :」のテキストボックスで <span class="math notranslate nohighlight">\({\bf k}\)</span> を指定する.
+<span class="math notranslate nohighlight">\({\bf k}\)</span> ベクトルはフラクショナル座標で入力する.</p>
+<figure class="align-default" id="id20">
+<span id="equatorpng"></span><a class="reference internal image-reference" href="_images/equator.png"><img alt="_images/equator.png" src="_images/equator.png" style="width: 700px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Equator&quot;メニューで Fermi面の極軌道(Equator)を表示する.</span><a class="headerlink" href="#id20" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id6">
+<h2>補間の細かさ (要Update)<a class="headerlink" href="#id6" title="この見出しへのパーマリンク">¶</a></h2>
+<p>補間により図の曲面を滑らかにする (図 <a href="#interpolatepng">11</a>).
+ただし分点数を増やすと描画にかかる時間も増えるので注意.</p>
+<figure class="align-default" id="id21">
+<span id="interpolatepng"></span><a class="reference internal image-reference" href="_images/interpolate.png"><img alt="_images/interpolate.png" src="_images/interpolate.png" style="width: 700px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Interpolate&quot;メニューで 分点数を1から4に変える.</span><a class="headerlink" href="#id21" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="fermi">
+<h2>Fermi面のどちら側に光を当てるか<a class="headerlink" href="#fermi" title="この見出しへのパーマリンク">¶</a></h2>
+<p>光を当てる面を変更します (図 <a href="#lightpng">12</a>).</p>
+<dl class="simple">
+<dt>Both :</dt><dd><p>Fermi面の表裏両面に光を当てます.</p>
+</dd>
+<dt>Unoccupy :</dt><dd><p>非占有領域側のみに光を当てます.</p>
+</dd>
+<dt>Occupy :</dt><dd><p>占有領域側のみに光を当てます.</p>
+</dd>
+</dl>
+<figure class="align-default" id="id22">
+<span id="lightpng"></span><a class="reference internal image-reference" href="_images/light.png"><img alt="_images/light.png" src="_images/light.png" style="width: 500px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Lighting&quot;メニューで光を当てるFermi面を変更する.</span><a class="headerlink" href="#id22" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id7">
+<h2>マウスドラッグをしたときの振る舞い<a class="headerlink" href="#id7" title="この見出しへのパーマリンク">¶</a></h2>
+<p>マウスの左ボタンドラッグを行った時の動作を変更します.</p>
+<dl class="simple">
+<dt>Rotate(デフォルト)</dt><dd><p>ドラッグをした方向に図形を回転させます.</p>
+</dd>
+<dt>Scale</dt><dd><p>上方にドラッグすると図形を拡大,
+下方にドラッグすると図形を縮小します.</p>
+</dd>
+<dt>Translate</dt><dd><p>ドラッグした方向に図形を動かします.</p>
+</dd>
+</dl>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/mouce.png"><img alt="_images/mouce.png" src="_images/mouce.png" style="width: 200px;" /></a>
+</figure>
+</section>
+<section id="id8">
+<h2>ノーダルライン<a class="headerlink" href="#id8" title="この見出しへのパーマリンク">¶</a></h2>
+<p>物理量が0となるところに引く線(ノーダルライン)のOn/Offを切り替えます(図 <a href="#nodelinepng">14</a>).</p>
+<figure class="align-default" id="id23">
+<span id="nodelinepng"></span><a class="reference internal image-reference" href="_images/nodeline.png"><img alt="_images/nodeline.png" src="_images/nodeline.png" style="width: 500px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Nodal line&quot; メニューでnodal lineの表示/非表示を切り替える.</span><a class="headerlink" href="#id23" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id9">
+<h2>ブリルアンゾーンの断面 (要Update)<a class="headerlink" href="#id9" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Brillouin領域を任意の断面で切り取り,
+2次元のFermi面(線)を描画する (図 <a href="#sectionpng">15</a>).</p>
+<p>「Section」チェックボックスで断面の表示・非表示を切り替える
+(この操作は「Update」の必要はない).
+断面の法線の指定は「Section-v :」のテキストボックスで行う.
+法線ベクトルはフラクショナル座標で指定する。</p>
+<p>また, 「On Gamma」のチェックボックスがオンになっているときには
+断面は <span class="math notranslate nohighlight">\(\Gamma\)</span> 点を通る.</p>
+<figure class="align-default" id="sectionpng">
+<a class="reference internal image-reference" href="_images/section.png"><img alt="_images/section.png" src="_images/section.png" style="width: 700px;" /></a>
+</figure>
+</section>
+<section id="id10">
+<h2>ブリルアンゾーン断面のファイル出力<a class="headerlink" href="#id10" title="この見出しへのパーマリンク">¶</a></h2>
+<p>このボタンを押すと, 上記フェルミ面およびブリルアンゾーンの断面をGnuplotやIgolなどで図示するためのファイル(&quot;fermi_line.dat&quot;と&quot;bz_line.dat&quot;)
+を出力する.</p>
+<figure class="align-default" id="sectionfilepng">
+<a class="reference internal image-reference" href="_images/section_file.png"><img alt="_images/section_file.png" src="_images/section_file.png" style="width: 500px;" /></a>
+</figure>
+<p>gnuplotでは次のように使うことができる.</p>
+<div class="highlight-gnuplot notranslate"><div class="highlight"><pre><span></span><span class="k">plot</span><span class="w"> </span><span class="s">&quot;fermi_line.dat&quot;</span><span class="w"> </span><span class="nb">w</span><span class="w"> </span><span class="n">l</span><span class="o">,</span><span class="w"> </span><span class="s">&quot;bz_line.dat&quot;</span><span class="w"> </span><span class="nb">w</span><span class="w"> </span><span class="n">l</span>
+</pre></div>
+</div>
+</section>
+<section id="fermi-update">
+<h2>Fermiエネルギーの変更 (要Update)<a class="headerlink" href="#fermi-update" title="この見出しへのパーマリンク">¶</a></h2>
+<p>Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
+(図 <a href="#shiftpng">17</a>).</p>
+<figure class="align-default" id="id24">
+<span id="shiftpng"></span><a class="reference internal image-reference" href="_images/shift.png"><img alt="_images/shift.png" src="_images/shift.png" style="width: 500px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;Shift Fermi energy&quot;メニューで Fermi エネルギーを0.0 Ryから0.1 Ryに変える.</span><a class="headerlink" href="#id24" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id11">
+<h2>立体視<a class="headerlink" href="#id11" title="この見出しへのパーマリンク">¶</a></h2>
+<p>裸眼立体視用の図の表示/非表示を切り替えます(図 <a href="#stereogrampng">18</a>).</p>
+<dl class="simple">
+<dt>None (デフォルト) :</dt><dd><p>立体視を無効にします.</p>
+</dd>
+<dt>Parallel :</dt><dd><p>平行法用の図を表示します.</p>
+</dd>
+<dt>Cross :</dt><dd><p>交差法用の図を表示します.</p>
+</dd>
+</dl>
+<figure class="align-default" id="stereogrampng">
+<a class="reference internal image-reference" href="_images/stereogram.png"><img alt="_images/stereogram.png" src="_images/stereogram.png" style="width: 700px;" /></a>
+</figure>
+</section>
+<section id="id12">
+<h2>四面体の切り方 (要Update)<a class="headerlink" href="#id12" title="この見出しへのパーマリンク">¶</a></h2>
+<p>四面体の切り方を変えます.
+図が綺麗になる可能性がありますが,
+多くの場合は逆に図がギザギザして汚くなるようです.</p>
+<figure class="align-default">
+<a class="reference internal image-reference" href="_images/tetrahedron.png"><img alt="_images/tetrahedron.png" src="_images/tetrahedron.png" style="width: 200px;" /></a>
+</figure>
+</section>
+<section id="id13">
+<h2>サイズ・角度・位置の数値での調整<a class="headerlink" href="#id13" title="この見出しへのパーマリンク">¶</a></h2>
+<p>視点を変更します(図 <a href="#setviewpng">20</a>).</p>
+<dl class="simple">
+<dt>Scale :</dt><dd><p>図形のサイズを指定します.</p>
+</dd>
+<dt>Position :</dt><dd><p>図形の上下位置を指定します.</p>
+</dd>
+<dt>Rotate :</dt><dd><p>x,y,z軸周りの回転角を指定し, &quot;Roate&quot; ボタンを押すと回転する.
+回転操作はz軸-y軸-x軸の順で行われます.</p>
+</dd>
+</dl>
+<figure class="align-default" id="id25">
+<span id="setviewpng"></span><a class="reference internal image-reference" href="_images/setview.png"><img alt="_images/setview.png" src="_images/setview.png" style="width: 300px;" /></a>
+<figcaption>
+<p><span class="caption-text">&quot;View point&quot;メニューで 視点を変更する.</span><a class="headerlink" href="#id25" title="この画像へのパーマリンク">¶</a></p>
+</figcaption>
+</figure>
+</section>
+<section id="id14">
+<h2>画像の保存方法<a class="headerlink" href="#id14" title="この見出しへのパーマリンク">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">fermisurfer</span></code> には画像をファイル出力する機能はありません.
+お使いのPCにあった方法でスクリーンショットを取得して
+(<code class="docutils literal notranslate"><span class="pre">Printscreen</span></code> キーを押すなど)
+ペイントブラシやgimpで編集して画像を作成してください.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/fermisurfer.png" alt="Logo"/>
+            </a></p>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">操作方法</a><ul>
+<li><a class="reference internal" href="#id2">起動</a><ul>
+<li><a class="reference internal" href="#linuxunixmac">Linux・Unix・Macの場合</a></li>
+<li><a class="reference internal" href="#windows">Windowsの場合</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">背景色</a></li>
+<li><a class="reference internal" href="#line-width">Line width</a></li>
+<li><a class="reference internal" href="#line-color">Line color</a></li>
+<li><a class="reference internal" href="#id4">バンド毎の表示・非表示の切り替え</a></li>
+<li><a class="reference internal" href="#brillouin-zone-update">Brillouin zoneの形式 (要Update)</a></li>
+<li><a class="reference internal" href="#brillouin-zone">Brillouin zoneの数</a></li>
+<li><a class="reference internal" href="#color-bar">Color bar</a></li>
+<li><a class="reference internal" href="#update">カラープロットの種類と範囲 (要Update)</a></li>
+<li><a class="reference internal" href="#id5">カラープロットの配色</a></li>
+<li><a class="reference internal" href="#equator-update">Equator (要Update)</a></li>
+<li><a class="reference internal" href="#id6">補間の細かさ (要Update)</a></li>
+<li><a class="reference internal" href="#fermi">Fermi面のどちら側に光を当てるか</a></li>
+<li><a class="reference internal" href="#id7">マウスドラッグをしたときの振る舞い</a></li>
+<li><a class="reference internal" href="#id8">ノーダルライン</a></li>
+<li><a class="reference internal" href="#id9">ブリルアンゾーンの断面 (要Update)</a></li>
+<li><a class="reference internal" href="#id10">ブリルアンゾーン断面のファイル出力</a></li>
+<li><a class="reference internal" href="#fermi-update">Fermiエネルギーの変更 (要Update)</a></li>
+<li><a class="reference internal" href="#id11">立体視</a></li>
+<li><a class="reference internal" href="#id12">四面体の切り方 (要Update)</a></li>
+<li><a class="reference internal" href="#id13">サイズ・角度・位置の数値での調整</a></li>
+<li><a class="reference internal" href="#id14">画像の保存方法</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="input.html"
+                          title="前の章へ">Input file</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="batch.html"
+                          title="次の章へ">バッチ・モード</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/ops.rst.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="batch.html" title="バッチ・モード"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="input.html" title="Input file"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.2.1 ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">操作方法</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+    </div>
+  </body>
+</html>

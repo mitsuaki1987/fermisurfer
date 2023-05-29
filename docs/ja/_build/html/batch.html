@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>バッチ・モード &#8212; fermisurfer 2.2.1 ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/translations.js"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="Quantum ESPRESSOを用いたチュートリアル" href="qe.html" />
+    <link rel="prev" title="操作方法" href="ops.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="qe.html" title="Quantum ESPRESSOを用いたチュートリアル"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="ops.html" title="操作方法"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.2.1 ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">バッチ・モード</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="id1">
+<h1>バッチ・モード<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<p>コマンドライン操作のみでFermiSurferで描画した図を画像(PNG)ファイルに保存する,
+「バッチ・モード」について説明する.
+バッチ・モードを用いると
+<a class="reference external" href="http://fermisurfer.osdn.jp/table.html">このような沢山の図</a>
+を簡単に作ることができる.</p>
+<p>例として、 <code class="docutils literal notranslate"><span class="pre">example/</span></code> ディレクトリ内で</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>mgb2_vfz.frmsf<span class="w"> </span>frmsf.in<span class="w"> </span><span class="m">500</span><span class="w"> </span><span class="m">500</span>
+</pre></div>
+</div>
+<p>を実行すると, 画像ファイル <code class="docutils literal notranslate"><span class="pre">frmsf.in.png</span></code> が出力される.
+末尾の二つの数字はウィンドウの幅および高さである.
+<code class="docutils literal notranslate"><span class="pre">frmsf.in</span></code> はバッチ・モード用の描画設定ファイルで,
+次のように書かれている.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">backgroundcolor</span>  <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span>
+<span class="n">linecolor</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span>
+         <span class="n">band</span>  <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span>
+<span class="c1">#brillouinzone  primitive</span>
+     <span class="n">colorbar</span>  <span class="mi">1</span>
+   <span class="n">colorscale</span>  <span class="n">fermivelocity</span>
+       <span class="n">minmax</span>  <span class="o">-</span><span class="mi">22</span> <span class="mi">22</span>
+<span class="c1">#      equator  1.0 0.0 0.0</span>
+     <span class="n">interpol</span>  <span class="mi">4</span>
+    <span class="n">linewidth</span>  <span class="mf">3.0</span>
+     <span class="n">lighting</span>  <span class="n">both</span> 
+    <span class="n">nodalline</span>  <span class="mi">0</span>
+<span class="c1">#      section  1.0 0.0 0.0</span>
+  <span class="n">acrossgamma</span>  <span class="mi">1</span>
+     <span class="n">position</span>  <span class="mf">0.0</span> <span class="mf">0.0</span> <span class="mf">0.0</span>
+        <span class="n">scale</span>  <span class="mf">1.0</span>
+     <span class="n">rotation</span>  <span class="mf">120.0</span> <span class="mf">40.0</span> <span class="mf">0.0</span>
+  <span class="n">fermienergy</span>  <span class="mf">0.0</span>
+   <span class="n">stereogram</span>  <span class="n">none</span>
+  <span class="n">tetrahedron</span>  <span class="mi">1</span>
+</pre></div>
+</div>
+<p>これは前節のパネル操作に対応しており,
+指定可能なキーワードは次の通りである。
+また、指定しなかったキーワードについてはデフォルト値が使われる.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>キーワード</p></th>
+<th class="head"><p>指定可能なパラメーター</p></th>
+<th class="head"><p>デフォルト値</p></th>
+<th class="head"><p>説明</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>background</p></td>
+<td><p>black, white</p></td>
+<td><p>black</p></td>
+<td><p>背景色</p></td>
+</tr>
+<tr class="row-odd"><td><p>band</p></td>
+<td><p>1または0をバンド本数分</p></td>
+<td><p>1 1 1 1 ...</p></td>
+<td><p>各バンドの表示(1)または非表示(0)</p></td>
+</tr>
+<tr class="row-even"><td><p>brillouinzone</p></td>
+<td><p>first, primitive</p></td>
+<td><p>first</p></td>
+<td><p>ブリルアンゾーンの種類</p></td>
+</tr>
+<tr class="row-odd"><td><p>colorbar</p></td>
+<td><p>0, 1</p></td>
+<td><p>1</p></td>
+<td><p>カラーバーの表示(1)または非表示(0)</p></td>
+</tr>
+<tr class="row-even"><td><p>colorscale</p></td>
+<td><p>input1d, input2d, input3d, fermivelocity, bandindex, inputgray, fermivelocitygray</p></td>
+<td><p>input1d</p></td>
+<td><p>カラープロットの種類</p></td>
+</tr>
+<tr class="row-odd"><td><p>minmax</p></td>
+<td><p>実数 実数</p></td>
+<td><p>フェルミ面全体の最小値, 最大値</p></td>
+<td><p>カラースケールの範囲</p></td>
+</tr>
+<tr class="row-even"><td><p>equator</p></td>
+<td><p>実数 実数 実数</p></td>
+<td><p>指定しない場合は極軌道を表示しない</p></td>
+<td><p>極軌道の接ベクトル(フラクショナル座標)</p></td>
+</tr>
+<tr class="row-odd"><td><p>interpol</p></td>
+<td><p>自然数</p></td>
+<td><p>1</p></td>
+<td><p>補間の細かさ</p></td>
+</tr>
+<tr class="row-even"><td><p>linewidth</p></td>
+<td><p>実数</p></td>
+<td><p>3.0</p></td>
+<td><p>線幅</p></td>
+</tr>
+<tr class="row-odd"><td><p>lighting</p></td>
+<td><p>both, unoccupied, occupied</p></td>
+<td><p>both</p></td>
+<td><p>どちらの面に照光するか</p></td>
+</tr>
+<tr class="row-even"><td><p>nodalline</p></td>
+<td><p>0, 1</p></td>
+<td><p>0</p></td>
+<td><p>ノーダルラインの表示(1)または非表示(0)</p></td>
+</tr>
+<tr class="row-odd"><td><p>section</p></td>
+<td><p>実数 実数 実数</p></td>
+<td><p>指定しない場合は断面を表示しない</p></td>
+<td><p>断面の法線ベクトル(フラクショナル座標)</p></td>
+</tr>
+<tr class="row-even"><td><p>acrossgamma</p></td>
+<td><p>0, 1</p></td>
+<td><p>1</p></td>
+<td><p>断面が <span class="math notranslate nohighlight">\({\rm \Gamma}\)</span> 点を通るか(1)否か(0)</p></td>
+</tr>
+<tr class="row-odd"><td><p>position</p></td>
+<td><p>実数 実数</p></td>
+<td><p>0.0, 0.0</p></td>
+<td><p>図形の描画位置</p></td>
+</tr>
+<tr class="row-even"><td><p>scale</p></td>
+<td><p>実数</p></td>
+<td><p>1.0</p></td>
+<td><p>図形の拡大率</p></td>
+</tr>
+<tr class="row-odd"><td><p>rotation</p></td>
+<td><p>実数 実数 実数</p></td>
+<td><p>0.0, 0.0, 0.0</p></td>
+<td><p>図形のx-, y-, z-軸周りの回転角</p></td>
+</tr>
+<tr class="row-even"><td><p>fermienergy</p></td>
+<td><p>実数</p></td>
+<td><p>0.0</p></td>
+<td><p>Fermiエネルギー</p></td>
+</tr>
+<tr class="row-odd"><td><p>stereogram</p></td>
+<td><p>none, parallel, cross</p></td>
+<td><p>none</p></td>
+<td><p>立体視</p></td>
+</tr>
+<tr class="row-even"><td><p>tetrahedron</p></td>
+<td><p>0から15の整数</p></td>
+<td><p>0</p></td>
+<td><p>四面体の切り方</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">注釈</p>
+<p>この機能は ImageMagic のスクリーンショットを取るコマンド「import」を用いている.
+そのためこの機能を使うには ImageMagic がインストールされていなければならない.</p>
+</div>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/fermisurfer.png" alt="Logo"/>
+            </a></p>
+  <div>
+    <h4>前のトピックへ</h4>
+    <p class="topless"><a href="ops.html"
+                          title="前の章へ">操作方法</a></p>
+  </div>
+  <div>
+    <h4>次のトピックへ</h4>
+    <p class="topless"><a href="qe.html"
+                          title="次の章へ">Quantum ESPRESSOを用いたチュートリアル</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/batch.rst.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="qe.html" title="Quantum ESPRESSOを用いたチュートリアル"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="ops.html" title="操作方法"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.2.1 ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">バッチ・モード</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+    </div>
+  </body>
+</html>
