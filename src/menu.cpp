@@ -148,15 +148,6 @@ enum
   itext_ArrowDiff0,
   itext_ArrowDiff1,
   itext_ArrowDiff2,
-  itext_ArrowStartX,
-  itext_ArrowStartY,
-  itext_ArrowStartZ,
-  itext_ArrowEndX,
-  itext_ArrowEndY,
-  itext_ArrowEndZ,
-  itext_ArrowDiffX,
-  itext_ArrowDiffY,
-  itext_ArrowDiffZ,
   itext_sphereX,
   itext_sphereY,
   itext_sphereZ,
@@ -220,170 +211,60 @@ void MyFrame::textctrl_Arrow(
 
   if (event.GetId() == itext_ArrowStart0) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][0] += (GLfloat)dvalue - arrow_f[0][0];
-      arrow_f[0][0] = (GLfloat)dvalue;
-      textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0]));
+      arrow[1][0] += (GLfloat)dvalue - arrow[0][0];
+      arrow[0][0] = (GLfloat)dvalue;
+      textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow[1][0]));
     }
   }
   else  if (event.GetId() == itext_ArrowStart1) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][1] += (GLfloat)dvalue - arrow_f[0][1];
-      arrow_f[0][1] = (GLfloat)dvalue;
-      textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1]));
+      arrow[1][1] += (GLfloat)dvalue - arrow[0][1];
+      arrow[0][1] = (GLfloat)dvalue;
+      textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow[1][1]));
     }
   }
   else  if (event.GetId() == itext_ArrowStart2) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][2] += (GLfloat)dvalue - arrow_f[0][2];
-      arrow_f[0][2] = (GLfloat)dvalue;
-      textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2]));
+      arrow[1][2] += (GLfloat)dvalue - arrow[0][2];
+      arrow[0][2] = (GLfloat)dvalue;
+      textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow[1][2]));
     }
   }
   else  if (event.GetId() == itext_ArrowEnd0) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][0] = (GLfloat)dvalue;
-      textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0] - arrow_f[0][0]));
+      arrow[1][0] = (GLfloat)dvalue;
+      textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow[1][0] - arrow[0][0]));
     }
   }
   else  if (event.GetId() == itext_ArrowEnd1) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][1] = (GLfloat)dvalue;
-      textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1] - arrow_f[0][1]));
+      arrow[1][1] = (GLfloat)dvalue;
+      textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow[1][1] - arrow[0][1]));
     }
   }
   else  if (event.GetId() == itext_ArrowEnd2) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][2] = (GLfloat)dvalue;
-      textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2] - arrow_f[0][2]));
+      arrow[1][2] = (GLfloat)dvalue;
+      textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow[1][2] - arrow[0][2]));
     }
   }
   else  if (event.GetId() == itext_ArrowDiff0) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][0] = arrow_f[0][0] + (GLfloat)dvalue;
-      textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0]));
+      arrow[1][0] = arrow[0][0] + (GLfloat)dvalue;
+      textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow[1][0]));
     }
   }
   else  if (event.GetId() == itext_ArrowDiff1) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][1] = arrow_f[0][1] + (GLfloat)dvalue;
-      textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1]));
+      arrow[1][1] = arrow[0][1] + (GLfloat)dvalue;
+      textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow[1][1]));
     }
   }
   else  if (event.GetId() == itext_ArrowDiff2) {
     if (event.GetString().ToDouble(&dvalue)) {
-      arrow_f[1][2] = arrow_f[0][2] + (GLfloat)dvalue;
-      textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2]));
+      arrow[1][2] = arrow[0][2] + (GLfloat)dvalue;
+      textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow[1][2]));
     }
-  }
-  else  if (event.GetId() == itext_ArrowStartX) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][0] += (GLfloat)dvalue - arrow_c[0][0];
-      arrow_c[0][0] = (GLfloat)dvalue;
-      textbox_ArrowEndX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0]));
-    }
-  }
-  else  if (event.GetId() == itext_ArrowStartY) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][1] += (GLfloat)dvalue - arrow_c[0][1];
-      arrow_c[0][1] = (GLfloat)dvalue;
-      textbox_ArrowEndY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1]));
-    }
-  }
-  else  if (event.GetId() == itext_ArrowStartZ) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][2] += (GLfloat)dvalue - arrow_c[0][2];
-      arrow_c[0][2] = (GLfloat)dvalue;
-      textbox_ArrowEndZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2]));
-    }
-  }
-  else  if (event.GetId() == itext_ArrowEndX) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][0] = (GLfloat)dvalue;
-      textbox_ArrowDiffX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0] - arrow_c[0][0]));
-    }
-  }
-  else  if (event.GetId() == itext_ArrowEndY) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][1] = (GLfloat)dvalue;
-      textbox_ArrowDiffY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1] - arrow_c[0][1]));
-    }
-  }
-  else  if (event.GetId() == itext_ArrowEndZ) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][2] = (GLfloat)dvalue;
-      textbox_ArrowDiffZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2] - arrow_c[0][2]));
-    }
-  }
-  else  if (event.GetId() == itext_ArrowDiffX) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][0] = arrow_c[0][0] + (GLfloat)dvalue;
-      textbox_ArrowEndX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0]));
-    }
-  }
-  else  if (event.GetId() == itext_ArrowDiffY) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][1] = arrow_c[0][1] + (GLfloat)dvalue;
-      textbox_ArrowEndY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1]));
-    }
-  }
-  else  if (event.GetId() == itext_ArrowDiffZ) {
-    if (event.GetString().ToDouble(&dvalue)) {
-      arrow_c[1][2] = arrow_c[0][2] + (GLfloat)dvalue;
-      textbox_ArrowEndZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2]));
-    }
-  }
-  //
-  // Fractional -> Cartesian
-  //
-  switch(event.GetId()){
-  case itext_ArrowStart0:
-  case itext_ArrowStart1:
-  case itext_ArrowStart2:
-  case itext_ArrowEnd0:
-  case itext_ArrowEnd1:
-  case itext_ArrowEnd2:
-  case itext_ArrowDiff0:
-  case itext_ArrowDiff1:
-  case itext_ArrowDiff2:
-    for (ii = 0; ii < 2; ++ii)
-      for (jj = 0; jj < 3; ++jj)
-        arrow_c[ii][jj] = bvec[0][jj] * arrow_f[ii][0]
-                        + bvec[1][jj] * arrow_f[ii][1]
-                        + bvec[2][jj] * arrow_f[ii][2];
-    textbox_ArrowStartX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[0][0]));
-    textbox_ArrowStartY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[0][1]));
-    textbox_ArrowStartZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[0][2]));
-    textbox_ArrowEndX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0]));
-    textbox_ArrowEndY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1]));
-    textbox_ArrowEndZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2]));
-    textbox_ArrowDiffX->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][0] - arrow_c[0][0]));
-    textbox_ArrowDiffY->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][1] - arrow_c[0][1]));
-    textbox_ArrowDiffZ->ChangeValue(wxString::Format(wxT("%f"), arrow_c[1][2] - arrow_c[0][2]));
-    break;
-  case itext_ArrowStartX:
-  case itext_ArrowStartY:
-  case itext_ArrowStartZ:
-  case itext_ArrowEndX:
-  case itext_ArrowEndY:
-  case itext_ArrowEndZ:
-  case itext_ArrowDiffX:
-  case itext_ArrowDiffY:
-  case itext_ArrowDiffZ:
-    for (ii = 0; ii < 2; ++ii)
-      for (jj = 0; jj < 3; ++jj)
-        arrow_f[ii][jj] = avec[jj][0] * arrow_c[ii][0]
-                        + avec[jj][1] * arrow_c[ii][1]
-                        + avec[jj][2] * arrow_c[ii][2];
-    textbox_ArrowStart0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[0][0]));
-    textbox_ArrowStart1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[0][1]));
-    textbox_ArrowStart2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[0][2]));
-    textbox_ArrowEnd0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0]));
-    textbox_ArrowEnd1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1]));
-    textbox_ArrowEnd2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2]));
-    textbox_ArrowDiff0->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][0] - arrow_f[0][0]));
-    textbox_ArrowDiff1->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][1] - arrow_f[0][1]));
-    textbox_ArrowDiff2->ChangeValue(wxString::Format(wxT("%f"), arrow_f[1][2] - arrow_f[0][2]));
-    break;
   }
   //
   Refresh(false);
@@ -1030,7 +911,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   splitterV->SetMinimumPaneSize(0); 
   sizermain->Add(splitterV, 1, wxEXPAND, 0);
 
-  panel = new wxPanel(splitterV);
+  panel = new wxScrolledWindow(splitterV);
 
   gbsizer = new wxGridBagSizer();
 
@@ -1045,6 +926,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   if (lbatch == 1) splitterH->SplitHorizontally(m_canvas, terminal, -1);
   else splitterH->SplitHorizontally(m_canvas, terminal, -200);
   panel->SetSizer(gbsizer);
+  panel->SetScrollbars(20, 20, 50, 50);
 
   if (lbatch == 1)splitterV->SplitVertically(splitterH, panel, -1);
   else splitterV->SplitVertically(splitterH, panel, 0);
@@ -1307,19 +1189,6 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_ArrowStart1->ChangeValue(wxT("0.0"));
   textbox_ArrowStart2->ChangeValue(wxT("0.0"));
   //
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStartX);
-  textbox_ArrowStartX = new wxTextCtrl(panel, itext_ArrowStartX, wxT(""));
-  gbsizer->Add(textbox_ArrowStartX, wxGBPosition(20, 4), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStartY);
-  textbox_ArrowStartY = new wxTextCtrl(panel, itext_ArrowStartY, wxT(""));
-  gbsizer->Add(textbox_ArrowStartY, wxGBPosition(20, 5), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStartZ);
-  textbox_ArrowStartZ = new wxTextCtrl(panel, itext_ArrowStartZ, wxT(""));
-  gbsizer->Add(textbox_ArrowStartZ, wxGBPosition(20, 6), wxGBSpan(1, 1));
-  textbox_ArrowStartX->ChangeValue(wxT("0.0"));
-  textbox_ArrowStartY->ChangeValue(wxT("0.0"));
-  textbox_ArrowStartZ->ChangeValue(wxT("0.0"));
-  //
   // Arrow End
   //
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Arrow (End) : ")),
@@ -1337,19 +1206,6 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_ArrowEnd1->ChangeValue(wxT("0.0"));
   textbox_ArrowEnd2->ChangeValue(wxT("0.0"));
   //
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEndX);
-  textbox_ArrowEndX = new wxTextCtrl(panel, itext_ArrowEndX, wxT(""));
-  gbsizer->Add(textbox_ArrowEndX, wxGBPosition(21, 4), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEndY);
-  textbox_ArrowEndY = new wxTextCtrl(panel, itext_ArrowEndY, wxT(""));
-  gbsizer->Add(textbox_ArrowEndY, wxGBPosition(21, 5), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEndZ);
-  textbox_ArrowEndZ = new wxTextCtrl(panel, itext_ArrowEndZ, wxT(""));
-  gbsizer->Add(textbox_ArrowEndZ, wxGBPosition(21, 6), wxGBSpan(1, 1));
-  textbox_ArrowEndX->ChangeValue(wxT("0.0"));
-  textbox_ArrowEndY->ChangeValue(wxT("0.0"));
-  textbox_ArrowEndZ->ChangeValue(wxT("0.0"));
-  //
   // Arrow Diff
   //
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Arrow (Diff) : ")),
@@ -1366,19 +1222,6 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_ArrowDiff0->ChangeValue(wxT("0.0"));
   textbox_ArrowDiff1->ChangeValue(wxT("0.0"));
   textbox_ArrowDiff2->ChangeValue(wxT("0.0"));
-  //
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiffX);
-  textbox_ArrowDiffX = new wxTextCtrl(panel, itext_ArrowDiffX, wxT(""));
-  gbsizer->Add(textbox_ArrowDiffX, wxGBPosition(22, 4), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiffY);
-  textbox_ArrowDiffY = new wxTextCtrl(panel, itext_ArrowDiffY, wxT(""));
-  gbsizer->Add(textbox_ArrowDiffY, wxGBPosition(22, 5), wxGBSpan(1, 1));
-  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiffZ);
-  textbox_ArrowDiffZ = new wxTextCtrl(panel, itext_ArrowDiffZ, wxT(""));
-  gbsizer->Add(textbox_ArrowDiffZ, wxGBPosition(22, 6), wxGBSpan(1, 1));
-  textbox_ArrowDiffX->ChangeValue(wxT("0.0"));
-  textbox_ArrowDiffY->ChangeValue(wxT("0.0"));
-  textbox_ArrowDiffZ->ChangeValue(wxT("0.0"));
   //
   // Wireframe sphere
   //

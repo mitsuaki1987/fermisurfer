@@ -46,7 +46,7 @@ public:
   void modify_band();
   TestGLCanvas* m_canvas;
   wxGridBagSizer* gbsizer;
-  wxPanel* panel;
+  wxScrolledWindow* panel;
   wxRadioBox* radiobox_color;
   wxRadioBox* radiobox_tetra;
   wxSplitterWindow* splitterV;
@@ -84,15 +84,6 @@ public:
   wxTextCtrl* textbox_ArrowDiff0;
   wxTextCtrl* textbox_ArrowDiff1;
   wxTextCtrl* textbox_ArrowDiff2;
-  wxTextCtrl* textbox_ArrowStartX;
-  wxTextCtrl* textbox_ArrowStartY;
-  wxTextCtrl* textbox_ArrowStartZ;
-  wxTextCtrl* textbox_ArrowEndX;
-  wxTextCtrl* textbox_ArrowEndY;
-  wxTextCtrl* textbox_ArrowEndZ;
-  wxTextCtrl* textbox_ArrowDiffX;
-  wxTextCtrl* textbox_ArrowDiffY;
-  wxTextCtrl* textbox_ArrowDiffZ;
   wxTextCtrl* textbox_sphereX;
   wxTextCtrl* textbox_sphereY;
   wxTextCtrl* textbox_sphereZ;

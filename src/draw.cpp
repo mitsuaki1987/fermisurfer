@@ -217,7 +217,7 @@ private(ib)
 */
 static void draw_bz_lines() {
   int ibzl, i, j, a0, a1, a2, ia, icount;
-  GLfloat bzl2[3], bvec2[3][3], linecolor[4], secvec2[3], kshift[3];
+  GLfloat bzl2[3], bvec2[3][3], linecolor[4], secvec2[3], kshift[3], arrow_c[3];
   GLfloat vertices[300], sphere_v2[1140]/*190*2*3*/;
   //
   // Line color is oposit of BG color
@@ -297,9 +297,13 @@ static void draw_bz_lines() {
   //
   for (i = 0; i < 2; ++i) {
     for (j = 0; j < 3; ++j)
-      vertices[j + 3 * i] = rot[j][0] * arrow_c[i][0]
-                          + rot[j][1] * arrow_c[i][1]
-                          + rot[j][2] * arrow_c[i][2]
+      arrow_c[j] = bvec[0][j] * arrow[i][0]
+                 + bvec[1][j] * arrow[i][1]
+                 + bvec[2][j] * arrow[i][2];
+    for (j = 0; j < 3; ++j)
+      vertices[j + 3 * i] = rot[j][0] * arrow_c[0]
+                          + rot[j][1] * arrow_c[1]
+                          + rot[j][2] * arrow_c[2]
                           + trans[j];
   }/*for (i = 0; i< 2; ++i)*/
   glColor3fv(linecolor);
