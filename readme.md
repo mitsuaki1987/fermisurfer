@@ -1,6 +1,6 @@
 FermiSurfer
 
-Web page : http://fermisurfer.osdn.jp/
+Web page : https://mitsuaki1987.github.io/fermisurfer/
 
 FermiSurfer is an visualization tool for Fermi surfaces.
 This application displays Fermi surfaces colored as a function of an arbitrary
@@ -52,4 +52,4 @@ $ fermisurfer examples/mgb2_vfz.frmsf
 
 Mitsuaki Kawamura
 
-mkawamura__at__issp.u-tokyo.ac.jp
+mkawamura__at__ds.itc.u-tokyo.ac.jp
