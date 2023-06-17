@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.14159265-p3.8.2-u1.25-190908-2.6 (utf8.uptex) (TeX Live 2019/Debian) (preloaded format=uplatex 2022.5.12)  29 MAY 2023 14:48
+This is e-upTeX, Version 3.14159265-p3.8.2-u1.25-190908-2.6 (utf8.uptex) (TeX Live 2019/Debian) (preloaded format=uplatex 2023.6.5)  17 JUN 2023 16:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1157,32 +1157,28 @@ File: qe_proj_pxy.png Graphic file (type bmp)
 第 8 章
 [30
 
-]
+] [31]
 第 9 章
-[31
+[32
 
-] [32]
+]
 第 10 章
 [33
 
 ]
 第 11 章
-[34
-
-]
-第 12 章
 (./fermisurfer.ind)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1738.
- [35
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1686.
+ [34
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1738.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1686.
  (./fermisurfer.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1738.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1738.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1686.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1686.
 
 Package rerunfilecheck Info: File `fermisurfer.out' has not changed.
-(rerunfilecheck)             Checksum: 96AADB7C40FF5CD9A6D0ABD5D82A5EB6;3987.
+(rerunfilecheck)             Checksum: 9C7418C7327140A1A6F1CAF8E44B8956;3744.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -1190,15 +1186,15 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1738.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1686.
  ) 
 Here is how much of TeX's memory you used:
- 11429 strings out of 482787
- 173852 string characters out of 5957708
- 518715 words of memory out of 5000000
- 26385 multiletter control sequences out of 15000+600000
+ 11423 strings out of 482787
+ 173755 string characters out of 5957709
+ 518518 words of memory out of 5000000
+ 26379 multiletter control sequences out of 15000+600000
  636980 words of font info for 116 fonts, out of 8000000 for 9000
  310 hyphenation exceptions out of 8191
  38i,28n,51p,937b,569s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on fermisurfer.dvi (38 pages, 186408 bytes).
+Output written on fermisurfer.dvi (37 pages, 181188 bytes).

@@ -41,16 +41,12 @@
 \contentsline {section}{\numberline {7.2}SCF calculation}{25}{section.7.2}%
 \contentsline {section}{\numberline {7.3}Compute and display Fermi velocity}{26}{section.7.3}%
 \contentsline {section}{\numberline {7.4}Compute and display projection onto the atomic orbital}{27}{section.7.4}%
-\contentsline {chapter}{\numberline {8}FermiSurfer for Android}{29}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Install}{29}{section.8.1}%
-\contentsline {section}{\numberline {8.2}Input file}{29}{section.8.2}%
-\contentsline {section}{\numberline {8.3}Run}{29}{section.8.3}%
-\contentsline {chapter}{\numberline {9}FermiSurfer on Web}{30}{chapter.9}%
-\contentsline {section}{\numberline {9.1}Control FermiSurfer on Web}{30}{section.9.1}%
-\contentsline {section}{\numberline {9.2}How to input file}{30}{section.9.2}%
-\contentsline {section}{\numberline {9.3}Open online file}{30}{section.9.3}%
-\contentsline {chapter}{\numberline {10}Acknowledgment}{32}{chapter.10}%
-\contentsline {chapter}{\numberline {11}Re\sphinxhyphen {}distribution of this program}{33}{chapter.11}%
-\contentsline {section}{\numberline {11.1}Contain Fermisurfer in your program}{33}{section.11.1}%
-\contentsline {section}{\numberline {11.2}MIT License}{33}{section.11.2}%
-\contentsline {chapter}{\numberline {12}Contact}{34}{chapter.12}%
+\contentsline {chapter}{\numberline {8}FermiSurfer on Web}{29}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Control FermiSurfer on Web}{29}{section.8.1}%
+\contentsline {section}{\numberline {8.2}How to input file}{29}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Open online file}{29}{section.8.3}%
+\contentsline {chapter}{\numberline {9}Acknowledgment}{31}{chapter.9}%
+\contentsline {chapter}{\numberline {10}Re\sphinxhyphen {}distribution of this program}{32}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Contain Fermisurfer in your program}{32}{section.10.1}%
+\contentsline {section}{\numberline {10.2}MIT License}{32}{section.10.2}%
+\contentsline {chapter}{\numberline {11}Contact}{33}{chapter.11}%

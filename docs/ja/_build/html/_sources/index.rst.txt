@@ -16,7 +16,6 @@ Welcome to FermiSurfer's documentation!
    ops
    batch
    qe
-   android
    onweb
    ack
    copy

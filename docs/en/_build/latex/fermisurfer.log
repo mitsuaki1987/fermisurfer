@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2022.5.12)  29 MAY 2023 14:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2023.6.5)  17 JUN 2023 16:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -811,7 +811,7 @@ LaTeX Info: Redefining \nameref on input line 72.
 \openout5 = `fermisurfer.out'.
 
 Package hyperref Info: Option `pageanchor' set `false' on input line 80.
-<fermisurfer.png, id=226, 2702.898pt x 1991.44pt>
+<fermisurfer.png, id=210, 2702.898pt x 1991.44pt>
 LaTeX Font Info:    Trying to load font information for T1+txtt on input line 8
 0.
 
@@ -879,7 +879,7 @@ LaTeX Font Info:    Font shape `T1/txtt/m/it' in size <10> not available
 (Font)              Font shape `T1/txtt/m/sl' tried instead on input line 354.
  [5] [6] [7] [8]
 Chapter 5.
-<start.png, id=367, 1224.82594pt x 950.80219pt>
+<start.png, id=347, 1224.82594pt x 950.80219pt>
 File: start.png Graphic file (type png)
 <use start.png>
 Package pdftex.def Info: start.png  used on input line 548.
@@ -887,12 +887,12 @@ Package pdftex.def Info: start.png  used on input line 548.
 [9
 
 ]
-<background.png, id=373, 1187.18532pt x 558.58687pt>
+<background.png, id=353, 1187.18532pt x 558.58687pt>
 File: background.png Graphic file (type png)
 <use background.png>
 Package pdftex.def Info: background.png  used on input line 595.
 (pdftex.def)             Requested size: 376.40381pt x 177.10645pt.
-<line_color.png, id=374, 1115.66812pt x 436.63126pt>
+<line_color.png, id=354, 1115.66812pt x 436.63126pt>
 File: line_color.png Graphic file (type png)
 <use line_color.png>
 Package pdftex.def Info: line_color.png  used on input line 613.
@@ -901,93 +901,93 @@ Package pdftex.def Info: line_color.png  used on input line 613.
 
 LaTeX Warning: Reference `ops:bandpng' on page 12 undefined on input line 620.
 
-<band.png, id=384, 885.3075pt x 487.8225pt>
+<band.png, id=364, 885.3075pt x 487.8225pt>
 File: band.png Graphic file (type png)
 <use band.png>
 Package pdftex.def Info: band.png  used on input line 625.
 (pdftex.def)             Requested size: 451.68457pt x 248.89038pt.
-<brillouinzone.png, id=386, 1225.57875pt x 380.92313pt>
+<brillouinzone.png, id=366, 1225.57875pt x 380.92313pt>
 File: brillouinzone.png Graphic file (type png)
 <use brillouinzone.png>
 Package pdftex.def Info: brillouinzone.png  used on input line 650.
 (pdftex.def)             Requested size: 451.68457pt x 140.38716pt.
 [12 <./band.png> <./brillouinzone.png>]
-<bz_number.png, id=392, 1149.5447pt x 550.30594pt>
+<bz_number.png, id=372, 1149.5447pt x 550.30594pt>
 File: bz_number.png Graphic file (type png)
 <use bz_number.png>
 Package pdftex.def Info: bz_number.png  used on input line 664.
 (pdftex.def)             Requested size: 451.68457pt x 216.23067pt.
-<colorbar.png, id=394, 921.4425pt x 188.95593pt>
+<colorbar.png, id=374, 921.4425pt x 188.95593pt>
 File: colorbar.png Graphic file (type png)
 <use colorbar.png>
 Package pdftex.def Info: colorbar.png  used on input line 677.
 (pdftex.def)             Requested size: 451.68457pt x 92.62381pt.
  [13 <./bz_number.png> <./colorbar.png>]
-<colorscale.png, id=402, 698.00775pt x 338.4645pt>
+<colorscale.png, id=382, 698.00775pt x 338.4645pt>
 File: colorscale.png Graphic file (type png)
 <use colorscale.png>
 Package pdftex.def Info: colorscale.png  used on input line 726.
 (pdftex.def)             Requested size: 469.75032pt x 227.78745pt.
-<bar_color.png, id=403, 1194.71344pt x 530.73282pt>
+<bar_color.png, id=383, 1194.71344pt x 530.73282pt>
 File: bar_color.png Graphic file (type png)
 <use bar_color.png>
 Package pdftex.def Info: bar_color.png  used on input line 741.
 (pdftex.def)             Requested size: 376.40381pt x 167.21411pt.
-<equator.png, id=405, 562.5015pt x 455.301pt>
+<equator.png, id=385, 562.5015pt x 455.301pt>
 File: equator.png Graphic file (type png)
 <use equator.png>
 Package pdftex.def Info: equator.png  used on input line 760.
 (pdftex.def)             Requested size: 469.75145pt x 380.23402pt.
 [14 <./colorscale.png>] [15 <./bar_color.png> <./equator.png>]
-<interpolate.png, id=419, 1540.957pt x 615.901pt>
+<interpolate.png, id=399, 1540.957pt x 615.901pt>
 File: interpolate.png Graphic file (type png)
 <use interpolate.png>
 Package pdftex.def Info: interpolate.png  used on input line 774.
 (pdftex.def)             Requested size: 469.74431pt x 187.75085pt.
-<light.png, id=421, 1021.416pt x 1082.444pt>
+<light.png, id=401, 1021.416pt x 1082.444pt>
 File: light.png Graphic file (type png)
 <use light.png>
 Package pdftex.def Info: light.png  used on input line 801.
 (pdftex.def)             Requested size: 376.40381pt x 398.89589pt.
-<mouce.png, id=422, 470.50781pt x 621.07031pt>
+<mouce.png, id=402, 470.50781pt x 621.07031pt>
 File: mouce.png Graphic file (type png)
 <use mouce.png>
 Package pdftex.def Info: mouce.png  used on input line 827.
 (pdftex.def)             Requested size: 150.56152pt x 198.73708pt.
  [16 <./interpolate.png>] [17 <./light.png> <./mouce.png>]
-<nodeline.png, id=437, 1115.66812pt x 526.21594pt>
+<nodeline.png, id=417, 1115.66812pt x 526.21594pt>
 File: nodeline.png Graphic file (type png)
 <use nodeline.png>
 Package pdftex.def Info: nodeline.png  used on input line 841.
 (pdftex.def)             Requested size: 376.40381pt x 177.53pt.
-<section.png, id=439, 1303.0281pt x 734.2632pt>
+<section.png, id=419, 1303.0281pt x 734.2632pt>
 File: section.png Graphic file (type png)
 <use section.png>
 Package pdftex.def Info: section.png  used on input line 865.
 (pdftex.def)             Requested size: 469.7459pt x 264.70427pt.
-<section_file.png, id=440, 1013.28563pt x 341.77687pt>
+<section_file.png, id=420, 1013.28563pt x 341.77687pt>
 File: section_file.png Graphic file (type png)
 <use section_file.png>
 Package pdftex.def Info: section_file.png  used on input line 877.
 (pdftex.def)             Requested size: 376.40381pt x 126.9561pt.
-<shift.png, id=442, 1092.33093pt x 651.93562pt>
+<shift.png, id=422, 1092.33093pt x 651.93562pt>
 File: shift.png Graphic file (type png)
 <use shift.png>
 Package pdftex.def Info: shift.png  used on input line 897.
 (pdftex.def)             Requested size: 376.40381pt x 224.64943pt.
  [18 <./nodeline.png>] [19 <./section.png> <./section_file.png>]
-<stereogram.png, id=456, 1538.74875pt x 657.95813pt>
+<stereogram.png, id=436, 1538.74875pt x 657.95813pt>
 File: stereogram.png Graphic file (type png)
 <use stereogram.png>
 Package pdftex.def Info: stereogram.png  used on input line 925.
 (pdftex.def)             Requested size: 469.75206pt x 200.86267pt.
  [20 <./shift.png> <./stereogram.png>]
-<tetrahedron.png, id=463, 470.50781pt x 621.07031pt>
+<tetrahedron.png, id=442, 470.50781pt x 621.07031pt>
 File: tetrahedron.png Graphic file (type png)
 <use tetrahedron.png>
 Package pdftex.def Info: tetrahedron.png  used on input line 939.
 (pdftex.def)             Requested size: 150.56152pt x 198.73708pt.
-<setview.png, id=465, 473.51906pt x 615.80063pt>
+<setview.png, id=444, 473.51906pt x 615.80063pt>
 File: setview.png Graphic file (type png)
 <use setview.png>
 Package pdftex.def Info: setview.png  used on input line 971.
@@ -1078,18 +1078,18 @@ File: ts1txtt.fd 2000/12/15 v3.1
 ) [25
 
 ]
-<qe_vf.png, id=494, 339.2675pt x 321.2pt>
+<qe_vf.png, id=474, 339.2675pt x 321.2pt>
 File: qe_vf.png Graphic file (type png)
 <use qe_vf.png>
 Package pdftex.def Info: qe_vf.png  used on input line 1439.
 (pdftex.def)             Requested size: 140.92793pt x 133.42294pt.
  [26 <./qe_vf.png>] [27]
-<qe_proj_pz.png, id=504, 278.03876pt x 269.50688pt>
+<qe_proj_pz.png, id=484, 278.03876pt x 269.50688pt>
 File: qe_proj_pz.png Graphic file (type png)
 <use qe_proj_pz.png>
 Package pdftex.def Info: qe_proj_pz.png  used on input line 1545.
 (pdftex.def)             Requested size: 140.92793pt x 136.60365pt.
-<qe_proj_pxy.png, id=505, 231.36438pt x 225.34187pt>
+<qe_proj_pxy.png, id=485, 231.36438pt x 225.34187pt>
 File: qe_proj_pxy.png Graphic file (type png)
 <use qe_proj_pxy.png>
 Package pdftex.def Info: qe_proj_pxy.png  used on input line 1570.
@@ -1098,43 +1098,39 @@ Package pdftex.def Info: qe_proj_pxy.png  used on input line 1570.
 Chapter 8.
 [29
 
-]
+] [30]
 Chapter 9.
-[30
+[31
 
-] [31]
+]
 Chapter 10.
 [32
 
 ]
 Chapter 11.
-[33
-
-]
-Chapter 12.
 (./fermisurfer.ind)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1778.
- [34
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1724.
+ [33
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1778.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1724.
  (./fermisurfer.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1778.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1778.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1724.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1724.
 
 Package rerunfilecheck Info: File `fermisurfer.out' has not changed.
-(rerunfilecheck)             Checksum: 6033A7C95D169F4BEB1FB4E26E602694;9380.
+(rerunfilecheck)             Checksum: A385B6597F2B1FB9BF9CFEC7F089A264;8946.
 
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1778.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1724.
  ) 
 Here is how much of TeX's memory you used:
- 15040 strings out of 482590
- 222483 string characters out of 5953557
- 537958 words of memory out of 5000000
- 29664 multiletter control sequences out of 15000+600000
+ 15026 strings out of 482590
+ 222285 string characters out of 5953558
+ 537758 words of memory out of 5000000
+ 29655 multiletter control sequences out of 15000+600000
  595559 words of font info for 79 fonts, out of 8000000 for 9000
  310 hyphenation exceptions out of 8191
  38i,28n,51p,686b,552s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1158,10 +1154,10 @@ hare/texmf/fonts/type1/public/tex-gyre/qtmri.pfb></usr/share/texlive/texmf-dist
 e1/public/txfonts/t1xtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/t
 xfonts/t1xtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/tcxt
 t.pfb>
-Output written on fermisurfer.pdf (37 pages, 13227812 bytes).
+Output written on fermisurfer.pdf (36 pages, 13226161 bytes).
 PDF statistics:
- 650 PDF objects out of 1000 (max. 8388607)
- 546 compressed objects within 6 object streams
- 117 named destinations out of 1000 (max. 500000)
- 581 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 620 PDF objects out of 1000 (max. 8388607)
+ 517 compressed objects within 6 object streams
+ 112 named destinations out of 1000 (max. 500000)
+ 549 words of extra memory for PDF output out of 10000 (max. 10000000)
 

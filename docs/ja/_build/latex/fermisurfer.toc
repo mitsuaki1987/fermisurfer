@@ -40,16 +40,12 @@
 \contentsline {section}{\numberline {7.2}SCF計算}{25}{section.7.2}%
 \contentsline {section}{\numberline {7.3}Fermi速度の計算と描画}{26}{section.7.3}%
 \contentsline {section}{\numberline {7.4}原子軌道射影の計算と描画}{27}{section.7.4}%
-\contentsline {chapter}{\numberline {第8章}FermiSurfer for Android}{30}{chapter.8}%
-\contentsline {section}{\numberline {8.1}インストール}{30}{section.8.1}%
-\contentsline {section}{\numberline {8.2}入力ファイル}{30}{section.8.2}%
-\contentsline {section}{\numberline {8.3}実行}{30}{section.8.3}%
-\contentsline {chapter}{\numberline {第9章}FermiSurfer on Web}{31}{chapter.9}%
-\contentsline {section}{\numberline {9.1}操作方法}{31}{section.9.1}%
-\contentsline {section}{\numberline {9.2}ファイル入力}{31}{section.9.2}%
-\contentsline {section}{\numberline {9.3}Web上のファイルを開く}{31}{section.9.3}%
-\contentsline {chapter}{\numberline {第10章}謝辞}{33}{chapter.10}%
-\contentsline {chapter}{\numberline {第11章}プログラムの再配布}{34}{chapter.11}%
-\contentsline {section}{\numberline {11.1}自分のプログラムにFermiSurferを含める}{34}{section.11.1}%
-\contentsline {section}{\numberline {11.2}MIT ライセンス}{34}{section.11.2}%
-\contentsline {chapter}{\numberline {第12章}問い合わせ先}{35}{chapter.12}%
+\contentsline {chapter}{\numberline {第8章}FermiSurfer on Web}{30}{chapter.8}%
+\contentsline {section}{\numberline {8.1}操作方法}{30}{section.8.1}%
+\contentsline {section}{\numberline {8.2}ファイル入力}{30}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Web上のファイルを開く}{30}{section.8.3}%
+\contentsline {chapter}{\numberline {第9章}謝辞}{32}{chapter.9}%
+\contentsline {chapter}{\numberline {第10章}プログラムの再配布}{33}{chapter.10}%
+\contentsline {section}{\numberline {10.1}自分のプログラムにFermiSurferを含める}{33}{section.10.1}%
+\contentsline {section}{\numberline {10.2}MIT ライセンス}{33}{section.10.2}%
+\contentsline {chapter}{\numberline {第11章}問い合わせ先}{34}{chapter.11}%

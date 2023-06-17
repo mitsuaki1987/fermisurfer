@@ -41,16 +41,12 @@
 \BOOKMARK [1][-]{section.7.2}{SCF計算}{chapter.7}% 40
 \BOOKMARK [1][-]{section.7.3}{Fermi速度の計算と描画}{chapter.7}% 41
 \BOOKMARK [1][-]{section.7.4}{原子軌道射影の計算と描画}{chapter.7}% 42
-\BOOKMARK [0][-]{chapter.8}{FermiSurfer for Android}{}% 43
-\BOOKMARK [1][-]{section.8.1}{インストール}{chapter.8}% 44
-\BOOKMARK [1][-]{section.8.2}{入力ファイル}{chapter.8}% 45
-\BOOKMARK [1][-]{section.8.3}{実行}{chapter.8}% 46
-\BOOKMARK [0][-]{chapter.9}{FermiSurfer on Web}{}% 47
-\BOOKMARK [1][-]{section.9.1}{操作方法}{chapter.9}% 48
-\BOOKMARK [1][-]{section.9.2}{ファイル入力}{chapter.9}% 49
-\BOOKMARK [1][-]{section.9.3}{Web上のファイルを開く}{chapter.9}% 50
-\BOOKMARK [0][-]{chapter.10}{謝辞}{}% 51
-\BOOKMARK [0][-]{chapter.11}{プログラムの再配布}{}% 52
-\BOOKMARK [1][-]{section.11.1}{自分のプログラムにFermiSurferを含める}{chapter.11}% 53
-\BOOKMARK [1][-]{section.11.2}{MIT ライセンス}{chapter.11}% 54
-\BOOKMARK [0][-]{chapter.12}{問い合わせ先}{}% 55
+\BOOKMARK [0][-]{chapter.8}{FermiSurfer on Web}{}% 43
+\BOOKMARK [1][-]{section.8.1}{操作方法}{chapter.8}% 44
+\BOOKMARK [1][-]{section.8.2}{ファイル入力}{chapter.8}% 45
+\BOOKMARK [1][-]{section.8.3}{Web上のファイルを開く}{chapter.8}% 46
+\BOOKMARK [0][-]{chapter.9}{謝辞}{}% 47
+\BOOKMARK [0][-]{chapter.10}{プログラムの再配布}{}% 48
+\BOOKMARK [1][-]{section.10.1}{自分のプログラムにFermiSurferを含める}{chapter.10}% 49
+\BOOKMARK [1][-]{section.10.2}{MIT ライセンス}{chapter.10}% 50
+\BOOKMARK [0][-]{chapter.11}{問い合わせ先}{}% 51
