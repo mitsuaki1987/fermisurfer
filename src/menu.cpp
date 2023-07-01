@@ -937,7 +937,7 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line width : ")),
     wxGBPosition(0, 1), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_line, this, itext_line);
-  textbox_linewidth = new wxTextCtrl(panel, itext_line, wxT(""));
+  textbox_linewidth = new wxTextCtrl(panel, itext_line, wxT("00000000"));
   gbsizer->Add(textbox_linewidth, wxGBPosition(0, 2), wxGBSpan(1, 1));
   textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
 
@@ -949,13 +949,13 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Section-v : ")), 
     wxGBPosition(1, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectionx);
-  wxTextCtrl* textbox_sectionx = new wxTextCtrl(panel, itext_sectionx, wxT(""));
+  wxTextCtrl* textbox_sectionx = new wxTextCtrl(panel, itext_sectionx, wxT("00000000"));
   gbsizer->Add(textbox_sectionx, wxGBPosition(1, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectiony);
-  wxTextCtrl* textbox_sectiony = new wxTextCtrl(panel, itext_sectiony, wxT(""));
+  wxTextCtrl* textbox_sectiony = new wxTextCtrl(panel, itext_sectiony, wxT("00000000"));
   gbsizer->Add(textbox_sectiony, wxGBPosition(1, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_section, this, itext_sectionz);
-  wxTextCtrl* textbox_sectionz = new wxTextCtrl(panel, itext_sectionz, wxT(""));
+  wxTextCtrl* textbox_sectionz = new wxTextCtrl(panel, itext_sectionz, wxT("00000000"));
   gbsizer->Add(textbox_sectionz, wxGBPosition(1, 3), wxGBSpan(1, 1));
   textbox_sectionx->ChangeValue(wxT("0"));
   textbox_sectiony->ChangeValue(wxT("0"));
@@ -964,13 +964,13 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Equator-v : ")), 
     wxGBPosition(2, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatorx);
-  wxTextCtrl* textbox_equatorx = new wxTextCtrl(panel, itext_equatorx, wxT(""));
+  wxTextCtrl* textbox_equatorx = new wxTextCtrl(panel, itext_equatorx, wxT("00000000"));
   gbsizer->Add(textbox_equatorx, wxGBPosition(2, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatory);
-  wxTextCtrl* textbox_equatory = new wxTextCtrl(panel, itext_equatory, wxT(""));
+  wxTextCtrl* textbox_equatory = new wxTextCtrl(panel, itext_equatory, wxT("00000000"));
   gbsizer->Add(textbox_equatory, wxGBPosition(2, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::checkvalue_equator, this, itext_equatorz);
-  wxTextCtrl* textbox_equatorz = new wxTextCtrl(panel, itext_equatorz, wxT(""));
+  wxTextCtrl* textbox_equatorz = new wxTextCtrl(panel, itext_equatorz, wxT("00000000"));
   gbsizer->Add(textbox_equatorz, wxGBPosition(2, 3), wxGBSpan(1, 1));
   textbox_equatorx->ChangeValue(wxT("0"));
   textbox_equatory->ChangeValue(wxT("0"));
@@ -979,26 +979,26 @@ MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Interpol ratio : ")),
     wxGBPosition(3, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_interpol, this, itext_interpol);
-  wxTextCtrl* textbox_interpol = new wxTextCtrl(panel, itext_interpol, wxT(""));
+  wxTextCtrl* textbox_interpol = new wxTextCtrl(panel, itext_interpol, wxT("00000000"));
   gbsizer->Add(textbox_interpol, wxGBPosition(3, 1), wxGBSpan(1, 1));
   textbox_interpol->ChangeValue(wxT("1"));
 
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Fermi energy : ")), 
     wxGBPosition(4, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_shift, this, itext_shift);
-  wxTextCtrl* textbox_shift = new wxTextCtrl(panel, itext_shift, wxT(""));
+  wxTextCtrl* textbox_shift = new wxTextCtrl(panel, itext_shift, wxT("00000000"));
   gbsizer->Add(textbox_shift, wxGBPosition(4, 1), wxGBSpan(1, 1));
   textbox_shift->ChangeValue(wxT("0"));
 
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Min of Scale : ")), 
     wxGBPosition(5, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_colorscale, this, itext_colorscalemin);
-  textbox_min = new wxTextCtrl(panel, itext_colorscalemin, wxT(""));
+  textbox_min = new wxTextCtrl(panel, itext_colorscalemin, wxT("00000000"));
   gbsizer->Add(textbox_min, wxGBPosition(5, 1), wxGBSpan(1, 1));
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Max of Scale : ")),
     wxGBPosition(6, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::radiovalue_colorscale, this, itext_colorscalemax);
-  textbox_max = new wxTextCtrl(panel, itext_colorscalemax, wxT(""));
+  textbox_max = new wxTextCtrl(panel, itext_colorscalemax, wxT("00000000"));
   gbsizer->Add(textbox_max, wxGBPosition(6, 1), wxGBSpan(1, 1));
 
   wxString choices_tetra[] = { wxT("1"), wxT("2"), wxT("3"), wxT("4"), wxT("5"), wxT("6"), wxT("7") ,
@@ -1046,13 +1046,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("BZ number : ")),
     wxGBPosition(10, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BZ_number, this, itext_BZ_number0);
-  textbox_BZ_number0 = new wxTextCtrl(panel, itext_BZ_number0, wxT(""));
+  textbox_BZ_number0 = new wxTextCtrl(panel, itext_BZ_number0, wxT("00000000"));
   gbsizer->Add(textbox_BZ_number0, wxGBPosition(10, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BZ_number, this, itext_BZ_number1);
-  textbox_BZ_number1 = new wxTextCtrl(panel, itext_BZ_number1, wxT(""));
+  textbox_BZ_number1 = new wxTextCtrl(panel, itext_BZ_number1, wxT("00000000"));
   gbsizer->Add(textbox_BZ_number1, wxGBPosition(10, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BZ_number, this, itext_BZ_number2);
-  textbox_BZ_number2 = new wxTextCtrl(panel, itext_BZ_number2, wxT(""));
+  textbox_BZ_number2 = new wxTextCtrl(panel, itext_BZ_number2, wxT("00000000"));
   gbsizer->Add(textbox_BZ_number2, wxGBPosition(10, 3), wxGBSpan(1, 1));
   textbox_BZ_number0->ChangeValue(wxT("1"));
   textbox_BZ_number1->ChangeValue(wxT("1"));
@@ -1061,13 +1061,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Background (RGB) : ")),
     wxGBPosition(11, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundR);
-  textbox_BackGroundR = new wxTextCtrl(panel, itext_BackGroundR, wxT(""));
+  textbox_BackGroundR = new wxTextCtrl(panel, itext_BackGroundR, wxT("00000000"));
   gbsizer->Add(textbox_BackGroundR, wxGBPosition(11, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundG);
-  textbox_BackGroundG = new wxTextCtrl(panel, itext_BackGroundG, wxT(""));
+  textbox_BackGroundG = new wxTextCtrl(panel, itext_BackGroundG, wxT("00000000"));
   gbsizer->Add(textbox_BackGroundG, wxGBPosition(11, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_BackGround, this, itext_BackGroundB);
-  textbox_BackGroundB = new wxTextCtrl(panel, itext_BackGroundB, wxT(""));
+  textbox_BackGroundB = new wxTextCtrl(panel, itext_BackGroundB, wxT("00000000"));
   gbsizer->Add(textbox_BackGroundB, wxGBPosition(11, 3), wxGBSpan(1, 1));
   textbox_BackGroundR->ChangeValue(wxT("0"));
   textbox_BackGroundG->ChangeValue(wxT("0"));
@@ -1076,13 +1076,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Line color (RGB) : ")),
     wxGBPosition(12, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorR);
-  textbox_LineColorR = new wxTextCtrl(panel, itext_LineColorR, wxT(""));
+  textbox_LineColorR = new wxTextCtrl(panel, itext_LineColorR, wxT("00000000"));
   gbsizer->Add(textbox_LineColorR, wxGBPosition(12, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorG);
-  textbox_LineColorG = new wxTextCtrl(panel, itext_LineColorG, wxT(""));
+  textbox_LineColorG = new wxTextCtrl(panel, itext_LineColorG, wxT("00000000"));
   gbsizer->Add(textbox_LineColorG, wxGBPosition(12, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_LineColor, this, itext_LineColorB);
-  textbox_LineColorB = new wxTextCtrl(panel, itext_LineColorB, wxT(""));
+  textbox_LineColorB = new wxTextCtrl(panel, itext_LineColorB, wxT("00000000"));
   gbsizer->Add(textbox_LineColorB, wxGBPosition(12, 3), wxGBSpan(1, 1));
   textbox_LineColorR->ChangeValue(wxT("1"));
   textbox_LineColorG->ChangeValue(wxT("1"));
@@ -1092,13 +1092,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxButton(panel, ibutton_rotate, wxT("Rotate")), 
     wxGBPosition(13, 0), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotx);
-  textbox_rotatex = new wxTextCtrl(panel, itext_rotx, wxT(""));
+  textbox_rotatex = new wxTextCtrl(panel, itext_rotx, wxT("00000000"));
   gbsizer->Add(textbox_rotatex, wxGBPosition(13, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_roty);
-  textbox_rotatey = new wxTextCtrl(panel, itext_roty, wxT(""));
+  textbox_rotatey = new wxTextCtrl(panel, itext_roty, wxT("00000000"));
   gbsizer->Add(textbox_rotatey, wxGBPosition(13, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_rotz);
-  textbox_rotatez = new wxTextCtrl(panel, itext_rotz, wxT(""));
+  textbox_rotatez = new wxTextCtrl(panel, itext_rotz, wxT("00000000"));
   gbsizer->Add(textbox_rotatez, wxGBPosition(13, 3), wxGBSpan(1, 1));
   textbox_rotatex->ChangeValue(wxT("0"));
   textbox_rotatey->ChangeValue(wxT("0"));
@@ -1107,10 +1107,10 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Position : ")), 
     wxGBPosition(14, 1), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positionx);
-  textbox_positionx = new wxTextCtrl(panel, itext_positionx, wxT(""));
+  textbox_positionx = new wxTextCtrl(panel, itext_positionx, wxT("00000000"));
   gbsizer->Add(textbox_positionx, wxGBPosition(14, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_positiony);
-  textbox_positiony = new wxTextCtrl(panel, itext_positiony, wxT(""));
+  textbox_positiony = new wxTextCtrl(panel, itext_positiony, wxT("00000000"));
   gbsizer->Add(textbox_positiony, wxGBPosition(14, 3), wxGBSpan(1, 1));
   textbox_positionx->ChangeValue(wxT("0"));
   textbox_positiony->ChangeValue(wxT("0"));
@@ -1118,7 +1118,7 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Scale : ")), 
     wxGBPosition(15, 2), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_view, this, itext_scale);
-  textbox_scale = new wxTextCtrl(panel, itext_scale, wxT(""));
+  textbox_scale = new wxTextCtrl(panel, itext_scale, wxT("00000000"));
   gbsizer->Add(textbox_scale, wxGBPosition(15, 3), wxGBSpan(1, 1));
   textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
 
@@ -1160,13 +1160,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Section (RGB) : ")),
     wxGBPosition(19, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Section, this, itext_SectionR);
-  textbox_SectionR = new wxTextCtrl(panel, itext_SectionR, wxT(""));
+  textbox_SectionR = new wxTextCtrl(panel, itext_SectionR, wxT("00000000"));
   gbsizer->Add(textbox_SectionR, wxGBPosition(19, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Section, this, itext_SectionG);
-  textbox_SectionG = new wxTextCtrl(panel, itext_SectionG, wxT(""));
+  textbox_SectionG = new wxTextCtrl(panel, itext_SectionG, wxT("00000000"));
   gbsizer->Add(textbox_SectionG, wxGBPosition(19, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Section, this, itext_SectionB);
-  textbox_SectionB = new wxTextCtrl(panel, itext_SectionB, wxT(""));
+  textbox_SectionB = new wxTextCtrl(panel, itext_SectionB, wxT("00000000"));
   gbsizer->Add(textbox_SectionB, wxGBPosition(19, 3), wxGBSpan(1, 1));
   textbox_SectionR->ChangeValue(wxT("0.5"));
   textbox_SectionG->ChangeValue(wxT("0.5"));
@@ -1177,13 +1177,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Arrow (Start) : ")),
     wxGBPosition(20, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStart0);
-  textbox_ArrowStart0 = new wxTextCtrl(panel, itext_ArrowStart0, wxT(""));
+  textbox_ArrowStart0 = new wxTextCtrl(panel, itext_ArrowStart0, wxT("00000000"));
   gbsizer->Add(textbox_ArrowStart0, wxGBPosition(20, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStart1);
-  textbox_ArrowStart1 = new wxTextCtrl(panel, itext_ArrowStart1, wxT(""));
+  textbox_ArrowStart1 = new wxTextCtrl(panel, itext_ArrowStart1, wxT("00000000"));
   gbsizer->Add(textbox_ArrowStart1, wxGBPosition(20, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowStart2);
-  textbox_ArrowStart2 = new wxTextCtrl(panel, itext_ArrowStart2, wxT(""));
+  textbox_ArrowStart2 = new wxTextCtrl(panel, itext_ArrowStart2, wxT("00000000"));
   gbsizer->Add(textbox_ArrowStart2, wxGBPosition(20, 3), wxGBSpan(1, 1));
   textbox_ArrowStart0->ChangeValue(wxT("0.0"));
   textbox_ArrowStart1->ChangeValue(wxT("0.0"));
@@ -1194,13 +1194,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Arrow (End) : ")),
     wxGBPosition(21, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEnd0);
-  textbox_ArrowEnd0 = new wxTextCtrl(panel, itext_ArrowEnd0, wxT(""));
+  textbox_ArrowEnd0 = new wxTextCtrl(panel, itext_ArrowEnd0, wxT("00000000"));
   gbsizer->Add(textbox_ArrowEnd0, wxGBPosition(21, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEnd1);
-  textbox_ArrowEnd1 = new wxTextCtrl(panel, itext_ArrowEnd1, wxT(""));
+  textbox_ArrowEnd1 = new wxTextCtrl(panel, itext_ArrowEnd1, wxT("00000000"));
   gbsizer->Add(textbox_ArrowEnd1, wxGBPosition(21, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowEnd2);
-  textbox_ArrowEnd2 = new wxTextCtrl(panel, itext_ArrowEnd2, wxT(""));
+  textbox_ArrowEnd2 = new wxTextCtrl(panel, itext_ArrowEnd2, wxT("00000000"));
   gbsizer->Add(textbox_ArrowEnd2, wxGBPosition(21, 3), wxGBSpan(1, 1));
   textbox_ArrowEnd0->ChangeValue(wxT("0.0"));
   textbox_ArrowEnd1->ChangeValue(wxT("0.0"));
@@ -1211,13 +1211,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Arrow (Diff) : ")),
     wxGBPosition(22, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiff0);
-  textbox_ArrowDiff0 = new wxTextCtrl(panel, itext_ArrowDiff0, wxT(""));
+  textbox_ArrowDiff0 = new wxTextCtrl(panel, itext_ArrowDiff0, wxT("00000000"));
   gbsizer->Add(textbox_ArrowDiff0, wxGBPosition(22, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiff1);
-  textbox_ArrowDiff1 = new wxTextCtrl(panel, itext_ArrowDiff1, wxT(""));
+  textbox_ArrowDiff1 = new wxTextCtrl(panel, itext_ArrowDiff1, wxT("00000000"));
   gbsizer->Add(textbox_ArrowDiff1, wxGBPosition(22, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Arrow, this, itext_ArrowDiff2);
-  textbox_ArrowDiff2 = new wxTextCtrl(panel, itext_ArrowDiff2, wxT(""));
+  textbox_ArrowDiff2 = new wxTextCtrl(panel, itext_ArrowDiff2, wxT("00000000"));
   gbsizer->Add(textbox_ArrowDiff2, wxGBPosition(22, 3), wxGBSpan(1, 1));
   textbox_ArrowDiff0->ChangeValue(wxT("0.0"));
   textbox_ArrowDiff1->ChangeValue(wxT("0.0"));
@@ -1228,13 +1228,13 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Sphere center : ")),
     wxGBPosition(23, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_sphere, this, itext_sphereX);
-  textbox_sphereX = new wxTextCtrl(panel, itext_sphereX, wxT(""));
+  textbox_sphereX = new wxTextCtrl(panel, itext_sphereX, wxT("00000000"));
   gbsizer->Add(textbox_sphereX, wxGBPosition(23, 1), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_sphere, this, itext_sphereY);
-  textbox_sphereY = new wxTextCtrl(panel, itext_sphereY, wxT(""));
+  textbox_sphereY = new wxTextCtrl(panel, itext_sphereY, wxT("00000000"));
   gbsizer->Add(textbox_sphereY, wxGBPosition(23, 2), wxGBSpan(1, 1));
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_sphere, this, itext_sphereZ);
-  textbox_sphereZ = new wxTextCtrl(panel, itext_sphereZ, wxT(""));
+  textbox_sphereZ = new wxTextCtrl(panel, itext_sphereZ, wxT("00000000"));
   gbsizer->Add(textbox_sphereZ, wxGBPosition(23, 3), wxGBSpan(1, 1));
   textbox_sphereX->ChangeValue(wxT("0.0"));
   textbox_sphereY->ChangeValue(wxT("0.0"));
@@ -1243,7 +1243,7 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Sphere radius : ")),
     wxGBPosition(24, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
   Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_sphere, this, itext_sphereR);
-  textbox_sphereR = new wxTextCtrl(panel, itext_sphereR, wxT(""));
+  textbox_sphereR = new wxTextCtrl(panel, itext_sphereR, wxT("00000000"));
   gbsizer->Add(textbox_sphereR, wxGBPosition(24, 1), wxGBSpan(1, 1));
   textbox_sphereR->ChangeValue(wxT("0.0"));
   SetSizer(sizermain);
@@ -1309,13 +1309,13 @@ void MyFrame::modify_band() {
     }
 
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+1);
-    textbox_BandR[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+1, wxT(""));
+    textbox_BandR[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+1, wxT("00000000"));
     gbsizer->Add(textbox_BandR[ib], wxGBPosition(25 + ib, 1), wxGBSpan(1, 1));
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+2);
-    textbox_BandG[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+2, wxT(""));
+    textbox_BandG[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+2, wxT("00000000"));
     gbsizer->Add(textbox_BandG[ib], wxGBPosition(25 + ib, 2), wxGBSpan(1, 1));
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+3);
-    textbox_BandB[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+3, wxT(""));
+    textbox_BandB[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+3, wxT("00000000"));
     gbsizer->Add(textbox_BandB[ib], wxGBPosition(25 + ib, 3), wxGBSpan(1, 1));
     textbox_BandR[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][0]));
     textbox_BandG[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][1]));
