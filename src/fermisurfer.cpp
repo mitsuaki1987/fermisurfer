@@ -153,7 +153,7 @@ GLfloat patch_min;  //!< Max value across patch
 */
 int *nnl;             //!< The number of nodeline
 GLfloat ****kvnl;     //!< @f$k@f$-vector of nodeline [::nb][::nnl][2][3]
-GLfloat **kvnl_rot; //!< @f$k@f$-vector of nodeline [::nb][::nnl*2*3]
+GLfloat **kvnl_rot; //!< @f$k@f$-vector of nodeline [::nb][::nnl*4*3]
 /*
  2D Fermi line
 */
@@ -163,7 +163,8 @@ GLfloat secscale;          //!< 0.0 (across @f$\Gamma@f$) or 1.0
 GLfloat axis2d[2][3];      //!< @f$k@f$-vector to define section
 int *n2d;                  //!< Number of line segment
 GLfloat **kv2d;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
-GLfloat **clr2d;         //!< Matrix element for 2D plot [::nb][::n2d*2*4]
+GLfloat** kv2d_fat;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*4*3]
+GLfloat **clr2d;         //!< Matrix element for 2D plot [::nb][::n2d*2*2*4]
 int nbzl2d;                //!< The number of Lines of 1st Brillouin zone
 GLfloat bzl2d[26][3];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
 GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
@@ -174,7 +175,7 @@ GLfloat eqvec[3]; //!<  @f$k@f$-vector for equator
 GLfloat eqvec_fr[3]; //!<  @f$k@f$-vector for equator
 int *nequator;             //!< The number of equator
 GLfloat ****kveq;     //!< @f$k@f$-vector of equator [::nb][::nequator][2][3]
-GLfloat **kveq_rot; //!< @f$k@f$-vector of equator [::nb][::nequator*2*3]
+GLfloat **kveq_rot; //!< @f$k@f$-vector of equator [::nb][::nequator*4*3]
 /*
   Variables for mouse  & cursorkey
 */
@@ -317,6 +318,7 @@ bool MyApp::OnInit()
   kvnl = new GLfloat * **[nb];
   kvnl_rot = new GLfloat *[nb];
   kv2d = new GLfloat * [nb];
+  kv2d_fat = new GLfloat * [nb];
   clr2d = new GLfloat * [nb];
   kveq = new GLfloat *** [nb];
   kveq_rot = new GLfloat *[nb];
@@ -333,6 +335,7 @@ bool MyApp::OnInit()
   /**/
   max_and_min_bz();
   /**/
+  skip_minmax = 0;
   compute_patch_segment();
   /*
     Description

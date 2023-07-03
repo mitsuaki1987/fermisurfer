@@ -111,7 +111,7 @@ void equator() {
     Allocate
     */
     kveq[ib] = new GLfloat * *[nequator[ib]];
-    kveq_rot[ib] = new GLfloat[6 * nequator[ib]];
+    kveq_rot[ib] = new GLfloat[12 * nequator[ib]];
     for (itri = 0; itri < nequator[ib]; ++itri) {
       kveq[ib][itri] = new GLfloat * [2];
       for (i = 0; i < 2; ++i)

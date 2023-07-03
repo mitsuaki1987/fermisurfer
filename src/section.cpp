@@ -369,7 +369,8 @@ private(itri,i,j,ithread)
 
     *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, n2d[ib]);
     kv2d[ib] = new GLfloat[6 * n2d[ib]];
-    clr2d[ib] = new GLfloat[8 * n2d[ib]];
+    kv2d_fat[ib] = new GLfloat[12 * n2d[ib]];
+    clr2d[ib] = new GLfloat[16 * n2d[ib]];
 
     n2d0 = 0;
     for (ithread = 0; ithread < nthreads; ithread++) {
@@ -379,7 +380,8 @@ private(itri,i,j,ithread)
             kv2d[ib][j + i * 3 + 6 * n2d0] = kv2d_v.at(ithread).at(itri).at(i).at(j);
           }
           for (j = 0; j < 3; j++) {
-            clr2d[ib][j + i * 4 + 8 * n2d0] = clr2d_v.at(ithread).at(itri).at(i).at(j);
+            clr2d[ib][j + i * 8 + 0 + 16 * n2d0] = clr2d_v.at(ithread).at(itri).at(i).at(j);
+            clr2d[ib][j + i * 8 + 4 + 16 * n2d0] = clr2d_v.at(ithread).at(itri).at(i).at(j);
           }
         }
         n2d0 += 1;

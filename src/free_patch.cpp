@@ -104,6 +104,7 @@ void free_patch()
   if (refresh_section == 1) {
     for (ib = 0; ib < nb; ++ib) {
       delete[] kv2d[ib];
+      delete[] kv2d_fat[ib];
       delete[] clr2d[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
   }/*if (refresh_section == 1)*/

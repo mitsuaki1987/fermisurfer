@@ -109,7 +109,7 @@ private(itri,i,j,ithread)
     *terminal << wxString::Format(wxT("    %d       %d\n"), ib + 1, nnl[ib]);
 
     kvnl[ib] = new GLfloat * *[nnl[ib]];
-    kvnl_rot[ib] = new GLfloat[6 * nnl[ib]];
+    kvnl_rot[ib] = new GLfloat[12 * nnl[ib]];
     for (itri = 0; itri < nnl[ib]; ++itri) {
       kvnl[ib][itri] = new GLfloat *[2];
       for (i = 0; i < 2; ++i) {

@@ -48,7 +48,7 @@ int ng[3],
 int ng0[3]
 ) 
 {
-  int i, j, ib, i0, i1, i2;
+  int i, j, ib, i0, i1, i2, i3;
 
   for (i = 0; i < 3; i++) ng[i] = ng0[i];
 
@@ -114,6 +114,7 @@ int ng0[3]
           mat0[ib][i0][i1][i2] = new GLfloat[3];
           mat[ib][i0][i1][i2] = new GLfloat[3];
           vf[ib][i0][i1][i2] = new GLfloat[3];
+          for (i3 = 0; i3 < 3; i3++) mat0[ib][i0][i1][i2][i3] = 0.0f;
         }
       }
     }

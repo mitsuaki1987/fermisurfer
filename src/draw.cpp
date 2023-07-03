@@ -40,6 +40,94 @@ THE SOFTWARE.
 #include "variable.hpp"
 #include "operation.hpp"
 /**
+Transform line to rectngular
+*/
+static void line2rect(
+  GLfloat* line, 
+  GLfloat* rect) 
+{
+  int ii, jj;
+  GLfloat view[] = { 0.0, 0.0, -5.0 };
+  GLfloat diff[3], dline[6], cross[6], thr = 0.00001, lcross;
+
+  for (ii = 0; ii < 3; ii++) {
+    diff[ii] = line[ii + 3] - line[ii];
+    for (jj = 0; jj < 2; jj++) dline[3 * jj + ii] = line[3 * jj + ii] - view[ii];
+  }
+  //
+  // Orthogonal to two vectors
+  //
+  for (jj = 0; jj < 2; jj++){
+    cross[jj * 3 + 0] = dline[jj * 3 + 1] * diff[2] - dline[jj * 3 + 2] * diff[1];
+    cross[jj * 3 + 1] = dline[jj * 3 + 2] * diff[0] - dline[jj * 3 + 0] * diff[2];
+    cross[jj * 3 + 2] = dline[jj * 3 + 0] * diff[1] - dline[jj * 3 + 1] * diff[0];
+  }
+  //
+  // Normalize
+  //
+  for (jj = 0; jj < 2; jj++) {
+    lcross = 0.0;
+    for (ii = 0; ii < 3; ii++) {
+      lcross += cross[3 * jj + ii] * cross[3 * jj + ii];
+    }
+    lcross= sqrtf(lcross);
+    if (lcross < thr) lcross = thr;
+    for (ii = 0; ii < 3; ii++) cross[3 * jj + ii] *= linewidth * 0.01 / lcross;
+  }
+  //
+  // Set thin rectangular
+  //
+  for (ii = 0; ii < 3; ii++) {
+    rect[0 * 3 + ii] = line[0 * 3 + ii] + cross[0 * 3 + ii];
+    rect[1 * 3 + ii] = line[0 * 3 + ii] - cross[0 * 3 + ii];
+    rect[2 * 3 + ii] = line[1 * 3 + ii] - cross[1 * 3 + ii];
+    rect[3 * 3 + ii] = line[1 * 3 + ii] + cross[1 * 3 + ii];
+  }
+}/**
+Transform line to rectngular
+*/
+static void line2tri(
+  GLfloat* line,
+  GLfloat* tri)
+{
+  int ii, jj;
+  GLfloat view[] = { 0.0, 0.0, -5.0 };
+  GLfloat diff[3], dline[6], cross[6], thr = 0.00001, lcross;
+
+  for (ii = 0; ii < 3; ii++) {
+    diff[ii] = line[ii + 3] - line[ii];
+    for (jj = 0; jj < 2; jj++) dline[3 * jj + ii] = line[3 * jj + ii] - view[ii];
+  }
+  //
+  // Orthogonal to two vectors
+  //
+  for (jj = 0; jj < 2; jj++) {
+    cross[jj * 3 + 0] = dline[jj * 3 + 1] * diff[2] - dline[jj * 3 + 2] * diff[1];
+    cross[jj * 3 + 1] = dline[jj * 3 + 2] * diff[0] - dline[jj * 3 + 0] * diff[2];
+    cross[jj * 3 + 2] = dline[jj * 3 + 0] * diff[1] - dline[jj * 3 + 1] * diff[0];
+  }
+  //
+  // Normalize
+  //
+  for (jj = 0; jj < 2; jj++) {
+    lcross = 0.0;
+    for (ii = 0; ii < 3; ii++) {
+      lcross += cross[3 * jj + ii] * cross[3 * jj + ii];
+    }
+    lcross = sqrtf(lcross);
+    if (lcross < thr) lcross = thr;
+    for (ii = 0; ii < 3; ii++) cross[3 * jj + ii] *= linewidth * 0.01 / lcross;
+  }
+  //
+  // Set thin rectangular
+  //
+  for (ii = 0; ii < 3; ii++) {
+    tri[0 * 3 + ii] = line[0 * 3 + ii] + cross[0 * 3 + ii];
+    tri[1 * 3 + ii] = line[0 * 3 + ii] - cross[0 * 3 + ii];
+    tri[2 * 3 + ii] = line[1 * 3 + ii] - cross[1 * 3 + ii];
+  }
+}
+/**
  @brief Draw Fermi surfaces
 
  Modify : ::nmlp_rot, ::kvp_rot, ::kvnl_rot
@@ -58,7 +146,7 @@ static void draw_fermi() {
       for (a2 = 0; a2 < BZ_number[2]; a2++) {
         for (ia = 0; ia < 3; ia++) kshift[ia] = bvec[0][ia] * a0 + bvec[1][ia] * a1 + bvec[2][ia] * a2;
 #pragma omp parallel default(none) \
-shared(nb,draw_band,ntri,rot,nmlp,arw,nmlp_rot,kvp,kvp_rot,arw_rot,trans,side,kshift) \
+shared(nb,draw_band,ntri,rot,nmlp,nmlp_rot,kvp,kvp_rot,trans,side,kshift) \
 private(ib)
         {
           int i, j, l, itri;
@@ -79,13 +167,6 @@ private(ib)
                       + rot[j][1] * nmlp[ib][itri][i][1]
                       + rot[j][2] * nmlp[ib][itri][i][2];
                     nmlp_rot[ib][j + 3 * i + 9 * itri] *= side;
-                    for (l = 0; l < 2; ++l) {
-                      arw_rot[ib][j + 3 * l + 6 * i + 18 * itri]
-                        = rot[j][0] * (arw[ib][itri][i][l][0] + kshift[0])
-                        + rot[j][1] * (arw[ib][itri][i][l][1] + kshift[1])
-                        + rot[j][2] * (arw[ib][itri][i][l][2] + kshift[2])
-                        + trans[j];
-                    }
                   }
                 }/*for (i = 0; i < 3; ++i)*/
               }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
@@ -112,11 +193,39 @@ private(ib)
         */
         glNormal3f(0.0f, 0.0f, 1.0f);
         if (color_scale == 3) {
+#pragma omp parallel default(none) \
+shared(nb,draw_band,ntri,rot,arw,arw_rot,trans,kshift) \
+private(ib)
+          {
+            int i, j, l, itri;
+            GLfloat line[6];
+
+            for (ib = 0; ib < nb; ib++) {
+              if (draw_band[ib] == 1) {
+#pragma omp for nowait
+                for (itri = 0; itri < ntri[ib]; ++itri) {
+                  for (i = 0; i < 3; ++i) {
+                    for (j = 0; j < 3; ++j) {
+                      for (l = 0; l < 2; ++l) {
+                        line[j + 3 * l]
+                          = rot[j][0] * (arw[ib][itri][i][l][0] + kshift[0])
+                          + rot[j][1] * (arw[ib][itri][i][l][1] + kshift[1])
+                          + rot[j][2] * (arw[ib][itri][i][l][2] + kshift[2])
+                          + trans[j];
+                      }
+                    }
+                    for (l = 0; l < 2; ++l) line[2 + 3 * l] += 0.001f;
+                    line2tri(line, &arw_rot[ib][9 * i + 27 * itri]);
+                  }/*for (i = 0; i < 3; ++i)*/
+                }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
+              }
+            }
+          }/*End of parallel region*/
           for (ib = 0; ib < nb; ib++) {
             if (draw_band[ib] == 1) {
               glColor3f(1.0 - clr[ib][0], 1.0 - clr[ib][1], 1.0 - clr[ib][2]);
               glVertexPointer(3, GL_FLOAT, 0, arw_rot[ib]);
-              glDrawArrays(GL_LINES, 0, ntri[ib] * 3 * 2);
+              glDrawArrays(GL_TRIANGLES, 0, ntri[ib] * 3 * 3);
             }
           }
         }
@@ -132,6 +241,7 @@ shared(nb,draw_band,nnl,rot,trans,kvnl,kvnl_rot,kshift) \
 private(ib)
           {
             int i, j, itri;
+            GLfloat line[6];
 
             for (ib = 0; ib < nb; ib++) {
               /**/
@@ -141,13 +251,14 @@ private(ib)
                   for (i = 0; i < 2; ++i) {
                     /**/
                     for (j = 0; j < 3; ++j)
-                      kvnl_rot[ib][j + 3 * i + 6 * itri]
+                      line[j + 3 * i]
                       = rot[j][0] * (kvnl[ib][itri][i][0] + kshift[0])
                       + rot[j][1] * (kvnl[ib][itri][i][1] + kshift[1])
                       + rot[j][2] * (kvnl[ib][itri][i][2] + kshift[2])
                       + trans[j];
-                    kvnl_rot[ib][2 + 3 * i + 6 * itri] += 0.001f;
+                    line[2 + 3 * i] += 0.001f;
                   }/*for (i = 0; i < 2; ++i)*/
+                  line2rect(line, &kvnl_rot[ib][12 * itri]);
                 }/*for (itri = 0; itri < nnl[ib]; ++itri)*/
               }/*if (draw_band[ib] == 1)*/
             }/*for (ib = 0; ib < nb; ib++)*/
@@ -160,7 +271,7 @@ private(ib)
           for (ib = 0; ib < nb; ib++) {
             if (draw_band[ib] == 1) {
               glVertexPointer(3, GL_FLOAT, 0, kvnl_rot[ib]);
-              glDrawArrays(GL_LINES, 0, 2 * nnl[ib]);
+              glDrawArrays(GL_QUADS, 0, 4 * nnl[ib]);
             }/*if (draw_band[ib] == 1)*/
           }/* for (ib = 0; ib < nb; ib++)*/
         }/*if (nodeline == 1)*/
@@ -176,6 +287,7 @@ shared(nb,draw_band,nequator,rot,trans,kveq,kveq_rot,kshift) \
 private(ib)
           {
             int i, j, itri;
+            GLfloat line[6];
 
             for (ib = 0; ib < nb; ib++) {
               /**/
@@ -185,13 +297,14 @@ private(ib)
                   for (i = 0; i < 2; ++i) {
                     /**/
                     for (j = 0; j < 3; ++j)
-                      kveq_rot[ib][j + 3 * i + 6 * itri]
+                      line[j + 3 * i]
                       = rot[j][0] * (kveq[ib][itri][i][0] + kshift[0])
                       + rot[j][1] * (kveq[ib][itri][i][1] + kshift[1])
                       + rot[j][2] * (kveq[ib][itri][i][2] + kshift[2])
                       + trans[j];
-                    kveq_rot[ib][2 + 3 * i + 6 * itri] += 0.001f;
+                    line[2 + 3 * i] += 0.001f;
                   }/*for (i = 0; i < 2; ++i)*/
+                  line2rect(line, &kveq_rot[ib][12 * itri]);
                 }/*for (itri = 0; itri < nequator[ib]; ++itri)*/
               }/*if (draw_band[ib] == 1)*/
             }/*for (ib = 0; ib < nb; ib++)*/
@@ -204,7 +317,7 @@ private(ib)
           for (ib = 0; ib < nb; ib++) {
             if (draw_band[ib] == 1) {
               glVertexPointer(3, GL_FLOAT, 0, kveq_rot[ib]);
-              glDrawArrays(GL_LINES, 0, 2 * nequator[ib]);
+              glDrawArrays(GL_QUADS, 0, 4 * nequator[ib]);
             }/*if (draw_band[ib] == 1)*/
           }/* for (ib = 0; ib < nb; ib++)*/
         }/*if (nodeline == 1)*/
@@ -218,7 +331,7 @@ private(ib)
 static void draw_bz_lines() {
   int ibzl, i, j, a0, a1, a2, ia, icount;
   GLfloat bzl2[3], bvec2[3][3], linecolor[4], secvec2[3], kshift[3], arrow_c[3];
-  GLfloat vertices[300], sphere_v2[1140]/*190*2*3*/;
+  GLfloat vertices[300], sphere_v2[1140]/*190*2*3*/, rect[600];
   //
   // Line color is oposit of BG color
   //
@@ -242,10 +355,11 @@ static void draw_bz_lines() {
                         + trans[j];
               for (j = 0; j < 3; j++) vertices[j + 3 * i] = bzl2[j];
             }/*for (i = 0; i< 2; ++i)*/
+            line2rect(vertices, rect);
             glColor3fv(linecolor);
             glNormal3f(0.0f, 0.0f, 1.0f);
-            glVertexPointer(3, GL_FLOAT, 0, vertices);
-            glDrawArrays(GL_LINES, 0, 2);
+            glVertexPointer(3, GL_FLOAT, 0, rect);
+            glDrawArrays(GL_QUADS, 0, 4);
           }/*for (ibzl = 0; ibzl < nbzl; ++ibzl)*/
         }/*if (fbz == 1)*/
         else {
@@ -259,24 +373,31 @@ static void draw_bz_lines() {
                           + rot[j][2] * bvec[i][2];
             }/*for (j = 0; j < 3; ++j)*/
           }/*for (i = 0; i < 3; ++i)*/
-          for (i = 0; i < 3; ++i) vertices[i] = trans[i];
-          for (i = 0; i < 3; ++i) vertices[i + 3] = trans[i] + bvec2[0][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 2] = trans[i] + bvec2[0][i] + bvec2[1][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 3] = trans[i] + bvec2[0][i] + bvec2[1][i] + bvec2[2][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 4] = trans[i] + bvec2[1][i] + bvec2[2][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 5] = trans[i] + bvec2[1][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 6] = trans[i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 7] = trans[i] + bvec2[2][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 8] = trans[i] + bvec2[0][i] + bvec2[2][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 9] = trans[i] + bvec2[0][i] + bvec2[1][i] + bvec2[2][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 10] = trans[i] + bvec2[0][i] + bvec2[2][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 11] = trans[i] + bvec2[0][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 12] = trans[i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 13] = trans[i] + bvec2[2][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 14] = trans[i] + bvec2[1][i] + bvec2[2][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 15] = trans[i] + bvec2[1][i];
-          for (i = 0; i < 3; ++i) vertices[i + 3 * 16] = trans[i] + bvec2[0][i] + bvec2[1][i];
-          for (i = 0; i < 17; ++i) {
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 0 ] = trans[i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 1 ] = trans[i] + bvec2[0][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 2 ] = trans[i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 3 ] = trans[i] + bvec2[1][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 4 ] = trans[i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 5 ] = trans[i] + bvec2[2][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 6 ] = trans[i] + bvec2[0][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 7 ] = trans[i] + bvec2[0][i] + bvec2[1][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 8 ] = trans[i] + bvec2[0][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 9 ] = trans[i] + bvec2[0][i] + bvec2[2][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 10] = trans[i] + bvec2[1][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 11] = trans[i] + bvec2[1][i] + bvec2[2][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 12] = trans[i] + bvec2[1][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 13] = trans[i] + bvec2[1][i] + bvec2[0][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 14] = trans[i] + bvec2[2][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 15] = trans[i] + bvec2[2][i] + bvec2[0][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 16] = trans[i] + bvec2[2][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 17] = trans[i] + bvec2[2][i] + bvec2[1][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 18] = trans[i] + bvec2[1][i] + bvec2[2][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 19] = trans[i] + bvec2[1][i] + bvec2[2][i] + bvec2[0][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 20] = trans[i] + bvec2[2][i] + bvec2[0][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 21] = trans[i] + bvec2[2][i] + bvec2[0][i] + bvec2[1][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 22] = trans[i] + bvec2[0][i] + bvec2[1][i];
+          for (i = 0; i < 3; ++i) vertices[i + 3 * 23] = trans[i] + bvec2[0][i] + bvec2[1][i] + bvec2[2][i];
+          for (i = 0; i < 24; ++i) {
             for (j = 0; j < 3; ++j) {
               vertices[j + 3 * i] = vertices[j + 3 * i]
                 + rot[j][0] * kshift[0]
@@ -284,10 +405,13 @@ static void draw_bz_lines() {
                 + rot[j][2] * kshift[2];
             }/*for (j = 0; j < 3; ++j)*/
           }/*for (i = 0; i < 3; ++i)*/
+          for (i = 0; i < 12; ++i) {
+            line2rect(&vertices[6*i], &rect[12*i]);
+          }
           glColor3fv(linecolor);
           glNormal3f(0.0f, 0.0f, 1.0f);
-          glVertexPointer(3, GL_FLOAT, 0, vertices);
-          glDrawArrays(GL_LINE_STRIP, 0, 17);
+          glVertexPointer(3, GL_FLOAT, 0, rect);
+          glDrawArrays(GL_QUADS, 0, 48);
         }/*if (fbz != 1)*/
       }
     }
@@ -306,10 +430,11 @@ static void draw_bz_lines() {
                           + rot[j][2] * arrow_c[2]
                           + trans[j];
   }/*for (i = 0; i< 2; ++i)*/
+  line2tri(vertices, rect);
   glColor3fv(linecolor);
   glNormal3f(0.0f, 0.0f, 1.0f);
-  glVertexPointer(3, GL_FLOAT, 0, vertices);
-  glDrawArrays(GL_LINES, 0, 2);
+  glVertexPointer(3, GL_FLOAT, 0, rect);
+  glDrawArrays(GL_TRIANGLES, 0, 3);
   //
   // Section for the 2D Fermi line
   //
@@ -355,58 +480,60 @@ static void draw_bz_lines() {
 static void draw_colorbar()
 {
   int i, j, k;
-  GLfloat mat2, vertices[366], colors[488], vector[18], vector_color[24],
+  GLfloat mat2, vertices[366], colors[488], vector[6], rect[27], rect_color[36],
     norm;
 
   glEnableClientState(GL_COLOR_ARRAY);
   /*
   Reciplocal lattice vectors
   */
-  for (i = 0; i < 6; i++) {
-    vector[3 * i] = -1.2f;
-    vector[3 * i + 1] = -1.05f;
-    vector[3 * i + 2] = 0.0f;
-  }
   for (i = 0; i < 3; i++) {
+    vector[0] = -1.2f;
+    vector[1] = -1.05f;
+    vector[2] = 0.0f;
+
     norm = sqrtf(bvec[i][0] * bvec[i][0]+ bvec[i][1] * bvec[i][1]+ bvec[i][2] * bvec[i][2]);
     for (j = 0; j < 3; j++) {
-      vector[j + 6 * i] 
-        += (rot[j][0] * bvec[i][0]
-          + rot[j][1] * bvec[i][1]
-          + rot[j][2] * bvec[i][2]) * 0.2f / norm;
+      vector[3+j] = vector[j]
+        + (rot[j][0] * bvec[i][0]
+         + rot[j][1] * bvec[i][1]
+         + rot[j][2] * bvec[i][2]) * 0.2f / norm;
     }
-    for (j = 0; j < 4; j++) {
-      vector_color[j + 8 * i] = BarColor[i * 2][j];
-      vector_color[j + 8 * i + 4] = BarColor[i * 2][j];
+    line2tri(vector, &rect[9 * i]);
+    for (k = 0; k < 3; k++) {
+      for (j = 0; j < 4; j++) {
+        rect_color[12 * i + 4 * k + j] = BarColor[i * 2][j];
+      }
     }
   }
   glLineWidth(linewidth);
   glNormal3f(0.0f, 0.0f, 1.0f);
-  glVertexPointer(3, GL_FLOAT, 0, vector);
-  glColorPointer(4, GL_FLOAT, 0, vector_color);
-  glDrawArrays(GL_LINES, 0, 6);
+  glVertexPointer(3, GL_FLOAT, 0, rect);
+  glColorPointer(4, GL_FLOAT, 0, rect_color);
+  glDrawArrays(GL_TRIANGLES, 0, 9);
   /*
   Cartesian (XYZ) flame
   */
-  for (i = 0; i < 6; i++) {
-    vector[3 * i] = 1.2f;
-    vector[3 * i + 1] = -1.05f;
-    vector[3 * i + 2] = 0.0f;
-  }
   for (i = 0; i < 3; i++) {
+    vector[0] = 1.2f;
+    vector[1] = -1.05f;
+    vector[2] = 0.0f;
+  
     for (j = 0; j < 3; j++) {
-      vector[j + 6 * i] += rot[j][i] * 0.2f;
+      vector[3 + j] = vector[j] + rot[j][i] * 0.2f;
     }
-    for (j = 0; j < 4; j++) {
-      vector_color[j + 8 * i] = BarColor[i * 2][j];
-      vector_color[j + 8 * i + 4] = BarColor[i * 2][j];
+    line2tri(vector, &rect[9 * i]);
+    for (k = 0; k < 3; k++) {
+      for (j = 0; j < 4; j++) {
+        rect_color[12 * i + 4 * k + j] = BarColor[i * 2][j];
+      }
     }
   }
   glLineWidth(linewidth);
   glNormal3f(0.0f, 0.0f, 1.0f);
-  glVertexPointer(3, GL_FLOAT, 0, vector);
-  glColorPointer(4, GL_FLOAT, 0, vector_color);
-  glDrawArrays(GL_LINES, 0, 6);
+  glVertexPointer(3, GL_FLOAT, 0, rect);
+  glColorPointer(4, GL_FLOAT, 0, rect_color);
+  glDrawArrays(GL_TRIANGLES, 0, 9);
   /*
    Color bar/circle/cube
   */
@@ -519,19 +646,22 @@ static void draw_circles(
  @brief Draw 2D Fermi lines
 */
 static void draw_fermi_line() {
-  int i, ib, ibzl;
-  GLfloat vertices[60];
+  int i, ib, ibzl, i2d;
+  GLfloat vertices[6], rect[120];
   /*
    Draw 2D BZ lines
   */
   glLineWidth(linewidth);
+  for (i = 0; i < 3; i++) vertices[i] = bzl2d_proj[nbzl2d - 1][i];
   for (ibzl = 0; ibzl < nbzl2d; ++ibzl) {
-    for (i = 0; i < 3; i++) vertices[i + 3 * ibzl] = bzl2d_proj[ibzl][i];
+    for (i = 0; i < 3; i++)vertices[3 + i] = bzl2d_proj[ibzl][i];
+    line2rect(vertices, &rect[12 * ibzl]);
+    for (i = 0; i < 3; i++)vertices[i] = vertices[3 + i];
   }/*for (ibzl = 0; ibzl < nbzl2d; ++ibzl)*/
   glNormal3f(0.0f, 0.0f, 1.0f);
   glColor3fv(LineColor);
-  glVertexPointer(3, GL_FLOAT, 0, vertices);
-  glDrawArrays(GL_LINE_LOOP, 0, nbzl2d);
+  glVertexPointer(3, GL_FLOAT, 0, rect);
+  glDrawArrays(GL_QUADS, 0, nbzl2d*4);
   /*
    Draw Fermi lines
   */
@@ -540,9 +670,12 @@ static void draw_fermi_line() {
   glNormal3f(0.0f, 0.0f, 1.0f);
   for (ib = 0; ib < nb; ib++) {
     if (draw_band[ib] == 1) {
-      glVertexPointer(3, GL_FLOAT, 0, kv2d[ib]);
+      for (i2d = 0; i2d < n2d[ib]; i2d++) {
+        line2rect(&kv2d[ib][6 * i2d], &kv2d_fat[ib][12 * i2d]);
+      }
+      glVertexPointer(3, GL_FLOAT, 0, kv2d_fat[ib]);
       glColorPointer(4, GL_FLOAT, 0, clr2d[ib]);
-      glDrawArrays(GL_LINES, 0, 2 * n2d[ib]);
+      glDrawArrays(GL_QUADS, 0, 4 * n2d[ib]);
     }/*if (draw_band[ib] == 1)*/
   }/* for (ib = 0; ib < nb; ib++)*/
   glDisableClientState(GL_COLOR_ARRAY);

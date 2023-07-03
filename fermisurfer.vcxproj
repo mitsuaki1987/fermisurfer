@@ -82,7 +82,7 @@
     <ResourceCompile Include="fermisurfer.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="doc\figs\fermisurfer.ico" />
+    <Image Include="docs\figs\fermisurfer.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
