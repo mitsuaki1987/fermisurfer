@@ -380,6 +380,12 @@ void read_batch()
     else if (strcmp(keyword, "tetrahedron") == 0) {
       ierr = fscanf(fp, "%d", &itet);
     }
+    else if (strcmp(keyword, "bznumber") == 0) {
+      ierr = fscanf(fp, "%d%d%d", &BZ_number[0], &BZ_number[1], &BZ_number[2]);
+    }
+    else if (strcmp(keyword, "perspective") == 0) {
+      ierr = fscanf(fp, "%d", &lperspective);
+    }
     else {
       printf("Error! %s", keyword);
       exit(-1);

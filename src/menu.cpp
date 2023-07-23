@@ -46,6 +46,12 @@ THE SOFTWARE.
 #elif defined(HAVE_OPENGL_GL_H)
 #include <OpenGL/gl.h>
 #endif
+#if defined(HAVE_GL_GLU_H)
+#include <GL/glu.h>
+#elif defined(HAVE_OPENGL_GLU_H)
+#include <OpenGL/glu.h>
+#endif
+#include "wx/glcanvas.h"
 #include <cstdlib>
 #include <cstdio>
 #include <cmath>
@@ -152,6 +158,7 @@ enum
   itext_sphereY,
   itext_sphereZ,
   itext_sphereR,
+  icheck_perspective,
   icheck_band
 };
 
@@ -575,6 +582,26 @@ void MyFrame::check_colorbar(
   else lcolorbar = 0;
   Refresh(false);
 } /* menu_colorbar */
+//
+// @brief Change perspective projection
+//
+void MyFrame::check_perspective(
+  wxCommandEvent& event //!<[in] Selected menu
+)
+{
+  glMatrixMode(GL_PROJECTION);
+  glLoadIdentity();
+  if (lperspective != 1) {
+    lperspective = 1;
+    gluPerspective(30.0, sx / sy, 1.0, 100.0);
+  }
+  else {
+    lperspective = 0;
+    glOrtho(-1, 1, -sy / sx, sy / sx, 1.0, 100.0);
+  }
+  glMatrixMode(GL_MODELVIEW);
+  Refresh(false);
+}//check_perspective
 /**
  @brief Change color scale mode (::color_scale)
 */
@@ -1012,6 +1039,11 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_tetra, this, iradio_tetra);
   gbsizer->Add(radiobox_tetra, wxGBPosition(3,2), wxGBSpan(5, 2));
 
+  Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_perspective, this, icheck_perspective);
+  wxCheckBox* checkbox_perspective = new wxCheckBox(panel, icheck_perspective, wxT("Perspective"));
+  gbsizer->Add(checkbox_perspective, wxGBPosition(7, 0), wxGBSpan(1, 2));
+  checkbox_perspective->SetValue(true);
+
   wxString choices_colorscale[] = { wxT("Input (1D)"), wxT("Input (2D)"),
     wxT("Input (3D)"), wxT("Fermi Velocity"), wxT("Band Index"),
     wxT("Input (1D, Gray Scale)"), wxT("Fermi Velocity (Gray Scale)") };
@@ -1021,7 +1053,7 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
     WXSIZEOF(choices_colorscale), choices_colorscale,
     1, wxRA_SPECIFY_COLS);
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radiovalue_colorscale, this, iradio_colorscale);
-  gbsizer->Add(radiobox_color, wxGBPosition(7, 0), wxGBSpan(3, 2));
+  gbsizer->Add(radiobox_color, wxGBPosition(8, 0), wxGBSpan(2, 2));
 
   wxString choices_bz[] = { wxT("First Brillouin zone"), wxT("Primitive Brillouin zone") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_brillouinzone, this, iradio_brillouinzone);
@@ -1127,7 +1159,6 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   wxCheckBox* check = new wxCheckBox(panel, icheck_colorbar, wxT("Color bar"));
   gbsizer->Add(check, wxGBPosition(16, 2), wxGBSpan(1, 1));
   check->SetValue(true);
-  // debug fileMenu->Check(menu_colorbar_check, true);
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::checkvalue_equator, this, icheck_equator);
   gbsizer->Add(new wxCheckBox(panel, icheck_equator, wxT("Equator")), wxGBPosition(17, 2), wxGBSpan(1, 1));

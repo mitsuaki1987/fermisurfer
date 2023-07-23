@@ -63,8 +63,8 @@ void TestGLCanvas::OnSize(wxSizeEvent& event)
   /*
    Scale of translation of mousepointer
   */
-  sx = 1.0f / (GLfloat)event.GetSize().x;
-  sy = 1.0f / (GLfloat)event.GetSize().y;
+  sx = (GLfloat)event.GetSize().x;
+  sy = (GLfloat)event.GetSize().y;
   // It's up to the application code to update the OpenGL viewport settings.
   // This is OK here only because there is only one canvas that uses the
   // context. See the cube sample for that case that multiple canvases are
@@ -74,8 +74,12 @@ void TestGLCanvas::OnSize(wxSizeEvent& event)
   glMatrixMode(GL_PROJECTION);
   /**/
   glLoadIdentity();
-  gluPerspective(30.0, (GLfloat)event.GetSize().x / (GLfloat)event.GetSize().y, 1.0, 100.0);
-  //glOrtho(-1, 1, -(GLfloat)event.GetSize().y / (GLfloat)event.GetSize().x, (GLfloat)event.GetSize().y / (GLfloat)event.GetSize().x, 1.0, 100.0);
+  if (lperspective == 1) {
+    gluPerspective(30.0, sx / sy, 1.0, 100.0);
+  }
+  else {
+    glOrtho(-1, 1, -sy / sx, sy / sx, 1.0, 100.0);
+  }
   /**/
   glMatrixMode(GL_MODELVIEW);
   Refresh(false);
@@ -108,8 +112,8 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
       /*
        Translation of mousepointer from starting point
       */
-      dx = (event.GetX() - last_x) * sx;
-      dy = (event.GetY() - last_y) * sy;
+      dx = (event.GetX() - last_x) / sx;
+      dy = (event.GetY() - last_y) / sy;
       /*
        Distanse from starting point
       */
@@ -205,8 +209,8 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
     Refresh(false);
   }
   if (event.LeftDClick()) {
-    trans[0] = (event.GetX() * sx * 2.0 - 1.0) / scl;
-    trans[1] = -(event.GetY() * sy * 2.0 - 1.0) / scl;
+    trans[0] = (event.GetX() * 2.0 / sx - 1.0) / scl;
+    trans[1] = -(event.GetY() * 2.0 / sy - 1.0) / scl;
     myf->textbox_positionx->ChangeValue(wxString::Format(wxT("%f"), trans[0]));
     myf->textbox_positiony->ChangeValue(wxString::Format(wxT("%f"), trans[1]));
     Refresh(false);

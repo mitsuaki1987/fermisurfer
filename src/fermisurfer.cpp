@@ -193,6 +193,7 @@ GLfloat thetax = 0.0;    //!< Rotation angle
 GLfloat thetay = 0.0;    //!< Rotation angle
 GLfloat thetaz = 0.0;    //!< Rotation angle
 GLfloat linewidth = 1.0; //!< BZ/nodal-line/Fermiline width
+int lperspective = 1;
 /*
  Colors
 */

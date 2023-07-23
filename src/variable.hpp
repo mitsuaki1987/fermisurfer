@@ -139,6 +139,7 @@ extern GLfloat thetax;    //!< Rotation angle
 extern GLfloat thetay;    //!< Rotation angle
 extern GLfloat thetaz;    //!< Rotation angle
 extern GLfloat linewidth; //!< BZ/nodal-line/Fermiline width
+extern int lperspective;  //!< Switch for perspective projection
 /*
  Colors
 */

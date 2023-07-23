@@ -117,6 +117,7 @@ private:
   void textctrl_Band(wxCommandEvent& event);
   void textctrl_Arrow(wxCommandEvent& event);
   void textctrl_sphere(wxCommandEvent& event);
+  void check_perspective(wxCommandEvent& event);
   //wxDECLARE_EVENT_TABLE();
 };
 
