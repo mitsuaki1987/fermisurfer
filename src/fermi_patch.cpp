@@ -584,7 +584,7 @@ private(j0,i0,i1,ithread)
     arw[ib] = new GLfloat * **[ntri[ib]];
     kvp_rot[ib] = new GLfloat[9 * ntri[ib]];
     nmlp_rot[ib] = new GLfloat[9 * ntri[ib]];
-    arw_rot[ib] = new GLfloat[18 * ntri[ib]];
+    arw_rot[ib] = new GLfloat[27 * ntri[ib]];
     for (i0 = 0; i0 < ntri[ib]; ++i0) {
       matp[ib][i0] = new GLfloat * [3];
       kvp[ib][i0] = new GLfloat * [3];

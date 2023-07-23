@@ -107,6 +107,17 @@ void free_patch()
       delete[] kv2d_fat[ib];
       delete[] clr2d[ib];
     }/*for (ib = 0; ib < nb; ++ib)*/
+    for (i0 = 0; i0 < nnbzl2d; i0++) {
+      for (i1 = 0; i1 < 26; i1++) {
+        delete[] bzl2d[i0][i1];
+        delete[] bzl2d_proj[i0][i1];
+      }
+      delete[] bzl2d[i0];
+      delete[] bzl2d_proj[i0];
+    }
+    delete[] bzl2d;
+    delete[] bzl2d_proj;
+    delete[] nbzl2d;
   }/*if (refresh_section == 1)*/
   /*
   equator

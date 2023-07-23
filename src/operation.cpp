@@ -172,8 +172,6 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
       else if (lmouse == 2) {
         scl = scl * expf(-dy);
         myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
-        linewidth *= expf(-dy);
-        myf->textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
         myf->Show(true);
       }
       else {
@@ -197,16 +195,12 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
   if (wheel > 0) {
     scl = scl * 1.1f; 
     myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
-    linewidth *= 1.1f;
-    myf->textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
     myf->Show(true);
     Refresh(false);
   }
   else if (wheel < 0) {
     scl = scl * 0.9f;
     myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
-    linewidth *= 0.9f;
-    myf->textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
     myf->Show(true);
     Refresh(false);
   }

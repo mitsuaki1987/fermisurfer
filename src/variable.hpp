@@ -113,9 +113,10 @@ extern int *n2d;                  //!< Number of line segment
 extern GLfloat **kv2d;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
 extern GLfloat** kv2d_fat;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*4*3]
 extern GLfloat **clr2d;         //!< Matrix element for 2D plot [::nb][::n2d*2*2*4]
-extern int nbzl2d;                //!< The number of Lines of 1st Brillouin zone
-extern GLfloat bzl2d[26][3];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
-extern GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
+extern int nnbzl2d;             //!< number of 2D BZ line for each BZ
+extern int *nbzl2d;                //!< The number of Lines of 1st Brillouin zone
+extern GLfloat ***bzl2d;      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
+extern GLfloat ***bzl2d_proj; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
 /*
  Equator
 */

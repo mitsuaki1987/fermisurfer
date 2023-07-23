@@ -64,9 +64,7 @@ int ng0[3]
   }
 
   scl /= sqrtf(bvec[0][0] * bvec[0][0] + bvec[0][1] * bvec[0][1] + bvec[0][2] * bvec[0][2]);
-  linewidth /= scl;
   myf->textbox_scale->ChangeValue(wxString::Format(wxT("%f"), scl));
-  myf->textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
   /*
    Direct lattice vector
   */

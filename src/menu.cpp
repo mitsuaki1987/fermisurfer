@@ -182,7 +182,7 @@ void MyFrame::button_section(
             kv2d[ib][i * 3 + 6 * i2d], 
             kv2d[ib][1 + i * 3 + 6 * i2d]);
         }
-        fprintf(fp, "\n\n");
+        fprintf(fp, "\n");
       }
     }/*if (draw_band[ib] == 1)*/
   }/* for (ib = 0; ib < nb; ib++)*/
@@ -190,12 +190,16 @@ void MyFrame::button_section(
   *terminal << wxT("  fermi_line.dat was written.\n");
 
   fp = fopen("bz_line.dat", "w");
-  for (i2d = 0; i2d < nbzl2d; i2d++) {
+  for (i = 0; i < nnbzl2d; i++) {
+    if (nbzl2d[i] == 0)continue;
+    for (i2d = 0; i2d < nbzl2d[i]; i2d++) {
+      fprintf(fp, "%15.5e %15.5e\n",
+        bzl2d_proj[i][i2d][0], bzl2d_proj[i][i2d][1]);
+    }
     fprintf(fp, "%15.5e %15.5e\n",
-      bzl2d_proj[i2d][0], bzl2d_proj[i2d][1]);
+      bzl2d_proj[i][0][0], bzl2d_proj[i][0][1]);
+    fprintf(fp, "\n");
   }
-  fprintf(fp, "%15.5e %15.5e\n",
-    bzl2d_proj[0][0], bzl2d_proj[0][1]);
   fclose(fp);
   *terminal << wxT("  bz_line.dat was written.\n");
 }
@@ -468,21 +472,19 @@ void MyFrame::textctrl_BZ_number(
   if (event.GetId() == itext_BZ_number0) {
     if (event.GetString().ToDouble(&dvalue)) {
       BZ_number[0] = (int)dvalue;
-      Refresh(false);
     }
   }
   else  if (event.GetId() == itext_BZ_number1) {
     if (event.GetString().ToDouble(&dvalue)) {
       BZ_number[1] = (int)dvalue;
-      Refresh(false);
     }
   }
   else  if (event.GetId() == itext_BZ_number2) {
     if (event.GetString().ToDouble(&dvalue)) {
       BZ_number[2] = (int)dvalue;
-      Refresh(false);
     }
   }
+  refresh_section = 1;
 }
  /**
  @brief Toggle the appearance of each band (::draw_band)
@@ -809,7 +811,6 @@ void MyFrame::textctrl_view(
 
   if (event.GetId() == itext_scale) {
     if (event.GetString().ToDouble(&dvalue)) {
-      linewidth *= (GLfloat)dvalue/scl;
       scl = (GLfloat)dvalue;
       textbox_linewidth->ChangeValue(wxString::Format(wxT("%f"), linewidth));
       Refresh(false);

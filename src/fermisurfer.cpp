@@ -165,9 +165,10 @@ int *n2d;                  //!< Number of line segment
 GLfloat **kv2d;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*2*3]
 GLfloat** kv2d_fat;          //!< @f$k@f$-vector for 2D plot [::nb][::n2d*4*3]
 GLfloat **clr2d;         //!< Matrix element for 2D plot [::nb][::n2d*2*2*4]
-int nbzl2d;                //!< The number of Lines of 1st Brillouin zone
-GLfloat bzl2d[26][3];      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
-GLfloat bzl2d_proj[26][3]; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
+int nnbzl2d;             //!< number of 2D BZ line for each BZ
+int *nbzl2d;                //!< The number of Lines of 1st Brillouin zone
+GLfloat ***bzl2d;      //!< Lines of 1st BZ [::nbzl2d (max:26)][3]
+GLfloat ***bzl2d_proj; //!< Lines of 1st BZ [::nbzl2d (max:26)][3], projected into 2D plane
 /*
  Equator
 */
@@ -184,14 +185,14 @@ GLfloat sy;        //!< Scale of mouse movement
 int cx;            //!< Starting point of drug
 int cy;            //!< Starting point of drug
 GLfloat scl = 1.0;       //!< Initial scale
-GLfloat trans[3] = { 0.0, 0.0, 0.0 };  //!< Translation
+GLfloat trans[3] = { 0.0, 0.0, -5.0 };  //!< Translation
 GLfloat rot[3][3] = { { 1.0, 0.0, 0.0 },
                       { 0.0, 1.0, 0.0 },
                       { 0.0, 0.0, 1.0 } }; //!< Rotation matrix
 GLfloat thetax = 0.0;    //!< Rotation angle
 GLfloat thetay = 0.0;    //!< Rotation angle
 GLfloat thetaz = 0.0;    //!< Rotation angle
-GLfloat linewidth = 3.0; //!< BZ/nodal-line/Fermiline width
+GLfloat linewidth = 1.0; //!< BZ/nodal-line/Fermiline width
 /*
  Colors
 */
