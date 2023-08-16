@@ -58,9 +58,9 @@ void calc_nodeline()
 #pragma omp parallel default(none) \
 shared(nb,ib,matp,kvp,ntri,kvnl_v) \
 private(itri,i,j,ithread)
-    {
-      int sw[3];
-      GLfloat a[3][3], matps[3];
+  {
+    int sw[3];
+    GLfloat a[3][3] = {}, matps[3] = {};
       std::vector<std::vector<GLfloat> > kvnl0;
 
       kvnl0.resize(2);

@@ -84,8 +84,8 @@ static void triangle(
   )
 {
   int ibr, i, j, sw[3];
-  GLfloat prod[3], thr, thr2 = 0.001f, mat2[3][3], kvec2[3][3],
-    vf2[3][3], a[3][3], bshift, vfave[3], norm[3];
+  GLfloat prod[3] = {}, thr, thr2 = 0.001f, mat2[3][3] = {}, kvec2[3][3] = {},
+    vf2[3][3] = {}, a[3][3] = {}, bshift, vfave[3] = {}, norm[3] = {};
   std::vector<std::vector<GLfloat> > kvp_0, matp_0, nmlp_0;
 
   kvp_0.resize(3);
@@ -327,8 +327,8 @@ static void tetrahedron(
 )
 {
   int it, i, j, sw[4];
-  GLfloat eig2[4], mat2[4][3], kvec2[4][3], vf2[4][3], a[4][4], 
-    kvec3[3][3], mat3[3][3], vf3[3][3], vol, thr = 0.000f;
+  GLfloat eig2[4] = {}, mat2[4][3] = {}, kvec2[4][3] = {}, vf2[4][3] = {}, a[4][4] = {},
+    kvec3[3][3] = {}, mat3[3][3] = {}, vf3[3][3] = {}, vol, thr = 0.000f;
 
   for (it = 0; it < 6; ++it) {
     /*
@@ -440,7 +440,7 @@ static void tetrahedron(
 */
 void fermi_patch()
 {
-  int ntri0, ib, i0, i1, j0, start[3], last[3];
+  int ntri0, ib, i0, i1, j0, start[3] = {}, last[3] = {};
   int ithread;
   std::vector < std::vector<std::vector<std::vector<GLfloat> > > > kvp_v, matp_v, nmlp_v;
 
@@ -475,7 +475,7 @@ corner, bvec, fbz, nbragg, bragg, brnrm, brnrm_min,ib) \
 private(j0,i0,i1,ithread)
     {
       int i, j, i2, j1, j2, ii0, ii1, ii2;
-      GLfloat kvec1[8][3], mat1[8][3], eig1[8], vf1[8][3];
+      GLfloat kvec1[8][3] = {}, mat1[8][3] = {}, eig1[8] = {}, vf1[8][3] = {};
 
       ithread = get_thread();
       kvp_v.at(ithread).resize(0);
@@ -581,22 +581,20 @@ private(j0,i0,i1,ithread)
     clr[ib] = new GLfloat[12 * ntri[ib]];
     kvp[ib] = new GLfloat * *[ntri[ib]];
     nmlp[ib] = new GLfloat * *[ntri[ib]];
-    arw[ib] = new GLfloat * **[ntri[ib]];
+    arw[ib] = new GLfloat **[ntri[ib]];
     kvp_rot[ib] = new GLfloat[9 * ntri[ib]];
     nmlp_rot[ib] = new GLfloat[9 * ntri[ib]];
-    arw_rot[ib] = new GLfloat[27 * ntri[ib]];
+    arw_rot[ib] = new GLfloat[9 * ntri[ib]];
     for (i0 = 0; i0 < ntri[ib]; ++i0) {
       matp[ib][i0] = new GLfloat * [3];
       kvp[ib][i0] = new GLfloat * [3];
       nmlp[ib][i0] = new GLfloat * [3];
-      arw[ib][i0] = new GLfloat * *[3];
+      arw[ib][i0] = new GLfloat * [2];
+      for (i1 = 0; i1 < 2; ++i1)arw[ib][i0][i1] = new GLfloat [3];
       for (i1 = 0; i1 < 3; ++i1) {
         matp[ib][i0][i1] = new GLfloat[3];
         kvp[ib][i0][i1] = new GLfloat[3];
         nmlp[ib][i0][i1] = new GLfloat[3];
-        arw[ib][i0][i1] = new GLfloat * [2];
-        for (j0 = 0; j0 < 2; ++j0)
-          arw[ib][i0][i1][j0] = new GLfloat[3];
       }/*for (i1 = 0; i1 < 3; ++i1)*/
     }/*for (i0 = 0; i0 < ntri[ib]; ++i0)*/
     /*

@@ -50,13 +50,13 @@
     <ClInclude Include="src\basic_math.hpp" />
     <ClInclude Include="src\bz_lines.hpp" />
     <ClInclude Include="src\calc_nodeline.hpp" />
-    <ClInclude Include="src\draw.hpp" />
     <ClInclude Include="src\equator.hpp" />
     <ClInclude Include="src\fermi_patch.hpp" />
     <ClInclude Include="src\free_patch.hpp" />
     <ClInclude Include="src\initialize.hpp" />
     <ClInclude Include="src\kumo.hpp" />
     <ClInclude Include="src\menu.hpp" />
+    <ClInclude Include="src\nesting.hpp" />
     <ClInclude Include="src\operation.hpp" />
     <ClInclude Include="src\read_file.hpp" />
     <ClInclude Include="src\section.hpp" />
@@ -74,6 +74,7 @@
     <ClCompile Include="src\initialize.cpp" />
     <ClCompile Include="src\kumo.cpp" />
     <ClCompile Include="src\menu.cpp" />
+    <ClCompile Include="src\nesting.cpp" />
     <ClCompile Include="src\operation.cpp" />
     <ClCompile Include="src\read_file.cpp" />
     <ClCompile Include="src\section.cpp" />

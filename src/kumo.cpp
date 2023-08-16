@@ -119,9 +119,9 @@ void interpol_energy()
   private (ib,i0,i1,i2,ii)
   {
     int j0, j1, j2, jj;
-    GLfloat coef[4], 
-      mat1[4][4][4][3], mat2[4][4][3], mat3[4][3],
-      eig1[4][4][4], eig2[4][4], eig3[4];
+    GLfloat coef[4] = {},
+      mat1[4][4][4][3] = {}, mat2[4][4][3] = {}, mat3[4][3] = {},
+      eig1[4][4][4] = {}, eig2[4][4] = {}, eig3[4] = {};
 
     for (ib = 0; ib < nb; ib++) {
 # pragma omp for nowait
@@ -201,7 +201,7 @@ void interpol_energy()
   private (ib,i0,i1,i2,ii)
   {
     int i0p, i0m, i1p, i1m, i2p, i2m;
-    GLfloat de[3];
+    GLfloat de[3] = {};
 
     for (ib = 0; ib < nb; ib++) {
       for (i0 = 0; i0 < ng[0]; i0++) {

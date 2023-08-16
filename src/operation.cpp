@@ -95,7 +95,7 @@ void TestGLCanvas::OnMouseEvent(wxMouseEvent& event)
   static int dragging = 0;
   static float last_x, last_y;
   int i, j, wheel;
-  GLfloat dx, dy, a, rot0[3][3], rot1[3][3], ax, ay;
+  GLfloat dx, dy, a, rot0[3][3] = {}, rot1[3][3] = {}, ax, ay;
 
   // Allow default processing to happen, or else the canvas cannot gain focus
   // (for key events).

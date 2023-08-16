@@ -53,7 +53,7 @@ static int bragg_vert(
 )
 {
   int kbr, i, lbr, nbr0;
-  GLfloat bmat[3][3], rhs[3], prod, thr, det;
+  GLfloat bmat[3][3] ={}, rhs[3] ={}, prod, thr, det;
   /**/
   nbr0 = nbr;
   /**/
@@ -112,7 +112,7 @@ static void check_bragg()
 {
   int ibr, ibzl, ibzc;
   int ii, kk, bzflag, nbzcorner, nn;
-  GLfloat thr = (GLfloat)0.0001, prod, bzc[676][3];
+  GLfloat thr = (GLfloat)0.0001, prod, bzc[676][3] = {};
   /*
   First, compute real number of corners of 1st BZ
   */
@@ -164,7 +164,7 @@ void bz_lines()
 {
   /**/
   int ibr, jbr, nbr, i, j, lvert;
-  GLfloat vert[2][3];
+  GLfloat vert[2][3] = {};
   /**/
   nbzl = 0;
   /**/

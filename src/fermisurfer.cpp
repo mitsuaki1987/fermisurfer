@@ -72,7 +72,6 @@ with a color-plot of the arbitraly matrix element
 #include "menu.hpp"
 #include "operation.hpp"
 #include "initialize.hpp"
-#include "draw.hpp"
 #include "fermi_patch.hpp"
 #include "calc_nodeline.hpp"
 #include "bz_lines.hpp"
@@ -138,7 +137,7 @@ int *draw_band;     //!< Switch for drawn bands [::nb]
 GLfloat**rgb_band;     //!< Switch for drawn bands [::nb]
 GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
 GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
-GLfloat***** arw;
+GLfloat**** arw;
 GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
 GLfloat **kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]
 GLfloat** arw_rot;
@@ -253,9 +252,6 @@ int windowy = 850;
 */
 void batch_draw()
 {
-  int iminmax;
-  GLfloat minmax[3][2];
-
   printf("\n  Batch mode.\n");
 
   read_batch();
@@ -315,7 +311,7 @@ bool MyApp::OnInit()
   nmlp_rot = new GLfloat *[nb];
   matp = new GLfloat * **[nb];
   clr = new GLfloat *[nb];
-  arw = new GLfloat * ***[nb];
+  arw = new GLfloat ***[nb];
   arw_rot = new GLfloat *[nb];
   kvnl = new GLfloat * **[nb];
   kvnl_rot = new GLfloat *[nb];

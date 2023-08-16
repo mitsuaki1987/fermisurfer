@@ -31,10 +31,10 @@ THE SOFTWARE.
 #include "initialize.hpp"
 #include "section.hpp"
 #include "equator.hpp"
-#include "draw.hpp"
 #include "variable.hpp"
 #include "menu.hpp"
 #include "operation.hpp"
+#include "nesting.hpp"
 #include "fermisurfer.xpm"
 #include <wx/splitter.h>
 #include <wx/gbsizer.h>
@@ -159,6 +159,8 @@ enum
   itext_sphereZ,
   itext_sphereR,
   icheck_perspective,
+  ibutton_nesting_doubledelta,
+  ibutton_nesting_lindhard,
   icheck_band
 };
 
@@ -217,8 +219,7 @@ void MyFrame::textctrl_Arrow(
   wxCommandEvent& event //!<[in] Selected menu
 )
 {
-  int ii, jj;
-  double dvalue, diff;
+  double dvalue;
 
   if (event.GetId() == itext_ArrowStart0) {
     if (event.GetString().ToDouble(&dvalue)) {
@@ -288,7 +289,7 @@ void MyFrame::textctrl_sphere(
 )
 {
   int ii, jj, icount;
-  double dvalue, diff, theta1, theta2, phi1, phi2;
+  double dvalue, theta1, theta2, phi1, phi2;
 
   if (event.GetId() == itext_sphereX) {
     if (event.GetString().ToDouble(&dvalue)) {
@@ -903,6 +904,17 @@ void MyFrame::textctrl_view(
     Refresh(false);
   }
 }
+void MyFrame::button_nesting(
+  wxCommandEvent& event//!<[in] Selected menu
+)
+{
+  if (event.GetId() == ibutton_nesting_doubledelta) {
+    nesting_dbldelta();
+  }
+  else  if (event.GetId() == ibutton_nesting_lindhard) {
+    nesting_lindhard();
+  }
+}
 
 MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   const wxSize& size, long style)
@@ -1280,7 +1292,16 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   textbox_sphereR->ChangeValue(wxT("0.0"));
   SetSizer(sizermain);
   SetAutoLayout(true);
+  //
+  Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_nesting, this, ibutton_nesting_doubledelta);
+  gbsizer->Add(new wxButton(panel, ibutton_nesting_doubledelta, wxT("Nesting (double delta)")),
+    wxGBPosition(24, 2), wxGBSpan(1, 1));
+  //
+  Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_nesting, this, ibutton_nesting_lindhard);
+  gbsizer->Add(new wxButton(panel, ibutton_nesting_lindhard, wxT("Nesting (Lindhard)")),
+    wxGBPosition(24, 3), wxGBSpan(1, 1));
 
+  
   // Show the frame
   Show(true);
   Raise();

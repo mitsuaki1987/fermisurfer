@@ -53,7 +53,7 @@ THE SOFTWARE.
 */
 void free_patch()
 {
-  int ib, i0, i1, i2;
+  int ib, i0, i1;
   /*
    Fermi patch
   */
@@ -61,13 +61,11 @@ void free_patch()
     for (ib = 0; ib < nb; ++ib) {
       for (i0 = 0; i0 < ntri[ib]; ++i0) {
         for (i1 = 0; i1 < 3; ++i1) {
-          for (i2 = 0; i2 < 2; ++i2)
-            delete[] arw[ib][i0][i1][i2];
           delete[] nmlp[ib][i0][i1];
           delete[] matp[ib][i0][i1];
           delete[] kvp[ib][i0][i1];
-          delete[] arw[ib][i0][i1];
         }
+        for (i1 = 0; i1 < 3; ++i1)delete[] arw[ib][i0][i1];
         delete[] nmlp[ib][i0];
         delete[] matp[ib][i0];
         delete[] kvp[ib][i0];
@@ -300,7 +298,7 @@ shared(nb,ntri,nmlp,max_th,min_th) private(itri,ithread)
 void paint()
 {
   int itri, j;
-  GLfloat origin[4];
+  GLfloat origin[4] = {};
 
   if (color_scale == 1) {
 #pragma omp parallel default(none) \
@@ -466,14 +464,16 @@ private(itri, j)
         for (ib = 0; ib < nb; ib++) {
 #pragma omp for nowait
           for (itri = 0; itri < ntri[ib]; ++itri) {
+            for (i = 0; i < 2; ++i)for (j = 0; j < 3; ++j)arw[ib][itri][i][j] = 0.0;
             for (i = 0; i < 3; ++i) {
               for (j = 0; j < 3; ++j) {
-                arw[ib][itri][i][0][j] = kvp[ib][itri][i][j]
-                               - 0.5f * matp[ib][itri][i][j] / patch_max;
-                arw[ib][itri][i][1][j] = kvp[ib][itri][i][j]
-                               + 0.5f * matp[ib][itri][i][j] / patch_max;
+                arw[ib][itri][0][j] += kvp[ib][itri][i][j]
+                             - 0.5f * matp[ib][itri][i][j] / patch_max;
+                arw[ib][itri][1][j] += kvp[ib][itri][i][j]
+                             + 0.5f * matp[ib][itri][i][j] / patch_max;
               }/*for (j = 0; j < 3; ++j)*/
             }/*for (i = 0; i < 3; ++i)*/
+            for (i = 0; i < 2; ++i)for (j = 0; j < 3; ++j)arw[ib][itri][i][j] /= 3.0;
           }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
         }/*for (ib = 0; ib < nb; ib++)*/
       }/*if (color_scale == 3)*/

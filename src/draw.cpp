@@ -49,7 +49,7 @@ static void line2rect(
 {
   int ii, jj;
   GLfloat view[] = { 0.0, 0.0, 0.0 };
-  GLfloat diff[3], dline[6], cross[6], thr = 0.00001, lcross;
+  GLfloat diff[3] = {}, dline[6] = {}, cross[6] = {}, thr = 0.00001, lcross;
 
   for (ii = 0; ii < 3; ii++) {
     diff[ii] = line[ii + 3] - line[ii];
@@ -94,7 +94,7 @@ static void line2tri(
 {
   int ii, jj;
   GLfloat view[] = { 0.0, 0.0, 0.0 };
-  GLfloat diff[3], dline[6], cross[6], thr = 0.00001, lcross;
+  GLfloat diff[3] = { 0.0 }, dline[6] = { 0.0 }, cross[6] = {0.0}, thr = 0.00001, lcross;
 
   for (ii = 0; ii < 3; ii++) {
     diff[ii] = line[ii + 3] - line[ii];
@@ -144,7 +144,7 @@ static void draw_fermi(
   GLfloat rot2[3][3]
 ) {
   int ib, a0, a1, a2, ia;
-  GLfloat kshift[3], trans2[3];
+  GLfloat kshift[3] = {}, trans2[3] = {};
 
   trans2[0] = trans_x;
   trans2[1] = trans_y;
@@ -157,10 +157,10 @@ static void draw_fermi(
       for (a2 = -BZ_number[2] / 2; a2 < -BZ_number[2] / 2 + BZ_number[2]; a2++) {
         for (ia = 0; ia < 3; ia++) kshift[ia] = bvec[0][ia] * a0 + bvec[1][ia] * a1 + bvec[2][ia] * a2;
 #pragma omp parallel default(none) \
-shared(nb,draw_band,ntri,rot2,nmlp,nmlp_rot,kvp,kvp_rot,trans2,side,kshift) \
+shared(nb,draw_band,ntri,rot2,nmlp,nmlp_rot,kvp,kvp_rot,trans2,side,kshift,scl) \
 private(ib)
         {
-          int i, j, l, itri;
+          int i, j, itri;
 
           for (ib = 0; ib < nb; ib++) {
             if (draw_band[ib] == 1) {
@@ -204,30 +204,30 @@ private(ib)
         */
         glNormal3f(0.0f, 0.0f, 1.0f);
         if (color_scale == 3) {
+          for (ib = 0; ib < nb; ib++)
+            for (a0 = 0; a0 < ntri[ib] * 9; ++a0) arw_rot[ib][a0] = 0.0;
 #pragma omp parallel default(none) \
-shared(nb,draw_band,ntri,rot2,arw,arw_rot,trans2,kshift) \
+shared(nb,draw_band,ntri,rot2,arw,arw_rot,trans2,kshift,scl,linewidth) \
 private(ib)
           {
-            int i, j, l, itri;
-            GLfloat line[6];
+            int j, l, itri;
+            GLfloat line[6] = {};
 
             for (ib = 0; ib < nb; ib++) {
               if (draw_band[ib] == 1) {
 #pragma omp for nowait
-                for (itri = 0; itri < ntri[ib]; ++itri) {
-                  for (i = 0; i < 3; ++i) {
-                    for (j = 0; j < 3; ++j) {
-                      for (l = 0; l < 2; ++l) {
-                        line[j + 3 * l]
-                          = scl * rot2[j][0] * (arw[ib][itri][i][l][0] + kshift[0])
-                          + scl * rot2[j][1] * (arw[ib][itri][i][l][1] + kshift[1])
-                          + scl * rot2[j][2] * (arw[ib][itri][i][l][2] + kshift[2])
-                          + trans2[j];
-                      }
+                for (itri = 0; itri < ntri[ib]; itri+=5) {
+                  for (j = 0; j < 3; ++j) {
+                    for (l = 0; l < 2; ++l) {
+                      line[j + 3 * l]
+                        = scl * rot2[j][0] * (arw[ib][itri][l][0] + kshift[0])
+                        + scl * rot2[j][1] * (arw[ib][itri][l][1] + kshift[1])
+                        + scl * rot2[j][2] * (arw[ib][itri][l][2] + kshift[2])
+                        + trans2[j];
                     }
-                    for (l = 0; l < 2; ++l) line[2 + 3 * l] += 0.001f;
-                    line2tri(linewidth*0.01, line, &arw_rot[ib][9 * i + 27 * itri]);
-                  }/*for (i = 0; i < 3; ++i)*/
+                  }
+                  for (l = 0; l < 2; ++l) line[2 + 3 * l] += 0.001f;
+                  line2tri(linewidth*0.01, line, &arw_rot[ib][9 * itri]);
                 }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
               }
             }
@@ -236,7 +236,7 @@ private(ib)
             if (draw_band[ib] == 1) {
               glColor3f(1.0 - clr[ib][0], 1.0 - clr[ib][1], 1.0 - clr[ib][2]);
               glVertexPointer(3, GL_FLOAT, 0, arw_rot[ib]);
-              glDrawArrays(GL_TRIANGLES, 0, ntri[ib] * 3 * 3);
+              glDrawArrays(GL_TRIANGLES, 0, ntri[ib] * 3);
             }
           }
         }
@@ -248,11 +248,11 @@ private(ib)
            First, rotate k-vector
           */
 #pragma omp parallel default(none) \
-shared(nb,draw_band,nnl,rot2,trans2,kvnl,kvnl_rot,kshift) \
+shared(nb,draw_band,nnl,rot2,trans2,kvnl,kvnl_rot,kshift,scl,linewidth) \
 private(ib)
           {
             int i, j, itri;
-            GLfloat line[6];
+            GLfloat line[6] = {};
 
             for (ib = 0; ib < nb; ib++) {
               /**/
@@ -294,11 +294,11 @@ private(ib)
           First, rotate k-vector
           */
 #pragma omp parallel default(none) \
-shared(nb,draw_band,nequator,rot2,trans2,kveq,kveq_rot,kshift) \
+shared(nb,draw_band,nequator,rot2,trans2,kveq,kveq_rot,kshift,scl,linewidth) \
 private(ib)
           {
             int i, j, itri;
-            GLfloat line[6];
+            GLfloat line[6] = {};
 
             for (ib = 0; ib < nb; ib++) {
               /**/
@@ -345,9 +345,9 @@ static void draw_bz_lines(
   GLfloat trans_z,
   GLfloat rot2[3][3]
 ) {
-  int ibzl, i, j, a0, a1, a2, ia, icount;
-  GLfloat bzl2[3], bvec2[3][3], linecolor[4], secvec2[3], kshift[3], arrow_c[3];
-  GLfloat vertices[300], sphere_v2[1140]/*190*2*3*/, rect[600], trans2[3];
+  int ibzl, i, j, a0, a1, a2, ia;
+  GLfloat bzl2[3] = {}, bvec2[3][3] = {}, linecolor[4] = {}, secvec2[3] = {}, kshift[3] = {}, arrow_c[3] = {};
+  GLfloat vertices[300] = {}, sphere_v2[1140] = {}/*190*2*3*/, rect[600], trans2[3] = {};
 
   trans2[0] = trans_x;
   trans2[1] = trans_y;
@@ -502,7 +502,7 @@ static void draw_bz_lines(
 static void draw_colorbar()
 {
   int i, j, k;
-  GLfloat mat2, vertices[366], colors[488], vector[6], rect[27], rect_color[36],
+  GLfloat mat2, vertices[366] ={}, colors[488]={}, vector[6]={}, rect[27]={}, rect_color[36]={},
     norm;
 
   glEnableClientState(GL_COLOR_ARRAY);
@@ -640,8 +640,8 @@ static void draw_colorbar()
 static void draw_circles(
   GLfloat dx2d //!< [in] Translation used for the section-mode
 ) {
-  int i, j;
-  GLfloat r, vertices[66];
+  int i;
+  GLfloat r, vertices[66] = {};
   /**/
   r = 0.05f;
   /**/
@@ -667,7 +667,7 @@ static void draw_circles(
 */
 static void draw_fermi_line() {
   int i, ib, ibzl, i2d;
-  GLfloat vertices[6], rect[120];
+  GLfloat vertices[6] = {}, rect[120] = {};
   /*
    Draw 2D BZ lines
   */
@@ -719,8 +719,8 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
   GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
   GLfloat dx, dx2d, theta, posz, phi;
-  GLfloat pos1[4], pos2[4], rot2[3][3];
-  int ierr, iaxis;
+  GLfloat pos1[4] = {}, pos2[4] = {}, rot2[3][3] = {};
+  int ierr;
   char command_name[256];
 
   if (draw_band == NULL) return;

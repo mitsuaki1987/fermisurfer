@@ -123,7 +123,7 @@ int ng0[3]
 */
 int read_file()
 {
-  int ib, i, j, i0, i1, i2, ii0, ii1, ii2, ierr, iaxis;
+  int ib, i, i0, i1, i2, ii0, ii1, ii2, ierr, iaxis;
   FILE *fp;
   char* ctemp1;
   char ctemp2[256];

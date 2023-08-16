@@ -51,7 +51,7 @@ static void proj_2d(
 ) 
 {
   int ii, kk;
-  GLfloat vec0[3];
+  GLfloat vec0[3] = {};
 
   for (kk = 0; kk < 2; kk++) {
     vec0[kk] = 0.0;
@@ -119,7 +119,7 @@ int bragg_vert2d(
 )
 {
   int kbr, i, lbr, nbr0;
-  GLfloat bmat[3][3], rhs[3], prod, thr, det;
+  GLfloat bmat[3][3] = {}, rhs[3] = {}, prod, thr, det;
   //
   nbr0 = nbr;
   //
@@ -181,8 +181,8 @@ int bragg_vert2d(
  Modify : ::nbzl2d, ::bzl2d_proj
 */
 void calc_2dbz() {
-  int jbr, nbr, i, j, lvert, ibzl, nbragg2, a0, a1, a2, ia, iBZ;
-  GLfloat vert[2][3], vec[26][2][3], prod, thr, kshift[3];
+  int jbr, nbr, i, j, lvert, ibzl, a0, a1, a2, ia, iBZ;
+  GLfloat vert[2][3] = {}, vec[26][2][3] = {}, prod, thr, kshift[3] = {};
 
   if (fbz != 1)return;
   /*
@@ -318,7 +318,7 @@ shared(nb,ib,clr,clr2d_v,kvp,kv2d_v,ntri,secvec,secscale,axis2d,bvec,BZ_number) 
 private(itri,i,j,ithread)
     {
       int sw[3], a0, a1, a2, ia;
-      GLfloat norm[3], a[3][3], kshift[3], kvp2[3][3];
+      GLfloat norm[3] = {}, a[3][3] = {}, kshift[3] = {}, kvp2[3][3] = {};
       std::vector<std::vector<GLfloat> > kv2d_0, clr2d_0;
 
       kv2d_0.resize(2);

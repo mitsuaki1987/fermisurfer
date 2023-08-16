@@ -85,7 +85,7 @@ extern int *ntri;          //!< The number of triangle patch [::nb]
 extern int *draw_band;     //!< Switch for drawn bands [::nb]
 extern GLfloat** rgb_band;     //!< Switch for drawn bands [::nb]
 extern GLfloat ****nmlp;    //!< Normal vector of patchs [::nb][::ntri][3][3]
-extern GLfloat***** arw;
+extern GLfloat**** arw;
 extern GLfloat ****kvp;    //!< @f$k@f$-vectors of points [::nb][::ntri][3][3]
 extern GLfloat **nmlp_rot; //!< Normal vector of patchs [::nb][::ntri*3*3]
 extern GLfloat **kvp_rot;  //!< @f$k@f$-vectors of points [::nb][::ntri*3*3]

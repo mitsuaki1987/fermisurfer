@@ -58,7 +58,7 @@ void equator() {
   private(itri,i,j,ithread)
     {
       int sw[3];
-      GLfloat a[3][3], prod[3];
+      GLfloat a[3][3] = {}, prod[3] = {};
       std::vector<std::vector<GLfloat> > kveq_0;
 
       kveq_0.resize(2);
