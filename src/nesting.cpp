@@ -39,6 +39,8 @@ void write_nesting(
   for (ii = 0; ii < 3; ii++) fprintf(fp, "%15.10f %15.10f %15.10f\n", bvec[ii][0], bvec[ii][1], bvec[ii][2]);
   for (iq=0;iq<ng0[0]*ng0[1]*ng0[2];iq++) fprintf(fp,"%15.10f\n", nesting[iq]);
   fclose(fp);
+  *terminal << wxT("  bz_line.dat was written.\n"); 
+  *terminal << wxString::Format(wxT("    %s was written.\n"), filename);
 }
 
 void libtetrabz_initialize(
@@ -860,7 +862,7 @@ static double libtetrabz_polstat3(
 {
   int i4, indx[4];
   double thr, thr2, e[4] = {}, ln[4] = {}, nesting;
-
+  
   for (i4 = 0; i4 < 4; i4++) e[i4] = de[i4];
   eig_sort(4, e, indx);
 
@@ -1114,6 +1116,8 @@ void nesting_lindhard()
 
   libtetrabz_initialize(wlsm, ikv);
 
+  dos = 0.0;
+
 #pragma omp parallel default(none) \
 private(it,i20) \
 shared(eig0,ng0,nk,nb,ikv,iqv,wlsm,thr,nesting,EF,nthreads) \
@@ -1160,7 +1164,7 @@ reduction(+: dos)
           for (i4 = 0; i4 < 4; i4++) {
             for (ib = 0; ib < nb; ib++) {
               ei1[i4][ib] += (double)(eig0[ib][ikv[it][i20][0]][ikv[it][i20][1]][ikv[it][i20][2]] * wlsm[i20][i4] - EF);
-              ej1[i4][ib] += (double)(eig0[ib][ikqv[0]][ikqv[1]][ikqv[2]] * wlsm[i20][i4] - EF);
+              ej1[i4][ib] += (double)(eig0[ib][        ikqv[0]][        ikqv[1]][        ikqv[2]] * wlsm[i20][i4] - EF);
             }//ib
           }//i4
         }//i20
@@ -1306,7 +1310,7 @@ reduction(+: dos)
     //
     // dos for the drude term
     //
-    dos = 0.0;
+#pragma omp for
     for (it = 0; it < 6 * nk; it++) {
 
       for (i4 = 0; i4 < 4; i4++)
@@ -1334,11 +1338,11 @@ reduction(+: dos)
         else if (e[1] <= 0.0 && 0.0 < e[2]) {
           dos += (3.0 * (e[1] - e[0])
             + 6.0 * (0.0 - e[1])
-            - 3.0 * (e[2] - e[0] + e[3] - e[1]) / (e[2] - e[1]) / (e[3] - e[1]) * (0.0 - e[1]) * (0.0 - e[1]))
+            - 3.0 * (e[2] - e[0] + e[3] - e[1]) * (0.0 - e[1]) * (0.0 - e[1]) / ((e[2] - e[1]) * (e[3] - e[1])))
             / (e[2] - e[0]) / (e[3] - e[0]);
         }
         else if (e[2] <= 0.0 && 0.0 < e[3]) {
-          dos += (3.0 * (e[3] - 0.0) * (e[3] - 0.0) / (e[3] - e[0]) / (e[3] - e[1]) / (e[3] - e[2]));
+          dos += 3.0 * (e[3] - 0.0) * (e[3] - 0.0) / (e[3] - e[0]) / (e[3] - e[1]) / (e[3] - e[2]);
         }
       }//ib
     }//it

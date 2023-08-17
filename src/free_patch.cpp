@@ -65,7 +65,7 @@ void free_patch()
           delete[] matp[ib][i0][i1];
           delete[] kvp[ib][i0][i1];
         }
-        for (i1 = 0; i1 < 3; ++i1)delete[] arw[ib][i0][i1];
+        for (i1 = 0; i1 < 2; ++i1)delete[] arw[ib][i0][i1];
         delete[] nmlp[ib][i0];
         delete[] matp[ib][i0];
         delete[] kvp[ib][i0];
