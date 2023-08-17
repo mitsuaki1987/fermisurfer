@@ -147,6 +147,8 @@ int itet = 0;           //!< Counter for tetrahedron
 GLfloat side = 1.0;       //!< Which side is lighted
 GLfloat patch_max;  //!< Max value across patch
 GLfloat patch_min;  //!< Max value across patch
+int arw_step = 5;   //!< interval to draw vector field
+GLfloat arw_width = 1.0;  //!< Width for vector field
 /*
   Variables for nodeline
 */

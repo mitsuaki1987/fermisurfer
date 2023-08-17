@@ -161,6 +161,8 @@ enum
   icheck_perspective,
   ibutton_nesting_doubledelta,
   ibutton_nesting_lindhard,
+  itext_arrow_step,
+  itext_arrow_width,
   icheck_band
 };
 
@@ -915,6 +917,24 @@ void MyFrame::button_nesting(
     nesting_lindhard();
   }
 }
+void MyFrame::textctrl_VectorField(
+  wxCommandEvent& event //!<[in] Selected menu
+)
+{
+  double dvalue;
+
+  if (event.GetId() == itext_arrow_step) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arw_step = (GLfloat)dvalue;
+    }
+  }
+  else  if (event.GetId() == itext_arrow_width) {
+    if (event.GetString().ToDouble(&dvalue)) {
+      arw_width = (GLfloat)dvalue;
+    }
+  }
+  Refresh(false);
+}
 
 MyFrame::MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
   const wxSize& size, long style)
@@ -1294,12 +1314,30 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   SetAutoLayout(true);
   //
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_nesting, this, ibutton_nesting_doubledelta);
-  gbsizer->Add(new wxButton(panel, ibutton_nesting_doubledelta, wxT("Nesting (double delta)")),
+  gbsizer->Add(new wxButton(panel, ibutton_nesting_doubledelta, wxT("delta*delta")),
     wxGBPosition(24, 2), wxGBSpan(1, 1));
   //
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_nesting, this, ibutton_nesting_lindhard);
-  gbsizer->Add(new wxButton(panel, ibutton_nesting_lindhard, wxT("Nesting (Lindhard)")),
+  gbsizer->Add(new wxButton(panel, ibutton_nesting_lindhard, wxT("Lindhard")),
     wxGBPosition(24, 3), wxGBSpan(1, 1));
+  //
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("3D arrow step : ")),
+    wxGBPosition(25, 0), wxGBSpan(1, 1), wxALIGN_RIGHT);
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_VectorField, this, itext_arrow_step);
+  textbox_ArrowStep = new wxTextCtrl(panel, itext_arrow_step, wxT("                  "));
+  gbsizer->Add(textbox_ArrowStep, wxGBPosition(25, 1), wxGBSpan(1, 1));
+  textbox_ArrowStep->ChangeValue(wxT("5"));
+  SetSizer(sizermain);
+  SetAutoLayout(true);  
+  gbsizer->Add(new wxStaticText(panel, wxID_ANY, wxT("Arrow width : ")),
+    wxGBPosition(25, 2), wxGBSpan(1, 1), wxALIGN_RIGHT);
+  Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_VectorField, this, itext_arrow_width);
+  textbox_ArrowWidth = new wxTextCtrl(panel, itext_arrow_width, wxT("                  "));
+  gbsizer->Add(textbox_ArrowWidth, wxGBPosition(25, 3), wxGBSpan(1, 1));
+  textbox_ArrowWidth->ChangeValue(wxT("1.0"));
+  SetSizer(sizermain);
+  SetAutoLayout(true);
+
 
   
   // Show the frame
@@ -1339,7 +1377,7 @@ void MyFrame::modify_band() {
     Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::check_band, this, icheck_band + 4*ib);
     check[ib] = new wxCheckBox(panel, icheck_band + 4*ib,
       wxString::Format(wxT("Band %d, RGB :"), ib));
-    gbsizer->Add(check[ib], wxGBPosition(25 + ib, 0), wxGBSpan(1, 1));
+    gbsizer->Add(check[ib], wxGBPosition(26 + ib, 0), wxGBSpan(1, 1));
     check[ib]->SetValue(true);
 
     if (nb == 1) mat2 = 0.5f;
@@ -1363,13 +1401,13 @@ void MyFrame::modify_band() {
 
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+1);
     textbox_BandR[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+1, wxT("                  "));
-    gbsizer->Add(textbox_BandR[ib], wxGBPosition(25 + ib, 1), wxGBSpan(1, 1));
+    gbsizer->Add(textbox_BandR[ib], wxGBPosition(26 + ib, 1), wxGBSpan(1, 1));
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+2);
     textbox_BandG[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+2, wxT("                  "));
-    gbsizer->Add(textbox_BandG[ib], wxGBPosition(25 + ib, 2), wxGBSpan(1, 1));
+    gbsizer->Add(textbox_BandG[ib], wxGBPosition(26 + ib, 2), wxGBSpan(1, 1));
     Bind(wxEVT_COMMAND_TEXT_UPDATED, &MyFrame::textctrl_Band, this, icheck_band + 4 * ib+3);
     textbox_BandB[ib] = new wxTextCtrl(panel, icheck_band + 4 * ib+3, wxT("                  "));
-    gbsizer->Add(textbox_BandB[ib], wxGBPosition(25 + ib, 3), wxGBSpan(1, 1));
+    gbsizer->Add(textbox_BandB[ib], wxGBPosition(26 + ib, 3), wxGBSpan(1, 1));
     textbox_BandR[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][0]));
     textbox_BandG[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][1]));
     textbox_BandB[ib]->ChangeValue(wxString::Format(wxT("%f"), rgb_band[ib][2]));

@@ -88,6 +88,8 @@ public:
   wxTextCtrl* textbox_sphereY;
   wxTextCtrl* textbox_sphereZ;
   wxTextCtrl* textbox_sphereR;
+  wxTextCtrl* textbox_ArrowStep;
+  wxTextCtrl* textbox_ArrowWidth;
 
 private:
   void OnExit(wxCommandEvent& event);
@@ -119,6 +121,7 @@ private:
   void textctrl_sphere(wxCommandEvent& event);
   void check_perspective(wxCommandEvent& event);
   void button_nesting(wxCommandEvent& event);
+  void textctrl_VectorField(wxCommandEvent& event);
   //wxDECLARE_EVENT_TABLE();
 };
 

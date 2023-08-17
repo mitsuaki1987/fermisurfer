@@ -96,6 +96,8 @@ extern int itet;           //!< Counter for tetrahedron
 extern GLfloat side;       //!< Which side is lighted
 extern GLfloat patch_max;  //!< Max value across patch
 extern GLfloat patch_min;  //!< Max value across patch
+extern int arw_step;       //!< interval to draw vector field
+extern GLfloat arw_width;  //!< Width for vector field
 /*
   Variables for nodeline
 */

@@ -207,7 +207,7 @@ private(ib)
           for (ib = 0; ib < nb; ib++)
             for (a0 = 0; a0 < ntri[ib] * 9; ++a0) arw_rot[ib][a0] = 0.0;
 #pragma omp parallel default(none) \
-shared(nb,draw_band,ntri,rot2,arw,arw_rot,trans2,kshift,scl,linewidth) \
+shared(nb,draw_band,ntri,rot2,arw,arw_rot,trans2,kshift,scl,linewidth,arw_step,arw_width) \
 private(ib)
           {
             int j, l, itri;
@@ -216,7 +216,7 @@ private(ib)
             for (ib = 0; ib < nb; ib++) {
               if (draw_band[ib] == 1) {
 #pragma omp for nowait
-                for (itri = 0; itri < ntri[ib]; itri+=5) {
+                for (itri = 0; itri < ntri[ib]; itri+=arw_step) {
                   for (j = 0; j < 3; ++j) {
                     for (l = 0; l < 2; ++l) {
                       line[j + 3 * l]
@@ -227,7 +227,7 @@ private(ib)
                     }
                   }
                   for (l = 0; l < 2; ++l) line[2 + 3 * l] += 0.001f;
-                  line2tri(linewidth*0.01, line, &arw_rot[ib][9 * itri]);
+                  line2tri(arw_width*0.01, line, &arw_rot[ib][9 * itri]);
                 }/*for (itri = 0; itri < ntri[ib]; ++itri)*/
               }
             }

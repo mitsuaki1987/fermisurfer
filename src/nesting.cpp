@@ -39,7 +39,6 @@ void write_nesting(
   for (ii = 0; ii < 3; ii++) fprintf(fp, "%15.10f %15.10f %15.10f\n", bvec[ii][0], bvec[ii][1], bvec[ii][2]);
   for (iq=0;iq<ng0[0]*ng0[1]*ng0[2];iq++) fprintf(fp,"%15.10f\n", nesting[iq]);
   fclose(fp);
-  *terminal << wxT("  bz_line.dat was written.\n"); 
   *terminal << wxString::Format(wxT("    %s was written.\n"), filename);
 }
 
