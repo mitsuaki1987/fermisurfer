@@ -92,6 +92,16 @@ INPUT sphinxlatexgraphics.sty
 INPUT sphinxlatexgraphics.sty
 INPUT sphinxpackageboxes.sty
 INPUT sphinxpackageboxes.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-pdftex.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/ellipse/ellipse.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/ellipse/ellipse.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/ellipse/ellipse.sty
 INPUT sphinxlatexadmonitions.sty
 INPUT sphinxlatexadmonitions.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/framed/framed.sty
@@ -217,13 +227,6 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
 INPUT /usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-pdftex.def
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-pdftex.def
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -415,6 +418,8 @@ INPUT ./setview.png
 INPUT ./setview.png
 INPUT setview.png
 INPUT ./setview.png
+INPUT /usr/share/texmf/fonts/tfm/public/tex-gyre/ec-qtmb.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/tex-gyre/ec-qtmb.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/txfonts/t1xbtt.tfm
 INPUT /usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd
 INPUT /usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd
@@ -442,6 +447,7 @@ INPUT ./fermisurfer.out
 INPUT /usr/share/texmf/fonts/enc/dvips/tex-gyre/q-ec.enc
 INPUT /usr/share/texmf/fonts/enc/dvips/tex-gyre/q-ts1.enc
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb
 INPUT /usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb

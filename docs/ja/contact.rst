@@ -3,7 +3,7 @@
 
 プログラムのバグや質問は以下のフォーラムへご投稿ください.
 
-http://sourceforge.jp/projects/fermisurfer/forums/
+https://github.com/mitsuaki1987/fermisurfer/issues
 
 開発に参加したい方は以下の連絡先にて受け付けております.
 
@@ -11,5 +11,5 @@ http://sourceforge.jp/projects/fermisurfer/forums/
 
 河村光晶
 
-``mkawamura__at__issp.u-tokyo.ac.jp``
+``mkawamura__at__ds.itc.u-tokyo.ac.jp``
 

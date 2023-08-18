@@ -93,6 +93,16 @@ INPUT sphinxlatexgraphics.sty
 INPUT sphinxlatexgraphics.sty
 INPUT sphinxpackageboxes.sty
 INPUT sphinxpackageboxes.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-dvipdfmx.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-dvipdfmx.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/ellipse/ellipse.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/ellipse/ellipse.sty
+INPUT /usr/share/texlive/texmf-dist/tex/latex/ellipse/ellipse.sty
 INPUT sphinxlatexadmonitions.sty
 INPUT sphinxlatexadmonitions.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/framed/framed.sty
@@ -213,13 +223,6 @@ INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-dvipdfmx.def
 INPUT fermisurfer.aux
 INPUT fermisurfer.aux
 OUTPUT fermisurfer.aux
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-dvipdfmx.def
-INPUT /usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-dvipdfmx.def
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 INPUT /usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
@@ -378,6 +381,8 @@ INPUT tetrahedron.png
 INPUT setview.png
 INPUT extractbb -B cropbox -O setview.png
 INPUT setview.png
+INPUT /usr/share/texmf/fonts/tfm/public/tex-gyre/ec-qtmb.tfm
+INPUT /usr/share/texmf/fonts/tfm/public/tex-gyre/ec-qtmb.tfm
 INPUT /usr/share/texlive/texmf-dist/fonts/tfm/public/txfonts/t1xbtt.tfm
 INPUT /usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd
 INPUT /usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd

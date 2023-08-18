@@ -1,4 +1,4 @@
-This is e-upTeX, Version 3.14159265-p3.8.2-u1.25-190908-2.6 (utf8.uptex) (TeX Live 2019/Debian) (preloaded format=uplatex 2023.6.5)  17 JUN 2023 16:27
+This is e-upTeX, Version 3.14159265-p3.8.2-u1.25-190908-2.6 (utf8.uptex) (TeX Live 2019/Debian) (preloaded format=uplatex 2023.6.5)  18 AUG 2023 13:33
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -138,7 +138,7 @@ Package: kvsetkeys 2019/12/15 v1.18 Key value parser (HO)
 . . . . . )) (/usr/share/texmf/tex/latex/tex-gyre/tgheros.sty
 Package: tgheros 2009/09/27 v1.2 TeX Gyre Heros as default sans serif family
 ) (./sphinx.sty
-Package: sphinx 2023/01/06 v6.1.2 LaTeX package (Sphinx markup)
+Package: sphinx 2023/03/19 v6.2.0 LaTeX package (Sphinx markup)
 
 (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
 Package: xcolor 2016/05/11 v2.12 LaTeX color extensions (UK)
@@ -160,13 +160,6 @@ Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
 )
-\sphinxverbatimsep=\dimen163
-\sphinxverbatimborder=\dimen164
-\sphinxshadowsep=\dimen165
-\sphinxshadowsize=\dimen166
-\sphinxshadowrule=\dimen167
-\spx@notice@border=\dimen168
-
 (./sphinxoptionshyperref.sty
 File: sphinxoptionshyperref.sty 2021/01/27 hyperref
 
@@ -198,8 +191,8 @@ Package: float 2001/11/08 v1.3d Float enhancements (AL)
 \@floatcapt=\box64
 )
 (/usr/share/texlive/texmf-dist/tex/latex/wrapfig/wrapfig.sty
-\wrapoverhang=\dimen169
-\WF@size=\dimen170
+\wrapoverhang=\dimen163
+\WF@size=\dimen164
 \c@WF@wrappedlines=\count190
 \WF@box=\box65
 \WF@everypar=\toks23
@@ -212,21 +205,21 @@ Package: capt-of 2009/12/29 v0.2 standard captions outside of floats
 Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
 \c@tracingmulticols=\count191
 \mult@box=\box66
-\multicol@leftmargin=\dimen171
+\multicol@leftmargin=\dimen165
 \c@unbalance=\count192
 \c@collectmore=\count193
 \doublecol@number=\count194
 \multicoltolerance=\count195
 \multicolpretolerance=\count196
-\full@width=\dimen172
-\page@free=\dimen173
-\premulticols=\dimen174
-\postmulticols=\dimen175
+\full@width=\dimen166
+\page@free=\dimen167
+\premulticols=\dimen168
+\postmulticols=\dimen169
 \multicolsep=\skip52
 \multicolbaselineskip=\skip53
 \partial@page=\box67
 \last@line=\box68
-\maxbalancingoverflow=\dimen176
+\maxbalancingoverflow=\dimen170
 \mult@rightbox=\box69
 \mult@grightbox=\box70
 \mult@gfirstbox=\box71
@@ -271,9 +264,9 @@ Package: multicol 2019/12/09 v1.8y multicolumn formatting (FMi)
 \c@minrows=\count197
 \c@columnbadness=\count198
 \c@finalcolumnbadness=\count199
-\last@try=\dimen177
-\multicolovershoot=\dimen178
-\multicolundershoot=\dimen179
+\last@try=\dimen171
+\multicolovershoot=\dimen172
+\multicolundershoot=\dimen173
 \mult@nat@firstbox=\box110
 \colbreak@box=\box111
 \mc@col@check@num=\count266
@@ -292,46 +285,74 @@ File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
 )
 Package graphics Info: Driver file: dvipdfmx.def on input line 105.
 )
-\Gin@req@height=\dimen180
-\Gin@req@width=\dimen181
+\Gin@req@height=\dimen174
+\Gin@req@width=\dimen175
 )
 (./sphinxlatexgraphics.sty
 File: sphinxlatexgraphics.sty 2021/01/27 graphics
-\spx@image@maxheight=\dimen182
+\spx@image@maxheight=\dimen176
 \spx@image@box=\box112
 ) (./sphinxpackageboxes.sty
-Package: sphinxpackageboxes 2022/07/04 v5.1.0 advanced colored boxes
+Package: sphinxpackageboxes 2023/03/19 v6.2.0 advanced colored boxes
+
+(/usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
+Package: pict2e 2019/08/20 v0.3c Improved picture commands (HjG,RN,JT)
+
+(/usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
+File: pict2e.cfg 2016/02/05 v0.1u pict2e configuration for teTeX/TeXLive
+)
+Package pict2e Info: Driver file: dvipdfmx.def on input line 119.
+Package pict2e Info: Driver file for pict2e: p2e-dvipdfmx.def on input line 121
+.
+
+(/usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-dvipdfmx.def
+File: p2e-dvipdfmx.def 2016/02/05 v0.1u Driver-dependant file (RN,HjG,JT)
+)
+\pIIe@GRAPH=\toks24
+\@arclen=\dimen177
+\@arcrad=\dimen178
+\@tempdimd=\dimen179
+)
+(/usr/share/texlive/texmf-dist/tex/latex/ellipse/ellipse.sty
+Package: ellipse 2004/11/05 v1.0 .dtx ellipse file
+)
 \spx@tempboxa=\box113
 \spx@tempboxb=\box114
-\spx@boxes@border=\dimen183
-\spx@boxes@border@top=\dimen184
-\spx@boxes@border@right=\dimen185
-\spx@boxes@border@bottom=\dimen186
-\spx@boxes@border@left=\dimen187
-\spx@boxes@padding@top=\dimen188
-\spx@boxes@padding@right=\dimen189
-\spx@boxes@padding@bottom=\dimen190
-\spx@boxes@padding@left=\dimen191
-\spx@boxes@shadow@xoffset=\dimen192
-\spx@boxes@shadow@yoffset=\dimen193
-\spx@boxes@radius@topleft=\dimen194
-\spx@boxes@radius@topright=\dimen195
-\spx@boxes@radius@bottomright=\dimen196
-\spx@boxes@radius@bottomleft=\dimen197
+\spx@boxes@border=\dimen180
+\spx@boxes@border@top=\dimen181
+\spx@boxes@border@right=\dimen182
+\spx@boxes@border@bottom=\dimen183
+\spx@boxes@border@left=\dimen184
+\spx@boxes@padding@top=\dimen185
+\spx@boxes@padding@right=\dimen186
+\spx@boxes@padding@bottom=\dimen187
+\spx@boxes@padding@left=\dimen188
+\spx@boxes@shadow@xoffset=\dimen189
+\spx@boxes@shadow@yoffset=\dimen190
+\spx@boxes@radius@topleft@x=\dimen191
+\spx@boxes@radius@topright@x=\dimen192
+\spx@boxes@radius@bottomright@x=\dimen193
+\spx@boxes@radius@bottomleft@x=\dimen194
+\spx@boxes@radius@topleft@y=\dimen195
+\spx@boxes@radius@topright@y=\dimen196
+\spx@boxes@radius@bottomright@y=\dimen197
+\spx@boxes@radius@bottomleft@y=\dimen198
 )
 (./sphinxlatexadmonitions.sty
-File: sphinxlatexadmonitions.sty 2023/01/03 admonitions
+File: sphinxlatexadmonitions.sty 2023/03/19 admonitions
 
 (/usr/share/texlive/texmf-dist/tex/latex/framed/framed.sty
 Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
 \OuterFrameSep=\skip54
-\fb@frw=\dimen198
-\fb@frh=\dimen199
-\FrameRule=\dimen256
-\FrameSep=\dimen257
-))
+\fb@frw=\dimen199
+\fb@frh=\dimen256
+\FrameRule=\dimen257
+\FrameSep=\dimen258
+)
+\spx@notice@border=\dimen259
+)
 (./sphinxlatexliterals.sty
-File: sphinxlatexliterals.sty 2022/07/29 code-blocks and parsed literals
+File: sphinxlatexliterals.sty 2023/04/01 code-blocks and parsed literals
 
 (/usr/share/texlive/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
 Package: fancyvrb 2020/01/13 v3.5 verbatim text (tvz,hv)
@@ -358,7 +379,7 @@ Package: needspace 2010/09/12 v1.3d reserve vertical space
 \sphinxVerbatim@ContentsBox=\box119
 )
 (./sphinxlatexshadowbox.sty
-File: sphinxlatexshadowbox.sty 2023/01/06 sphinxShadowBox
+File: sphinxlatexshadowbox.sty 2023/03/19 sphinxShadowBox
 ) (./sphinxlatexcontainers.sty
 File: sphinxlatexcontainers.sty 2021/05/03 containers
 )
@@ -372,19 +393,19 @@ Package: tabulary 2014/06/11 v0.10 tabulary package (DPC)
 
 (/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
 Package: array 2019/08/31 v2.4l Tabular extension package (FMi)
-\col@sep=\dimen258
+\col@sep=\dimen260
 \ar@mcellbox=\box120
-\extrarowheight=\dimen259
-\NC@list=\toks24
+\extrarowheight=\dimen261
+\NC@list=\toks25
 \extratabsurround=\skip55
 \backup@length=\skip56
 \ar@cellbox=\box121
 )
 \TY@count=\count270
-\TY@linewidth=\dimen260
-\tymin=\dimen261
-\tymax=\dimen262
-\TY@tablewidth=\dimen263
+\TY@linewidth=\dimen262
+\tymin=\dimen263
+\tymax=\dimen264
+\TY@tablewidth=\dimen265
 )
 (/usr/share/texlive/texmf-dist/tex/latex/tools/longtable.sty
 Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
@@ -393,7 +414,7 @@ Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
 \LTpre=\skip59
 \LTpost=\skip60
 \LTchunksize=\count271
-\LTcapwidth=\dimen264
+\LTcapwidth=\dimen266
 \LT@head=\box122
 \LT@firsthead=\box123
 \LT@foot=\box124
@@ -402,57 +423,57 @@ Package: longtable 2020/01/07 v4.13 Multi-page Table package (DPC)
 \LT@rows=\count273
 \c@LT@tables=\count274
 \c@LT@chunks=\count275
-\LT@p@ftn=\toks25
+\LT@p@ftn=\toks26
 )
 (/usr/share/texlive/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
 \@vwid@box=\box126
 \sift@deathcycles=\count276
-\@vwid@loff=\dimen265
-\@vwid@roff=\dimen266
+\@vwid@loff=\dimen267
+\@vwid@roff=\dimen268
 )
-\sphinx@TY@tablewidth=\dimen267
+\sphinx@TY@tablewidth=\dimen269
 
 (/usr/share/texlive/texmf-dist/tex/latex/colortbl/colortbl.sty
 Package: colortbl 2020/01/04 v1.0e Color table columns (DPC)
-\everycr=\toks26
+\everycr=\toks27
 \minrowclearance=\skip61
 )
 \rownum=\count277
 
 (/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen268
-\lightrulewidth=\dimen269
-\cmidrulewidth=\dimen270
-\belowrulesep=\dimen271
-\belowbottomsep=\dimen272
-\aboverulesep=\dimen273
-\abovetopsep=\dimen274
-\cmidrulesep=\dimen275
-\cmidrulekern=\dimen276
-\defaultaddspace=\dimen277
+\heavyrulewidth=\dimen270
+\lightrulewidth=\dimen271
+\cmidrulewidth=\dimen272
+\belowrulesep=\dimen273
+\belowbottomsep=\dimen274
+\aboverulesep=\dimen275
+\abovetopsep=\dimen276
+\cmidrulesep=\dimen277
+\cmidrulekern=\dimen278
+\defaultaddspace=\dimen279
 \@cmidla=\count278
 \@cmidlb=\count279
-\@aboverulesep=\dimen278
-\@belowrulesep=\dimen279
+\@aboverulesep=\dimen280
+\@belowrulesep=\dimen281
 \@thisruleclass=\count280
 \@lastruleclass=\count281
-\@thisrulewidth=\dimen280
+\@thisrulewidth=\dimen282
 ))
 (./sphinxlatexnumfig.sty
 File: sphinxlatexnumfig.sty 2021/01/27 numbering
 ) (./sphinxlatexlists.sty
 File: sphinxlatexlists.sty 2021/12/20 lists
-\spx@lineitemlabel=\toks27
+\spx@lineitemlabel=\toks28
 )
 \c@sphinxscope=\count282
  (./sphinxpackagefootnote.sty
 Package: sphinxpackagefootnote 2022/08/15 v5.3.0 Sphinx custom footnotehyper pa
 ckage (Sphinx team)
 \FNH@notes=\box127
-\FNH@toks=\toks28
-\FNH@width=\dimen281
+\FNH@toks=\toks29
+\FNH@width=\dimen283
 \c@sphinxfootnotemark=\count283
 ) (./sphinxlatexindbibtoc.sty
 File: sphinxlatexindbibtoc.sty 2021/01/27 index, bib., toc
@@ -484,28 +505,29 @@ s
 \f@nch@O@orf=\skip70
 ))
 (./sphinxlatexstyleheadings.sty
-File: sphinxlatexstyleheadings.sty 2022/08/15 headings
+File: sphinxlatexstyleheadings.sty 2023/02/11 headings
 
 (/usr/share/texlive/texmf-dist/tex/latex/titlesec/titlesec.sty
 Package: titlesec 2019/10/16 v2.13 Sectioning titles
 \ttl@box=\box128
 \beforetitleunit=\skip71
 \aftertitleunit=\skip72
-\ttl@plus=\dimen282
-\ttl@minus=\dimen283
-\ttl@toksa=\toks29
-\titlewidth=\dimen284
-\titlewidthlast=\dimen285
-\titlewidthfirst=\dimen286
+\ttl@plus=\dimen284
+\ttl@minus=\dimen285
+\ttl@toksa=\toks30
+\titlewidth=\dimen286
+\titlewidthlast=\dimen287
+\titlewidthfirst=\dimen288
 ))
 (./sphinxlatexstyletext.sty
-File: sphinxlatexstyletext.sty 2022/07/02 text styling
+File: sphinxlatexstyletext.sty 2023/07/23 text styling
 ) (./sphinxlatexobjects.sty
-File: sphinxlatexobjects.sty 2022/01/13 documentation environments
+File: sphinxlatexobjects.sty 2023/07/23 documentation environments
 \sphinxsignaturesep=\skip73
-\py@argswidth=\skip74
-\lineblockindentation=\skip75
-\DUlineblockindent=\skip76
+\sphinxsignaturelistskip=\skip74
+\py@argswidth=\skip75
+\lineblockindentation=\skip76
+\DUlineblockindent=\skip77
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
 Package: geometry 2020/01/02 v5.9 Page Geometry
@@ -516,15 +538,15 @@ Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
 \Gm@cnth=\count284
 \Gm@cntv=\count285
 \c@Gm@tempcnt=\count286
-\Gm@bindingoffset=\dimen287
-\Gm@wd@mp=\dimen288
-\Gm@odd@mp=\dimen289
-\Gm@even@mp=\dimen290
-\Gm@layoutwidth=\dimen291
-\Gm@layoutheight=\dimen292
-\Gm@layouthoffset=\dimen293
-\Gm@layoutvoffset=\dimen294
-\Gm@dimlist=\toks30
+\Gm@bindingoffset=\dimen289
+\Gm@wd@mp=\dimen290
+\Gm@odd@mp=\dimen291
+\Gm@even@mp=\dimen292
+\Gm@layoutwidth=\dimen293
+\Gm@layoutheight=\dimen294
+\Gm@layouthoffset=\dimen295
+\Gm@layoutvoffset=\dimen296
+\Gm@dimlist=\toks31
 
 
 Package geometry Warning: \topskip was changed from 8.46753pt to 10.49995pt.
@@ -554,7 +576,7 @@ Package: letltxmacro 2019/12/03 v1.6 Let assignment for LaTeX macros (HO)
 (/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty
 Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
 )
-\@linkdim=\dimen295
+\@linkdim=\dimen297
 \Hy@linkcounter=\count287
 \Hy@pagecounter=\count288
 
@@ -586,7 +608,7 @@ Package hyperref Info: Bookmarks ON on input line 4800.
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 5159.
-\XeTeXLinkMargin=\dimen296
+\XeTeXLinkMargin=\dimen298
 
 (/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
@@ -596,8 +618,8 @@ Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
 \Fld@menulength=\count291
-\Field@Width=\dimen297
-\Fld@charsize=\dimen298
+\Field@Width=\dimen299
+\Fld@charsize=\dimen300
 Package hyperref Info: Hyper figures OFF on input line 6430.
 Package hyperref Info: Link nesting OFF on input line 6435.
 Package hyperref Info: Hyper index ON on input line 6438.
@@ -634,7 +656,7 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 86.
 )
-\Hy@SectionHShift=\skip77
+\Hy@SectionHShift=\skip78
 )
 (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/hypcap.sty
 Package: hypcap 2016/05/16 v1.12 Adjusting the anchors of captions (HO)
@@ -691,24 +713,6 @@ LaTeX Font Info:    Checking defaults for JT2/mc/m/n on input line 60.
 LaTeX Font Info:    ... okay on input line 60.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 60.
 LaTeX Font Info:    ... okay on input line 60.
- (/usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.sty
-Package: pict2e 2019/08/20 v0.3c Improved picture commands (HjG,RN,JT)
-
-(/usr/share/texlive/texmf-dist/tex/latex/pict2e/pict2e.cfg
-File: pict2e.cfg 2016/02/05 v0.1u pict2e configuration for teTeX/TeXLive
-)
-Package pict2e Info: Driver file: dvipdfmx.def on input line 119.
-Package pict2e Info: Driver file for pict2e: p2e-dvipdfmx.def on input line 121
-.
-
-(/usr/share/texlive/texmf-dist/tex/latex/pict2e/p2e-dvipdfmx.def
-File: p2e-dvipdfmx.def 2016/02/05 v0.1u Driver-dependant file (RN,HjG,JT)
-)
-\pIIe@GRAPH=\toks31
-\@arclen=\dimen299
-\@arcrad=\dimen300
-\@tempdimd=\dimen301
-)
 \AtBeginShipoutBox=\box131
 \c@literalblock=\count303
 
@@ -966,13 +970,6 @@ LaTeX Font Info:    Font shape `JT2/gt/m/it' will be
 LaTeX Font Info:    Font shape `JY2/gt/m/it' will be
 (Font)              scaled to size 9.6222pt on input line 309.
 
-Package Fancyhdr Warning: \headheight is too small (12.0pt): 
-Make it at least 15.0pt.
-We now make it that large for the rest of the document.
-This may cause the page layout to be inconsistent, however.
-
-[5]
-
 LaTeX Font Warning: Font shape `JT2/mc/m/it' undefined
 (Font)              using `JT2/mc/m/n' instead on input line 341.
 
@@ -986,6 +983,16 @@ LaTeX Font Info:    Font shape `JT2/mc/m/it' will be
 (Font)              scaled to size 9.6222pt on input line 342.
 LaTeX Font Info:    Font shape `JY2/mc/m/it' will be
 (Font)              scaled to size 9.6222pt on input line 342.
+
+Package Fancyhdr Warning: \headheight is too small (12.0pt): 
+Make it at least 15.0pt.
+We now make it that large for the rest of the document.
+This may cause the page layout to be inconsistent, however.
+
+[5]
+Overfull \vbox (4.09pt too high) detected at line 418
+ []
+
 [6] [7] [8] [9]
 第 5 章
 LaTeX Font Info:    Font shape `JT2/mc/m/n' will be
@@ -1014,9 +1021,10 @@ File: colorbar.png Graphic file (type bmp)
 <colorbar.png>
 File: colorscale.png Graphic file (type bmp)
 <colorscale.png>
+ [14]
 File: bar_color.png Graphic file (type bmp)
 <bar_color.png>
- [14] [15]
+ [15]
 File: equator.png Graphic file (type bmp)
 <equator.png>
 File: interpolate.png Graphic file (type bmp)
@@ -1031,154 +1039,154 @@ File: nodeline.png Graphic file (type bmp)
 <nodeline.png>
 
 
-LaTeX Warning: Reference `ops:sectionpng' on page 19 undefined on input line 82
-5.
+LaTeX Warning: Reference `ops:sectionpng' on page 19 undefined on input line 84
+6.
 
 File: section.png Graphic file (type bmp)
 <section.png>
-[19]
 File: section_file.png Graphic file (type bmp)
 <section_file.png>
+[19] [20]
 File: shift.png Graphic file (type bmp)
 <shift.png>
- [20]
+
 
 LaTeX Warning: Reference `ops:stereogrampng' on page 21 undefined on input line
- 881.
+ 912.
 
 File: stereogram.png Graphic file (type bmp)
 <stereogram.png>
 File: tetrahedron.png Graphic file (type bmp)
 <tetrahedron.png>
-[21]
+[21] [22]
 File: setview.png Graphic file (type bmp)
 <setview.png>
- [22]
+ [23] [24]
 第 6 章
 
-Underfull \hbox (badness 10000) in paragraph at lines 1014--1016
+Underfull \hbox (badness 10000) in paragraph at lines 1097--1099
 []|\JY2/mc/m/it/10 キ ー
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1028--1030
+Underfull \hbox (badness 10000) in paragraph at lines 1111--1113
 []|\T1/qtm/m/n/10 back-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1054--1056
+Underfull \hbox (badness 10000) in paragraph at lines 1137--1139
 []|\T1/qtm/m/n/10 bril-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1054--1056
+Underfull \hbox (badness 10000) in paragraph at lines 1137--1139
 \T1/qtm/m/n/10 louin-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1067--1069
+Underfull \hbox (badness 10000) in paragraph at lines 1150--1152
 []|\T1/qtm/m/n/10 col-or-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1080--1082
+Underfull \hbox (badness 10000) in paragraph at lines 1163--1165
 []|\T1/qtm/m/n/10 col-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1083--1085
+Underfull \hbox (badness 10000) in paragraph at lines 1166--1168
 []|\T1/qtm/m/n/10 in-put1d, in-put2d, in-put3d,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1083--1085
+Underfull \hbox (badness 10000) in paragraph at lines 1166--1168
 \T1/qtm/m/n/10 fer-mive-loc-ity, bandin-dex,
  []
 
 
-Overfull \hbox (4.25568pt too wide) in paragraph at lines 1132--1134
+Overfull \hbox (4.25568pt too wide) in paragraph at lines 1215--1217
 []|\T1/qtm/m/n/10 linewidth| 
  []
 
 
-Overfull \hbox (3.9957pt too wide) in paragraph at lines 1158--1160
+Overfull \hbox (3.9957pt too wide) in paragraph at lines 1241--1243
 []|\T1/qtm/m/n/10 nodalline| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1184--1186
+Underfull \hbox (badness 10000) in paragraph at lines 1267--1269
 []|\T1/qtm/m/n/10 across-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1236--1238
+Underfull \hbox (badness 10000) in paragraph at lines 1319--1321
 []|\T1/qtm/m/n/10 fer-
  []
 
 
-Overfull \hbox (4.3957pt too wide) in paragraph at lines 1236--1238
+Overfull \hbox (4.3957pt too wide) in paragraph at lines 1319--1321
 \T1/qtm/m/n/10 mienergy| 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1249--1251
+Underfull \hbox (badness 10000) in paragraph at lines 1332--1334
 []|\T1/qtm/m/n/10 stere-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1262--1264
+Underfull \hbox (badness 10000) in paragraph at lines 1345--1347
 []|\T1/qtm/m/n/10 tetra-he-
  []
 
-[23
+[25
 
-] [24]
+] [26]
 第 7 章
 LaTeX Font Info:    Font shape `T1/txtt/b/n' in size <14.4> not available
-(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 1306.
+(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 1389.
 
 LaTeX Font Info:    Trying to load font information for TS1+txtt on input line 
-1330.
+1413.
 (/usr/share/texlive/texmf-dist/tex/latex/txfonts/ts1txtt.fd
 File: ts1txtt.fd 2000/12/15 v3.1
-) [25
+) [27
 
 ]
 File: qe_vf.png Graphic file (type bmp)
 <qe_vf.png>
- [26] [27]
+ [28] [29]
 File: qe_proj_pz.png Graphic file (type bmp)
 <qe_proj_pz.png>
 
-[28]
+[30]
 File: qe_proj_pxy.png Graphic file (type bmp)
 <qe_proj_pxy.png>
- [29]
+ [31]
 第 8 章
-[30
-
-] [31]
-第 9 章
 [32
+
+] [33]
+第 9 章
+[34
 
 ]
 第 10 章
-[33
+[35
 
 ]
 第 11 章
 (./fermisurfer.ind)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1686.
- [34
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1769.
+ [36
 
 ]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1686.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1769.
  (./fermisurfer.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1686.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1686.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 1769.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1769.
 
 Package rerunfilecheck Info: File `fermisurfer.out' has not changed.
-(rerunfilecheck)             Checksum: 9C7418C7327140A1A6F1CAF8E44B8956;3744.
+(rerunfilecheck)             Checksum: 10EA356AAFBFFD36DDA3BB803FF428E8;4057.
 
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
@@ -1186,15 +1194,15 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1686.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1769.
  ) 
 Here is how much of TeX's memory you used:
- 11423 strings out of 482787
- 173755 string characters out of 5957709
- 518518 words of memory out of 5000000
- 26379 multiletter control sequences out of 15000+600000
- 636980 words of font info for 116 fonts, out of 8000000 for 9000
+ 11923 strings out of 482787
+ 186286 string characters out of 5957709
+ 522713 words of memory out of 5000000
+ 26875 multiletter control sequences out of 15000+600000
+ 642674 words of font info for 118 fonts, out of 8000000 for 9000
  310 hyphenation exceptions out of 8191
- 38i,28n,51p,937b,569s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,28n,51p,937b,581s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on fermisurfer.dvi (37 pages, 181188 bytes).
+Output written on fermisurfer.dvi (39 pages, 193588 bytes).

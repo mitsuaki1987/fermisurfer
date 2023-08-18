@@ -51,8 +51,8 @@
 \usepackage{pxjahyper}
 
 \title{Fermisurfer Documentation}
-\date{2023年06月17日}
-\release{2.2.1}
+\date{2023年08月18日}
+\release{2.4.0}
 \author{kawamura}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{fermisurfer.png}\par}
 \renewcommand{\releasename}{リリース}
@@ -526,14 +526,14 @@ fortran
 実行ファイルを \sphinxcode{\sphinxupquote{fermisurfer.exe}} に設定してください.
 
 \sphinxAtStartPar
-次に操作方法が出力され, Fermi面が描画されます(図 \ref{ops:startpng} ).
+次に操作方法が出力され, Fermi面が描画される(図 \ref{ops:startpng} ).
 
 \begin{figure}[htbp]
 \centering
 \capstart
 
 \noindent\sphinxincludegraphics[width=500\sphinxpxdimen]{{start}.png}
-\caption{Fermisurferを起動した直後の画面.}\label{\detokenize{ops:id15}}\label{\detokenize{ops:startpng}}\end{figure}
+\caption{Fermisurferを起動した直後の画面.}\label{\detokenize{ops:id23}}\label{\detokenize{ops:startpng}}\end{figure}
 \begin{itemize}
 \item {} 
 \sphinxAtStartPar
@@ -550,6 +550,7 @@ fortran
 \item {} 
 \sphinxAtStartPar
 カーソルキー(Windowsではwasd)を使ってウィンドウ内で上下左右に図を動かせる.
+ダブルクリックでも移動可。
 
 \item {} 
 \sphinxAtStartPar
@@ -570,7 +571,7 @@ fortran
 \section{背景色}
 \label{\detokenize{ops:id3}}
 \sphinxAtStartPar
-背景色をRGBで指定する.
+\sphinxcode{\sphinxupquote{Background (RGB)}} : 背景色をRGBで指定する.
 
 \begin{figure}[htbp]
 \centering
@@ -579,16 +580,16 @@ fortran
 \end{figure}
 
 
-\section{Line width}
-\label{\detokenize{ops:line-width}}
+\section{線幅}
+\label{\detokenize{ops:id4}}
 \sphinxAtStartPar
-ブリルアンゾーンの境界やノーダルライン等の線幅を変更します.
+\sphinxcode{\sphinxupquote{Line width}} : ブリルアンゾーンの境界やノーダルライン等の線幅を変更する.
 
 
-\section{Line color}
-\label{\detokenize{ops:line-color}}
+\section{線色}
+\label{\detokenize{ops:id5}}
 \sphinxAtStartPar
-線色をRGBで指定する.
+\sphinxcode{\sphinxupquote{Line color (RGB)}} : 線色をRGBで指定する.
 
 \begin{figure}[htbp]
 \centering
@@ -598,21 +599,22 @@ fortran
 
 
 \section{バンド毎の表示・非表示の切り替え}
-\label{\detokenize{ops:id4}}
+\label{\detokenize{ops:id6}}
 \sphinxAtStartPar
-バンド毎の表示on/offを切り替えます(図 \ref{ops:bandpng}).
+\sphinxcode{\sphinxupquote{Band 0, RGB}}, \sphinxcode{\sphinxupquote{Band 1, RGB}} ... : バンド毎の表示on/offを切り替える(図 \ref{ops:bandpng}).
 
 \begin{figure}[htbp]
 \centering
 \capstart
 
 \noindent\sphinxincludegraphics[width=600\sphinxpxdimen]{{band}.png}
-\caption{"Band" メニューで3番目のバンドの表示/非表示を切り替える.}\label{\detokenize{ops:id16}}\label{\detokenize{ops:bandpng}}\end{figure}
+\caption{"Band" メニューで3番目のバンドの表示/非表示を切り替える.}\label{\detokenize{ops:id24}}\label{\detokenize{ops:bandpng}}\end{figure}
 
 
 \section{Brillouin zoneの形式 (要Update)}
 \label{\detokenize{ops:brillouin-zone-update}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Brillouin zone}} :
 描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
 切り替える事が出来ます (図 \ref{ops:brillouinzonepng}).
 \begin{description}
@@ -631,13 +633,13 @@ fortran
 \capstart
 
 \noindent\sphinxincludegraphics[width=600\sphinxpxdimen]{{brillouinzone}.png}
-\caption{"Brillouin zone" メニューでBrillouin領域のとり方を変更する.}\label{\detokenize{ops:id17}}\label{\detokenize{ops:brillouinzonepng}}\end{figure}
+\caption{"Brillouin zone" メニューでBrillouin領域のとり方を変更する.}\label{\detokenize{ops:id25}}\label{\detokenize{ops:brillouinzonepng}}\end{figure}
 
 
-\section{Brillouin zoneの数}
-\label{\detokenize{ops:brillouin-zone}}
+\section{Brillouin zoneの数 (要Update)}
+\label{\detokenize{ops:id7}}
 \sphinxAtStartPar
-各逆格子ベクトルの方向にいくつ表示するかを指定する.
+\sphinxcode{\sphinxupquote{BZ number}} : 各逆格子ベクトルの方向にいくつ表示するかを指定する.
 
 \begin{figure}[htbp]
 \centering
@@ -646,23 +648,23 @@ fortran
 \end{figure}
 
 
-\section{Color bar}
-\label{\detokenize{ops:color-bar}}
+\section{カラーバーの表示/非表示}
+\label{\detokenize{ops:id8}}
 \sphinxAtStartPar
-カラーバーの表示/非表示を切り替えます(図 \ref{ops:colorbarpng}).
+\sphinxcode{\sphinxupquote{Color bar}} : カラーバーの表示/非表示を切り替えます(図 \ref{ops:colorbarpng}).
 
 \begin{figure}[htbp]
 \centering
 \capstart
 
 \noindent\sphinxincludegraphics[width=600\sphinxpxdimen]{{colorbar}.png}
-\caption{"Color bar On/Off" メニューでカラーバーの表示/非表示を切り替える.}\label{\detokenize{ops:id18}}\label{\detokenize{ops:colorbarpng}}\end{figure}
+\caption{"Color bar On/Off" メニューでカラーバーの表示/非表示を切り替える.}\label{\detokenize{ops:id26}}\label{\detokenize{ops:colorbarpng}}\end{figure}
 
 
 \section{カラープロットの種類と範囲 (要Update)}
 \label{\detokenize{ops:update}}
 \sphinxAtStartPar
-Fermi面の色表示のさせ方を変更します(図 \ref{ops:colorscalepng}).
+\sphinxcode{\sphinxupquote{Color scale mode}} : Fermi面の色表示のさせ方を変更します(図 \ref{ops:colorscalepng}).
 \begin{description}
 \sphinxlineitem{Input (1D) (入力ファイルのデータが1個のときのデフォルト) :}
 \sphinxAtStartPar
@@ -674,7 +676,7 @@ Fermi面の色表示のさせ方を変更します(図 \ref{ops:colorscalepng}).
 
 \sphinxlineitem{Input (3D) (入力ファイルのデータが3個のときのデフォルト) :}
 \sphinxAtStartPar
-フェルミ面上の線としてプロットする.
+フェルミ面上の矢印(細い三角形)としてプロットする.
 フェルミ面の色は「Band Index」の場合と同様.
 
 \sphinxlineitem{Fermi Velocity (入力ファイルのデータがエネルギーだけのときのデフォルト) :}
@@ -693,20 +695,30 @@ Fermi面の色表示のさせ方を変更します(図 \ref{ops:colorscalepng}).
 \end{description}
 
 \sphinxAtStartPar
-また, カラープロットの色の範囲や3D線プロットの線の長さは
-「Min of Scale」および 「Max of Scale」のテキストボックスに入力することで変更できる.
+\sphinxcode{\sphinxupquote{Min of Scale}}, \sphinxcode{\sphinxupquote{Max of Scale}} : カラープロットの色の範囲を指定する.
+「Input (3D)」の場合は \sphinxcode{\sphinxupquote{Max of Scale}} で三角形の長さを変更できる.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow width}} : 「Input (3D)」の場合に矢印(三角形)の幅を指定する.
 
 \begin{figure}[htbp]
 \centering
 \capstart
 
 \noindent\sphinxincludegraphics[width=700\sphinxpxdimen]{{colorscale}.png}
-\caption{"Color scale mode" メニュー.}\label{\detokenize{ops:id19}}\label{\detokenize{ops:colorscalepng}}\end{figure}
+\caption{"Color scale mode" メニュー.}\label{\detokenize{ops:id27}}\label{\detokenize{ops:colorscalepng}}\end{figure}
+
+
+\section{遠近法の有効化・無効化}
+\label{\detokenize{ops:id9}}
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Perspective}} : 遠近法の有効化・無効化を切り替える.
 
 
 \section{カラープロットの配色}
-\label{\detokenize{ops:id5}}
+\label{\detokenize{ops:id10}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Bar Color}} :
 カラープロットの配色を次の3つから選ぶことができる.
 "BGR":青\(\rightarrow\)水\(\rightarrow\)緑\(\rightarrow\)黄\(\rightarrow\)赤、"CMY":水\(\rightarrow\)青\(\rightarrow\)桃\(\rightarrow\)赤\(\rightarrow\)黄、"MCY":桃\(\rightarrow\)青\(\rightarrow\)水\(\rightarrow\)緑\(\rightarrow\)黄.
 
@@ -721,26 +733,32 @@ Fermi面の色表示のさせ方を変更します(図 \ref{ops:colorscalepng}).
 \label{\detokenize{ops:equator-update}}
 \sphinxAtStartPar
 ある \({\bf k}\) に対して,
-\({\bf v}_{\rm F} \cdot {\bf k} = 0\) となる線
-(Equator:極軌道, もしくはExtremal orbit)を表示, 変更する.
+\({\bf v}_{\rm F} \cdot {\bf k} = 0\) となる線を表示, 変更する
 (図 \ref{ops:equatorpng}).
-「Equator」チェックボックスで表示・非表示を切り替える.
+作った時点では作者が勘違いしていたが、dHvAで考慮される極軌道(extremul orbit)とは一致しない。
+超音波吸収とは関連すると考えられる。
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Equator}} : チェックボックスで表示・非表示を切り替える.
 この時「Update」を押す必要はない.
-「Equator\sphinxhyphen{}v :」のテキストボックスで \({\bf k}\) を指定する.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Equator\sphinxhyphen{}v}} : このテキストボックスで \({\bf k}\) を指定する.
 \({\bf k}\) ベクトルはフラクショナル座標で入力する.
+変更を反映させるには「Update」を押す.
 
 \begin{figure}[htbp]
 \centering
 \capstart
 
 \noindent\sphinxincludegraphics[width=700\sphinxpxdimen]{{equator}.png}
-\caption{"Equator"メニューで Fermi面の極軌道(Equator)を表示する.}\label{\detokenize{ops:id20}}\label{\detokenize{ops:equatorpng}}\end{figure}
+\caption{"Equator"メニューで Fermi面の極軌道(Equator)を表示する.}\label{\detokenize{ops:id28}}\label{\detokenize{ops:equatorpng}}\end{figure}
 
 
 \section{補間の細かさ (要Update)}
-\label{\detokenize{ops:id6}}
+\label{\detokenize{ops:id11}}
 \sphinxAtStartPar
-補間により図の曲面を滑らかにする (図 \ref{ops:interpolatepng}).
+\sphinxcode{\sphinxupquote{Interpol ratio}} : 補間により図の曲面を滑らかにする (図 \ref{ops:interpolatepng}).
 ただし分点数を増やすと描画にかかる時間も増えるので注意.
 
 \begin{figure}[htbp]
@@ -748,12 +766,13 @@ Fermi面の色表示のさせ方を変更します(図 \ref{ops:colorscalepng}).
 \capstart
 
 \noindent\sphinxincludegraphics[width=700\sphinxpxdimen]{{interpolate}.png}
-\caption{"Interpolate"メニューで 分点数を1から4に変える.}\label{\detokenize{ops:id21}}\label{\detokenize{ops:interpolatepng}}\end{figure}
+\caption{"Interpolate"メニューで 分点数を1から4に変える.}\label{\detokenize{ops:id29}}\label{\detokenize{ops:interpolatepng}}\end{figure}
 
 
 \section{Fermi面のどちら側に光を当てるか}
 \label{\detokenize{ops:fermi}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Lighting}} :
 光を当てる面を変更します (図 \ref{ops:lightpng}).
 \begin{description}
 \sphinxlineitem{Both :}
@@ -775,12 +794,13 @@ Fermi面の表裏両面に光を当てます.
 \capstart
 
 \noindent\sphinxincludegraphics[width=500\sphinxpxdimen]{{light}.png}
-\caption{"Lighting"メニューで光を当てるFermi面を変更する.}\label{\detokenize{ops:id22}}\label{\detokenize{ops:lightpng}}\end{figure}
+\caption{"Lighting"メニューで光を当てるFermi面を変更する.}\label{\detokenize{ops:id30}}\label{\detokenize{ops:lightpng}}\end{figure}
 
 
 \section{マウスドラッグをしたときの振る舞い}
-\label{\detokenize{ops:id7}}
+\label{\detokenize{ops:id12}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Mouse Drag}} :
 マウスの左ボタンドラッグを行った時の動作を変更します.
 \begin{description}
 \sphinxlineitem{Rotate(デフォルト)}
@@ -806,8 +826,9 @@ Fermi面の表裏両面に光を当てます.
 
 
 \section{ノーダルライン}
-\label{\detokenize{ops:id8}}
+\label{\detokenize{ops:id13}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Nodal Line}} :
 物理量が0となるところに引く線(ノーダルライン)のOn/Offを切り替えます(図 \ref{ops:nodelinepng}).
 
 \begin{figure}[htbp]
@@ -815,24 +836,31 @@ Fermi面の表裏両面に光を当てます.
 \capstart
 
 \noindent\sphinxincludegraphics[width=500\sphinxpxdimen]{{nodeline}.png}
-\caption{"Nodal line" メニューでnodal lineの表示/非表示を切り替える.}\label{\detokenize{ops:id23}}\label{\detokenize{ops:nodelinepng}}\end{figure}
+\caption{"Nodal line" メニューでnodal lineの表示/非表示を切り替える.}\label{\detokenize{ops:id31}}\label{\detokenize{ops:nodelinepng}}\end{figure}
 
 
 \section{ブリルアンゾーンの断面 (要Update)}
-\label{\detokenize{ops:id9}}
+\label{\detokenize{ops:id14}}
 \sphinxAtStartPar
 Brillouin領域を任意の断面で切り取り,
 2次元のFermi面(線)を描画する (図 \ref{ops:sectionpng}).
 
 \sphinxAtStartPar
-「Section」チェックボックスで断面の表示・非表示を切り替える
+\sphinxcode{\sphinxupquote{Section}} : チェックボックスで断面の表示・非表示を切り替える
 (この操作は「Update」の必要はない).
-断面の法線の指定は「Section\sphinxhyphen{}v :」のテキストボックスで行う.
-法線ベクトルはフラクショナル座標で指定する。
 
 \sphinxAtStartPar
-また, 「On Gamma」のチェックボックスがオンになっているときには
+\sphinxcode{\sphinxupquote{Section\sphinxhyphen{}v}} : 断面の法線の指定する.
+法線ベクトルはフラクショナル座標で指定する。
+変更を反映するには \sphinxcode{\sphinxupquote{Update}} を押す。
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{On Gamma}} : このチェックボックスがオンになっているときには
 断面は \(\Gamma\) 点を通る.
+変更を反映するには \sphinxcode{\sphinxupquote{Update}} を押す。
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Section (RGB)}} : ブリルアンゾーンの切断面を示す平面の色を指定する.
 
 \begin{figure}[htbp]
 \centering
@@ -842,8 +870,9 @@ Brillouin領域を任意の断面で切り取り,
 
 
 \section{ブリルアンゾーン断面のファイル出力}
-\label{\detokenize{ops:id10}}
+\label{\detokenize{ops:id15}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Section file}} :
 このボタンを押すと, 上記フェルミ面およびブリルアンゾーンの断面をGnuplotやIgolなどで図示するためのファイル("fermi\_line.dat"と"bz\_line.dat")
 を出力する.
 
@@ -864,6 +893,7 @@ gnuplotでは次のように使うことができる.
 \section{Fermiエネルギーの変更 (要Update)}
 \label{\detokenize{ops:fermi-update}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Fermi energy}} :
 Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
 (図 \ref{ops:shiftpng}).
 
@@ -872,12 +902,13 @@ Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
 \capstart
 
 \noindent\sphinxincludegraphics[width=500\sphinxpxdimen]{{shift}.png}
-\caption{"Shift Fermi energy"メニューで Fermi エネルギーを0.0 Ryから0.1 Ryに変える.}\label{\detokenize{ops:id24}}\label{\detokenize{ops:shiftpng}}\end{figure}
+\caption{"Shift Fermi energy"メニューで Fermi エネルギーを0.0 Ryから0.1 Ryに変える.}\label{\detokenize{ops:id32}}\label{\detokenize{ops:shiftpng}}\end{figure}
 
 
 \section{立体視}
-\label{\detokenize{ops:id11}}
+\label{\detokenize{ops:id16}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Stereogram}} :
 裸眼立体視用の図の表示/非表示を切り替えます(図 \ref{ops:stereogrampng}).
 \begin{description}
 \sphinxlineitem{None (デフォルト) :}
@@ -902,8 +933,9 @@ Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
 
 
 \section{四面体の切り方 (要Update)}
-\label{\detokenize{ops:id12}}
+\label{\detokenize{ops:id17}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Tetraghedron}} :
 四面体の切り方を変えます.
 図が綺麗になる可能性がありますが,
 多くの場合は逆に図がギザギザして汚くなるようです.
@@ -916,21 +948,21 @@ Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
 
 
 \section{サイズ・角度・位置の数値での調整}
-\label{\detokenize{ops:id13}}
+\label{\detokenize{ops:id18}}
 \sphinxAtStartPar
 視点を変更します(図 \ref{ops:setviewpng}).
 \begin{description}
-\sphinxlineitem{Scale :}
+\sphinxlineitem{\sphinxcode{\sphinxupquote{Scale}} :}
 \sphinxAtStartPar
 図形のサイズを指定します.
 
-\sphinxlineitem{Position :}
+\sphinxlineitem{\sphinxcode{\sphinxupquote{Position}} :}
 \sphinxAtStartPar
 図形の上下位置を指定します.
 
-\sphinxlineitem{Rotate :}
+\sphinxlineitem{\sphinxcode{\sphinxupquote{Rotate}} :}
 \sphinxAtStartPar
-x,y,z軸周りの回転角を指定し, "Roate" ボタンを押すと回転する.
+x,y,z軸周りの回転角を指定し, \sphinxcode{\sphinxupquote{Roate}} ボタンを押すと回転する.
 回転操作はz軸\sphinxhyphen{}y軸\sphinxhyphen{}x軸の順で行われます.
 
 \end{description}
@@ -940,11 +972,62 @@ x,y,z軸周りの回転角を指定し, "Roate" ボタンを押すと回転す�
 \capstart
 
 \noindent\sphinxincludegraphics[width=300\sphinxpxdimen]{{setview}.png}
-\caption{"View point"メニューで 視点を変更する.}\label{\detokenize{ops:id25}}\label{\detokenize{ops:setviewpng}}\end{figure}
+\caption{"View point"メニューで 視点を変更する.}\label{\detokenize{ops:id33}}\label{\detokenize{ops:setviewpng}}\end{figure}
 
+
+\section{矢印}
+\label{\detokenize{ops:id19}}
+\sphinxAtStartPar
+任意の位置に矢印(実際には細長い三角形)を表示する.
+以下は全てフラクショナル座標で指定する.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow (Start)}} : 始点
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow (End)}} : 終点
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow (Diff)}} : 上記の差. \sphinxcode{\sphinxupquote{Arrow (End)}} と \sphinxcode{\sphinxupquote{Arrow (Diff)}} は連動する.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow width}} : 矢印(三角形)の幅を指定する.
+
+
+\section{ワイヤーフレーム球}
+\label{\detokenize{ops:id20}}
+\sphinxAtStartPar
+任意の位置に任意の大きさのワイヤーフレーム球を表示する。
+HiLAPWとの関連で使用する.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Sphere center}} : 球の中心をデカルト座標で指定する.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Sphere radius}} : 球の半径を上記と同じスケールで指定する.
+
+
+\section{ネスティング関数}
+\label{\detokenize{ops:id21}}
+\sphinxAtStartPar
+次の二種類のネスティング関数を計算し, FermiSurferで読み取り可能なファイルを出力する.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{delta*delta}} : ファイル名は「doubledelta.frmsf」
+\begin{equation*}
+\begin{split}\sum_{n n' \textbf{k}} \delta(\varepsilon_{n \textbf{k}}-\varepsilon_\textrm{F})
+\delta(\varepsilon_{n' \textbf{k}+\textbf{q}}-\varepsilon_\textrm{F})\end{split}
+\end{equation*}
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Lindhard}} :  ファイル名は「lindhard.frmsf」
+\begin{equation*}
+\begin{split}-\sum_{n n' \textbf{k}} \frac{\theta(\varepsilon_\textrm{F} - \varepsilon_{n' \textbf{k}+\textbf{q}})
+-\theta(\varepsilon_\textrm{F}-\varepsilon_{n \textbf{k}})}
+{\varepsilon_{n' \textbf{k}+\textbf{q}} - \varepsilon_{n \textbf{k}}}\end{split}
+\end{equation*}
 
 \section{画像の保存方法}
-\label{\detokenize{ops:id14}}
+\label{\detokenize{ops:id22}}
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{fermisurfer}} には画像をファイル出力する機能はありません.
 お使いのPCにあった方法でスクリーンショットを取得して
@@ -1029,10 +1112,10 @@ x,y,z軸周りの回転角を指定し, "Roate" ボタンを押すと回転す�
 background
 &
 \sphinxAtStartPar
-black, white
+実数 実数 実数
 &
 \sphinxAtStartPar
-black
+0.0 0.0 0.0
 &
 \sphinxAtStartPar
 背景色
@@ -1136,7 +1219,7 @@ linewidth
 実数
 &
 \sphinxAtStartPar
-3.0
+1.0
 &
 \sphinxAtStartPar
 線幅
@@ -1665,7 +1748,7 @@ FermiSurferは下記の {\hyperref[\detokenize{copy:mitlicense}]{\sphinxcrossref
 プログラムのバグや質問は以下のフォーラムへご投稿ください.
 
 \sphinxAtStartPar
-\sphinxurl{http://sourceforge.jp/projects/fermisurfer/forums/}
+\sphinxurl{https://github.com/mitsuaki1987/fermisurfer/issues}
 
 \sphinxAtStartPar
 開発に参加したい方は以下の連絡先にて受け付けております.
@@ -1677,7 +1760,7 @@ FermiSurferは下記の {\hyperref[\detokenize{copy:mitlicense}]{\sphinxcrossref
 河村光晶
 
 \sphinxAtStartPar
-\sphinxcode{\sphinxupquote{mkawamura\_\_at\_\_issp.u\sphinxhyphen{}tokyo.ac.jp}}
+\sphinxcode{\sphinxupquote{mkawamura\_\_at\_\_ds.itc.u\sphinxhyphen{}tokyo.ac.jp}}
 
 
 

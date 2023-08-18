@@ -42,11 +42,12 @@ The following operations are available:
 
 -  Window re-sizing
 
--  Moving objects with cursor keys (wasd for Windows)
+-  Moving objects with cursor keys (wasd for Windows). 
+   Also we can shift objects with double click.
 
 -  Opeerate by using the panel
 
-Here, I will explain all menus.
+Here, we can see all menus.
 
 .. note::
 
@@ -57,7 +58,7 @@ Here, I will explain all menus.
 Background color
 ----------------
 
-The background color is specified as RGB.
+``Background (RGB)`` : The background color is specified as RGB.
 
 .. _backgroundpng:
      
@@ -67,12 +68,12 @@ The background color is specified as RGB.
 Line width
 ----------
 
-Modify the width of the Brillouin-zone boundary, the nodal line, etc.
+``Line width`` : Modify the width of the Brillouin-zone boundary, the nodal line, etc.
    
 Line color
 ----------
 
-The line color is specified with RGB.
+``Line color (RGB)`` : The line color is specified with RGB.
 
 .. _linecolorpng:
      
@@ -82,7 +83,7 @@ The line color is specified with RGB.
 Band
 ----
 
-It makes each band enable/disable (Fig. :num:`bandpng`).
+``Band 0, RGB``, ``Band 1, RGB`` ... : It makes each band enable/disable (Fig. :num:`bandpng`).
 
 .. _bandpng:
      
@@ -92,7 +93,7 @@ It makes each band enable/disable (Fig. :num:`bandpng`).
 Brillouin zone (Update required)
 --------------------------------
 
-You choose Brillouin-zone type as follows (Fig. :num:`brillouinzonepng`):
+``Brillouin zone`` : We choose Brillouin-zone type as follows (Fig. :num:`brillouinzonepng`):
 
 First Brillouin Zone
    The region surrounded by Bragg's planes the
@@ -110,10 +111,10 @@ Primitive Brillouin Zone
    You can change the type of the Brillouin zone with
    "Brillouin zone" menu.
 
-Number of Brillouin zone
-------------------------
+Number of Brillouin zone (Update required)
+------------------------------------------
 
-We can specify how many zones are displayed along each reciprocal
+``BZ number`` : We can specify how many zones are displayed along each reciprocal
 lattice vector.
 
 .. _bznumberpng:
@@ -124,7 +125,7 @@ lattice vector.
 Color bar
 ---------
 
-The color bar becomes enable/disable (Fig. :num:`colorbarpng`).
+``Color bar`` : The color bar becomes enable/disable (Fig. :num:`colorbarpng`).
 
 .. _colorbarpng:
      
@@ -136,7 +137,7 @@ The color bar becomes enable/disable (Fig. :num:`colorbarpng`).
 Color scale mode (Update required)
 ----------------------------------
 
-It turns color pattern on Fermi surfaces (Fig. :num:`colorscalepng`).
+``Color scale mode`` : It turns color pattern on Fermi surfaces (Fig. :num:`colorscalepng`).
 
 Input (1D) (default for the single input quatity) :
    It makes blue as the minimum on Fermi surfaces and red
@@ -146,7 +147,7 @@ Input (2D) (default for the double input quatity) :
    The color plot is shown with the color circle (see the figure).
 
 Input (3D) (default for the triple input quatity) :
-   The input value is shown as arrows on the Fermi surfaces.
+   The input value is shown as arrows (thin triangles) on the Fermi surfaces.
    The color of the Fermi surfaces are the same sa "Band Index" case.
 
 Fermi velocity (default for no input quantity)
@@ -161,9 +162,11 @@ Band Index :
 Input (1D, Gray), Fermi Velocity (Gray) :
    Plot with gray scale.
 
-We can change the range of the color plot or the length of arrows
-for 3D line plot by inputting into the text boxes at
-"Min of Scale" and "Max of Scale", respectively.
+``Min of Scale``, ``Max of Scale`` : 
+We can change the range of the color plot by inputting into the text boxes.
+For 3D arrow plot the length of arrows can be changed by ``Max of Scale``.
+
+``Arrow width`` : Change the thickness of arrow (triangle) at "Input (3D)" mode.
    
 .. _colorscalepng:
      
@@ -172,9 +175,15 @@ for 3D line plot by inputting into the text boxes at
 
    "Color scale mode" menu.
 
+Perspective
+-----------
+
+``Perspective`` : Turn on/off the perspective view.
+
 Color sequence for plot
 -----------------------
 
+``Bar Color`` : 
 We can specify the sequence of color plot.
 "BGR" is Blue-Cyan-Green-Yellow-Red,
 "CMY" is Cyan-Blue-Magenta-Red-Yellow,
@@ -189,12 +198,19 @@ Equator (Update required)
 -------------------------
 
 We can draw the line where 
-:math:`{\bf v}_{\rm F} \cdot {\bf k} = 0` for a vector :math:`{\bf k}`
-(equator or extremal orbit). See fig. :num:`equatorpng`.
-We can toggle equator with the checkbox "Equator"
-(this operation doed not require the update,
-and modify the direction of the tangent vector :math:`{\bf k}`
-by using the textbox at "Equator-v :" (**fractional coordinate**).
+:math:`{\bf v}_{\rm F} \cdot {\bf k} = 0` for a vector :math:`{\bf k}`.
+See fig. :num:`equatorpng`.
+When it was created, Kawamura missunderstood that this coinsides the extremul orbit in dHvA
+(it is not true!).
+Maybe it is related to the ultrasonic attenuation.
+
+``Equator`` : We can toggle equator.
+This operation does not require the update.
+
+``Equator-v`` :
+Modify the direction of the tangent vector :math:`{\bf k}`
+(**fractional coordinate**).
+We need to push ``Update`` to reflect the change.
 
 .. _equatorpng:
      
@@ -206,7 +222,7 @@ by using the textbox at "Equator-v :" (**fractional coordinate**).
 Interpolation (Update required)
 -------------------------------
 
-Smooth the Fermi surface with the interpolation (Fig. :num:`interpolatepng`).
+``Interpol ratio`` : Smooth the Fermi surface with the interpolation (Fig. :num:`interpolatepng`).
 The time for the plot increases with the interpolation ratio.
 
 .. _interpolatepng:
@@ -219,7 +235,7 @@ The time for the plot increases with the interpolation ratio.
 Which (or both) side of Fermi surface is illuminated
 ----------------------------------------------------
 
-We can choose the illuminatedside of the Fermi surface (Fig. :num:`lightpng`).
+``Lighting`` : We can choose the illuminatedside of the Fermi surface (Fig. :num:`lightpng`).
 
 Both :
     Light both sides.
@@ -240,7 +256,7 @@ Occupy :
 Mouse Drag
 ----------
 
-It turns the event of the mouse-left-drag.
+``Mouse Drag`` : It turns the event of the mouse-left-drag.
 
 Rotate(default)
    Rotate the figure along the mouse drag.
@@ -257,7 +273,7 @@ Translate
 Nodal line
 ----------
 
-The line on which the matrix element becomes 0 (we call it nodal line)
+``Nodal Line`` : The line on which the matrix element becomes 0 (we call it nodal line)
 becomes enable/disable (Fig. :num:`nodelinepng`).
 
 .. _nodelinepng:
@@ -273,13 +289,17 @@ Section of the Brillouine zone (Update required)
 Display a 2D plot of the Fermi surface (line)
 on an arbitrary section of the Brillouin zone (Fig. :num:`sectionpng`).
 
-We can toggle it with the checkbox "Section"
-(this operation does not require update),
-and can change the normal vector with the textbox at "Section-v :"
-(**fractional coordinate**).
+``Section`` : We can toggle it with the checkbox
+(this operation does not require update).
 
-If the checkbox "On Gamma" is turned on,
+``Section-v`` :
+We can change the normal vector with the textbox (**fractional coordinate**).
+
+``On Gamma``
+If the it is turned on,
 the section crosses :math:`\Gamma` point.
+
+``Section (RGB)`` : Change the color of plane representing the section in BZ.
 
 .. _sectionpng:
      
@@ -291,6 +311,7 @@ the section crosses :math:`\Gamma` point.
 Output section of the Brillouine zone
 -------------------------------------
 
+``Section file`` :
 Above section of the Brillouin zone and Fermi surfaces are outputted into files "fermi_line.dat" and "bz_line.dat" by pushing this button.
 
 .. _sectionfilepng:
@@ -307,6 +328,7 @@ These files are plotted in gnuplot as follows:
 Shift Fermi energy (Update required)
 ------------------------------------
 
+``Fermi energy`` : 
 It shifts the Fermi energy (= 0 in default) to arbitrary value (Fig. :num:`shiftpng`).
 
 .. _shiftpng:
@@ -320,6 +342,7 @@ It shifts the Fermi energy (= 0 in default) to arbitrary value (Fig. :num:`shift
 Stereogram
 ----------
 
+``Stereogram`` : 
 The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
 (Fig. :num:`stereogrampng`).
 
@@ -342,6 +365,7 @@ Cross
 Tetrahedron (Update required)
 -----------------------------
 
+``Tetraghedron`` : 
 You change the scheme to divide into tetrahedra (``tetra # 1`` as default).
 It is experimental.
 
@@ -353,13 +377,13 @@ View point
 
 Changing the view point.
 
-Scale
+``Scale`` :
     Change the size of the figure.
 
-Position
+``Position`` :
     Change the xy position of the figure.
 
-Rotate
+``Rotate`` :
     Change angles at x-, y-, z- axis.
     Rotations are performed as z-y-x axis if the "Roate" buttone is pushed.
 
@@ -372,6 +396,51 @@ the new value appears (Fig. :num:`setviewpng`).
    :width: 300
 
    Modify the view point by using "View point" menu
+
+Arrow
+-----
+
+Show an arrow (thin triangle) at arbitrary place.
+The following are specified in the fractional coordinate.
+
+``Arrow (Start)`` : Starting point
+
+``Arrow (End)`` : End point
+
+``Arrow (Diff)`` : Difference of above. ``Arrow (End)`` and ``Arrow (Diff)`` affects each other.
+
+``Arrow width`` : Modify the thickness of arrow (triangle).
+
+Wireframe sphere
+----------------
+
+Show a wireframe sphere at arbitrary place.
+This is utilized together with HiLAPW.
+The following are specified in the Cartesian coordinate.
+
+``Sphere center`` : Center of sphere.
+
+``Sphere radius`` : Radius of sphere.
+
+Nesting function
+----------------
+
+The following two kinds of nesting function are computed and written into a file readable by FermiSurfer.
+
+``delta*delta`` : File name is "doubledelta.frmsf"
+
+.. math::
+
+   \sum_{n n' \textbf{k}} \delta(\varepsilon_{n \textbf{k}}-\varepsilon_\textrm{F})
+   \delta(\varepsilon_{n' \textbf{k}+\textbf{q}}-\varepsilon_\textrm{F})
+
+``Lindhard`` :  File name is "lindhard.frmsf"
+
+.. math::
+
+   -\sum_{n n' \textbf{k}} \frac{\theta(\varepsilon_\textrm{F} - \varepsilon_{n' \textbf{k}+\textbf{q}})
+   -\theta(\varepsilon_\textrm{F}-\varepsilon_{n \textbf{k}})}
+   {\varepsilon_{n' \textbf{k}+\textbf{q}} - \varepsilon_{n \textbf{k}}}
 
 Saving images
 -------------

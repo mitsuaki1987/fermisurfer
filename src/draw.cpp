@@ -449,7 +449,7 @@ static void draw_bz_lines(
                           + scl * rot2[j][2] * arrow_c[2]
                           + trans2[j];
   }/*for (i = 0; i< 2; ++i)*/
-  line2tri(linewidth * 0.01, vertices, rect);
+  line2tri(arw_width * 0.01, vertices, rect);
   glColor3fv(linecolor);
   glNormal3f(0.0f, 0.0f, 1.0f);
   glVertexPointer(3, GL_FLOAT, 0, rect);

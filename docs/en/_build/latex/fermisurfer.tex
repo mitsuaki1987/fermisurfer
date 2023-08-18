@@ -63,8 +63,8 @@
 
 
 \title{Fermisurfer Documentation}
-\date{Jun 17, 2023}
-\release{2.2.0}
+\date{Aug 18, 2023}
+\release{2.4.0}
 \author{kawamura}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{fermisurfer.png}\par}
 \renewcommand{\releasename}{Release}
@@ -565,7 +565,8 @@ Window re\sphinxhyphen{}sizing
 
 \item {} 
 \sphinxAtStartPar
-Moving objects with cursor keys (wasd for Windows)
+Moving objects with cursor keys (wasd for Windows).
+Also we can shift objects with double click.
 
 \item {} 
 \sphinxAtStartPar
@@ -574,7 +575,7 @@ Opeerate by using the panel
 \end{itemize}
 
 \sphinxAtStartPar
-Here, I will explain all menus.
+Here, we can see all menus.
 
 \begin{sphinxadmonition}{note}{Note:}
 \sphinxAtStartPar
@@ -587,7 +588,7 @@ Such operations are refered as “Update required”.
 \section{Background color}
 \label{\detokenize{ops:background-color}}
 \sphinxAtStartPar
-The background color is specified as RGB.
+\sphinxcode{\sphinxupquote{Background (RGB)}} : The background color is specified as RGB.
 
 \begin{figure}[htbp]
 \centering
@@ -599,13 +600,13 @@ The background color is specified as RGB.
 \section{Line width}
 \label{\detokenize{ops:line-width}}
 \sphinxAtStartPar
-Modify the width of the Brillouin\sphinxhyphen{}zone boundary, the nodal line, etc.
+\sphinxcode{\sphinxupquote{Line width}} : Modify the width of the Brillouin\sphinxhyphen{}zone boundary, the nodal line, etc.
 
 
 \section{Line color}
 \label{\detokenize{ops:line-color}}
 \sphinxAtStartPar
-The line color is specified with RGB.
+\sphinxcode{\sphinxupquote{Line color (RGB)}} : The line color is specified with RGB.
 
 \begin{figure}[htbp]
 \centering
@@ -617,7 +618,7 @@ The line color is specified with RGB.
 \section{Band}
 \label{\detokenize{ops:band}}
 \sphinxAtStartPar
-It makes each band enable/disable (Fig. \ref{ops:bandpng}).
+\sphinxcode{\sphinxupquote{Band 0, RGB}}, \sphinxcode{\sphinxupquote{Band 1, RGB}} … : It makes each band enable/disable (Fig. \ref{ops:bandpng}).
 
 \begin{figure}[htbp]
 \centering
@@ -629,7 +630,7 @@ It makes each band enable/disable (Fig. \ref{ops:bandpng}).
 \section{Brillouin zone (Update required)}
 \label{\detokenize{ops:brillouin-zone-update-required}}
 \sphinxAtStartPar
-You choose Brillouin\sphinxhyphen{}zone type as follows (Fig. \ref{ops:brillouinzonepng}):
+\sphinxcode{\sphinxupquote{Brillouin zone}} : We choose Brillouin\sphinxhyphen{}zone type as follows (Fig. \ref{ops:brillouinzonepng}):
 \begin{description}
 \sphinxlineitem{First Brillouin Zone}
 \sphinxAtStartPar
@@ -652,10 +653,10 @@ lattice point.
 “Brillouin zone” menu.}\label{\detokenize{ops:id2}}\label{\detokenize{ops:brillouinzonepng}}\end{figure}
 
 
-\section{Number of Brillouin zone}
-\label{\detokenize{ops:number-of-brillouin-zone}}
+\section{Number of Brillouin zone (Update required)}
+\label{\detokenize{ops:number-of-brillouin-zone-update-required}}
 \sphinxAtStartPar
-We can specify how many zones are displayed along each reciprocal
+\sphinxcode{\sphinxupquote{BZ number}} : We can specify how many zones are displayed along each reciprocal
 lattice vector.
 
 \begin{figure}[htbp]
@@ -668,7 +669,7 @@ lattice vector.
 \section{Color bar}
 \label{\detokenize{ops:color-bar}}
 \sphinxAtStartPar
-The color bar becomes enable/disable (Fig. \ref{ops:colorbarpng}).
+\sphinxcode{\sphinxupquote{Color bar}} : The color bar becomes enable/disable (Fig. \ref{ops:colorbarpng}).
 
 \begin{figure}[htbp]
 \centering
@@ -681,7 +682,7 @@ The color bar becomes enable/disable (Fig. \ref{ops:colorbarpng}).
 \section{Color scale mode (Update required)}
 \label{\detokenize{ops:color-scale-mode-update-required}}
 \sphinxAtStartPar
-It turns color pattern on Fermi surfaces (Fig. \ref{ops:colorscalepng}).
+\sphinxcode{\sphinxupquote{Color scale mode}} : It turns color pattern on Fermi surfaces (Fig. \ref{ops:colorscalepng}).
 \begin{description}
 \sphinxlineitem{Input (1D) (default for the single input quatity) :}
 \sphinxAtStartPar
@@ -694,7 +695,7 @@ The color plot is shown with the color circle (see the figure).
 
 \sphinxlineitem{Input (3D) (default for the triple input quatity) :}
 \sphinxAtStartPar
-The input value is shown as arrows on the Fermi surfaces.
+The input value is shown as arrows (thin triangles) on the Fermi surfaces.
 The color of the Fermi surfaces are the same sa “Band Index” case.
 
 \sphinxlineitem{Fermi velocity (default for no input quantity)}
@@ -715,9 +716,12 @@ Plot with gray scale.
 \end{description}
 
 \sphinxAtStartPar
-We can change the range of the color plot or the length of arrows
-for 3D line plot by inputting into the text boxes at
-“Min of Scale” and “Max of Scale”, respectively.
+\sphinxcode{\sphinxupquote{Min of Scale}}, \sphinxcode{\sphinxupquote{Max of Scale}} :
+We can change the range of the color plot by inputting into the text boxes.
+For 3D arrow plot the length of arrows can be changed by \sphinxcode{\sphinxupquote{Max of Scale}}.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow width}} : Change the thickness of arrow (triangle) at “Input (3D)” mode.
 
 \begin{figure}[htbp]
 \centering
@@ -727,9 +731,16 @@ for 3D line plot by inputting into the text boxes at
 \caption{“Color scale mode” menu.}\label{\detokenize{ops:id4}}\label{\detokenize{ops:colorscalepng}}\end{figure}
 
 
+\section{Perspective}
+\label{\detokenize{ops:perspective}}
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Perspective}} : Turn on/off the perspective view.
+
+
 \section{Color sequence for plot}
 \label{\detokenize{ops:color-sequence-for-plot}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Bar Color}} :
 We can specify the sequence of color plot.
 “BGR” is Blue\sphinxhyphen{}Cyan\sphinxhyphen{}Green\sphinxhyphen{}Yellow\sphinxhyphen{}Red,
 “CMY” is Cyan\sphinxhyphen{}Blue\sphinxhyphen{}Magenta\sphinxhyphen{}Red\sphinxhyphen{}Yellow,
@@ -746,12 +757,21 @@ We can specify the sequence of color plot.
 \label{\detokenize{ops:equator-update-required}}
 \sphinxAtStartPar
 We can draw the line where
-\({\bf v}_{\rm F} \cdot {\bf k} = 0\) for a vector \({\bf k}\)
-(equator or extremal orbit). See fig. \ref{ops:equatorpng}.
-We can toggle equator with the checkbox “Equator”
-(this operation doed not require the update,
-and modify the direction of the tangent vector \({\bf k}\)
-by using the textbox at “Equator\sphinxhyphen{}v :” (\sphinxstylestrong{fractional coordinate}).
+\({\bf v}_{\rm F} \cdot {\bf k} = 0\) for a vector \({\bf k}\).
+See fig. \ref{ops:equatorpng}.
+When it was created, Kawamura missunderstood that this coinsides the extremul orbit in dHvA
+(it is not true!).
+Maybe it is related to the ultrasonic attenuation.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Equator}} : We can toggle equator.
+This operation does not require the update.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Equator\sphinxhyphen{}v}} :
+Modify the direction of the tangent vector \({\bf k}\)
+(\sphinxstylestrong{fractional coordinate}).
+We need to push \sphinxcode{\sphinxupquote{Update}} to reflect the change.
 
 \begin{figure}[htbp]
 \centering
@@ -764,7 +784,7 @@ by using the textbox at “Equator\sphinxhyphen{}v :” (\sphinxstylestrong{frac
 \section{Interpolation (Update required)}
 \label{\detokenize{ops:interpolation-update-required}}
 \sphinxAtStartPar
-Smooth the Fermi surface with the interpolation (Fig. \ref{ops:interpolatepng}).
+\sphinxcode{\sphinxupquote{Interpol ratio}} : Smooth the Fermi surface with the interpolation (Fig. \ref{ops:interpolatepng}).
 The time for the plot increases with the interpolation ratio.
 
 \begin{figure}[htbp]
@@ -778,7 +798,7 @@ The time for the plot increases with the interpolation ratio.
 \section{Which (or both) side of Fermi surface is illuminated}
 \label{\detokenize{ops:which-or-both-side-of-fermi-surface-is-illuminated}}
 \sphinxAtStartPar
-We can choose the illuminatedside of the Fermi surface (Fig. \ref{ops:lightpng}).
+\sphinxcode{\sphinxupquote{Lighting}} : We can choose the illuminatedside of the Fermi surface (Fig. \ref{ops:lightpng}).
 \begin{description}
 \sphinxlineitem{Both :}
 \sphinxAtStartPar
@@ -805,7 +825,7 @@ Light the occupied side.
 \section{Mouse Drag}
 \label{\detokenize{ops:mouse-drag}}
 \sphinxAtStartPar
-It turns the event of the mouse\sphinxhyphen{}left\sphinxhyphen{}drag.
+\sphinxcode{\sphinxupquote{Mouse Drag}} : It turns the event of the mouse\sphinxhyphen{}left\sphinxhyphen{}drag.
 \begin{description}
 \sphinxlineitem{Rotate(default)}
 \sphinxAtStartPar
@@ -831,7 +851,7 @@ Translate the figure along the mouse drag.
 \section{Nodal line}
 \label{\detokenize{ops:nodal-line}}
 \sphinxAtStartPar
-The line on which the matrix element becomes 0 (we call it nodal line)
+\sphinxcode{\sphinxupquote{Nodal Line}} : The line on which the matrix element becomes 0 (we call it nodal line)
 becomes enable/disable (Fig. \ref{ops:nodelinepng}).
 
 \begin{figure}[htbp]
@@ -849,14 +869,20 @@ Display a 2D plot of the Fermi surface (line)
 on an arbitrary section of the Brillouin zone (Fig. \ref{ops:sectionpng}).
 
 \sphinxAtStartPar
-We can toggle it with the checkbox “Section”
-(this operation does not require update),
-and can change the normal vector with the textbox at “Section\sphinxhyphen{}v :”
-(\sphinxstylestrong{fractional coordinate}).
+\sphinxcode{\sphinxupquote{Section}} : We can toggle it with the checkbox
+(this operation does not require update).
 
 \sphinxAtStartPar
-If the checkbox “On Gamma” is turned on,
+\sphinxcode{\sphinxupquote{Section\sphinxhyphen{}v}} :
+We can change the normal vector with the textbox (\sphinxstylestrong{fractional coordinate}).
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{On Gamma}}
+If the it is turned on,
 the section crosses \(\Gamma\) point.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Section (RGB)}} : Change the color of plane representing the section in BZ.
 
 \begin{figure}[htbp]
 \centering
@@ -869,6 +895,7 @@ the section crosses \(\Gamma\) point.
 \section{Output section of the Brillouine zone}
 \label{\detokenize{ops:output-section-of-the-brillouine-zone}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Section file}} :
 Above section of the Brillouin zone and Fermi surfaces are outputted into files “fermi\_line.dat” and “bz\_line.dat” by pushing this button.
 
 \begin{figure}[htbp]
@@ -888,6 +915,7 @@ These files are plotted in gnuplot as follows:
 \section{Shift Fermi energy (Update required)}
 \label{\detokenize{ops:shift-fermi-energy-update-required}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Fermi energy}} :
 It shifts the Fermi energy (= 0 in default) to arbitrary value (Fig. \ref{ops:shiftpng}).
 
 \begin{figure}[htbp]
@@ -902,6 +930,7 @@ It shifts the Fermi energy (= 0 in default) to arbitrary value (Fig. \ref{ops:sh
 \section{Stereogram}
 \label{\detokenize{ops:stereogram}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Stereogram}} :
 The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
 (Fig. \ref{ops:stereogrampng}).
 
@@ -930,6 +959,7 @@ Cross\sphinxhyphen{}eyes stereogram
 \section{Tetrahedron (Update required)}
 \label{\detokenize{ops:tetrahedron-update-required}}
 \sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Tetraghedron}} :
 You change the scheme to divide into tetrahedra (\sphinxcode{\sphinxupquote{tetra \# 1}} as default).
 It is experimental.
 
@@ -945,15 +975,15 @@ It is experimental.
 \sphinxAtStartPar
 Changing the view point.
 \begin{description}
-\sphinxlineitem{Scale}
+\sphinxlineitem{\sphinxcode{\sphinxupquote{Scale}} :}
 \sphinxAtStartPar
 Change the size of the figure.
 
-\sphinxlineitem{Position}
+\sphinxlineitem{\sphinxcode{\sphinxupquote{Position}} :}
 \sphinxAtStartPar
 Change the xy position of the figure.
 
-\sphinxlineitem{Rotate}
+\sphinxlineitem{\sphinxcode{\sphinxupquote{Rotate}} :}
 \sphinxAtStartPar
 Change angles at x\sphinxhyphen{}, y\sphinxhyphen{}, z\sphinxhyphen{} axis.
 Rotations are performed as z\sphinxhyphen{}y\sphinxhyphen{}x axis if the “Roate” buttone is pushed.
@@ -971,6 +1001,58 @@ the new value appears (Fig. \ref{ops:setviewpng}).
 \noindent\sphinxincludegraphics[width=300\sphinxpxdimen]{{setview}.png}
 \caption{Modify the view point by using “View point” menu}\label{\detokenize{ops:id12}}\label{\detokenize{ops:setviewpng}}\end{figure}
 
+
+\section{Arrow}
+\label{\detokenize{ops:arrow}}
+\sphinxAtStartPar
+Show an arrow (thin triangle) at arbitrary place.
+The following are specified in the fractional coordinate.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow (Start)}} : Starting point
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow (End)}} : End point
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow (Diff)}} : Difference of above. \sphinxcode{\sphinxupquote{Arrow (End)}} and \sphinxcode{\sphinxupquote{Arrow (Diff)}} affects each other.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Arrow width}} : Modify the thickness of arrow (triangle).
+
+
+\section{Wireframe sphere}
+\label{\detokenize{ops:wireframe-sphere}}
+\sphinxAtStartPar
+Show a wireframe sphere at arbitrary place.
+This is utilized together with HiLAPW.
+The following are specified in the Cartesian coordinate.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Sphere center}} : Center of sphere.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Sphere radius}} : Radius of sphere.
+
+
+\section{Nesting function}
+\label{\detokenize{ops:nesting-function}}
+\sphinxAtStartPar
+The following two kinds of nesting function are computed and written into a file readable by FermiSurfer.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{delta*delta}} : File name is “doubledelta.frmsf”
+\begin{equation*}
+\begin{split}\sum_{n n' \textbf{k}} \delta(\varepsilon_{n \textbf{k}}-\varepsilon_\textrm{F})
+\delta(\varepsilon_{n' \textbf{k}+\textbf{q}}-\varepsilon_\textrm{F})\end{split}
+\end{equation*}
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{Lindhard}} :  File name is “lindhard.frmsf”
+\begin{equation*}
+\begin{split}-\sum_{n n' \textbf{k}} \frac{\theta(\varepsilon_\textrm{F} - \varepsilon_{n' \textbf{k}+\textbf{q}})
+-\theta(\varepsilon_\textrm{F}-\varepsilon_{n \textbf{k}})}
+{\varepsilon_{n' \textbf{k}+\textbf{q}} - \varepsilon_{n \textbf{k}}}\end{split}
+\end{equation*}
 
 \section{Saving images}
 \label{\detokenize{ops:saving-images}}
@@ -1056,10 +1138,10 @@ Description
 background
 &
 \sphinxAtStartPar
-black, white
+float float float
 &
 \sphinxAtStartPar
-black
+0 0 0
 &
 \sphinxAtStartPar
 Background color
@@ -1703,7 +1785,7 @@ Also, you can freely choose the license to distribute your program.
 Please post bag reports and questions to the forum
 
 \sphinxAtStartPar
-\sphinxurl{http://sourceforge.jp/projects/fermisurfer/forums/}
+\sphinxurl{https://github.com/mitsuaki1987/fermisurfer/issues}
 
 \sphinxAtStartPar
 When you want to join us, please contact me as follows.
@@ -1715,7 +1797,7 @@ The Institute of Solid State Physics
 Mitsuaki Kawamura
 
 \sphinxAtStartPar
-\sphinxcode{\sphinxupquote{mkawamura\_\_at\_\_issp.u\sphinxhyphen{}tokyo.ac.jp}}
+\sphinxcode{\sphinxupquote{mkawamura\_\_at\_\_ds.itc.u\sphinxhyphen{}tokyo.ac.jp}}
 
 
 

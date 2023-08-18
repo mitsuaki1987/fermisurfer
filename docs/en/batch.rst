@@ -28,7 +28,7 @@ and the available keywords are as follows
    :widths: 10, 30, 30, 30
    :header: "Keyword", "Available parameter", "Default value", "Description"
 
-   "background", "black, white", "black", "Background color"
+   "background", "float float float", "0 0 0", "Background color"
    "band", "1 or 0 for each band", "1 1 1 1 ...", "Show(1) or hide(0) each band"
    "brillouinzone", "first, primitive", "first", "Kind of the Brillouin zone"
    "colorbar", "0, 1", "1", "Show(1) or hide (0) the color bar"

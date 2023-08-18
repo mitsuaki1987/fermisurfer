@@ -1,18 +1,17 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Control FermiSurfer &#8212; fermisurfer 2.2.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    <title>Control FermiSurfer &#8212; fermisurfer 2.4.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=89b800e6" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6fe989de"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -32,7 +31,7 @@
         <li class="right" >
           <a href="input.html" title="Input file"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.2.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.4.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Control FermiSurfer</a></li> 
       </ul>
     </div>  
@@ -72,10 +71,11 @@ then choose <code class="docutils literal notranslate"><span class="pre">fermisu
 <li><p>Rotation of objects with mouse drag</p></li>
 <li><p>Expand and shrink with mouse wheel</p></li>
 <li><p>Window re-sizing</p></li>
-<li><p>Moving objects with cursor keys (wasd for Windows)</p></li>
+<li><p>Moving objects with cursor keys (wasd for Windows).
+Also we can shift objects with double click.</p></li>
 <li><p>Opeerate by using the panel</p></li>
 </ul>
-<p>Here, I will explain all menus.</p>
+<p>Here, we can see all menus.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Some operations are not applied immidiately, and
@@ -86,32 +86,32 @@ Such operations are refered as “Update required”.</p>
 </section>
 <section id="background-color">
 <h2>Background color<a class="headerlink" href="#background-color" title="Permalink to this heading">¶</a></h2>
-<p>The background color is specified as RGB.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Background</span> <span class="pre">(RGB)</span></code> : The background color is specified as RGB.</p>
 <figure class="align-default" id="backgroundpng">
 <a class="reference internal image-reference" href="_images/background.png"><img alt="_images/background.png" src="_images/background.png" style="width: 500px;" /></a>
 </figure>
 </section>
 <section id="line-width">
 <h2>Line width<a class="headerlink" href="#line-width" title="Permalink to this heading">¶</a></h2>
-<p>Modify the width of the Brillouin-zone boundary, the nodal line, etc.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Line</span> <span class="pre">width</span></code> : Modify the width of the Brillouin-zone boundary, the nodal line, etc.</p>
 </section>
 <section id="line-color">
 <h2>Line color<a class="headerlink" href="#line-color" title="Permalink to this heading">¶</a></h2>
-<p>The line color is specified with RGB.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Line</span> <span class="pre">color</span> <span class="pre">(RGB)</span></code> : The line color is specified with RGB.</p>
 <figure class="align-default" id="linecolorpng">
 <a class="reference internal image-reference" href="_images/line_color.png"><img alt="_images/line_color.png" src="_images/line_color.png" style="width: 500px;" /></a>
 </figure>
 </section>
 <section id="band">
 <h2>Band<a class="headerlink" href="#band" title="Permalink to this heading">¶</a></h2>
-<p>It makes each band enable/disable (Fig. <a href="#bandpng">4</a>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">Band</span> <span class="pre">0,</span> <span class="pre">RGB</span></code>, <code class="docutils literal notranslate"><span class="pre">Band</span> <span class="pre">1,</span> <span class="pre">RGB</span></code> … : It makes each band enable/disable (Fig. <a href="#bandpng">4</a>).</p>
 <figure class="align-default" id="bandpng">
 <a class="reference internal image-reference" href="_images/band.png"><img alt="_images/band.png" src="_images/band.png" style="width: 600px;" /></a>
 </figure>
 </section>
 <section id="brillouin-zone-update-required">
 <h2>Brillouin zone (Update required)<a class="headerlink" href="#brillouin-zone-update-required" title="Permalink to this heading">¶</a></h2>
-<p>You choose Brillouin-zone type as follows (Fig. <a href="#brillouinzonepng">5</a>):</p>
+<p><code class="docutils literal notranslate"><span class="pre">Brillouin</span> <span class="pre">zone</span></code> : We choose Brillouin-zone type as follows (Fig. <a href="#brillouinzonepng">5</a>):</p>
 <dl class="simple">
 <dt>First Brillouin Zone</dt><dd><p>The region surrounded by Bragg’s planes the
 nearest to <span class="math notranslate nohighlight">\({\rm \Gamma}\)</span> point.</p>
@@ -128,9 +128,9 @@ lattice point.</p>
 </figcaption>
 </figure>
 </section>
-<section id="number-of-brillouin-zone">
-<h2>Number of Brillouin zone<a class="headerlink" href="#number-of-brillouin-zone" title="Permalink to this heading">¶</a></h2>
-<p>We can specify how many zones are displayed along each reciprocal
+<section id="number-of-brillouin-zone-update-required">
+<h2>Number of Brillouin zone (Update required)<a class="headerlink" href="#number-of-brillouin-zone-update-required" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">BZ</span> <span class="pre">number</span></code> : We can specify how many zones are displayed along each reciprocal
 lattice vector.</p>
 <figure class="align-default" id="bznumberpng">
 <a class="reference internal image-reference" href="_images/bz_number.png"><img alt="_images/bz_number.png" src="_images/bz_number.png" style="width: 600px;" /></a>
@@ -138,7 +138,7 @@ lattice vector.</p>
 </section>
 <section id="color-bar">
 <h2>Color bar<a class="headerlink" href="#color-bar" title="Permalink to this heading">¶</a></h2>
-<p>The color bar becomes enable/disable (Fig. <a href="#colorbarpng">7</a>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">Color</span> <span class="pre">bar</span></code> : The color bar becomes enable/disable (Fig. <a href="#colorbarpng">7</a>).</p>
 <figure class="align-default" id="id3">
 <span id="colorbarpng"></span><a class="reference internal image-reference" href="_images/colorbar.png"><img alt="_images/colorbar.png" src="_images/colorbar.png" style="width: 600px;" /></a>
 <figcaption>
@@ -148,14 +148,14 @@ lattice vector.</p>
 </section>
 <section id="color-scale-mode-update-required">
 <h2>Color scale mode (Update required)<a class="headerlink" href="#color-scale-mode-update-required" title="Permalink to this heading">¶</a></h2>
-<p>It turns color pattern on Fermi surfaces (Fig. <a href="#colorscalepng">8</a>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">Color</span> <span class="pre">scale</span> <span class="pre">mode</span></code> : It turns color pattern on Fermi surfaces (Fig. <a href="#colorscalepng">8</a>).</p>
 <dl class="simple">
 <dt>Input (1D) (default for the single input quatity) :</dt><dd><p>It makes blue as the minimum on Fermi surfaces and red
 as the maximum on them.</p>
 </dd>
 <dt>Input (2D) (default for the double input quatity) :</dt><dd><p>The color plot is shown with the color circle (see the figure).</p>
 </dd>
-<dt>Input (3D) (default for the triple input quatity) :</dt><dd><p>The input value is shown as arrows on the Fermi surfaces.
+<dt>Input (3D) (default for the triple input quatity) :</dt><dd><p>The input value is shown as arrows (thin triangles) on the Fermi surfaces.
 The color of the Fermi surfaces are the same sa “Band Index” case.</p>
 </dd>
 <dt>Fermi velocity (default for no input quantity)</dt><dd><p>Compute the Fermi velocity <span class="math notranslate nohighlight">\({\bf v}_{\rm F} = \nabla_k \varepsilon_k\)</span>
@@ -168,9 +168,10 @@ without relation to the matrix element.</p>
 <dt>Input (1D, Gray), Fermi Velocity (Gray) :</dt><dd><p>Plot with gray scale.</p>
 </dd>
 </dl>
-<p>We can change the range of the color plot or the length of arrows
-for 3D line plot by inputting into the text boxes at
-“Min of Scale” and “Max of Scale”, respectively.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Min</span> <span class="pre">of</span> <span class="pre">Scale</span></code>, <code class="docutils literal notranslate"><span class="pre">Max</span> <span class="pre">of</span> <span class="pre">Scale</span></code> :
+We can change the range of the color plot by inputting into the text boxes.
+For 3D arrow plot the length of arrows can be changed by <code class="docutils literal notranslate"><span class="pre">Max</span> <span class="pre">of</span> <span class="pre">Scale</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">width</span></code> : Change the thickness of arrow (triangle) at “Input (3D)” mode.</p>
 <figure class="align-default" id="id4">
 <span id="colorscalepng"></span><a class="reference internal image-reference" href="_images/colorscale.png"><img alt="_images/colorscale.png" src="_images/colorscale.png" style="width: 700px;" /></a>
 <figcaption>
@@ -178,9 +179,14 @@ for 3D line plot by inputting into the text boxes at
 </figcaption>
 </figure>
 </section>
+<section id="perspective">
+<h2>Perspective<a class="headerlink" href="#perspective" title="Permalink to this heading">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Perspective</span></code> : Turn on/off the perspective view.</p>
+</section>
 <section id="color-sequence-for-plot">
 <h2>Color sequence for plot<a class="headerlink" href="#color-sequence-for-plot" title="Permalink to this heading">¶</a></h2>
-<p>We can specify the sequence of color plot.
+<p><code class="docutils literal notranslate"><span class="pre">Bar</span> <span class="pre">Color</span></code> :
+We can specify the sequence of color plot.
 “BGR” is Blue-Cyan-Green-Yellow-Red,
 “CMY” is Cyan-Blue-Magenta-Red-Yellow,
 “MCY” is Magenta-Blue-Cyan-Green-Yellow.</p>
@@ -191,12 +197,17 @@ for 3D line plot by inputting into the text boxes at
 <section id="equator-update-required">
 <h2>Equator (Update required)<a class="headerlink" href="#equator-update-required" title="Permalink to this heading">¶</a></h2>
 <p>We can draw the line where
-<span class="math notranslate nohighlight">\({\bf v}_{\rm F} \cdot {\bf k} = 0\)</span> for a vector <span class="math notranslate nohighlight">\({\bf k}\)</span>
-(equator or extremal orbit). See fig. <a href="#equatorpng">10</a>.
-We can toggle equator with the checkbox “Equator”
-(this operation doed not require the update,
-and modify the direction of the tangent vector <span class="math notranslate nohighlight">\({\bf k}\)</span>
-by using the textbox at “Equator-v :” (<strong>fractional coordinate</strong>).</p>
+<span class="math notranslate nohighlight">\({\bf v}_{\rm F} \cdot {\bf k} = 0\)</span> for a vector <span class="math notranslate nohighlight">\({\bf k}\)</span>.
+See fig. <a href="#equatorpng">10</a>.
+When it was created, Kawamura missunderstood that this coinsides the extremul orbit in dHvA
+(it is not true!).
+Maybe it is related to the ultrasonic attenuation.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Equator</span></code> : We can toggle equator.
+This operation does not require the update.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Equator-v</span></code> :
+Modify the direction of the tangent vector <span class="math notranslate nohighlight">\({\bf k}\)</span>
+(<strong>fractional coordinate</strong>).
+We need to push <code class="docutils literal notranslate"><span class="pre">Update</span></code> to reflect the change.</p>
 <figure class="align-default" id="id5">
 <span id="equatorpng"></span><a class="reference internal image-reference" href="_images/equator.png"><img alt="_images/equator.png" src="_images/equator.png" style="width: 700px;" /></a>
 <figcaption>
@@ -206,7 +217,7 @@ by using the textbox at “Equator-v :” (<strong>fractional coordinate</strong
 </section>
 <section id="interpolation-update-required">
 <h2>Interpolation (Update required)<a class="headerlink" href="#interpolation-update-required" title="Permalink to this heading">¶</a></h2>
-<p>Smooth the Fermi surface with the interpolation (Fig. <a href="#interpolatepng">11</a>).
+<p><code class="docutils literal notranslate"><span class="pre">Interpol</span> <span class="pre">ratio</span></code> : Smooth the Fermi surface with the interpolation (Fig. <a href="#interpolatepng">11</a>).
 The time for the plot increases with the interpolation ratio.</p>
 <figure class="align-default" id="id6">
 <span id="interpolatepng"></span><a class="reference internal image-reference" href="_images/interpolate.png"><img alt="_images/interpolate.png" src="_images/interpolate.png" style="width: 700px;" /></a>
@@ -217,7 +228,7 @@ The time for the plot increases with the interpolation ratio.</p>
 </section>
 <section id="which-or-both-side-of-fermi-surface-is-illuminated">
 <h2>Which (or both) side of Fermi surface is illuminated<a class="headerlink" href="#which-or-both-side-of-fermi-surface-is-illuminated" title="Permalink to this heading">¶</a></h2>
-<p>We can choose the illuminatedside of the Fermi surface (Fig. <a href="#lightpng">12</a>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">Lighting</span></code> : We can choose the illuminatedside of the Fermi surface (Fig. <a href="#lightpng">12</a>).</p>
 <dl class="simple">
 <dt>Both :</dt><dd><p>Light both sides.</p>
 </dd>
@@ -235,7 +246,7 @@ The time for the plot increases with the interpolation ratio.</p>
 </section>
 <section id="mouse-drag">
 <h2>Mouse Drag<a class="headerlink" href="#mouse-drag" title="Permalink to this heading">¶</a></h2>
-<p>It turns the event of the mouse-left-drag.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Mouse</span> <span class="pre">Drag</span></code> : It turns the event of the mouse-left-drag.</p>
 <dl class="simple">
 <dt>Rotate(default)</dt><dd><p>Rotate the figure along the mouse drag.</p>
 </dd>
@@ -250,7 +261,7 @@ The time for the plot increases with the interpolation ratio.</p>
 </section>
 <section id="nodal-line">
 <h2>Nodal line<a class="headerlink" href="#nodal-line" title="Permalink to this heading">¶</a></h2>
-<p>The line on which the matrix element becomes 0 (we call it nodal line)
+<p><code class="docutils literal notranslate"><span class="pre">Nodal</span> <span class="pre">Line</span></code> : The line on which the matrix element becomes 0 (we call it nodal line)
 becomes enable/disable (Fig. <a href="#nodelinepng">14</a>).</p>
 <figure class="align-default" id="id8">
 <span id="nodelinepng"></span><a class="reference internal image-reference" href="_images/nodeline.png"><img alt="_images/nodeline.png" src="_images/nodeline.png" style="width: 500px;" /></a>
@@ -263,12 +274,14 @@ becomes enable/disable (Fig. <a href="#nodelinepng">14</a>).</p>
 <h2>Section of the Brillouine zone (Update required)<a class="headerlink" href="#section-of-the-brillouine-zone-update-required" title="Permalink to this heading">¶</a></h2>
 <p>Display a 2D plot of the Fermi surface (line)
 on an arbitrary section of the Brillouin zone (Fig. <a href="#sectionpng">15</a>).</p>
-<p>We can toggle it with the checkbox “Section”
-(this operation does not require update),
-and can change the normal vector with the textbox at “Section-v :”
-(<strong>fractional coordinate</strong>).</p>
-<p>If the checkbox “On Gamma” is turned on,
+<p><code class="docutils literal notranslate"><span class="pre">Section</span></code> : We can toggle it with the checkbox
+(this operation does not require update).</p>
+<p><code class="docutils literal notranslate"><span class="pre">Section-v</span></code> :
+We can change the normal vector with the textbox (<strong>fractional coordinate</strong>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">On</span> <span class="pre">Gamma</span></code>
+If the it is turned on,
 the section crosses <span class="math notranslate nohighlight">\(\Gamma\)</span> point.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Section</span> <span class="pre">(RGB)</span></code> : Change the color of plane representing the section in BZ.</p>
 <figure class="align-default" id="id9">
 <span id="sectionpng"></span><a class="reference internal image-reference" href="_images/section.png"><img alt="_images/section.png" src="_images/section.png" style="width: 700px;" /></a>
 <figcaption>
@@ -278,7 +291,8 @@ the section crosses <span class="math notranslate nohighlight">\(\Gamma\)</span>
 </section>
 <section id="output-section-of-the-brillouine-zone">
 <h2>Output section of the Brillouine zone<a class="headerlink" href="#output-section-of-the-brillouine-zone" title="Permalink to this heading">¶</a></h2>
-<p>Above section of the Brillouin zone and Fermi surfaces are outputted into files “fermi_line.dat” and “bz_line.dat” by pushing this button.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Section</span> <span class="pre">file</span></code> :
+Above section of the Brillouin zone and Fermi surfaces are outputted into files “fermi_line.dat” and “bz_line.dat” by pushing this button.</p>
 <figure class="align-default" id="sectionfilepng">
 <a class="reference internal image-reference" href="_images/section_file.png"><img alt="_images/section_file.png" src="_images/section_file.png" style="width: 500px;" /></a>
 </figure>
@@ -289,7 +303,8 @@ the section crosses <span class="math notranslate nohighlight">\(\Gamma\)</span>
 </section>
 <section id="shift-fermi-energy-update-required">
 <h2>Shift Fermi energy (Update required)<a class="headerlink" href="#shift-fermi-energy-update-required" title="Permalink to this heading">¶</a></h2>
-<p>It shifts the Fermi energy (= 0 in default) to arbitrary value (Fig. <a href="#shiftpng">17</a>).</p>
+<p><code class="docutils literal notranslate"><span class="pre">Fermi</span> <span class="pre">energy</span></code> :
+It shifts the Fermi energy (= 0 in default) to arbitrary value (Fig. <a href="#shiftpng">17</a>).</p>
 <figure class="align-default" id="id10">
 <span id="shiftpng"></span><a class="reference internal image-reference" href="_images/shift.png"><img alt="_images/shift.png" src="_images/shift.png" style="width: 500px;" /></a>
 <figcaption>
@@ -300,7 +315,8 @@ the section crosses <span class="math notranslate nohighlight">\(\Gamma\)</span>
 </section>
 <section id="stereogram">
 <h2>Stereogram<a class="headerlink" href="#stereogram" title="Permalink to this heading">¶</a></h2>
-<p>The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
+<p><code class="docutils literal notranslate"><span class="pre">Stereogram</span></code> :
+The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
 (Fig. <a href="#stereogrampng">18</a>).</p>
 <p>None (Default)</p>
 <dl class="simple">
@@ -319,7 +335,8 @@ the section crosses <span class="math notranslate nohighlight">\(\Gamma\)</span>
 </section>
 <section id="tetrahedron-update-required">
 <h2>Tetrahedron (Update required)<a class="headerlink" href="#tetrahedron-update-required" title="Permalink to this heading">¶</a></h2>
-<p>You change the scheme to divide into tetrahedra (<code class="docutils literal notranslate"><span class="pre">tetra</span> <span class="pre">#</span> <span class="pre">1</span></code> as default).
+<p><code class="docutils literal notranslate"><span class="pre">Tetraghedron</span></code> :
+You change the scheme to divide into tetrahedra (<code class="docutils literal notranslate"><span class="pre">tetra</span> <span class="pre">#</span> <span class="pre">1</span></code> as default).
 It is experimental.</p>
 <figure class="align-default">
 <a class="reference internal image-reference" href="_images/tetrahedron.png"><img alt="_images/tetrahedron.png" src="_images/tetrahedron.png" style="width: 200px;" /></a>
@@ -329,11 +346,11 @@ It is experimental.</p>
 <h2>View point<a class="headerlink" href="#view-point" title="Permalink to this heading">¶</a></h2>
 <p>Changing the view point.</p>
 <dl class="simple">
-<dt>Scale</dt><dd><p>Change the size of the figure.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">Scale</span></code> :</dt><dd><p>Change the size of the figure.</p>
 </dd>
-<dt>Position</dt><dd><p>Change the xy position of the figure.</p>
+<dt><code class="docutils literal notranslate"><span class="pre">Position</span></code> :</dt><dd><p>Change the xy position of the figure.</p>
 </dd>
-<dt>Rotate</dt><dd><p>Change angles at x-, y-, z- axis.
+<dt><code class="docutils literal notranslate"><span class="pre">Rotate</span></code> :</dt><dd><p>Change angles at x-, y-, z- axis.
 Rotations are performed as z-y-x axis if the “Roate” buttone is pushed.</p>
 </dd>
 </dl>
@@ -345,6 +362,36 @@ the new value appears (Fig. <a href="#setviewpng">20</a>).</p>
 <p><span class="caption-text">Modify the view point by using “View point” menu</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
+</section>
+<section id="arrow">
+<h2>Arrow<a class="headerlink" href="#arrow" title="Permalink to this heading">¶</a></h2>
+<p>Show an arrow (thin triangle) at arbitrary place.
+The following are specified in the fractional coordinate.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">(Start)</span></code> : Starting point</p>
+<p><code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">(End)</span></code> : End point</p>
+<p><code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">(Diff)</span></code> : Difference of above. <code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">(End)</span></code> and <code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">(Diff)</span></code> affects each other.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">width</span></code> : Modify the thickness of arrow (triangle).</p>
+</section>
+<section id="wireframe-sphere">
+<h2>Wireframe sphere<a class="headerlink" href="#wireframe-sphere" title="Permalink to this heading">¶</a></h2>
+<p>Show a wireframe sphere at arbitrary place.
+This is utilized together with HiLAPW.
+The following are specified in the Cartesian coordinate.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Sphere</span> <span class="pre">center</span></code> : Center of sphere.</p>
+<p><code class="docutils literal notranslate"><span class="pre">Sphere</span> <span class="pre">radius</span></code> : Radius of sphere.</p>
+</section>
+<section id="nesting-function">
+<h2>Nesting function<a class="headerlink" href="#nesting-function" title="Permalink to this heading">¶</a></h2>
+<p>The following two kinds of nesting function are computed and written into a file readable by FermiSurfer.</p>
+<p><code class="docutils literal notranslate"><span class="pre">delta*delta</span></code> : File name is “doubledelta.frmsf”</p>
+<div class="math notranslate nohighlight">
+\[\sum_{n n' \textbf{k}} \delta(\varepsilon_{n \textbf{k}}-\varepsilon_\textrm{F})
+\delta(\varepsilon_{n' \textbf{k}+\textbf{q}}-\varepsilon_\textrm{F})\]</div>
+<p><code class="docutils literal notranslate"><span class="pre">Lindhard</span></code> :  File name is “lindhard.frmsf”</p>
+<div class="math notranslate nohighlight">
+\[-\sum_{n n' \textbf{k}} \frac{\theta(\varepsilon_\textrm{F} - \varepsilon_{n' \textbf{k}+\textbf{q}})
+-\theta(\varepsilon_\textrm{F}-\varepsilon_{n \textbf{k}})}
+{\varepsilon_{n' \textbf{k}+\textbf{q}} - \varepsilon_{n \textbf{k}}}\]</div>
 </section>
 <section id="saving-images">
 <h2>Saving images<a class="headerlink" href="#saving-images" title="Permalink to this heading">¶</a></h2>
@@ -377,9 +424,10 @@ Please use the screenshot on your PC.</p>
 <li><a class="reference internal" href="#line-color">Line color</a></li>
 <li><a class="reference internal" href="#band">Band</a></li>
 <li><a class="reference internal" href="#brillouin-zone-update-required">Brillouin zone (Update required)</a></li>
-<li><a class="reference internal" href="#number-of-brillouin-zone">Number of Brillouin zone</a></li>
+<li><a class="reference internal" href="#number-of-brillouin-zone-update-required">Number of Brillouin zone (Update required)</a></li>
 <li><a class="reference internal" href="#color-bar">Color bar</a></li>
 <li><a class="reference internal" href="#color-scale-mode-update-required">Color scale mode (Update required)</a></li>
+<li><a class="reference internal" href="#perspective">Perspective</a></li>
 <li><a class="reference internal" href="#color-sequence-for-plot">Color sequence for plot</a></li>
 <li><a class="reference internal" href="#equator-update-required">Equator (Update required)</a></li>
 <li><a class="reference internal" href="#interpolation-update-required">Interpolation (Update required)</a></li>
@@ -392,6 +440,9 @@ Please use the screenshot on your PC.</p>
 <li><a class="reference internal" href="#stereogram">Stereogram</a></li>
 <li><a class="reference internal" href="#tetrahedron-update-required">Tetrahedron (Update required)</a></li>
 <li><a class="reference internal" href="#view-point">View point</a></li>
+<li><a class="reference internal" href="#arrow">Arrow</a></li>
+<li><a class="reference internal" href="#wireframe-sphere">Wireframe sphere</a></li>
+<li><a class="reference internal" href="#nesting-function">Nesting function</a></li>
 <li><a class="reference internal" href="#saving-images">Saving images</a></li>
 </ul>
 </li>
@@ -441,13 +492,13 @@ Please use the screenshot on your PC.</p>
         <li class="right" >
           <a href="input.html" title="Input file"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.2.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">fermisurfer 2.4.0 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">Control FermiSurfer</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, kawamura.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+    &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
     </div>
   </body>
 </html>
