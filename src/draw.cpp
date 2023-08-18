@@ -751,8 +751,8 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
 {
   GLfloat pos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
   GLfloat amb[] = { 0.2f, 0.2f, 0.2f, 0.0f };
-  GLfloat dx, dx2d, theta, posz, phi;
-  GLfloat pos1[4] = {}, pos2[4] = {}, rot2[3][3] = {};
+  GLfloat dx, theta;
+  GLfloat pos2[4] = {}, rot2[3][3] = {};
   int ierr;
   char command_name[256];
 
@@ -766,50 +766,36 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
   // or more than one wxGLContext in the application.
   SetCurrent(*m_glRC);
 
+  if (lstereo != 1 || lsection == 1) {
+    if (lperspective == 1) dx = 0.7f;
+    else dx = 0.4;
+  }
+  else dx = 0.0;
+
   if (lstereo == 2) {
     /*
      Parallel eyes
     */
-    theta = 3.1416f / 180.0f * 2.5f;
-    posz = 5.0f;
-    dx = 0.7f;
-    phi = atanf(posz / dx) - theta;
-    //theta = (3.1416f * 0.5f - phi) / 3.1416f * 180.0f;
+    if(lperspective == 1) theta = 3.1416f / 180.0f * 20.0f;
+    else theta = 3.1416f / 180.0f * 10.0f;
     /**/
-    pos1[0] = posz * cosf(phi) - dx;
-    pos1[1] = 0.0;
-    pos1[2] = posz * sinf(phi);
-    pos1[3] = 1.0;
-    /**/
-    pos2[0] = -posz * cosf(phi) + dx;
-    pos2[1] = 0.0;
-    pos2[2] = posz * sinf(phi);
-    pos2[3] = 1.0;
+    pos2[0] = pos[0];
+    pos2[1] = pos[1];
+    pos2[2] = pos[2];
+    pos2[3] = pos[3];
   }/*if (lstereo == 2)*/
   else if (lstereo == 3) {
     /*
      Cross eyes
     */
-    theta = -3.1416f / 180.0f * 2.0f;
-    posz = 5.0;
-    dx = -0.7f;
+    if (lperspective == 1) theta = 3.1416f / 180.0f * 10.0f;
+    else theta = -3.1416f / 180.0f * 10.0f;
     /**/
-    pos1[0] = posz * sinf(theta) - dx;
-    pos1[1] = 0.0;
-    pos1[2] = posz * cosf(theta);
-    pos1[3] = 1.0;
-    /**/
-    pos2[0] = -posz * sinf(theta) + dx;
-    pos2[1] = 0.0;
-    pos2[2] = posz * cosf(theta);
-    pos2[3] = 1.0;
+    pos2[0] = pos[0];
+    pos2[1] = pos[1];
+    pos2[2] = pos[2];
+    pos2[3] = pos[3];
   }/*if (lstereo == 3)*/
-  else {
-    theta = 0.0;
-    dx = 0.0;
-  }/*lstero == 1*/
-  if (lsection == 1 && fbz == 1) dx2d = 0.7f;
-  else dx2d = 0.0;
   /*
    Initialize
   */
@@ -818,43 +804,28 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
   /*
    Set position of light
   */
+  glLightfv(GL_LIGHT0, GL_POSITION, pos);
+
   if (lstereo == 1) {
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    /*
-     Draw color scale
-    */
     if (lcolorbar == 1) draw_colorbar();
   }
   else {
-    glLightfv(GL_LIGHT0, GL_POSITION, pos1);
-    draw_circles(dx2d);
+    draw_circles(dx);
   }
-  //
-  rot2[0][0] = rot[0][0] * cosf(theta) + rot[2][0] * sinf(theta);
-  rot2[0][1] = rot[0][1] * cosf(theta) + rot[2][1] * sinf(theta);
-  rot2[0][2] = rot[0][2] * cosf(theta) + rot[2][2] * sinf(theta);
-  rot2[1][0] = rot[1][0];
-  rot2[1][1] = rot[1][1];
-  rot2[1][2] = rot[1][2];
-  rot2[2][0] = rot[2][0] * cosf(theta) - rot[0][0] * sinf(theta);
-  rot2[2][1] = rot[2][1] * cosf(theta) - rot[0][1] * sinf(theta);
-  rot2[2][2] = rot[2][2] * cosf(theta) - rot[0][2] * sinf(theta);
   //
   glLightfv(GL_LIGHT1, GL_AMBIENT, amb);
   /*
    Draw Brillouin zone boundaries
   */
-  draw_bz_lines(trans[0] - dx - dx2d, trans[1], trans[2], rot);
+  draw_bz_lines(trans[0] -dx, trans[1], trans[2], rot);
   /*
    Draw Fermi surfaces
   */
-  draw_fermi(trans[0] - dx - dx2d, trans[1], trans[2], rot);
+  draw_fermi(trans[0] - dx, trans[1], trans[2], rot);
   /*
    Draw the second object for stereogram
   */
   if (lstereo != 1) {
-    glPushMatrix();
-    glLoadIdentity();
     //
     glLightfv(GL_LIGHT0, GL_POSITION, pos2);
     //
@@ -868,8 +839,8 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
     rot2[2][1] = rot[2][1] * cosf(-theta) - rot[0][1] * sinf(-theta);
     rot2[2][2] = rot[2][2] * cosf(-theta) - rot[0][2] * sinf(-theta);
     //
-    draw_bz_lines(trans[0] + dx - dx2d, trans[1], trans[2], rot2);
-    draw_fermi(trans[0] + dx - dx2d, trans[1], trans[2], rot2);
+    draw_bz_lines(trans[0] + dx, trans[1], trans[2], rot2);
+    draw_fermi(trans[0] + dx, trans[1], trans[2], rot2);
     //
     glPopMatrix();
   }
@@ -877,14 +848,11 @@ void TestGLCanvas::OnPaint(wxPaintEvent& WXUNUSED(event))
    Draw 2D Fermi line
   */
   if (lsection == 1 && fbz == 1) {
-    glPushMatrix();
-    glLoadIdentity();
     //
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
     //
     draw_fermi_line();
     //
-    glPopMatrix();
   }/*if (lsection == 1)*/
   glFlush(); // Not really necessary: buffer swapping below implies glFlush()
   SwapBuffers();
