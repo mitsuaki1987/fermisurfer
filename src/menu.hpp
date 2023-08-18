@@ -49,8 +49,10 @@ public:
   wxScrolledWindow* panel;
   wxRadioBox* radiobox_color;
   wxRadioBox* radiobox_tetra;
+  wxRadioBox* radiobox_stereo;
   wxSplitterWindow* splitterV;
   wxSplitterWindow* splitterH;
+  wxCheckBox* checkbox_section;
   /*
  Text Box
 */

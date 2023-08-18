@@ -503,15 +503,21 @@ static void draw_colorbar()
 {
   int i, j, k;
   GLfloat mat2, vertices[366] ={}, colors[488]={}, vector[6]={}, rect[27]={}, rect_color[36]={},
-    norm;
+    norm, widthx, posy;
 
   glEnableClientState(GL_COLOR_ARRAY);
   /*
   Reciplocal lattice vectors
   */
   for (i = 0; i < 3; i++) {
-    vector[0] = -1.2f;
-    vector[1] = -1.05f;
+    if (lperspective == 1) {
+      vector[0] = -1.2f;
+      vector[1] = -1.05f;
+    }
+    else {
+      vector[0] = -0.8f;
+      vector[1] = -0.8f;
+    }
     vector[2] = -5.0f;
 
     norm = sqrtf(bvec[i][0] * bvec[i][0]+ bvec[i][1] * bvec[i][1]+ bvec[i][2] * bvec[i][2]);
@@ -536,8 +542,14 @@ static void draw_colorbar()
   Cartesian (XYZ) flame
   */
   for (i = 0; i < 3; i++) {
-    vector[0] = 1.2f;
-    vector[1] = -1.05f;
+    if (lperspective == 1) {
+      vector[0] = 1.2f;
+      vector[1] = -1.05f;
+    }
+    else {
+      vector[0] = 0.8f;
+      vector[1] = -0.8f;
+    }
     vector[2] = -5.0f;
   
     for (j = 0; j < 3; j++) {
@@ -558,10 +570,19 @@ static void draw_colorbar()
    Color bar/circle/cube
   */
   if (color_scale == 1 || color_scale == 4) {
+    if (lperspective == 1) {
+      widthx = 0.5;
+      posy = -1.0;
+    }
+    else {
+      widthx = 0.35;
+      posy = -0.75;
+    }
+
     for (i = 0; i < 5; i++) {
       for (j = 0; j < 2; j++) {
-        vertices[0 + j * 3 + i * 6] = -1.0f + 0.5f*(GLfloat)i;
-        vertices[1 + j * 3 + i * 6] = -1.0f - 0.1f*(GLfloat)j;
+        vertices[0 + j * 3 + i * 6] = -2.0*widthx + widthx*(GLfloat)i;
+        vertices[1 + j * 3 + i * 6] = posy - 0.1f*(GLfloat)j;
         vertices[2 + j * 3 + i * 6] = -5.0f;
         for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = BarColor[i][k];
       }
@@ -575,9 +596,11 @@ static void draw_colorbar()
     /*
      Periodic color scale
     */
+    if (lperspective == 1) posy = -1.0;
+    else posy = -0.7;
     vertices[0] = 0.0f;
-    vertices[1] = -1.0f;
-    vertices[2] = 0.0f;
+    vertices[1] = posy;
+    vertices[2] = -5.0f;
     for (j = 0; j < 4; j++) colors[j] = 1.0f - BackGroundColor[j];
     /**/
     for (i = 0; i <= 60; i++) {
@@ -609,8 +632,8 @@ static void draw_colorbar()
       }
       /**/
       vertices[0 + 3 * (i + 1)] = 0.2f * cosf((GLfloat)i / 60.0f * 6.283185307f);
-      vertices[1 + 3 * (i + 1)] = 0.2f * sinf((GLfloat)i / 60.0f * 6.283185307f) - 1.0f;
-      vertices[2 + 3 * (i + 1)] = 0.0f;
+      vertices[1 + 3 * (i + 1)] = 0.2f * sinf((GLfloat)i / 60.0f * 6.283185307f) + posy;
+      vertices[2 + 3 * (i + 1)] = -5.0f;
     }/*for (i = 0; i <= 60; i++)*/
     glNormal3f(0.0f, 0.0f, 1.0f);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
@@ -618,11 +641,20 @@ static void draw_colorbar()
     glDrawArrays(GL_TRIANGLE_FAN, 0, 62);
   }/*else if (color_scale == 2)*/
   else  if (color_scale == 6 || color_scale == 7) {
+    if (lperspective == 1) {
+      widthx = 1.0;
+      posy = -1.0;
+    }
+    else {
+      widthx = 0.7;
+      posy = -0.75;
+    }
+
     for (i = 0; i < 2; i++) {
       for (j = 0; j < 2; j++) {
-        vertices[0 + j * 3 + i * 6] = -1.0f + 2.0f*(GLfloat)i;
-        vertices[1 + j * 3 + i * 6] = -1.0f - 0.1f*(GLfloat)j;
-        vertices[2 + j * 3 + i * 6] = 0.0f;
+        vertices[0 + j * 3 + i * 6] = -widthx + 2.0*widthx*(GLfloat)i;
+        vertices[1 + j * 3 + i * 6] = posy - 0.1f*(GLfloat)j;
+        vertices[2 + j * 3 + i * 6] = -5.0f;
         if (i == 0) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = bgray[k];
         else if (i == 1) for (k = 0; k < 4; k++) colors[k + 4 * j + 8 * i] = wgray[k];
       }
@@ -667,17 +699,18 @@ static void draw_circles(
 */
 static void draw_fermi_line() {
   int i, ib, ibzl, i2d;
-  GLfloat vertices[6] = {}, rect[120] = {};
-  /*
-   Draw 2D BZ lines
-  */
+  GLfloat vertices[6] = {}, rect[120] = {}, posx;
+  
+  if (lperspective == 1) posx = 1.5;
+  else posx = 0.6;
+  
   for (i2d = 0; i2d < nnbzl2d; i2d++) {
     if (nbzl2d[i2d] == 0)continue;
-    vertices[0] = scl * bzl2d_proj[i2d][nbzl2d[i2d] - 1][0] + 1.5;
+    vertices[0] = scl * bzl2d_proj[i2d][nbzl2d[i2d] - 1][0] + posx;
     vertices[1] = scl * bzl2d_proj[i2d][nbzl2d[i2d] - 1][1];
     vertices[2] = -5.0;
     for (ibzl = 0; ibzl < nbzl2d[i2d]; ++ibzl) {
-      vertices[3] = scl * bzl2d_proj[i2d][ibzl][0] + 1.5;
+      vertices[3] = scl * bzl2d_proj[i2d][ibzl][0] + posx;
       vertices[4] = scl * bzl2d_proj[i2d][ibzl][1];
       vertices[5] = -5.0;
       line2rect(linewidth * 0.01, vertices, &rect[12 * ibzl]);
@@ -697,7 +730,7 @@ static void draw_fermi_line() {
     if (draw_band[ib] == 1) {
       for (i2d = 0; i2d < n2d[ib]; i2d++) {
         for (i = 0; i < 2; i++) {
-          vertices[3 * i + 0] = scl * kv2d[ib][6 * i2d + 3 * i + 0] + 1.5;
+          vertices[3 * i + 0] = scl * kv2d[ib][6 * i2d + 3 * i + 0] + posx;
           vertices[3 * i + 1] = scl * kv2d[ib][6 * i2d + 3 * i + 1];
           vertices[3 * i + 2] = -5.0;
         }

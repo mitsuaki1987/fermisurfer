@@ -761,7 +761,11 @@ void MyFrame::radiovalue_section(
   double dsecvec;
 
   if (event.GetId() == icheck_section) {
-    if (lsection == 0)lsection = 1;
+    if (lsection == 0) {
+      lsection = 1;
+      lstereo = 1;
+      radiobox_stereo->SetSelection(0);
+    }
     else lsection = 0;
     Refresh(false);
   }
@@ -814,6 +818,12 @@ void MyFrame::radio_stereo(
   if (event.GetString().Cmp(wxT("None")) == 0) lstereo = 1;
   else if (event.GetString().Cmp(wxT("Parallel")) == 0) lstereo = 2;
   else if (event.GetString().Cmp(wxT("Cross")) == 0) lstereo = 3;
+
+  if (lstereo != 1) {
+    lsection = 0;
+    checkbox_section->SetValue(false);
+  }
+
   Refresh(false);
 } /* menu_stereo */
 /**
@@ -1096,10 +1106,10 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
 
   wxString choices_stereo[] = { wxT("None"), wxT("Parallel"), wxT("Cross") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_stereo, this, iradio_stereo);
-  gbsizer->Add(new wxRadioBox(panel, iradio_stereo, wxT("Stereogram"),
-    wxDefaultPosition, wxDefaultSize,
-    WXSIZEOF(choices_stereo), choices_stereo,
-    1, wxRA_SPECIFY_COLS), wxGBPosition(9, 2), wxGBSpan(1, 1));
+  radiobox_stereo = new wxRadioBox(panel, iradio_stereo, wxT("Stereogram"),
+    wxDefaultPosition, wxDefaultSize, WXSIZEOF(choices_stereo), choices_stereo,
+    1, wxRA_SPECIFY_COLS);
+  gbsizer->Add(radiobox_stereo, wxGBPosition(9, 2), wxGBSpan(1, 1));
 
   wxString choices_mouse[] = { wxT("Rotate"), wxT("Scale"), wxT("Translate") };
   Bind(wxEVT_COMMAND_RADIOBOX_SELECTED, &MyFrame::radio_mouse, this, iradio_mouse);
@@ -1199,7 +1209,8 @@ wxT("8"), wxT("9"), wxT("10"), wxT("11"), wxT("12"), wxT("13"), wxT("14"),
   gbsizer->Add(new wxCheckBox(panel, icheck_nodeline, wxT("Nodal line")), wxGBPosition(18, 2), wxGBSpan(1, 1));
 
   Bind(wxEVT_COMMAND_CHECKBOX_CLICKED, &MyFrame::radiovalue_section, this, icheck_section);
-  gbsizer->Add(new wxCheckBox(panel, icheck_section, wxT("Section")), wxGBPosition(16, 3), wxGBSpan(1, 1));
+  checkbox_section = new wxCheckBox(panel, icheck_section, wxT("Section"));
+  gbsizer->Add(checkbox_section, wxGBPosition(16, 3), wxGBSpan(1, 1));
 
   Bind(wxEVT_COMMAND_BUTTON_CLICKED, &MyFrame::button_section, this, ibutton_section);
   gbsizer->Add(new wxButton(panel, ibutton_section, wxT("Section file")),
