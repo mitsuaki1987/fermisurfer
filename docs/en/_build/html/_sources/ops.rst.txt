@@ -166,6 +166,9 @@ Input (1D, Gray), Fermi Velocity (Gray) :
 We can change the range of the color plot by inputting into the text boxes.
 For 3D arrow plot the length of arrows can be changed by ``Max of Scale``.
 
+``3D arrow step`` : Change the interval to display arrows at "Input (3D)" mode.
+Larger number indicates fewer arrows.
+
 ``Arrow width`` : Change the thickness of arrow (triangle) at "Input (3D)" mode.
    
 .. _colorscalepng:

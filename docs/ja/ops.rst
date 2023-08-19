@@ -160,6 +160,9 @@ Input (1D, Gray), Fermi Velocity (Gray)
 ``Min of Scale``, ``Max of Scale`` : カラープロットの色の範囲を指定する.
 「Input (3D)」の場合は ``Max of Scale`` で三角形の長さを変更できる.
 
+``3D arrow step`` : 「Input (3D)」の場合に矢印(三角形)を描画する頻度を指定する.
+数字が大きいほど表示される矢印は少なくなる.
+
 ``Arrow width`` : 「Input (3D)」の場合に矢印(三角形)の幅を指定する.
 
 .. _colorscalepng:

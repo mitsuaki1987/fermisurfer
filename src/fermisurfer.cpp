@@ -272,7 +272,7 @@ bool MyApp::OnInit()
   myf = new MyFrame(NULL, argv[1], wxDefaultPosition, wxSize(windowx, windowy));
 
   *terminal << wxT("\n");
-  *terminal << wxT("#####  Welocome to FermiSurfer ver. ") << 
+  *terminal << wxT("#####  Welcome to FermiSurfer ver. ") << 
     wxT(VERSION) << wxT("  #####\n");
   *terminal << wxT("\n");
   if (argc < 2) {
