@@ -1,18 +1,20 @@
+
 <!DOCTYPE html>
 
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Quantum ESPRESSOを用いたチュートリアル &#8212; fermisurfer 2.4.0 ドキュメント</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=89b800e6" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f6f33270"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
-    <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/translations.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="索引" href="genindex.html" />
@@ -43,7 +45,7 @@
           <div class="body" role="main">
             
   <section id="quantum-espresso">
-<h1>Quantum ESPRESSOを用いたチュートリアル<a class="headerlink" href="#quantum-espresso" title="この見出しへのパーマリンク">¶</a></h1>
+<h1>Quantum ESPRESSOを用いたチュートリアル<a class="headerlink" href="#quantum-espresso" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <p>Quantum ESPRESSO version 6.2 から, FermiSurferで読み込む事が出来るデータ形式での
 ファイルを出力出来るようになった.
 FermiSurferでプロット出来るのは次の量である.</p>
@@ -52,15 +54,15 @@ FermiSurferでプロット出来るのは次の量である.</p>
 <li><p>各原子軌道への射影 <span class="math notranslate nohighlight">\(|\langle \phi_{n l m} | \psi_{n k} \rangle|^2\)</span> (<code class="docutils literal notranslate"><span class="pre">fermi_proj.x</span></code>)</p></li>
 </ul>
 <section id="postprocess">
-<h2><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code> ツールのビルド<a class="headerlink" href="#postprocess" title="この見出しへのパーマリンク">¶</a></h2>
+<h2><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code> ツールのビルド<a class="headerlink" href="#postprocess" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>上記の量をFermiSurferで描画するためには, 次のようにしてQuantumESPRESSO内の <code class="docutils literal notranslate"><span class="pre">PostProcess</span></code> ツール
 (バンド図や電子密度をプロットするためのツール群)をビルドする必要がある.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>pp
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ make pp
 </pre></div>
 </div>
 </section>
 <section id="scf">
-<h2>SCF計算<a class="headerlink" href="#scf" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>SCF計算<a class="headerlink" href="#scf" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>ここからチュートリアルに入る.
 まず初めに <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> プログラムを用いて電子状態計算をおこなう.
 MgB<sub>2</sub>を題材として扱う.
@@ -104,23 +106,23 @@ MgB<sub>2</sub>を題材として扱う.
 </ul>
 <p>入力ファイルと擬ポテンシャルファイルを同じディレクトリに置き,
 そのディレクトリで <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> を実行する.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>pw.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">4</span><span class="w"> </span>-in<span class="w"> </span>scf.in
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ mpiexec -np <span class="m">4</span> pw.x -npool <span class="m">4</span> -in scf.in
 </pre></div>
 </div>
 <p>プロセス数, <em>k</em> 点並列数(<code class="docutils literal notranslate"><span class="pre">npool</span></code>)は自由.
 お好みで, 異なる <em>k</em> グリッドでNon-scf計算を行っても良い.</p>
 </section>
 <section id="fermi">
-<h2>Fermi速度の計算と描画<a class="headerlink" href="#fermi" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>Fermi速度の計算と描画<a class="headerlink" href="#fermi" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">fermi_velocity.x</span></code> プログラムを実行する.
 入力ファイルは <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> のものと同一である.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">1</span><span class="w"> </span>fermi_velocity.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">1</span><span class="w"> </span>-in<span class="w"> </span>scf.in
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ mpiexec -np <span class="m">1</span> fermi_velocity.x -npool <span class="m">1</span> -in scf.in
 </pre></div>
 </div>
 <p>このとき, <em>k</em> 点並列数(<code class="docutils literal notranslate"><span class="pre">npool</span></code>)は1(もしくは指定しない)でなければならない.
 これにより, Fermi速度のファイル <code class="docutils literal notranslate"><span class="pre">vfermi.frmsf</span></code> が作られるので,
 それをFermiSurferで読み込む.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>vfermi.frmsf
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ fermisurfer vfermi.frmsf
 </pre></div>
 </div>
 <figure class="align-default">
@@ -130,7 +132,7 @@ MgB<sub>2</sub>を題材として扱う.
 の2つのファイルが出力される.</p>
 </section>
 <section id="id1">
-<h2>原子軌道射影の計算と描画<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>原子軌道射影の計算と描画<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>原子軌道射影の描画では, まず部分状態密度等を計算するプログラム
 <code class="docutils literal notranslate"><span class="pre">projwfc.x</span></code> を実行する.
 入力ファイルは次の通りである.</p>
@@ -150,7 +152,7 @@ MgB<sub>2</sub>を題材として扱う.
 後で <code class="docutils literal notranslate"><span class="pre">fermi_proj.x</span></code> を実行するときのみ使われる.
 <code class="docutils literal notranslate"><span class="pre">projwfc.x</span></code> を実行するときのプロセス数, <em>k</em> 点並列数(<code class="docutils literal notranslate"><span class="pre">npool</span></code>)は
 直前の <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> の実行時と同じ値にしなければならない.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>projwfc.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">4</span><span class="w"> </span>-in<span class="w"> </span>proj.in
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ mpiexec -np <span class="m">4</span> projwfc.x -npool <span class="m">4</span> -in proj.in
 </pre></div>
 </div>
 <p>ただし, <code class="docutils literal notranslate"><span class="pre">wf_collect=.true.</span></code> としていたときは除く.</p>
@@ -176,7 +178,7 @@ MgB<sub>2</sub>を題材として扱う.
 (詳しくはQEに付属の <code class="docutils literal notranslate"><span class="pre">INPUT_PROJWFC.html</span></code> 等を参照)を表している.
 この後でFermi面上で描画する原子軌道射影を選ぶ時にはこの番号を用いる.
 具体的な例を示す. 上記の <code class="docutils literal notranslate"><span class="pre">proj.in</span></code> を用いて</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">1</span><span class="w"> </span>fermi_proj.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">1</span><span class="w"> </span>-in<span class="w"> </span>proj.in
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ mpiexec -np <span class="m">1</span> fermi_proj.x -npool <span class="m">1</span> -in proj.in
 </pre></div>
 </div>
 <p>のように実行してFermiSurfer用ファイル <code class="docutils literal notranslate"><span class="pre">proj.frmsf</span></code> を得るのだが,
@@ -193,7 +195,7 @@ MgB<sub>2</sub>を題材として扱う.
 \[|\langle \phi_{B_1 2pz} | \psi_{nk} \rangle|^2
 + |\langle \phi_{B_2 2pz} | \psi_{nk} \rangle|^2\]</div>
 <p>が出力される.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>proj.frmsf
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ fermisurfer proj.frmsf
 </pre></div>
 </div>
 <figure class="align-default">
@@ -229,9 +231,8 @@ MgB<sub>2</sub>を題材として扱う.
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/fermisurfer.png" alt="Logo"/>
             </a></p>
-  <div>
-    <h3><a href="index.html">Table of Contents</a></h3>
-    <ul>
+  <h3><a href="index.html">目次</a></h3>
+  <ul>
 <li><a class="reference internal" href="#">Quantum ESPRESSOを用いたチュートリアル</a><ul>
 <li><a class="reference internal" href="#postprocess"><code class="docutils literal notranslate"><span class="pre">PostProcess</span></code> ツールのビルド</a></li>
 <li><a class="reference internal" href="#scf">SCF計算</a></li>
@@ -241,17 +242,12 @@ MgB<sub>2</sub>を題材として扱う.
 </li>
 </ul>
 
-  </div>
-  <div>
-    <h4>前のトピックへ</h4>
-    <p class="topless"><a href="batch.html"
-                          title="前の章へ">バッチ・モード</a></p>
-  </div>
-  <div>
-    <h4>次のトピックへ</h4>
-    <p class="topless"><a href="onweb.html"
-                          title="次の章へ">FermiSurfer on Web</a></p>
-  </div>
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="batch.html"
+                        title="前の章へ">バッチ・モード</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="onweb.html"
+                        title="次の章へ">FermiSurfer on Web</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -268,7 +264,7 @@ MgB<sub>2</sub>を題材として扱う.
     </form>
     </div>
 </div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -290,8 +286,8 @@ MgB<sub>2</sub>を題材として扱う.
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; 著作権 2017, kawamura.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+        &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

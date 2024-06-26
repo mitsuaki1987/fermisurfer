@@ -2,7 +2,7 @@ FermiSurfer on Web
 ==================
 
 下記のページにアクセスするとWebブラウザー上でFermiSurferを使うことができます。
-https://fermisurfer.osdn.jp/js/index.php
+http://163.220.177.91/fsonweb/index.php
 
 操作方法
 --------
@@ -21,9 +21,9 @@ Web上のファイルを開く
 
 以下のようにURLに引数をつけることにより、Web上で公開されているフェルミ面の入力ファイルを、リンクをクリックするだけで開くことができます。
 
-https://fermisurfer.osdn.jp/js/index.php?frmsf=https://fermisurfer.osdn.jp/js/Pb.js
+http://163.220.177.91/fsonweb/index.php?frmsf=http://163.220.177.91/fsonweb/Pb.js
 
-``https://fermisurfer.osdn.jp/js/index.php?frmsf=`` に続けてファイルの保存先のURLを付け足します。
+``http://163.220.177.91/fsonweb/index.php?frmsf=`` に続けてファイルの保存先のURLを付け足します。
 これは研究紹介やプレスリリースのページで使うとよいでしょう。
 
 このときの入力ファイル ``Pb.js`` は、
@@ -45,7 +45,7 @@ FRMSF形式のファイルを上記の形式に変換するにはコマンドラ
 とします。
 これと同じ処理を行うシェルスクリプトファイルがこちらにあります。
 
-https://fermisurfer.osdn.jp/js/frmsf2js.sh
+http://163.220.177.91/fsonweb/frmsf2js.sh
 
 使い方は下記のとおりです。 ``ANY.js`` (ANYの部分は任意) というファイルが生成されるので、それをWebサーバーに配置します。
 

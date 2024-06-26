@@ -10,9 +10,6 @@
 %% let collapsible pdf bookmarks panel have high depth per default
 \PassOptionsToPackage{bookmarksdepth=5}{hyperref}
 
-\PassOptionsToPackage{booktabs}{sphinx}
-\PassOptionsToPackage{colorrows}{sphinx}
-
 \PassOptionsToPackage{warn}{textcomp}
 
 
@@ -51,7 +48,7 @@
 \usepackage{pxjahyper}
 
 \title{Fermisurfer Documentation}
-\date{2023年08月18日}
+\date{2024年06月26日}
 \release{2.4.0}
 \author{kawamura}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{fermisurfer.png}\par}
@@ -67,8 +64,6 @@
 \phantomsection\label{\detokenize{index::doc}}
 
 
-\sphinxstepscope
-
 
 \chapter{はじめに}
 \label{\detokenize{overview:id1}}\label{\detokenize{overview::doc}}
@@ -79,13 +74,11 @@ Fermi Surferは東京大学の河村光晶が2012年頃から開発を行って�
 Fermi面を描画しその上に各種物理量(超伝導ギャップ関数や軌道キャラクターなど)
 をカラープロットするソフトウェアです.
 
-\sphinxstepscope
-
 
 \chapter{ディレクトリと主なファイル}
 \label{\detokenize{file:id1}}\label{\detokenize{file::doc}}\begin{itemize}
 \item {} \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{doc/}}}{[}マニュアルのディレクトリ{]}\begin{itemize}
+\item[{\sphinxcode{\sphinxupquote{doc/}}}] \leavevmode{[}マニュアルのディレクトリ{]}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{doc/index.html}} : 目次ページ
@@ -108,8 +101,6 @@ Fermi面を描画しその上に各種物理量(超伝導ギャップ関数や�
 
 \end{itemize}
 
-\sphinxstepscope
-
 
 \chapter{インストール手順}
 \label{\detokenize{install:id1}}\label{\detokenize{install::doc}}
@@ -126,7 +117,7 @@ Fermi面を描画しその上に各種物理量(超伝導ギャップ関数や�
 Debian/Ubuntu 等
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }sudo\PYG{+w}{ }aptitude\PYG{+w}{ }install\PYG{+w}{ }libwxgtk3.0\PYGZhy{}dev
+\PYGZdl{} sudo aptitude install libwxgtk3.0\PYGZhy{}dev
 \end{sphinxVerbatim}
 
 \item {} 
@@ -134,7 +125,7 @@ Debian/Ubuntu 等
 Red Hat Enterprise Linux/CentOS 等
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }sudo\PYG{+w}{ }yum\PYG{+w}{ }install\PYG{+w}{ }wxGTK3\PYGZhy{}devel.x86\PYGZus{}64
+\PYGZdl{} sudo yum install wxGTK3\PYGZhy{}devel.x86\PYGZus{}64
 \end{sphinxVerbatim}
 
 \item {} 
@@ -142,7 +133,7 @@ Red Hat Enterprise Linux/CentOS 等
 macOS (Homebrew)
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }brew\PYG{+w}{ }install\PYG{+w}{ }wxmac
+\PYGZdl{} brew install wxmac
 \end{sphinxVerbatim}
 
 \item {} 
@@ -150,7 +141,7 @@ macOS (Homebrew)
 macOS (Mac Ports)
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }port\PYG{+w}{ }install\PYG{+w}{ }wxWidgets\PYGZhy{}3.0
+\PYGZdl{} port install wxWidgets\PYGZhy{}3.0
 \end{sphinxVerbatim}
 
 \end{itemize}
@@ -160,9 +151,9 @@ macOS (Mac Ports)
 インストール
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }./configure
-\PYGZdl{}\PYG{+w}{ }make
-\PYGZdl{}\PYG{+w}{ }sudo\PYG{+w}{ }make\PYG{+w}{ }install
+\PYGZdl{} ./configure
+\PYGZdl{} make
+\PYGZdl{} sudo make install
 \end{sphinxVerbatim}
 
 \end{enumerate}
@@ -180,8 +171,6 @@ macOS (Mac Ports)
 \sphinxAtStartPar
 またwxWidgetsライブラリをインストールしたのちにFermiSurferを自前でビルドすることも可能.
 VisualStudio用ファイル \sphinxcode{\sphinxupquote{fermisurfer.vcxproj}} が利用できる.
-
-\sphinxstepscope
 
 
 \chapter{Input file}
@@ -495,8 +484,6 @@ fortran
 \PYG{k}{end }\PYG{k}{do}
 \end{sphinxVerbatim}
 
-\sphinxstepscope
-
 
 \chapter{操作方法}
 \label{\detokenize{ops:ops}}\label{\detokenize{ops:id1}}\label{\detokenize{ops::doc}}
@@ -510,7 +497,7 @@ fortran
 作成した実行可能ファイル \sphinxcode{\sphinxupquote{fermisurfer}} にパスが通っている状態で
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }fermisurfer\PYG{+w}{ }mgb2\PYGZus{}vfz.frmsf
+\PYGZdl{} fermisurfer mgb2\PYGZus{}vfz.frmsf
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -618,11 +605,11 @@ fortran
 描画範囲をFirst Brillouin Zone/Primitive Brillouin Zoneと
 切り替える事が出来ます (図 \ref{ops:brillouinzonepng}).
 \begin{description}
-\sphinxlineitem{Fisrst Brillouin Zone}
+\item[{Fisrst Brillouin Zone}] \leavevmode
 \sphinxAtStartPar
 \({\rm \Gamma}\) 点から一番近いBragg面で囲まれた領域
 
-\sphinxlineitem{Primitive Brillouine Zone}
+\item[{Primitive Brillouine Zone}] \leavevmode
 \sphinxAtStartPar
 逆格子ベクトルを辺とする平行6面体領域
 
@@ -666,29 +653,29 @@ fortran
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Color scale mode}} : Fermi面の色表示のさせ方を変更します(図 \ref{ops:colorscalepng}).
 \begin{description}
-\sphinxlineitem{Input (1D) (入力ファイルのデータが1個のときのデフォルト) :}
+\item[{Input (1D) (入力ファイルのデータが1個のときのデフォルト) :}] \leavevmode
 \sphinxAtStartPar
 青\(\rightarrow\)緑\(\rightarrow\)赤の範囲でカラープロットする.
 
-\sphinxlineitem{Input (2D) (入力ファイルのデータが2個のときのデフォルト) :}
+\item[{Input (2D) (入力ファイルのデータが2個のときのデフォルト) :}] \leavevmode
 \sphinxAtStartPar
 カラーサークル(図参照)上の色でカラープロットする.
 
-\sphinxlineitem{Input (3D) (入力ファイルのデータが3個のときのデフォルト) :}
+\item[{Input (3D) (入力ファイルのデータが3個のときのデフォルト) :}] \leavevmode
 \sphinxAtStartPar
 フェルミ面上の矢印(細い三角形)としてプロットする.
 フェルミ面の色は「Band Index」の場合と同様.
 
-\sphinxlineitem{Fermi Velocity (入力ファイルのデータがエネルギーだけのときのデフォルト) :}
+\item[{Fermi Velocity (入力ファイルのデータがエネルギーだけのときのデフォルト) :}] \leavevmode
 \sphinxAtStartPar
 エネルギーの差分からFermi速度 \({\bf v}_{\rm F} = \nabla_k \varepsilon_k\)
 を計算し, その絶対値をカラープロットする.
 
-\sphinxlineitem{Band Index :}
+\item[{Band Index :}] \leavevmode
 \sphinxAtStartPar
 物理量に関係なく, 各バンド毎に単色でFermi面を塗る.
 
-\sphinxlineitem{Input (1D, Gray), Fermi Velocity (Gray)}
+\item[{Input (1D, Gray), Fermi Velocity (Gray)}] \leavevmode
 \sphinxAtStartPar
 黒色の濃淡でプロットする.
 
@@ -697,6 +684,10 @@ fortran
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Min of Scale}}, \sphinxcode{\sphinxupquote{Max of Scale}} : カラープロットの色の範囲を指定する.
 「Input (3D)」の場合は \sphinxcode{\sphinxupquote{Max of Scale}} で三角形の長さを変更できる.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{3D arrow step}} : 「Input (3D)」の場合に矢印(三角形)を描画する頻度を指定する.
+数字が大きいほど表示される矢印は少なくなる.
 
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Arrow width}} : 「Input (3D)」の場合に矢印(三角形)の幅を指定する.
@@ -775,15 +766,15 @@ fortran
 \sphinxcode{\sphinxupquote{Lighting}} :
 光を当てる面を変更します (図 \ref{ops:lightpng}).
 \begin{description}
-\sphinxlineitem{Both :}
+\item[{Both :}] \leavevmode
 \sphinxAtStartPar
 Fermi面の表裏両面に光を当てます.
 
-\sphinxlineitem{Unoccupy :}
+\item[{Unoccupy :}] \leavevmode
 \sphinxAtStartPar
 非占有領域側のみに光を当てます.
 
-\sphinxlineitem{Occupy :}
+\item[{Occupy :}] \leavevmode
 \sphinxAtStartPar
 占有領域側のみに光を当てます.
 
@@ -803,16 +794,16 @@ Fermi面の表裏両面に光を当てます.
 \sphinxcode{\sphinxupquote{Mouse Drag}} :
 マウスの左ボタンドラッグを行った時の動作を変更します.
 \begin{description}
-\sphinxlineitem{Rotate(デフォルト)}
+\item[{Rotate(デフォルト)}] \leavevmode
 \sphinxAtStartPar
 ドラッグをした方向に図形を回転させます.
 
-\sphinxlineitem{Scale}
+\item[{Scale}] \leavevmode
 \sphinxAtStartPar
 上方にドラッグすると図形を拡大,
 下方にドラッグすると図形を縮小します.
 
-\sphinxlineitem{Translate}
+\item[{Translate}] \leavevmode
 \sphinxAtStartPar
 ドラッグした方向に図形を動かします.
 
@@ -911,15 +902,15 @@ Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
 \sphinxcode{\sphinxupquote{Stereogram}} :
 裸眼立体視用の図の表示/非表示を切り替えます(図 \ref{ops:stereogrampng}).
 \begin{description}
-\sphinxlineitem{None (デフォルト) :}
+\item[{None (デフォルト) :}] \leavevmode
 \sphinxAtStartPar
 立体視を無効にします.
 
-\sphinxlineitem{Parallel :}
+\item[{Parallel :}] \leavevmode
 \sphinxAtStartPar
 平行法用の図を表示します.
 
-\sphinxlineitem{Cross :}
+\item[{Cross :}] \leavevmode
 \sphinxAtStartPar
 交差法用の図を表示します.
 
@@ -952,15 +943,15 @@ Fermiエネルギー(デフォルトでは0)を任意の値にずらします.
 \sphinxAtStartPar
 視点を変更します(図 \ref{ops:setviewpng}).
 \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{Scale}} :}
+\item[{\sphinxcode{\sphinxupquote{Scale}} :}] \leavevmode
 \sphinxAtStartPar
 図形のサイズを指定します.
 
-\sphinxlineitem{\sphinxcode{\sphinxupquote{Position}} :}
+\item[{\sphinxcode{\sphinxupquote{Position}} :}] \leavevmode
 \sphinxAtStartPar
 図形の上下位置を指定します.
 
-\sphinxlineitem{\sphinxcode{\sphinxupquote{Rotate}} :}
+\item[{\sphinxcode{\sphinxupquote{Rotate}} :}] \leavevmode
 \sphinxAtStartPar
 x,y,z軸周りの回転角を指定し, \sphinxcode{\sphinxupquote{Roate}} ボタンを押すと回転する.
 回転操作はz軸\sphinxhyphen{}y軸\sphinxhyphen{}x軸の順で行われます.
@@ -1034,8 +1025,6 @@ HiLAPWとの関連で使用する.
 (\sphinxcode{\sphinxupquote{Printscreen}} キーを押すなど)
 ペイントブラシやgimpで編集して画像を作成してください.
 
-\sphinxstepscope
-
 
 \chapter{バッチ・モード}
 \label{\detokenize{batch:id1}}\label{\detokenize{batch::doc}}
@@ -1050,7 +1039,7 @@ HiLAPWとの関連で使用する.
 例として、 \sphinxcode{\sphinxupquote{example/}} ディレクトリ内で
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }fermisurfer\PYG{+w}{ }mgb2\PYGZus{}vfz.frmsf\PYG{+w}{ }frmsf.in\PYG{+w}{ }\PYG{l+m}{500}\PYG{+w}{ }\PYG{l+m}{500}
+\PYGZdl{} fermisurfer mgb2\PYGZus{}vfz.frmsf frmsf.in \PYG{l+m}{500} \PYG{l+m}{500}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1089,10 +1078,9 @@ HiLAPWとの関連で使用する.
 
 
 \begin{savenotes}\sphinxattablestart
-\sphinxthistablewithglobalstyle
 \centering
-\begin{tabular}[t]{\X{10}{100}\X{30}{100}\X{30}{100}\X{30}{100}}
-\sphinxtoprule
+\begin{tabular}[t]{|\X{10}{100}|\X{30}{100}|\X{30}{100}|\X{30}{100}|}
+\hline
 \sphinxstyletheadfamily 
 \sphinxAtStartPar
 キーワード
@@ -1106,8 +1094,7 @@ HiLAPWとの関連で使用する.
 \sphinxAtStartPar
 説明
 \\
-\sphinxmidrule
-\sphinxtableatstartofbodyhook
+\hline
 \sphinxAtStartPar
 background
 &
@@ -1120,7 +1107,7 @@ background
 \sphinxAtStartPar
 背景色
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 band
 &
@@ -1133,7 +1120,7 @@ band
 \sphinxAtStartPar
 各バンドの表示(1)または非表示(0)
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 brillouinzone
 &
@@ -1146,7 +1133,7 @@ first
 \sphinxAtStartPar
 ブリルアンゾーンの種類
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 colorbar
 &
@@ -1159,7 +1146,7 @@ colorbar
 \sphinxAtStartPar
 カラーバーの表示(1)または非表示(0)
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 colorscale
 &
@@ -1172,7 +1159,7 @@ input1d
 \sphinxAtStartPar
 カラープロットの種類
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 minmax
 &
@@ -1185,7 +1172,7 @@ minmax
 \sphinxAtStartPar
 カラースケールの範囲
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 equator
 &
@@ -1198,7 +1185,7 @@ equator
 \sphinxAtStartPar
 極軌道の接ベクトル(フラクショナル座標)
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 interpol
 &
@@ -1211,7 +1198,7 @@ interpol
 \sphinxAtStartPar
 補間の細かさ
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 linewidth
 &
@@ -1224,7 +1211,7 @@ linewidth
 \sphinxAtStartPar
 線幅
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 lighting
 &
@@ -1237,7 +1224,7 @@ both
 \sphinxAtStartPar
 どちらの面に照光するか
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 nodalline
 &
@@ -1250,7 +1237,7 @@ nodalline
 \sphinxAtStartPar
 ノーダルラインの表示(1)または非表示(0)
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 section
 &
@@ -1263,7 +1250,7 @@ section
 \sphinxAtStartPar
 断面の法線ベクトル(フラクショナル座標)
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 acrossgamma
 &
@@ -1276,7 +1263,7 @@ acrossgamma
 \sphinxAtStartPar
 断面が \({\rm \Gamma}\) 点を通るか(1)否か(0)
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 position
 &
@@ -1289,7 +1276,7 @@ position
 \sphinxAtStartPar
 図形の描画位置
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 scale
 &
@@ -1302,7 +1289,7 @@ scale
 \sphinxAtStartPar
 図形の拡大率
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 rotation
 &
@@ -1315,7 +1302,7 @@ rotation
 \sphinxAtStartPar
 図形のx\sphinxhyphen{}, y\sphinxhyphen{}, z\sphinxhyphen{}軸周りの回転角
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 fermienergy
 &
@@ -1328,7 +1315,7 @@ fermienergy
 \sphinxAtStartPar
 Fermiエネルギー
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 stereogram
 &
@@ -1341,7 +1328,7 @@ none
 \sphinxAtStartPar
 立体視
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 tetrahedron
 &
@@ -1354,9 +1341,9 @@ tetrahedron
 \sphinxAtStartPar
 四面体の切り方
 \\
-\sphinxbottomrule
+\hline
 \end{tabular}
-\sphinxtableafterendhook\par
+\par
 \sphinxattableend\end{savenotes}
 
 \begin{sphinxadmonition}{note}{注釈:}
@@ -1364,8 +1351,6 @@ tetrahedron
 この機能は ImageMagic のスクリーンショットを取るコマンド「import」を用いている.
 そのためこの機能を使うには ImageMagic がインストールされていなければならない.
 \end{sphinxadmonition}
-
-\sphinxstepscope
 
 
 \chapter{Quantum ESPRESSOを用いたチュートリアル}
@@ -1393,7 +1378,7 @@ Fermi速度の絶対値 \(|{\bf v}_{\rm F}|\) (\sphinxcode{\sphinxupquote{fermi\
 (バンド図や電子密度をプロットするためのツール群)をビルドする必要がある.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }make\PYG{+w}{ }pp
+\PYGZdl{} make pp
 \end{sphinxVerbatim}
 
 
@@ -1458,7 +1443,7 @@ MgB$_{\text{2}}$を題材として扱う.
 そのディレクトリで \sphinxcode{\sphinxupquote{pw.x}} を実行する.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }mpiexec\PYG{+w}{ }\PYGZhy{}np\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }pw.x\PYG{+w}{ }\PYGZhy{}npool\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }\PYGZhy{}in\PYG{+w}{ }scf.in
+\PYGZdl{} mpiexec \PYGZhy{}np \PYG{l+m}{4} pw.x \PYGZhy{}npool \PYG{l+m}{4} \PYGZhy{}in scf.in
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1473,7 +1458,7 @@ MgB$_{\text{2}}$を題材として扱う.
 入力ファイルは \sphinxcode{\sphinxupquote{pw.x}} のものと同一である.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }mpiexec\PYG{+w}{ }\PYGZhy{}np\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }fermi\PYGZus{}velocity.x\PYG{+w}{ }\PYGZhy{}npool\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }\PYGZhy{}in\PYG{+w}{ }scf.in
+\PYGZdl{} mpiexec \PYGZhy{}np \PYG{l+m}{1} fermi\PYGZus{}velocity.x \PYGZhy{}npool \PYG{l+m}{1} \PYGZhy{}in scf.in
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1482,7 +1467,7 @@ MgB$_{\text{2}}$を題材として扱う.
 それをFermiSurferで読み込む.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }fermisurfer\PYG{+w}{ }vfermi.frmsf
+\PYGZdl{} fermisurfer vfermi.frmsf
 \end{sphinxVerbatim}
 
 \begin{figure}[htbp]
@@ -1525,7 +1510,7 @@ MgB$_{\text{2}}$を題材として扱う.
 直前の \sphinxcode{\sphinxupquote{pw.x}} の実行時と同じ値にしなければならない.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }mpiexec\PYG{+w}{ }\PYGZhy{}np\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }projwfc.x\PYG{+w}{ }\PYGZhy{}npool\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }\PYGZhy{}in\PYG{+w}{ }proj.in
+\PYGZdl{} mpiexec \PYGZhy{}np \PYG{l+m}{4} projwfc.x \PYGZhy{}npool \PYG{l+m}{4} \PYGZhy{}in proj.in
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1559,7 +1544,7 @@ MgB$_{\text{2}}$を題材として扱う.
 具体的な例を示す. 上記の \sphinxcode{\sphinxupquote{proj.in}} を用いて
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }mpiexec\PYG{+w}{ }\PYGZhy{}np\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }fermi\PYGZus{}proj.x\PYG{+w}{ }\PYGZhy{}npool\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }\PYGZhy{}in\PYG{+w}{ }proj.in
+\PYGZdl{} mpiexec \PYGZhy{}np \PYG{l+m}{1} fermi\PYGZus{}proj.x \PYGZhy{}npool \PYG{l+m}{1} \PYGZhy{}in proj.in
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1584,7 +1569,7 @@ MgB$_{\text{2}}$を題材として扱う.
 が出力される.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }fermisurfer\PYG{+w}{ }proj.frmsf
+\PYGZdl{} fermisurfer proj.frmsf
 \end{sphinxVerbatim}
 
 \begin{figure}[htbp]
@@ -1618,14 +1603,12 @@ MgB$_{\text{2}}$を題材として扱う.
 \noindent\sphinxincludegraphics[width=0.300\linewidth]{{qe_proj_pxy}.png}
 \end{figure}
 
-\sphinxstepscope
-
 
 \chapter{FermiSurfer on Web}
 \label{\detokenize{onweb:fermisurfer-on-web}}\label{\detokenize{onweb::doc}}
 \sphinxAtStartPar
 下記のページにアクセスするとWebブラウザー上でFermiSurferを使うことができます。
-\sphinxurl{https://fermisurfer.osdn.jp/js/index.php}
+\sphinxurl{http://163.220.177.91/fsonweb/index.php}
 
 
 \section{操作方法}
@@ -1648,10 +1631,10 @@ MgB$_{\text{2}}$を題材として扱う.
 以下のようにURLに引数をつけることにより、Web上で公開されているフェルミ面の入力ファイルを、リンクをクリックするだけで開くことができます。
 
 \sphinxAtStartPar
-\sphinxurl{https://fermisurfer.osdn.jp/js/index.php?frmsf=https://fermisurfer.osdn.jp/js/Pb.js}
+\sphinxurl{http://163.220.177.91/fsonweb/index.php?frmsf=http://163.220.177.91/fsonweb/Pb.js}
 
 \sphinxAtStartPar
-\sphinxcode{\sphinxupquote{https://fermisurfer.osdn.jp/js/index.php?frmsf=}} に続けてファイルの保存先のURLを付け足します。
+\sphinxcode{\sphinxupquote{http://163.220.177.91/fsonweb/index.php?frmsf=}} に続けてファイルの保存先のURLを付け足します。
 これは研究紹介やプレスリリースのページで使うとよいでしょう。
 
 \sphinxAtStartPar
@@ -1670,7 +1653,7 @@ BXSF形式には対応していません。
 FRMSF形式のファイルを上記の形式に変換するにはコマンドラインで
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-sed\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}1i frmsf=\PYGZdq{}\PYGZsq{}}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}\PYGZdl{}a \PYGZdq{};\PYGZsq{}}\PYG{+w}{ }ANY.frmsf\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }perl\PYG{+w}{ }\PYGZhy{}pe\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/\PYGZbs{}n/ /g\PYGZsq{}}\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }sed\PYG{+w}{ }\PYGZhy{}E\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/ +/ /g\PYGZsq{}}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/\PYGZdq{} /\PYGZdq{}/g\PYGZsq{}}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/ \PYGZdq{}/\PYGZdq{}/g\PYGZsq{}}\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }ANY.js
+sed \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}1i frmsf=\PYGZdq{}\PYGZsq{}} \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}\PYGZdl{}a \PYGZdq{};\PYGZsq{}} ANY.frmsf \PYG{p}{|} perl \PYGZhy{}pe \PYG{l+s+s1}{\PYGZsq{}s/\PYGZbs{}n/ /g\PYGZsq{}} \PYG{p}{|} sed \PYGZhy{}E \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}s/ +/ /g\PYGZsq{}} \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}s/\PYGZdq{} /\PYGZdq{}/g\PYGZsq{}} \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}s/ \PYGZdq{}/\PYGZdq{}/g\PYGZsq{}} \PYGZgt{} ANY.js
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1678,16 +1661,14 @@ sed\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}1i frmsf=\PYGZdq{}\PYGZ
 これと同じ処理を行うシェルスクリプトファイルがこちらにあります。
 
 \sphinxAtStartPar
-\sphinxurl{https://fermisurfer.osdn.jp/js/frmsf2js.sh}
+\sphinxurl{http://163.220.177.91/fsonweb/frmsf2js.sh}
 
 \sphinxAtStartPar
 使い方は下記のとおりです。 \sphinxcode{\sphinxupquote{ANY.js}} (ANYの部分は任意) というファイルが生成されるので、それをWebサーバーに配置します。
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }bash\PYG{+w}{ }frmsf2js.sh\PYG{+w}{ }ANY.frmsf
+\PYGZdl{} bash frmsf2js.sh ANY.frmsf
 \end{sphinxVerbatim}
-
-\sphinxstepscope
 
 
 \chapter{謝辞}
@@ -1696,8 +1677,6 @@ sed\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}1i frmsf=\PYGZdq{}\PYGZ
 東京大学物性研究所 小西優祐氏には, Mac
 OSXでの動作チェックおよびMakefile,
 パッチの提供をしていただいたことに感謝する.
-
-\sphinxstepscope
 
 
 \chapter{プログラムの再配布}
@@ -1738,8 +1717,6 @@ FermiSurferは下記の {\hyperref[\detokenize{copy:mitlicense}]{\sphinxcrossref
 \item[] あるいはソフトウェアの使用またはその他の扱いによって生じる一切の請求,
 \item[] 損害, その他の義務について何らの責任も負わないものとします.
 \end{DUlineblock}
-
-\sphinxstepscope
 
 
 \chapter{問い合わせ先}

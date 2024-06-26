@@ -1,18 +1,20 @@
+
 <!DOCTYPE html>
 
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>インストール手順 &#8212; fermisurfer 2.4.0 ドキュメント</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=89b800e6" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=f6f33270"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
-    <script src="_static/translations.js?v=4dbe4bdc"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/translations.js"></script>
     
     <link rel="index" title="索引" href="genindex.html" />
     <link rel="search" title="検索" href="search.html" />
@@ -42,38 +44,38 @@
           <div class="body" role="main">
             
   <section id="id1">
-<h1>インストール手順<a class="headerlink" href="#id1" title="この見出しへのパーマリンク">¶</a></h1>
+<h1>インストール手順<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
 <section id="linux-macos">
-<h2>Linux, macOSの場合<a class="headerlink" href="#linux-macos" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>Linux, macOSの場合<a class="headerlink" href="#linux-macos" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <ol class="arabic">
 <li><p>必要なパッケージをインストール(既にパッケージが入っている場合は何も起こりません.)</p>
 <ul>
 <li><p>Debian/Ubuntu 等</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>aptitude<span class="w"> </span>install<span class="w"> </span>libwxgtk3.0-dev
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo aptitude install libwxgtk3.0-dev
 </pre></div>
 </div>
 </li>
 <li><p>Red Hat Enterprise Linux/CentOS 等</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>wxGTK3-devel.x86_64
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo yum install wxGTK3-devel.x86_64
 </pre></div>
 </div>
 </li>
 <li><p>macOS (Homebrew)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>wxmac
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ brew install wxmac
 </pre></div>
 </div>
 </li>
 <li><p>macOS (Mac Ports)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>port<span class="w"> </span>install<span class="w"> </span>wxWidgets-3.0
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ port install wxWidgets-3.0
 </pre></div>
 </div>
 </li>
 </ul>
 </li>
 <li><p>インストール</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./configure
-$<span class="w"> </span>make
-$<span class="w"> </span>sudo<span class="w"> </span>make<span class="w"> </span>install
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./configure
+$ make
+$ sudo make install
 </pre></div>
 </div>
 </li>
@@ -82,7 +84,7 @@ $<span class="w"> </span>sudo<span class="w"> </span>make<span class="w"> </span
 <code class="docutils literal notranslate"><span class="pre">/usr/local/bin/</span></code> にコピーされます.</p>
 </section>
 <section id="windows">
-<h2>Windowsの場合<a class="headerlink" href="#windows" title="この見出しへのパーマリンク">¶</a></h2>
+<h2>Windowsの場合<a class="headerlink" href="#windows" title="このヘッドラインへのパーマリンク">¶</a></h2>
 <p>バイナリ実行ファイルをダウンロードする.</p>
 <p>またwxWidgetsライブラリをインストールしたのちにFermiSurferを自前でビルドすることも可能.
 VisualStudio用ファイル <code class="docutils literal notranslate"><span class="pre">fermisurfer.vcxproj</span></code> が利用できる.</p>
@@ -99,9 +101,8 @@ VisualStudio用ファイル <code class="docutils literal notranslate"><span cla
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/fermisurfer.png" alt="Logo"/>
             </a></p>
-  <div>
-    <h3><a href="index.html">Table of Contents</a></h3>
-    <ul>
+  <h3><a href="index.html">目次</a></h3>
+  <ul>
 <li><a class="reference internal" href="#">インストール手順</a><ul>
 <li><a class="reference internal" href="#linux-macos">Linux, macOSの場合</a></li>
 <li><a class="reference internal" href="#windows">Windowsの場合</a></li>
@@ -109,17 +110,12 @@ VisualStudio用ファイル <code class="docutils literal notranslate"><span cla
 </li>
 </ul>
 
-  </div>
-  <div>
-    <h4>前のトピックへ</h4>
-    <p class="topless"><a href="file.html"
-                          title="前の章へ">ディレクトリと主なファイル</a></p>
-  </div>
-  <div>
-    <h4>次のトピックへ</h4>
-    <p class="topless"><a href="input.html"
-                          title="次の章へ">Input file</a></p>
-  </div>
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="file.html"
+                        title="前の章へ">ディレクトリと主なファイル</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="input.html"
+                        title="次の章へ">Input file</a></p>
   <div role="note" aria-label="source link">
     <h3>このページ</h3>
     <ul class="this-page-menu">
@@ -136,7 +132,7 @@ VisualStudio用ファイル <code class="docutils literal notranslate"><span cla
     </form>
     </div>
 </div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -158,8 +154,8 @@ VisualStudio用ファイル <code class="docutils literal notranslate"><span cla
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; 著作権 2017, kawamura.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+        &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

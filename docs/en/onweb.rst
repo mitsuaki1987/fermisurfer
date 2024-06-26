@@ -2,7 +2,7 @@ FermiSurfer on Web
 ==================
 
 We can use FermiSurfer on Web at the following URL:
-https://fermisurfer.osdn.jp/js/index.php
+http://163.220.177.91/fsonweb/index.php
 
 Control FermiSurfer on Web
 --------------------------
@@ -22,9 +22,9 @@ Open online file
 
 We can open an input file placed online by just clicking the link by a URL with an argument:
 
-https://fermisurfer.osdn.jp/js/index.php?frmsf=https://fermisurfer.osdn.jp/js/Pb.js
+http://163.220.177.91/fsonweb/index.php?frmsf=http://163.220.177.91/fsonweb/Pb.js
 
-We add the URL where the input file locates after ``https://fermisurfer.osdn.jp/js/index.php?frmsf=``.
+We add the URL where the input file locates after ``http://163.220.177.91/fsonweb/index.php?frmsf=``.
 This function can be used in research-introduction pages.
 
 The input file ``Pb.js`` is as follows:
@@ -46,7 +46,7 @@ We can convert a FRMSF-formatted file into the above format as
 
 The following bash script file also do this conversion
 
-https://fermisurfer.osdn.jp/js/frmsf2js.sh
+http://163.220.177.91/fsonweb/frmsf2js.sh
 
 Usage: 
 

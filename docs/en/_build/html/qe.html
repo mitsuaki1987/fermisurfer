@@ -1,17 +1,19 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Tutorial with Quantum ESPRESSO &#8212; fermisurfer 2.4.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=89b800e6" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6fe989de"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -42,7 +44,7 @@
           <div class="body" role="main">
             
   <section id="tutorial-with-quantum-espresso">
-<h1>Tutorial with Quantum ESPRESSO<a class="headerlink" href="#tutorial-with-quantum-espresso" title="Permalink to this heading">¶</a></h1>
+<h1>Tutorial with Quantum ESPRESSO<a class="headerlink" href="#tutorial-with-quantum-espresso" title="Permalink to this headline">¶</a></h1>
 <p>Since the version 6.2, Quantum ESPRESSO can generate data-files
 for FermiSurfer.
 The following quantities can be displayed through FermiSurfer.</p>
@@ -52,17 +54,17 @@ The following quantities can be displayed through FermiSurfer.</p>
 <span class="math notranslate nohighlight">\(|\langle \phi_{n l m} | \psi_{n k} \rangle|^2\)</span> (<code class="docutils literal notranslate"><span class="pre">fermi_proj.x</span></code>)</p></li>
 </ul>
 <section id="building-postprocess-tool">
-<h2>Building <code class="docutils literal notranslate"><span class="pre">PostProcess</span></code>  tool<a class="headerlink" href="#building-postprocess-tool" title="Permalink to this heading">¶</a></h2>
+<h2>Building <code class="docutils literal notranslate"><span class="pre">PostProcess</span></code>  tool<a class="headerlink" href="#building-postprocess-tool" title="Permalink to this headline">¶</a></h2>
 <p>For displaying the above quantities with FermiSurfer,
 we have to build <code class="docutils literal notranslate"><span class="pre">PostProcess</span></code> tools
 (tools for plotting the band structure, the charge density, etc.)
 in QuantumESPRESSO as follows:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>pp
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ make pp
 </pre></div>
 </div>
 </section>
 <section id="scf-calculation">
-<h2>SCF calculation<a class="headerlink" href="#scf-calculation" title="Permalink to this heading">¶</a></h2>
+<h2>SCF calculation<a class="headerlink" href="#scf-calculation" title="Permalink to this headline">¶</a></h2>
 <p>Now we will move on the tutorial.
 First, we perform the electronic-structure calculation with <code class="docutils literal notranslate"><span class="pre">pw.x</span></code>.
 We will treat MgB<sub>2</sub> in this tutorial.
@@ -106,7 +108,7 @@ and they can be downloaded from the following address:</p>
 </ul>
 <p>We put the input file and the pseudopotential in the same directory,
 and run <code class="docutils literal notranslate"><span class="pre">pw.x</span></code> at that directory.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>pw.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">4</span><span class="w"> </span>-in<span class="w"> </span>scf.in
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ mpiexec -np <span class="m">4</span> pw.x -npool <span class="m">4</span> -in scf.in
 </pre></div>
 </div>
 <p>the number of processes and the number of blocks for <em>k</em>-paralleliztion (<code class="docutils literal notranslate"><span class="pre">npool</span></code>)
@@ -114,16 +116,16 @@ can be arbitlary numbers.
 We also can perform additional non-scf calcultion with a different <em>k</em>-grid.</p>
 </section>
 <section id="compute-and-display-fermi-velocity">
-<h2>Compute and display Fermi velocity<a class="headerlink" href="#compute-and-display-fermi-velocity" title="Permalink to this heading">¶</a></h2>
+<h2>Compute and display Fermi velocity<a class="headerlink" href="#compute-and-display-fermi-velocity" title="Permalink to this headline">¶</a></h2>
 <p>We run <code class="docutils literal notranslate"><span class="pre">fermi_velocity.x</span></code> program with the same input file as <code class="docutils literal notranslate"><span class="pre">pw.x</span></code>.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">1</span><span class="w"> </span>fermi_velocity.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">1</span><span class="w"> </span>-in<span class="w"> </span>scf.in
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ mpiexec -np <span class="m">1</span> fermi_velocity.x -npool <span class="m">1</span> -in scf.in
 </pre></div>
 </div>
 <p>For this calculation, the number of blocks for <em>k</em>-paralleliztion (<code class="docutils literal notranslate"><span class="pre">npool</span></code>)
 should be 1 (or not specified).
 Then, the file for the Fermi velocity, <code class="docutils literal notranslate"><span class="pre">vfermi.frmsf</span></code>, is generated;
 this file can be read from FermiSurfer as</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>vfermi.frmsf
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ fermisurfer vfermi.frmsf
 </pre></div>
 </div>
 <figure class="align-default">
@@ -134,7 +136,7 @@ two files, <code class="docutils literal notranslate"><span class="pre">vfermi1.
 to each spin are generated.</p>
 </section>
 <section id="compute-and-display-projection-onto-the-atomic-orbital">
-<h2>Compute and display projection onto the atomic orbital<a class="headerlink" href="#compute-and-display-projection-onto-the-atomic-orbital" title="Permalink to this heading">¶</a></h2>
+<h2>Compute and display projection onto the atomic orbital<a class="headerlink" href="#compute-and-display-projection-onto-the-atomic-orbital" title="Permalink to this headline">¶</a></h2>
 <p>Then we will computeb the projection onto the atomic orbital.
 First we run <code class="docutils literal notranslate"><span class="pre">projwfc.x</span></code> with the following input file:</p>
 <p><a class="reference download internal" download="" href="_downloads/1ef59c60b8ac26fd25b1db02c5d8fb93/proj.in"><code class="xref download docutils literal notranslate"><span class="pre">proj.in</span></code></a></p>
@@ -154,7 +156,7 @@ is not used by <code class="docutils literal notranslate"><span class="pre">proj
 The number of processes and the number of blocks for
 the <em>k</em>-parallelization (<code class="docutils literal notranslate"><span class="pre">npool</span></code>) must to be the same as those
 for the execution of <code class="docutils literal notranslate"><span class="pre">pw.x</span></code>.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">4</span><span class="w"> </span>projwfc.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">4</span><span class="w"> </span>-in<span class="w"> </span>proj.in
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ mpiexec -np <span class="m">4</span> projwfc.x -npool <span class="m">4</span> -in proj.in
 </pre></div>
 </div>
 <p>excepting <code class="docutils literal notranslate"><span class="pre">wf_collect=.true.</span></code> in the input of <code class="docutils literal notranslate"><span class="pre">pw.x</span></code>.</p>
@@ -182,7 +184,7 @@ and its character (for more details, please see <code class="docutils literal no
 When we choose the projection onto the atomic orbital plotted on the Fermi surface,
 we use this index.
 For example, we run <code class="docutils literal notranslate"><span class="pre">fermi_proj.x</span></code> with above <code class="docutils literal notranslate"><span class="pre">proj.in</span></code> as an input file,</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>mpiexec<span class="w"> </span>-np<span class="w"> </span><span class="m">1</span><span class="w"> </span>fermi_proj.x<span class="w"> </span>-npool<span class="w"> </span><span class="m">1</span><span class="w"> </span>-in<span class="w"> </span>proj.in
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ mpiexec -np <span class="m">1</span> fermi_proj.x -npool <span class="m">1</span> -in proj.in
 </pre></div>
 </div>
 <p>and we obtain the data-file for FermiSurfer, <code class="docutils literal notranslate"><span class="pre">proj.frmsf</span></code>.
@@ -200,7 +202,7 @@ and the 2pz of the first B atom (<code class="docutils literal notranslate"><spa
 \[|\langle \phi_{B_1 2pz} | \psi_{nk} \rangle|^2
 + |\langle \phi_{B_2 2pz} | \psi_{nk} \rangle|^2\]</div>
 <p>is specified. We can display the Fermi surface as</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>proj.frmsf
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ fermisurfer proj.frmsf
 </pre></div>
 </div>
 <figure class="align-default">
@@ -236,9 +238,8 @@ the input file for <code class="docutils literal notranslate"><span class="pre">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/fermisurfer.png" alt="Logo"/>
             </a></p>
-  <div>
-    <h3><a href="index.html">Table of Contents</a></h3>
-    <ul>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
 <li><a class="reference internal" href="#">Tutorial with Quantum ESPRESSO</a><ul>
 <li><a class="reference internal" href="#building-postprocess-tool">Building <code class="docutils literal notranslate"><span class="pre">PostProcess</span></code>  tool</a></li>
 <li><a class="reference internal" href="#scf-calculation">SCF calculation</a></li>
@@ -248,17 +249,12 @@ the input file for <code class="docutils literal notranslate"><span class="pre">
 </li>
 </ul>
 
-  </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="batch.html"
-                          title="previous chapter">Batch mode</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="onweb.html"
-                          title="next chapter">FermiSurfer on Web</a></p>
-  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="batch.html"
+                        title="previous chapter">Batch mode</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="onweb.html"
+                        title="next chapter">FermiSurfer on Web</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -275,7 +271,7 @@ the input file for <code class="docutils literal notranslate"><span class="pre">
     </form>
     </div>
 </div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -297,8 +293,8 @@ the input file for <code class="docutils literal notranslate"><span class="pre">
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2017, kawamura.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+        &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

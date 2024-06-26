@@ -10,9 +10,6 @@
 %% let collapsible pdf bookmarks panel have high depth per default
 \PassOptionsToPackage{bookmarksdepth=5}{hyperref}
 
-\PassOptionsToPackage{booktabs}{sphinx}
-\PassOptionsToPackage{colorrows}{sphinx}
-
 \PassOptionsToPackage{warn}{textcomp}
 \usepackage[utf8]{inputenc}
 \ifdefined\DeclareUnicodeCharacter
@@ -63,7 +60,7 @@
 
 
 \title{Fermisurfer Documentation}
-\date{Aug 18, 2023}
+\date{Jun 26, 2024}
 \release{2.4.0}
 \author{kawamura}
 \newcommand{\sphinxlogo}{\sphinxincludegraphics{fermisurfer.png}\par}
@@ -84,8 +81,6 @@
 \phantomsection\label{\detokenize{index::doc}}
 
 
-\sphinxstepscope
-
 
 \chapter{Introduction}
 \label{\detokenize{overview:introduction}}\label{\detokenize{overview::doc}}
@@ -97,13 +92,11 @@ November, 2014. It draws Fermi surfaces, and plot \(k\)\sphinxhyphen{}depend mat
 elements such as the superconducting gap and orbital character with
 colors.
 
-\sphinxstepscope
-
 
 \chapter{Directories and important files}
 \label{\detokenize{file:directories-and-important-files}}\label{\detokenize{file::doc}}\begin{itemize}
 \item {} \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{doc/}}}{[}Directory for manuals{]}\begin{itemize}
+\item[{\sphinxcode{\sphinxupquote{doc/}}}] \leavevmode{[}Directory for manuals{]}\begin{itemize}
 \item {} 
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{doc/index.html}} : Index page
@@ -126,8 +119,6 @@ colors.
 
 \end{itemize}
 
-\sphinxstepscope
-
 
 \chapter{Install}
 \label{\detokenize{install:install}}\label{\detokenize{install::doc}}
@@ -144,7 +135,7 @@ Install the required package
 For Debian/Ubuntu
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }sudo\PYG{+w}{ }aptitude\PYG{+w}{ }install\PYG{+w}{ }libwxgtk3.0\PYGZhy{}dev
+\PYGZdl{} sudo aptitude install libwxgtk3.0\PYGZhy{}dev
 \end{sphinxVerbatim}
 
 \item {} 
@@ -152,7 +143,7 @@ For Debian/Ubuntu
 For Red Hat Enterprise Linux/CentOS
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }sudo\PYG{+w}{ }yum\PYG{+w}{ }install\PYG{+w}{ }wxGTK3\PYGZhy{}devel.x86\PYGZus{}64
+\PYGZdl{} sudo yum install wxGTK3\PYGZhy{}devel.x86\PYGZus{}64
 \end{sphinxVerbatim}
 
 \item {} 
@@ -160,7 +151,7 @@ For Red Hat Enterprise Linux/CentOS
 macOS (Homebrew)
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }brew\PYG{+w}{ }install\PYG{+w}{ }wxmac
+\PYGZdl{} brew install wxmac
 \end{sphinxVerbatim}
 
 \item {} 
@@ -168,7 +159,7 @@ macOS (Homebrew)
 macOS (Mac Ports)
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }port\PYG{+w}{ }install\PYG{+w}{ }wxWidgets\PYGZhy{}3.0
+\PYGZdl{} port install wxWidgets\PYGZhy{}3.0
 \end{sphinxVerbatim}
 
 \end{itemize}
@@ -178,9 +169,9 @@ macOS (Mac Ports)
 Install
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }./configure
-\PYGZdl{}\PYG{+w}{ }make
-\PYGZdl{}\PYG{+w}{ }sudo\PYG{+w}{ }make\PYG{+w}{ }install
+\PYGZdl{} ./configure
+\PYGZdl{} make
+\PYGZdl{} sudo make install
 \end{sphinxVerbatim}
 
 \end{enumerate}
@@ -199,8 +190,6 @@ Download the binary file.
 Alternatively, we can build FermiSurfer by ourselves
 after we install wxWidgets library.
 We can use \sphinxcode{\sphinxupquote{fermisurfer.vcxproj}} together with VisualStudio.
-
-\sphinxstepscope
 
 
 \chapter{Input file}
@@ -508,8 +497,6 @@ fortran
 \PYG{k}{end }\PYG{k}{do}
 \end{sphinxVerbatim}
 
-\sphinxstepscope
-
 
 \chapter{Control FermiSurfer}
 \label{\detokenize{ops:control-fermisurfer}}\label{\detokenize{ops:ops}}\label{\detokenize{ops::doc}}
@@ -523,7 +510,7 @@ fortran
 You can launch generated executable as follows:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }fermisurfer\PYG{+w}{ }mgb2\PYGZus{}vfz.fs
+\PYGZdl{} fermisurfer mgb2\PYGZus{}vfz.fs
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -632,12 +619,12 @@ Such operations are refered as “Update required”.
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Brillouin zone}} : We choose Brillouin\sphinxhyphen{}zone type as follows (Fig. \ref{ops:brillouinzonepng}):
 \begin{description}
-\sphinxlineitem{First Brillouin Zone}
+\item[{First Brillouin Zone}] \leavevmode
 \sphinxAtStartPar
 The region surrounded by Bragg’s planes the
 nearest to \({\rm \Gamma}\) point.
 
-\sphinxlineitem{Primitive Brillouin Zone}
+\item[{Primitive Brillouin Zone}] \leavevmode
 \sphinxAtStartPar
 A hexahedron whose corner is the reciprocal
 lattice point.
@@ -684,32 +671,32 @@ lattice vector.
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Color scale mode}} : It turns color pattern on Fermi surfaces (Fig. \ref{ops:colorscalepng}).
 \begin{description}
-\sphinxlineitem{Input (1D) (default for the single input quatity) :}
+\item[{Input (1D) (default for the single input quatity) :}] \leavevmode
 \sphinxAtStartPar
 It makes blue as the minimum on Fermi surfaces and red
 as the maximum on them.
 
-\sphinxlineitem{Input (2D) (default for the double input quatity) :}
+\item[{Input (2D) (default for the double input quatity) :}] \leavevmode
 \sphinxAtStartPar
 The color plot is shown with the color circle (see the figure).
 
-\sphinxlineitem{Input (3D) (default for the triple input quatity) :}
+\item[{Input (3D) (default for the triple input quatity) :}] \leavevmode
 \sphinxAtStartPar
 The input value is shown as arrows (thin triangles) on the Fermi surfaces.
 The color of the Fermi surfaces are the same sa “Band Index” case.
 
-\sphinxlineitem{Fermi velocity (default for no input quantity)}
+\item[{Fermi velocity (default for no input quantity)}] \leavevmode
 \sphinxAtStartPar
 Compute the Fermi velocity \({\bf v}_{\rm F} = \nabla_k \varepsilon_k\)
 with the numerical differentiation of the energy,
 and plot the absolute value of that.
 
-\sphinxlineitem{Band Index :}
+\item[{Band Index :}] \leavevmode
 \sphinxAtStartPar
 Fermi surfaces of each band are depicted with uni\sphinxhyphen{}color
 without relation to the matrix element.
 
-\sphinxlineitem{Input (1D, Gray), Fermi Velocity (Gray) :}
+\item[{Input (1D, Gray), Fermi Velocity (Gray) :}] \leavevmode
 \sphinxAtStartPar
 Plot with gray scale.
 
@@ -719,6 +706,10 @@ Plot with gray scale.
 \sphinxcode{\sphinxupquote{Min of Scale}}, \sphinxcode{\sphinxupquote{Max of Scale}} :
 We can change the range of the color plot by inputting into the text boxes.
 For 3D arrow plot the length of arrows can be changed by \sphinxcode{\sphinxupquote{Max of Scale}}.
+
+\sphinxAtStartPar
+\sphinxcode{\sphinxupquote{3D arrow step}} : Change the interval to display arrows at “Input (3D)” mode.
+Larger number indicates fewer arrows.
 
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Arrow width}} : Change the thickness of arrow (triangle) at “Input (3D)” mode.
@@ -800,15 +791,15 @@ The time for the plot increases with the interpolation ratio.
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Lighting}} : We can choose the illuminatedside of the Fermi surface (Fig. \ref{ops:lightpng}).
 \begin{description}
-\sphinxlineitem{Both :}
+\item[{Both :}] \leavevmode
 \sphinxAtStartPar
 Light both sides.
 
-\sphinxlineitem{Unoccupy :}
+\item[{Unoccupy :}] \leavevmode
 \sphinxAtStartPar
 Light unoccupied side.
 
-\sphinxlineitem{Occupy :}
+\item[{Occupy :}] \leavevmode
 \sphinxAtStartPar
 Light the occupied side.
 
@@ -827,15 +818,15 @@ Light the occupied side.
 \sphinxAtStartPar
 \sphinxcode{\sphinxupquote{Mouse Drag}} : It turns the event of the mouse\sphinxhyphen{}left\sphinxhyphen{}drag.
 \begin{description}
-\sphinxlineitem{Rotate(default)}
+\item[{Rotate(default)}] \leavevmode
 \sphinxAtStartPar
 Rotate the figure along the mouse drag.
 
-\sphinxlineitem{Scale}
+\item[{Scale}] \leavevmode
 \sphinxAtStartPar
 Expand/shrink the figure in upward/downward drag.
 
-\sphinxlineitem{Translate}
+\item[{Translate}] \leavevmode
 \sphinxAtStartPar
 Translate the figure along the mouse drag.
 
@@ -937,11 +928,11 @@ The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
 \sphinxAtStartPar
 None (Default)
 \begin{description}
-\sphinxlineitem{Parallel}
+\item[{Parallel}] \leavevmode
 \sphinxAtStartPar
 Parallel\sphinxhyphen{}eyes stereogram
 
-\sphinxlineitem{Cross}
+\item[{Cross}] \leavevmode
 \sphinxAtStartPar
 Cross\sphinxhyphen{}eyes stereogram
 
@@ -975,15 +966,15 @@ It is experimental.
 \sphinxAtStartPar
 Changing the view point.
 \begin{description}
-\sphinxlineitem{\sphinxcode{\sphinxupquote{Scale}} :}
+\item[{\sphinxcode{\sphinxupquote{Scale}} :}] \leavevmode
 \sphinxAtStartPar
 Change the size of the figure.
 
-\sphinxlineitem{\sphinxcode{\sphinxupquote{Position}} :}
+\item[{\sphinxcode{\sphinxupquote{Position}} :}] \leavevmode
 \sphinxAtStartPar
 Change the xy position of the figure.
 
-\sphinxlineitem{\sphinxcode{\sphinxupquote{Rotate}} :}
+\item[{\sphinxcode{\sphinxupquote{Rotate}} :}] \leavevmode
 \sphinxAtStartPar
 Change angles at x\sphinxhyphen{}, y\sphinxhyphen{}, z\sphinxhyphen{} axis.
 Rotations are performed as z\sphinxhyphen{}y\sphinxhyphen{}x axis if the “Roate” buttone is pushed.
@@ -1060,8 +1051,6 @@ The following two kinds of nesting function are computed and written into a file
 \sphinxcode{\sphinxupquote{fermisurfer}} does not have any functions to save images to a file.
 Please use the screenshot on your PC.
 
-\sphinxstepscope
-
 
 \chapter{Batch mode}
 \label{\detokenize{batch:batch-mode}}\label{\detokenize{batch::doc}}
@@ -1075,7 +1064,7 @@ By using this batch mode, we can easily make
 For example, in \sphinxcode{\sphinxupquote{example/}} directory, when we execute
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }fermisurfer\PYG{+w}{ }mgb2\PYGZus{}vfz.frmsf\PYG{+w}{ }frmsf.in\PYG{+w}{ }\PYG{l+m}{500}\PYG{+w}{ }\PYG{l+m}{500}
+\PYGZdl{} fermisurfer mgb2\PYGZus{}vfz.frmsf frmsf.in \PYG{l+m}{500} \PYG{l+m}{500}
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1115,10 +1104,9 @@ and the available keywords are as follows
 
 
 \begin{savenotes}\sphinxattablestart
-\sphinxthistablewithglobalstyle
 \centering
-\begin{tabular}[t]{\X{10}{100}\X{30}{100}\X{30}{100}\X{30}{100}}
-\sphinxtoprule
+\begin{tabular}[t]{|\X{10}{100}|\X{30}{100}|\X{30}{100}|\X{30}{100}|}
+\hline
 \sphinxstyletheadfamily 
 \sphinxAtStartPar
 Keyword
@@ -1132,8 +1120,7 @@ Default value
 \sphinxAtStartPar
 Description
 \\
-\sphinxmidrule
-\sphinxtableatstartofbodyhook
+\hline
 \sphinxAtStartPar
 background
 &
@@ -1146,7 +1133,7 @@ float float float
 \sphinxAtStartPar
 Background color
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 band
 &
@@ -1159,7 +1146,7 @@ band
 \sphinxAtStartPar
 Show(1) or hide(0) each band
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 brillouinzone
 &
@@ -1172,7 +1159,7 @@ first
 \sphinxAtStartPar
 Kind of the Brillouin zone
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 colorbar
 &
@@ -1185,7 +1172,7 @@ colorbar
 \sphinxAtStartPar
 Show(1) or hide (0) the color bar
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 colorscale
 &
@@ -1198,7 +1185,7 @@ input1d
 \sphinxAtStartPar
 Kind of the color plot
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 minmax
 &
@@ -1211,7 +1198,7 @@ The min. and max. through Fermi surfaces
 \sphinxAtStartPar
 the range of the color scale
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 equator
 &
@@ -1224,7 +1211,7 @@ If it is not specified, equator is not shown
 \sphinxAtStartPar
 Tangent vector for equator (fractional coordinate)
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 interpol
 &
@@ -1237,7 +1224,7 @@ int
 \sphinxAtStartPar
 Degree of the interpolation
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 linewidth
 &
@@ -1250,7 +1237,7 @@ float
 \sphinxAtStartPar
 Line width
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 lighting
 &
@@ -1263,7 +1250,7 @@ both
 \sphinxAtStartPar
 Which side is illuminated
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 nodalline
 &
@@ -1276,7 +1263,7 @@ nodalline
 \sphinxAtStartPar
 Show(1) or hide(0) the nodal line
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 section
 &
@@ -1289,7 +1276,7 @@ Section is not shown
 \sphinxAtStartPar
 Normal vector for the section (fractional coordinate)
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 acrossgamma
 &
@@ -1302,7 +1289,7 @@ acrossgamma
 \sphinxAtStartPar
 Whether math:\sphinxtitleref{\{rm Gamma\}} is included (1) or not (0) in the section.
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 position
 &
@@ -1315,7 +1302,7 @@ float float
 \sphinxAtStartPar
 The position of the figure
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 scale
 &
@@ -1328,7 +1315,7 @@ float
 \sphinxAtStartPar
 The scale of the figure
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 rotation
 &
@@ -1341,7 +1328,7 @@ float float float
 \sphinxAtStartPar
 Rotation arround x\sphinxhyphen{}, y\sphinxhyphen{}, and z\sphinxhyphen{}axis
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 fermienergy
 &
@@ -1354,7 +1341,7 @@ float
 \sphinxAtStartPar
 Fermi energy
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 stereogram
 &
@@ -1367,7 +1354,7 @@ none
 \sphinxAtStartPar
 Stereogram
 \\
-\sphinxhline
+\hline
 \sphinxAtStartPar
 tetrahedron
 &
@@ -1380,9 +1367,9 @@ int from 0 to 15
 \sphinxAtStartPar
 Direction to cut tetrahedra
 \\
-\sphinxbottomrule
+\hline
 \end{tabular}
-\sphinxtableafterendhook\par
+\par
 \sphinxattableend\end{savenotes}
 
 \begin{sphinxadmonition}{note}{Note:}
@@ -1390,8 +1377,6 @@ Direction to cut tetrahedra
 This function uses “import” command to get the screen\sphinxhyphen{}shot in ImageMagic.
 Therefore ImageMagic have to be installed to use this function.
 \end{sphinxadmonition}
-
-\sphinxstepscope
 
 
 \chapter{Tutorial with Quantum ESPRESSO}
@@ -1422,7 +1407,7 @@ we have to build \sphinxcode{\sphinxupquote{PostProcess}} tools
 in QuantumESPRESSO as follows:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }make\PYG{+w}{ }pp
+\PYGZdl{} make pp
 \end{sphinxVerbatim}
 
 
@@ -1487,7 +1472,7 @@ We put the input file and the pseudopotential in the same directory,
 and run \sphinxcode{\sphinxupquote{pw.x}} at that directory.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }mpiexec\PYG{+w}{ }\PYGZhy{}np\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }pw.x\PYG{+w}{ }\PYGZhy{}npool\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }\PYGZhy{}in\PYG{+w}{ }scf.in
+\PYGZdl{} mpiexec \PYGZhy{}np \PYG{l+m}{4} pw.x \PYGZhy{}npool \PYG{l+m}{4} \PYGZhy{}in scf.in
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1502,7 +1487,7 @@ We also can perform additional non\sphinxhyphen{}scf calcultion with a different
 We run \sphinxcode{\sphinxupquote{fermi\_velocity.x}} program with the same input file as \sphinxcode{\sphinxupquote{pw.x}}.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }mpiexec\PYG{+w}{ }\PYGZhy{}np\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }fermi\PYGZus{}velocity.x\PYG{+w}{ }\PYGZhy{}npool\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }\PYGZhy{}in\PYG{+w}{ }scf.in
+\PYGZdl{} mpiexec \PYGZhy{}np \PYG{l+m}{1} fermi\PYGZus{}velocity.x \PYGZhy{}npool \PYG{l+m}{1} \PYGZhy{}in scf.in
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1512,7 +1497,7 @@ Then, the file for the Fermi velocity, \sphinxcode{\sphinxupquote{vfermi.frmsf}}
 this file can be read from FermiSurfer as
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }fermisurfer\PYG{+w}{ }vfermi.frmsf
+\PYGZdl{} fermisurfer vfermi.frmsf
 \end{sphinxVerbatim}
 
 \begin{figure}[htbp]
@@ -1556,7 +1541,7 @@ the \sphinxstyleemphasis{k}\sphinxhyphen{}parallelization (\sphinxcode{\sphinxup
 for the execution of \sphinxcode{\sphinxupquote{pw.x}}.
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }mpiexec\PYG{+w}{ }\PYGZhy{}np\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }projwfc.x\PYG{+w}{ }\PYGZhy{}npool\PYG{+w}{ }\PYG{l+m}{4}\PYG{+w}{ }\PYGZhy{}in\PYG{+w}{ }proj.in
+\PYGZdl{} mpiexec \PYGZhy{}np \PYG{l+m}{4} projwfc.x \PYGZhy{}npool \PYG{l+m}{4} \PYGZhy{}in proj.in
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1592,7 +1577,7 @@ we use this index.
 For example, we run \sphinxcode{\sphinxupquote{fermi\_proj.x}} with above \sphinxcode{\sphinxupquote{proj.in}} as an input file,
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }mpiexec\PYG{+w}{ }\PYGZhy{}np\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }fermi\PYGZus{}proj.x\PYG{+w}{ }\PYGZhy{}npool\PYG{+w}{ }\PYG{l+m}{1}\PYG{+w}{ }\PYGZhy{}in\PYG{+w}{ }proj.in
+\PYGZdl{} mpiexec \PYGZhy{}np \PYG{l+m}{1} fermi\PYGZus{}proj.x \PYGZhy{}npool \PYG{l+m}{1} \PYGZhy{}in proj.in
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
@@ -1618,7 +1603,7 @@ and the 2pz of the first B atom (\sphinxcode{\sphinxupquote{10}}),
 is specified. We can display the Fermi surface as
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }fermisurfer\PYG{+w}{ }proj.frmsf
+\PYGZdl{} fermisurfer proj.frmsf
 \end{sphinxVerbatim}
 
 \begin{figure}[htbp]
@@ -1652,14 +1637,12 @@ We do not have to run \sphinxcode{\sphinxupquote{projwfc.x}} again.
 \noindent\sphinxincludegraphics[width=0.300\linewidth]{{qe_proj_pxy}.png}
 \end{figure}
 
-\sphinxstepscope
-
 
 \chapter{FermiSurfer on Web}
 \label{\detokenize{onweb:fermisurfer-on-web}}\label{\detokenize{onweb::doc}}
 \sphinxAtStartPar
 We can use FermiSurfer on Web at the following URL:
-\sphinxurl{https://fermisurfer.osdn.jp/js/index.php}
+\sphinxurl{http://163.220.177.91/fsonweb/index.php}
 
 
 \section{Control FermiSurfer on Web}
@@ -1683,10 +1666,10 @@ Several time\sphinxhyphen{}lag may be expected.
 We can open an input file placed online by just clicking the link by a URL with an argument:
 
 \sphinxAtStartPar
-\sphinxurl{https://fermisurfer.osdn.jp/js/index.php?frmsf=https://fermisurfer.osdn.jp/js/Pb.js}
+\sphinxurl{http://163.220.177.91/fsonweb/index.php?frmsf=http://163.220.177.91/fsonweb/Pb.js}
 
 \sphinxAtStartPar
-We add the URL where the input file locates after \sphinxcode{\sphinxupquote{https://fermisurfer.osdn.jp/js/index.php?frmsf=}}.
+We add the URL where the input file locates after \sphinxcode{\sphinxupquote{http://163.220.177.91/fsonweb/index.php?frmsf=}}.
 This function can be used in research\sphinxhyphen{}introduction pages.
 
 \sphinxAtStartPar
@@ -1706,27 +1689,25 @@ BXSF format has not been supported.
 We can convert a FRMSF\sphinxhyphen{}formatted file into the above format as
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-sed\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}1i frmsf=\PYGZdq{}\PYGZsq{}}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}\PYGZdl{}a \PYGZdq{};\PYGZsq{}}\PYG{+w}{ }ANY.frmsf\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }perl\PYG{+w}{ }\PYGZhy{}pe\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/\PYGZbs{}n/ /g\PYGZsq{}}\PYG{+w}{ }\PYG{p}{|}\PYG{+w}{ }sed\PYG{+w}{ }\PYGZhy{}E\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/ +/ /g\PYGZsq{}}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/\PYGZdq{} /\PYGZdq{}/g\PYGZsq{}}\PYG{+w}{ }\PYGZhy{}e\PYG{+w}{ }\PYG{l+s+s1}{\PYGZsq{}s/ \PYGZdq{}/\PYGZdq{}/g\PYGZsq{}}\PYG{+w}{ }\PYGZgt{}\PYG{+w}{ }ANY.js
+sed \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}1i frmsf=\PYGZdq{}\PYGZsq{}} \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}\PYGZdl{}a \PYGZdq{};\PYGZsq{}} ANY.frmsf \PYG{p}{|} perl \PYGZhy{}pe \PYG{l+s+s1}{\PYGZsq{}s/\PYGZbs{}n/ /g\PYGZsq{}} \PYG{p}{|} sed \PYGZhy{}E \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}s/ +/ /g\PYGZsq{}} \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}s/\PYGZdq{} /\PYGZdq{}/g\PYGZsq{}} \PYGZhy{}e \PYG{l+s+s1}{\PYGZsq{}s/ \PYGZdq{}/\PYGZdq{}/g\PYGZsq{}} \PYGZgt{} ANY.js
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
 The following bash script file also do this conversion
 
 \sphinxAtStartPar
-\sphinxurl{https://fermisurfer.osdn.jp/js/frmsf2js.sh}
+\sphinxurl{http://163.220.177.91/fsonweb/frmsf2js.sh}
 
 \sphinxAtStartPar
 Usage:
 
 \begin{sphinxVerbatim}[commandchars=\\\{\}]
-\PYGZdl{}\PYG{+w}{ }bash\PYG{+w}{ }frmsf2js.sh\PYG{+w}{ }ANY.frmsf
+\PYGZdl{} bash frmsf2js.sh ANY.frmsf
 \end{sphinxVerbatim}
 
 \sphinxAtStartPar
 where ANY is an arbitrary string.
 Then a file \sphinxcode{\sphinxupquote{ANY.js}} which should be uploaded onto an Web server is generated.
-
-\sphinxstepscope
 
 
 \chapter{Acknowledgment}
@@ -1734,8 +1715,6 @@ Then a file \sphinxcode{\sphinxupquote{ANY.js}} which should be uploaded onto an
 \sphinxAtStartPar
 I thank Dr. Yusuke Konishi in ISSP; he performed a test in Mac OSX, and
 proposed Makefiles and a patch.
-
-\sphinxstepscope
 
 
 \chapter{Re\sphinxhyphen{}distribution of this program}
@@ -1775,8 +1754,6 @@ Also, you can freely choose the license to distribute your program.
 \item[] TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 \item[] SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 \end{DUlineblock}
-
-\sphinxstepscope
 
 
 \chapter{Contact}

@@ -1,17 +1,19 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Control FermiSurfer &#8212; fermisurfer 2.4.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=89b800e6" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6fe989de"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
@@ -42,13 +44,13 @@
           <div class="body" role="main">
             
   <section id="control-fermisurfer">
-<span id="ops"></span><h1>Control FermiSurfer<a class="headerlink" href="#control-fermisurfer" title="Permalink to this heading">¶</a></h1>
+<span id="ops"></span><h1>Control FermiSurfer<a class="headerlink" href="#control-fermisurfer" title="Permalink to this headline">¶</a></h1>
 <section id="launch">
-<h2>Launch<a class="headerlink" href="#launch" title="Permalink to this heading">¶</a></h2>
+<h2>Launch<a class="headerlink" href="#launch" title="Permalink to this headline">¶</a></h2>
 <section id="for-linux-unix-mac">
-<h3>For Linux, Unix, Mac<a class="headerlink" href="#for-linux-unix-mac" title="Permalink to this heading">¶</a></h3>
+<h3>For Linux, Unix, Mac<a class="headerlink" href="#for-linux-unix-mac" title="Permalink to this headline">¶</a></h3>
 <p>You can launch generated executable as follows:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fermisurfer<span class="w"> </span>mgb2_vfz.fs
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ fermisurfer mgb2_vfz.fs
 </pre></div>
 </div>
 <p>You need a space between the command and input-file name.
@@ -56,14 +58,14 @@
 the Fermi velocity in MgB<sub>2</sub>.)</p>
 </section>
 <section id="for-windows">
-<h3>For Windows<a class="headerlink" href="#for-windows" title="Permalink to this heading">¶</a></h3>
+<h3>For Windows<a class="headerlink" href="#for-windows" title="Permalink to this headline">¶</a></h3>
 <p>Click mouse right button on the input file. Choose “Open With …” menu,
 then choose <code class="docutils literal notranslate"><span class="pre">fermisurfer.exe</span></code>.</p>
-<p>Then, Operations are printed, and Fermi surfaces are drawn (Fig. <a href="#startpng">24</a>).</p>
+<p>Then, Operations are printed, and Fermi surfaces are drawn (Fig. <a href="#startpng">1</a>).</p>
 <figure class="align-default" id="id1">
 <span id="startpng"></span><a class="reference internal image-reference" href="_images/start.png"><img alt="_images/start.png" src="_images/start.png" style="width: 500px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 24: Main view.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Main view.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>The following operations are available:</p>
@@ -85,33 +87,33 @@ Such operations are refered as “Update required”.</p>
 </section>
 </section>
 <section id="background-color">
-<h2>Background color<a class="headerlink" href="#background-color" title="Permalink to this heading">¶</a></h2>
+<h2>Background color<a class="headerlink" href="#background-color" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Background</span> <span class="pre">(RGB)</span></code> : The background color is specified as RGB.</p>
 <figure class="align-default" id="backgroundpng">
 <a class="reference internal image-reference" href="_images/background.png"><img alt="_images/background.png" src="_images/background.png" style="width: 500px;" /></a>
 </figure>
 </section>
 <section id="line-width">
-<h2>Line width<a class="headerlink" href="#line-width" title="Permalink to this heading">¶</a></h2>
+<h2>Line width<a class="headerlink" href="#line-width" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Line</span> <span class="pre">width</span></code> : Modify the width of the Brillouin-zone boundary, the nodal line, etc.</p>
 </section>
 <section id="line-color">
-<h2>Line color<a class="headerlink" href="#line-color" title="Permalink to this heading">¶</a></h2>
+<h2>Line color<a class="headerlink" href="#line-color" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Line</span> <span class="pre">color</span> <span class="pre">(RGB)</span></code> : The line color is specified with RGB.</p>
 <figure class="align-default" id="linecolorpng">
 <a class="reference internal image-reference" href="_images/line_color.png"><img alt="_images/line_color.png" src="_images/line_color.png" style="width: 500px;" /></a>
 </figure>
 </section>
 <section id="band">
-<h2>Band<a class="headerlink" href="#band" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Band</span> <span class="pre">0,</span> <span class="pre">RGB</span></code>, <code class="docutils literal notranslate"><span class="pre">Band</span> <span class="pre">1,</span> <span class="pre">RGB</span></code> … : It makes each band enable/disable (Fig. <a href="#bandpng">27</a>).</p>
+<h2>Band<a class="headerlink" href="#band" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Band</span> <span class="pre">0,</span> <span class="pre">RGB</span></code>, <code class="docutils literal notranslate"><span class="pre">Band</span> <span class="pre">1,</span> <span class="pre">RGB</span></code> … : It makes each band enable/disable (Fig. <a href="#bandpng">4</a>).</p>
 <figure class="align-default" id="bandpng">
 <a class="reference internal image-reference" href="_images/band.png"><img alt="_images/band.png" src="_images/band.png" style="width: 600px;" /></a>
 </figure>
 </section>
 <section id="brillouin-zone-update-required">
-<h2>Brillouin zone (Update required)<a class="headerlink" href="#brillouin-zone-update-required" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Brillouin</span> <span class="pre">zone</span></code> : We choose Brillouin-zone type as follows (Fig. <a href="#brillouinzonepng">28</a>):</p>
+<h2>Brillouin zone (Update required)<a class="headerlink" href="#brillouin-zone-update-required" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Brillouin</span> <span class="pre">zone</span></code> : We choose Brillouin-zone type as follows (Fig. <a href="#brillouinzonepng">5</a>):</p>
 <dl class="simple">
 <dt>First Brillouin Zone</dt><dd><p>The region surrounded by Bragg’s planes the
 nearest to <span class="math notranslate nohighlight">\({\rm \Gamma}\)</span> point.</p>
@@ -123,13 +125,13 @@ lattice point.</p>
 <figure class="align-default" id="id2">
 <span id="brillouinzonepng"></span><a class="reference internal image-reference" href="_images/brillouinzone.png"><img alt="_images/brillouinzone.png" src="_images/brillouinzone.png" style="width: 600px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 28: You can change the type of the Brillouin zone with
+<p><span class="caption-text">You can change the type of the Brillouin zone with
 “Brillouin zone” menu.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="number-of-brillouin-zone-update-required">
-<h2>Number of Brillouin zone (Update required)<a class="headerlink" href="#number-of-brillouin-zone-update-required" title="Permalink to this heading">¶</a></h2>
+<h2>Number of Brillouin zone (Update required)<a class="headerlink" href="#number-of-brillouin-zone-update-required" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">BZ</span> <span class="pre">number</span></code> : We can specify how many zones are displayed along each reciprocal
 lattice vector.</p>
 <figure class="align-default" id="bznumberpng">
@@ -137,18 +139,18 @@ lattice vector.</p>
 </figure>
 </section>
 <section id="color-bar">
-<h2>Color bar<a class="headerlink" href="#color-bar" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Color</span> <span class="pre">bar</span></code> : The color bar becomes enable/disable (Fig. <a href="#colorbarpng">30</a>).</p>
+<h2>Color bar<a class="headerlink" href="#color-bar" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Color</span> <span class="pre">bar</span></code> : The color bar becomes enable/disable (Fig. <a href="#colorbarpng">7</a>).</p>
 <figure class="align-default" id="id3">
 <span id="colorbarpng"></span><a class="reference internal image-reference" href="_images/colorbar.png"><img alt="_images/colorbar.png" src="_images/colorbar.png" style="width: 600px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 30: Toggling the color bar with “Color bar On/Off” menu.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Toggling the color bar with “Color bar On/Off” menu.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="color-scale-mode-update-required">
-<h2>Color scale mode (Update required)<a class="headerlink" href="#color-scale-mode-update-required" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Color</span> <span class="pre">scale</span> <span class="pre">mode</span></code> : It turns color pattern on Fermi surfaces (Fig. <a href="#colorscalepng">31</a>).</p>
+<h2>Color scale mode (Update required)<a class="headerlink" href="#color-scale-mode-update-required" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Color</span> <span class="pre">scale</span> <span class="pre">mode</span></code> : It turns color pattern on Fermi surfaces (Fig. <a href="#colorscalepng">8</a>).</p>
 <dl class="simple">
 <dt>Input (1D) (default for the single input quatity) :</dt><dd><p>It makes blue as the minimum on Fermi surfaces and red
 as the maximum on them.</p>
@@ -177,16 +179,16 @@ Larger number indicates fewer arrows.</p>
 <figure class="align-default" id="id4">
 <span id="colorscalepng"></span><a class="reference internal image-reference" href="_images/colorscale.png"><img alt="_images/colorscale.png" src="_images/colorscale.png" style="width: 700px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 31: “Color scale mode” menu.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">“Color scale mode” menu.</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="perspective">
-<h2>Perspective<a class="headerlink" href="#perspective" title="Permalink to this heading">¶</a></h2>
+<h2>Perspective<a class="headerlink" href="#perspective" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Perspective</span></code> : Turn on/off the perspective view.</p>
 </section>
 <section id="color-sequence-for-plot">
-<h2>Color sequence for plot<a class="headerlink" href="#color-sequence-for-plot" title="Permalink to this heading">¶</a></h2>
+<h2>Color sequence for plot<a class="headerlink" href="#color-sequence-for-plot" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Bar</span> <span class="pre">Color</span></code> :
 We can specify the sequence of color plot.
 “BGR” is Blue-Cyan-Green-Yellow-Red,
@@ -197,10 +199,10 @@ We can specify the sequence of color plot.
 </figure>
 </section>
 <section id="equator-update-required">
-<h2>Equator (Update required)<a class="headerlink" href="#equator-update-required" title="Permalink to this heading">¶</a></h2>
+<h2>Equator (Update required)<a class="headerlink" href="#equator-update-required" title="Permalink to this headline">¶</a></h2>
 <p>We can draw the line where
 <span class="math notranslate nohighlight">\({\bf v}_{\rm F} \cdot {\bf k} = 0\)</span> for a vector <span class="math notranslate nohighlight">\({\bf k}\)</span>.
-See fig. <a href="#equatorpng">33</a>.
+See fig. <a href="#equatorpng">10</a>.
 When it was created, Kawamura missunderstood that this coinsides the extremul orbit in dHvA
 (it is not true!).
 Maybe it is related to the ultrasonic attenuation.</p>
@@ -213,24 +215,24 @@ We need to push <code class="docutils literal notranslate"><span class="pre">Upd
 <figure class="align-default" id="id5">
 <span id="equatorpng"></span><a class="reference internal image-reference" href="_images/equator.png"><img alt="_images/equator.png" src="_images/equator.png" style="width: 700px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 33: Display the equator with the “Equator” menu.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Display the equator with the “Equator” menu.</span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="interpolation-update-required">
-<h2>Interpolation (Update required)<a class="headerlink" href="#interpolation-update-required" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Interpol</span> <span class="pre">ratio</span></code> : Smooth the Fermi surface with the interpolation (Fig. <a href="#interpolatepng">34</a>).
+<h2>Interpolation (Update required)<a class="headerlink" href="#interpolation-update-required" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Interpol</span> <span class="pre">ratio</span></code> : Smooth the Fermi surface with the interpolation (Fig. <a href="#interpolatepng">11</a>).
 The time for the plot increases with the interpolation ratio.</p>
 <figure class="align-default" id="id6">
 <span id="interpolatepng"></span><a class="reference internal image-reference" href="_images/interpolate.png"><img alt="_images/interpolate.png" src="_images/interpolate.png" style="width: 700px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 34: Modify the number of interpolation points from 1 to 4 with “Interpolate” menu.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Modify the number of interpolation points from 1 to 4 with “Interpolate” menu.</span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="which-or-both-side-of-fermi-surface-is-illuminated">
-<h2>Which (or both) side of Fermi surface is illuminated<a class="headerlink" href="#which-or-both-side-of-fermi-surface-is-illuminated" title="Permalink to this heading">¶</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Lighting</span></code> : We can choose the illuminatedside of the Fermi surface (Fig. <a href="#lightpng">35</a>).</p>
+<h2>Which (or both) side of Fermi surface is illuminated<a class="headerlink" href="#which-or-both-side-of-fermi-surface-is-illuminated" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">Lighting</span></code> : We can choose the illuminatedside of the Fermi surface (Fig. <a href="#lightpng">12</a>).</p>
 <dl class="simple">
 <dt>Both :</dt><dd><p>Light both sides.</p>
 </dd>
@@ -242,12 +244,12 @@ The time for the plot increases with the interpolation ratio.</p>
 <figure class="align-default" id="id7">
 <span id="lightpng"></span><a class="reference internal image-reference" href="_images/light.png"><img alt="_images/light.png" src="_images/light.png" style="width: 500px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 35: Change the lighted side by using the “Lighting” menu.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Change the lighted side by using the “Lighting” menu.</span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="mouse-drag">
-<h2>Mouse Drag<a class="headerlink" href="#mouse-drag" title="Permalink to this heading">¶</a></h2>
+<h2>Mouse Drag<a class="headerlink" href="#mouse-drag" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Mouse</span> <span class="pre">Drag</span></code> : It turns the event of the mouse-left-drag.</p>
 <dl class="simple">
 <dt>Rotate(default)</dt><dd><p>Rotate the figure along the mouse drag.</p>
@@ -262,20 +264,20 @@ The time for the plot increases with the interpolation ratio.</p>
 </figure>
 </section>
 <section id="nodal-line">
-<h2>Nodal line<a class="headerlink" href="#nodal-line" title="Permalink to this heading">¶</a></h2>
+<h2>Nodal line<a class="headerlink" href="#nodal-line" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Nodal</span> <span class="pre">Line</span></code> : The line on which the matrix element becomes 0 (we call it nodal line)
-becomes enable/disable (Fig. <a href="#nodelinepng">37</a>).</p>
+becomes enable/disable (Fig. <a href="#nodelinepng">14</a>).</p>
 <figure class="align-default" id="id8">
 <span id="nodelinepng"></span><a class="reference internal image-reference" href="_images/nodeline.png"><img alt="_images/nodeline.png" src="_images/nodeline.png" style="width: 500px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 37: Toggling the node line with “Nodal line” menu.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Toggling the node line with “Nodal line” menu.</span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="section-of-the-brillouine-zone-update-required">
-<h2>Section of the Brillouine zone (Update required)<a class="headerlink" href="#section-of-the-brillouine-zone-update-required" title="Permalink to this heading">¶</a></h2>
+<h2>Section of the Brillouine zone (Update required)<a class="headerlink" href="#section-of-the-brillouine-zone-update-required" title="Permalink to this headline">¶</a></h2>
 <p>Display a 2D plot of the Fermi surface (line)
-on an arbitrary section of the Brillouin zone (Fig. <a href="#sectionpng">38</a>).</p>
+on an arbitrary section of the Brillouin zone (Fig. <a href="#sectionpng">15</a>).</p>
 <p><code class="docutils literal notranslate"><span class="pre">Section</span></code> : We can toggle it with the checkbox
 (this operation does not require update).</p>
 <p><code class="docutils literal notranslate"><span class="pre">Section-v</span></code> :
@@ -287,39 +289,39 @@ the section crosses <span class="math notranslate nohighlight">\(\Gamma\)</span>
 <figure class="align-default" id="id9">
 <span id="sectionpng"></span><a class="reference internal image-reference" href="_images/section.png"><img alt="_images/section.png" src="_images/section.png" style="width: 700px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 38: Display 2D plot of the Fermi surface (line) with “Section” menu.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Display 2D plot of the Fermi surface (line) with “Section” menu.</span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="output-section-of-the-brillouine-zone">
-<h2>Output section of the Brillouine zone<a class="headerlink" href="#output-section-of-the-brillouine-zone" title="Permalink to this heading">¶</a></h2>
+<h2>Output section of the Brillouine zone<a class="headerlink" href="#output-section-of-the-brillouine-zone" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Section</span> <span class="pre">file</span></code> :
 Above section of the Brillouin zone and Fermi surfaces are outputted into files “fermi_line.dat” and “bz_line.dat” by pushing this button.</p>
 <figure class="align-default" id="sectionfilepng">
 <a class="reference internal image-reference" href="_images/section_file.png"><img alt="_images/section_file.png" src="_images/section_file.png" style="width: 500px;" /></a>
 </figure>
 <p>These files are plotted in gnuplot as follows:</p>
-<div class="highlight-gnuplot notranslate"><div class="highlight"><pre><span></span><span class="k">plot</span><span class="w"> </span><span class="s">&quot;fermi_line.dat&quot;</span><span class="w"> </span><span class="nb">w</span><span class="w"> </span><span class="n">l</span><span class="o">,</span><span class="w"> </span><span class="s">&quot;bz_line.dat&quot;</span><span class="w"> </span><span class="nb">w</span><span class="w"> </span><span class="n">l</span>
+<div class="highlight-gnuplot notranslate"><div class="highlight"><pre><span></span><span class="k">plot</span><span class="w"> </span><span class="s">&quot;fermi_line.dat&quot;</span><span class="w"> </span><span class="nb">w</span><span class="w"> </span><span class="n">l</span><span class="o">,</span><span class="w"> </span><span class="s">&quot;bz_line.dat&quot;</span><span class="w"> </span><span class="nb">w</span><span class="w"> </span><span class="n">l</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="shift-fermi-energy-update-required">
-<h2>Shift Fermi energy (Update required)<a class="headerlink" href="#shift-fermi-energy-update-required" title="Permalink to this heading">¶</a></h2>
+<h2>Shift Fermi energy (Update required)<a class="headerlink" href="#shift-fermi-energy-update-required" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Fermi</span> <span class="pre">energy</span></code> :
-It shifts the Fermi energy (= 0 in default) to arbitrary value (Fig. <a href="#shiftpng">40</a>).</p>
+It shifts the Fermi energy (= 0 in default) to arbitrary value (Fig. <a href="#shiftpng">17</a>).</p>
 <figure class="align-default" id="id10">
 <span id="shiftpng"></span><a class="reference internal image-reference" href="_images/shift.png"><img alt="_images/shift.png" src="_images/shift.png" style="width: 500px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 40: The Fermi energy is set from 0 Ry to 0.1 Ry with
+<p><span class="caption-text">The Fermi energy is set from 0 Ry to 0.1 Ry with
 “Shift Fermi energy” menu</span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="stereogram">
-<h2>Stereogram<a class="headerlink" href="#stereogram" title="Permalink to this heading">¶</a></h2>
+<h2>Stereogram<a class="headerlink" href="#stereogram" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Stereogram</span></code> :
 The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
-(Fig. <a href="#stereogrampng">41</a>).</p>
+(Fig. <a href="#stereogrampng">18</a>).</p>
 <p>None (Default)</p>
 <dl class="simple">
 <dt>Parallel</dt><dd><p>Parallel-eyes stereogram</p>
@@ -330,13 +332,13 @@ The stereogram (parallel eyes and cross eyes) becomes enabled/disabled
 <figure class="align-default" id="id11">
 <span id="stereogrampng"></span><a class="reference internal image-reference" href="_images/stereogram.png"><img alt="_images/stereogram.png" src="_images/stereogram.png" style="width: 700px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 41: The stereogram becomes enabled/disabled with
+<p><span class="caption-text">The stereogram becomes enabled/disabled with
 “Stereogram” menu.</span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="tetrahedron-update-required">
-<h2>Tetrahedron (Update required)<a class="headerlink" href="#tetrahedron-update-required" title="Permalink to this heading">¶</a></h2>
+<h2>Tetrahedron (Update required)<a class="headerlink" href="#tetrahedron-update-required" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">Tetraghedron</span></code> :
 You change the scheme to divide into tetrahedra (<code class="docutils literal notranslate"><span class="pre">tetra</span> <span class="pre">#</span> <span class="pre">1</span></code> as default).
 It is experimental.</p>
@@ -345,7 +347,7 @@ It is experimental.</p>
 </figure>
 </section>
 <section id="view-point">
-<h2>View point<a class="headerlink" href="#view-point" title="Permalink to this heading">¶</a></h2>
+<h2>View point<a class="headerlink" href="#view-point" title="Permalink to this headline">¶</a></h2>
 <p>Changing the view point.</p>
 <dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">Scale</span></code> :</dt><dd><p>Change the size of the figure.</p>
@@ -357,16 +359,16 @@ Rotations are performed as z-y-x axis if the “Roate” buttone is pushed.</p>
 </dd>
 </dl>
 <p>In each menu, first the current value is printed. then a prompt to input
-the new value appears (Fig. <a href="#setviewpng">43</a>).</p>
+the new value appears (Fig. <a href="#setviewpng">20</a>).</p>
 <figure class="align-default" id="id12">
 <span id="setviewpng"></span><a class="reference internal image-reference" href="_images/setview.png"><img alt="_images/setview.png" src="_images/setview.png" style="width: 300px;" /></a>
 <figcaption>
-<p><span class="caption-text">Figure 43: Modify the view point by using “View point” menu</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Modify the view point by using “View point” menu</span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>
 <section id="arrow">
-<h2>Arrow<a class="headerlink" href="#arrow" title="Permalink to this heading">¶</a></h2>
+<h2>Arrow<a class="headerlink" href="#arrow" title="Permalink to this headline">¶</a></h2>
 <p>Show an arrow (thin triangle) at arbitrary place.
 The following are specified in the fractional coordinate.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">(Start)</span></code> : Starting point</p>
@@ -375,7 +377,7 @@ The following are specified in the fractional coordinate.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">width</span></code> : Modify the thickness of arrow (triangle).</p>
 </section>
 <section id="wireframe-sphere">
-<h2>Wireframe sphere<a class="headerlink" href="#wireframe-sphere" title="Permalink to this heading">¶</a></h2>
+<h2>Wireframe sphere<a class="headerlink" href="#wireframe-sphere" title="Permalink to this headline">¶</a></h2>
 <p>Show a wireframe sphere at arbitrary place.
 This is utilized together with HiLAPW.
 The following are specified in the Cartesian coordinate.</p>
@@ -383,7 +385,7 @@ The following are specified in the Cartesian coordinate.</p>
 <p><code class="docutils literal notranslate"><span class="pre">Sphere</span> <span class="pre">radius</span></code> : Radius of sphere.</p>
 </section>
 <section id="nesting-function">
-<h2>Nesting function<a class="headerlink" href="#nesting-function" title="Permalink to this heading">¶</a></h2>
+<h2>Nesting function<a class="headerlink" href="#nesting-function" title="Permalink to this headline">¶</a></h2>
 <p>The following two kinds of nesting function are computed and written into a file readable by FermiSurfer.</p>
 <p><code class="docutils literal notranslate"><span class="pre">delta*delta</span></code> : File name is “doubledelta.frmsf”</p>
 <div class="math notranslate nohighlight">
@@ -396,7 +398,7 @@ The following are specified in the Cartesian coordinate.</p>
 {\varepsilon_{n' \textbf{k}+\textbf{q}} - \varepsilon_{n \textbf{k}}}\]</div>
 </section>
 <section id="saving-images">
-<h2>Saving images<a class="headerlink" href="#saving-images" title="Permalink to this heading">¶</a></h2>
+<h2>Saving images<a class="headerlink" href="#saving-images" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">fermisurfer</span></code> does not have any functions to save images to a file.
 Please use the screenshot on your PC.</p>
 </section>
@@ -412,9 +414,8 @@ Please use the screenshot on your PC.</p>
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/fermisurfer.png" alt="Logo"/>
             </a></p>
-  <div>
-    <h3><a href="index.html">Table of Contents</a></h3>
-    <ul>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
 <li><a class="reference internal" href="#">Control FermiSurfer</a><ul>
 <li><a class="reference internal" href="#launch">Launch</a><ul>
 <li><a class="reference internal" href="#for-linux-unix-mac">For Linux, Unix, Mac</a></li>
@@ -450,17 +451,12 @@ Please use the screenshot on your PC.</p>
 </li>
 </ul>
 
-  </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="input.html"
-                          title="previous chapter">Input file</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="batch.html"
-                          title="next chapter">Batch mode</a></p>
-  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="input.html"
+                        title="previous chapter">Input file</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="batch.html"
+                        title="next chapter">Batch mode</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -477,7 +473,7 @@ Please use the screenshot on your PC.</p>
     </form>
     </div>
 </div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -499,8 +495,8 @@ Please use the screenshot on your PC.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2017, kawamura.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+        &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>

@@ -1,17 +1,19 @@
+
 <!DOCTYPE html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
     <title>Install &#8212; fermisurfer 2.4.0 documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
-    <link rel="stylesheet" type="text/css" href="_static/classic.css?v=89b800e6" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
-    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=6fe989de"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -41,38 +43,38 @@
           <div class="body" role="main">
             
   <section id="install">
-<h1>Install<a class="headerlink" href="#install" title="Permalink to this heading">¶</a></h1>
+<h1>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h1>
 <section id="installation-in-linux-and-macos">
-<h2>Installation in Linux and macOS<a class="headerlink" href="#installation-in-linux-and-macos" title="Permalink to this heading">¶</a></h2>
+<h2>Installation in Linux and macOS<a class="headerlink" href="#installation-in-linux-and-macos" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic">
 <li><p>Install the required package</p>
 <ul>
 <li><p>For Debian/Ubuntu</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>aptitude<span class="w"> </span>install<span class="w"> </span>libwxgtk3.0-dev
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo aptitude install libwxgtk3.0-dev
 </pre></div>
 </div>
 </li>
 <li><p>For Red Hat Enterprise Linux/CentOS</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>wxGTK3-devel.x86_64
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ sudo yum install wxGTK3-devel.x86_64
 </pre></div>
 </div>
 </li>
 <li><p>macOS (Homebrew)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>brew<span class="w"> </span>install<span class="w"> </span>wxmac
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ brew install wxmac
 </pre></div>
 </div>
 </li>
 <li><p>macOS (Mac Ports)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>port<span class="w"> </span>install<span class="w"> </span>wxWidgets-3.0
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ port install wxWidgets-3.0
 </pre></div>
 </div>
 </li>
 </ul>
 </li>
 <li><p>Install</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>./configure
-$<span class="w"> </span>make
-$<span class="w"> </span>sudo<span class="w"> </span>make<span class="w"> </span>install
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./configure
+$ make
+$ sudo make install
 </pre></div>
 </div>
 </li>
@@ -81,7 +83,7 @@ $<span class="w"> </span>sudo<span class="w"> </span>make<span class="w"> </span
 copied into <code class="docutils literal notranslate"><span class="pre">/usr/local/bin/</span></code>.</p>
 </section>
 <section id="installation-in-windows">
-<h2>Installation in Windows<a class="headerlink" href="#installation-in-windows" title="Permalink to this heading">¶</a></h2>
+<h2>Installation in Windows<a class="headerlink" href="#installation-in-windows" title="Permalink to this headline">¶</a></h2>
 <p>Download the binary file.</p>
 <p>Alternatively, we can build FermiSurfer by ourselves
 after we install wxWidgets library.
@@ -99,9 +101,8 @@ We can use <code class="docutils literal notranslate"><span class="pre">fermisur
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/fermisurfer.png" alt="Logo"/>
             </a></p>
-  <div>
-    <h3><a href="index.html">Table of Contents</a></h3>
-    <ul>
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
 <li><a class="reference internal" href="#">Install</a><ul>
 <li><a class="reference internal" href="#installation-in-linux-and-macos">Installation in Linux and macOS</a></li>
 <li><a class="reference internal" href="#installation-in-windows">Installation in Windows</a></li>
@@ -109,17 +110,12 @@ We can use <code class="docutils literal notranslate"><span class="pre">fermisur
 </li>
 </ul>
 
-  </div>
-  <div>
-    <h4>Previous topic</h4>
-    <p class="topless"><a href="file.html"
-                          title="previous chapter">Directories and important files</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="input.html"
-                          title="next chapter">Input file</a></p>
-  </div>
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="file.html"
+                        title="previous chapter">Directories and important files</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="input.html"
+                        title="next chapter">Input file</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -136,7 +132,7 @@ We can use <code class="docutils literal notranslate"><span class="pre">fermisur
     </form>
     </div>
 </div>
-<script>document.getElementById('searchbox').style.display = "block"</script>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -158,8 +154,8 @@ We can use <code class="docutils literal notranslate"><span class="pre">fermisur
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-    &#169; Copyright 2017, kawamura.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 7.1.2.
+        &#169; Copyright 2017, kawamura.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.2.
     </div>
   </body>
 </html>
