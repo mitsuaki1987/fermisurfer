@@ -287,6 +287,7 @@ void read_batch()
         printf("Error! %s = %s", keyword, value);
         exit(-1);
       }
+      refresh_patch = 1;
     }
     else if (strcmp(keyword, "colorbar") == 0) {
       ierr = fscanf(fp, "%d", &lcolorbar);
@@ -305,17 +306,21 @@ void read_batch()
         printf("Error! %s = %s", keyword, value);
         exit(-1);
       }
+      refresh_color = 1;
     }
     else if (strcmp(keyword, "minmax") == 0) {
       ierr = fscanf(fp, "%f%f", &patch_min, &patch_max);
       skip_minmax = 1;
+      refresh_color = 1;
     }
     else if (strcmp(keyword, "equator") == 0) {
       ierr = fscanf(fp, "%f%f%f", &eqvec[0], &eqvec[1], &eqvec[2]);
       lequator = 1;
+      refresh_equator = 1;
     }
     else if (strcmp(keyword, "interpol") == 0) {
       ierr = fscanf(fp, "%d", &interpol);
+      refresh_interpol = 1;
     }
     else if (strcmp(keyword, "linecolor") == 0) {
       ierr = fscanf(fp, "%f%f%f", &LineColor[0], &LineColor[1], &LineColor[2]);
@@ -349,10 +354,12 @@ void read_batch()
     else if (strcmp(keyword, "section") == 0) {
       ierr = fscanf(fp, "%f%f%f", &secvec[0], &secvec[1], &secvec[2]);
       lsection = 1;
+      refresh_section = 1;
     }
     else if (strcmp(keyword, "acrossgamma") == 0) {
       ierr = fscanf(fp, "%f", &secscale);
       secscale = 1.0f - secscale;
+      refresh_section = 1;
     }
     else if (strcmp(keyword, "position") == 0) {
       ierr = fscanf(fp, "%f%f%f", &trans[0], &trans[1], &trans[2]);
@@ -365,6 +372,7 @@ void read_batch()
     }
     else if (strcmp(keyword, "fermienergy") == 0) {
       ierr = fscanf(fp, "%f", &EF);
+      refresh_patch = 1;
     }
     else if (strcmp(keyword, "stereogram") == 0) {
       ierr = fscanf(fp, "%s", value);
@@ -379,9 +387,11 @@ void read_batch()
     }
     else if (strcmp(keyword, "tetrahedron") == 0) {
       ierr = fscanf(fp, "%d", &itet);
+      refresh_patch = 1;
     }
     else if (strcmp(keyword, "bznumber") == 0) {
       ierr = fscanf(fp, "%d%d%d", &BZ_number[0], &BZ_number[1], &BZ_number[2]);
+      refresh_section = 1;
     }
     else if (strcmp(keyword, "perspective") == 0) {
       ierr = fscanf(fp, "%d", &lperspective);
