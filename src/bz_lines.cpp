@@ -112,7 +112,7 @@ static void check_bragg()
 {
   int ibr, ibzl, ibzc;
   int ii, kk, bzflag, nbzcorner, nn;
-  GLfloat thr = (GLfloat)0.0001, prod, bzc[676][3] = {};
+  GLfloat thr = (GLfloat)0.00001, prod, bzc[676][3] = {};
   /*
   First, compute real number of corners of 1st BZ
   */
