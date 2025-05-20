@@ -362,7 +362,7 @@ void read_batch()
       refresh_section = 1;
     }
     else if (strcmp(keyword, "position") == 0) {
-      ierr = fscanf(fp, "%f%f%f", &trans[0], &trans[1], &trans[2]);
+      ierr = fscanf(fp, "%f%f", &trans[0], &trans[1]);
     }
     else if (strcmp(keyword, "scale") == 0) {
       ierr = fscanf(fp, "%f", &scl);
